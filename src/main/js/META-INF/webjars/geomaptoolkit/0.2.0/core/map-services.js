@@ -3,7 +3,8 @@ var OpenLayers = OpenLayers || {};
 var ol = ol || {};
 var app = angular.module('gawebtoolkit.core.map-services', [ 'gawebtoolkit.mapservices' ]);
 
-app.service('GAMapService', [ 'ga.config', 'mapServiceLocator', function(GAConfig, mapServiceLocator) {
+app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
+	function($log, GAConfig, mapServiceLocator) {
    'use strict';
    return {
       initialiseMap : function(args) {
@@ -11,7 +12,12 @@ app.service('GAMapService', [ 'ga.config', 'mapServiceLocator', function(GAConfi
          //this method should abstract the need to know what map type the instance is.
          //For now it is current assumed it's openlayers Release 2.13.1
          var service = mapServiceLocator.getImplementation('olv2');
-         return service.initialiseMap(args, new GAConfig());
+		  try {
+			  return service.initialiseMap(args, new GAConfig());
+		  }catch (e) {
+			  $log.error('Failed to initialise map');
+			  throw e;
+		  }
       },
       zoomToMaxExtent : function(mapInstance) {
          //TODO if we are support multiple map types, eg google/openlayers/leaflets

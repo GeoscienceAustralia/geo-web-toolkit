@@ -30,9 +30,9 @@ app
                   function(GAWTUtils) {
                      'use strict';
                      var templateCache = '<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"/>' + '<label for="{{elementId}}" ng-bind="layerData.name"></label>'
-                           + '<span ng-transclude></span>'
+
                            + '<div ng-show="layerData.visibility">'
-                           + '<input type="range" min="0" max="1.0" step="0.01" ng-model="layerData.opacity" ng-change="changeOpacity()"/>'
+                           + '<input type="range" min="0" max="1.0" step="0.01" ng-model="layerData.opacity" ng-change="changeOpacity()" style="width:100%"/>'
                            + '</div>';
                      return {
                         restrict : "E",
@@ -70,7 +70,7 @@ app
                               $scope.mapController.setLayerVisibility($scope.layerData.id, $scope.layerData.visibility);
                            };
                            //ensure polyfill for range slider is applied.
-                           $($element[0]).updatePolyfill();
+                           $($element).updatePolyfill();
                         },
                         transclude : true
                      };

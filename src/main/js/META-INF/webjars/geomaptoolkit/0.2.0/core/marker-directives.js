@@ -5,12 +5,7 @@ var app = angular.module('gawebtoolkit.core.marker-directives', [ 'gawebtoolkit.
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.directives.directive:gaMapMarker
- * @param {string} markerIcon
- * @param {Number} markerLong
- * @param {Number} markerLat
- * @param {string} markerId
- * @param {function} mapMarkerClicked
+ * @name gawebtoolkit.core.marker-directives:gaMapMarker
  * @description
  * A wrapper for a native map marker
  * @scope

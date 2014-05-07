@@ -7,21 +7,19 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
  * @name gawebtoolkit.core.map-directives:gaMap
  * @description
  * ## Overview ##
- * gaMapConfig Is a directive to fetch config from a url or method and store it on an isolated scope
+ * gaMap directive is used to create a map.
+ * @param {string|@} mapElementId - The id of the element where the map is to be rendered
+ * @param {string|@} datumProjection - A value representing the Datum Projection, eg 'EPSG:4326'
+ * @param {string|@} displayProjection - A value representing the Display Projection, eg 'EPSG:4326'
+ * @param {string|@=} centerPosition - A comma separated value representing lon/lat of the initial center position.
+ * @param {number|@=} zoomLevel - An initial zoom value for the map to start at.
+ * @param {geoJsonCoordinates|==} initialExtent - An initial extent is the form of a geoJson array of coordinates.
  *
- * @property {string} mapElementId - The id of the element where the map is to be rendered
- * @property {string} datumProjection - A value representing the Datum Projection, eg 'EPSG:4326'
- * @property {string} displayProjection - A value representing the Display Projection, eg 'EPSG:4326'
- *
- * @method addLayer
+ * @method addLayer - Adds a layer programmatically
  *
  * @scope
  * @restrict E
  * @example
- <ga-map-config ga-config-path="some/where/config"
- static-config="true"
- ga-config-method="myMethodThatReturnsConfigObject">
- </ga-map-config>
  */
 app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService', '$q', function($timeout, $compile, GAMapService, GALayerService, $q) {
    'use strict';
@@ -36,6 +34,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
          initialExtent : '='
       },
       controller : function($scope) {
+         $('#' + $scope.mapElementId).empty();
          var asyncLayersDeferred;
          $scope.waitingForNumberOfLayers = 0;
          var waiting = false;
@@ -48,11 +47,26 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                waiting = true;
             }
          });
+
          var self = this;
          /**
+          * @ngdoc method
+          * @name gawebtoolkit.core.map-directives:gaMap#addLayer
+          * @description
           * Adds a layer to the underlying mapInstance calling the appropriate implementation specific service.
           * @param {*} layer - An implementation object for a layer, eg an olv2 layer object
+          * @methodOf gawebtoolkit.core.map-directives:gaMap
           * @return {Layer} - layer object representing implementation.
+          * @example
+          * <code><pre>
+          *     var args {
+          * 	layerName: 'foo',
+          * 	layerUrl: 'http://wmsserver/wmsaddress',
+          *		layers: 'comma, separated, list of, layers',
+          *		layerType: 'WMS'
+          * }
+          * var layer = $scope.mapController.createLayer(args);
+          * var dto = $scope.mapController.addLayer(layer);</pre></code>
           * */
          self.addLayer = function(layer) {
             //If the data bound to layers changes and layers are re-generated
@@ -66,92 +80,147 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             return layerDto;
          };
          /**
+          * @ngdoc method
+          * @name gawebtoolkit.core.map-directives:gaMap#zoomToMaxExtent
+          * @description
           * Zooms to the maximum extent of the map
+          * @methodOf gawebtoolkit.core.map-directives:gaMap
+          * @example
+          * <code><pre>$scope.mapController.zoomToMaxExtent();</pre></code>
           * */
          self.zoomToMaxExtent = function() {
             GAMapService.zoomToMaxExtent($scope.mapInstance);
          };
 
+         /**
+          * @ngdoc method
+          * @name gawebtoolkit.core.map-directives:gaMap#currentZoomLevel
+          * @description
+          * Gets the current zoom level of the map
+          * @methodOf gawebtoolkit.core.map-directives:gaMap
+		  * @return {Number} - Zoom level.
+          * @example
+          * <code><pre>var zoomLevel = $scope.mapController.currentZoomLevel();</pre></code>
+          * */
          self.currentZoomLevel = function() {
             return GAMapService.currentZoomLevel($scope.mapInstance);
          };
          /**
+          * @ngdoc method
+          * @name gawebtoolkit.core.map-directives:gaMap#registerMapMouseMove
+          * @description
           * Registers a mouse movement event and calls provided callback.
           * Event details coming back will be implementation specific
-          * @callback callback
+          * @methodOf gawebtoolkit.core.map-directives:gaMap
+          * @param {function} callback - callback function that fires when the mouse move event occurs.
           * */
          self.registerMapMouseMove = function(callback) {
             GAMapService.registerMapMouseMove($scope.mapInstance, callback);
          };
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#registerMapMouseMoveEnd
+		  * @description
           * Registers an event callback with mapInstance when the mouse stops moving over the map
-          *
-          * @callback callback
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
+		  * @param {function} callback - callback function that fires when the mouse move end event occurs.
           * */
          self.registerMapMouseMoveEnd = function(callback) {
             GAMapService.registerMapMouseMoveEnd($scope.mapInstance, callback);
          };
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#registerMapClick
+		  * @description
           * Registers an event that will fire when the rendered map is clicked.
           * Event details coming back will be implementation specific
-          * @callback callback
+          * @methodOf gawebtoolkit.core.map-directives:gaMap
+		  * @param {function} callback - callback function that fires when the map is clicked.
           * */
          self.registerMapClick = function(callback) {
             GAMapService.registerMapClick($scope.mapInstance, callback);
          };
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#unRegisterMapClick
+		  * @description
           * Unregisters a map click event from the map instance.
-          * @callback callback
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
+		  * @param {function} callback - callback function that was originally registered.
           * */
          self.unRegisterMapClick = function(callback) {
             GAMapService.unRegisterMapClick($scope.mapInstance, callback);
          };
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#addControl
+		  * @description
           * Creates and adds a control to the map instance
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
           * @param {string} controlName - the name of the type of control to be created
           * @param {Object} controlOptions - an objet with implementation specific controlOptions
-          * @param {String} elementId - a DOM element to add the control to.
-          * @param {string} controlId - An id to help interact with the control when using 'ById' methods
+          * @param {string=} elementId - a DOM element to add the control to.
+          * @param {string=} controlId - An id to help interact with the control when using 'ById' methods
           * */
          self.addControl = function(controlName, controlOptions, elementId, controlId) {
             GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId);
          };
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#getLonLatFromPixel
+		  * @description
           * Gets a latlon object from implementation service
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
           * @param {Number} x - number of pixels from the left of the div containing the map
           * @param {Number} y - number of pixels from the top of the div containing the map
-          * @returns {LonLat} An object containing Latitude and Longitude in the projection of the map
+          * @return {LonLat} An object containing Latitude and Longitude in the projection of the map
           * @example
-          * mapController.getLonLatFromPixel(200,500)
-          * // returns { lat: -30.967, lon: 108.552},
+          * <code><pre>var lonLat = mapController.getLonLatFromPixel(200,500)
+          * // eg, lonLat equals lat: -30.967, lon: 108.552</pre></code>
           * */
          self.getLonLatFromPixel = function(x, y) {
             return GAMapService.getLonLatFromPixel($scope.mapInstance, x, y);
          };
+
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#getPixelFromLonLat
+		  * @description
           * Gets a latlon object from implementation service
-          * @param {Number} lon -
-          * @param {Number} lat -
-          * @returns {LonLat} An object containing Latitude and Longitude in the projection of the map
-          * @example
-          * mapController.getLonLatFromPixel(200,500)
-          * // returns { lat: -30.967, lon: 108.552},
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
+          * @param {Number} lon - The latitude of the location to transform
+          * @param {Number} lat - The longitude of the location to transform
+          * @return {Point} - An object containing Latitude and Longitude in the projection of the map
+          * @example <code><pre>var point = mapController.getPixelFromLonLat(-20,-100);
+		  * // eg, point equals x: 25, y: 63</pre></code>
           * */
          self.getPixelFromLonLat = function(lon, lat) {
             return GAMapService.getPixelFromLonLat($scope.mapInstance, lon, lat);
          };
+
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#getPointFromEvent
+		  * @description
           * Extracts a point from an event coming from implementation service layer.
-          *
-          * @param {Object} e - number of pixels from the left of the div containing the map
-          * @returns {Point}
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
+          * @param {Object} event - An event from implementation, eg OpenLayers,
+		  * worked out from number of pixels from the left of the div containing the map
+          * @return {Point} - A point object extracted from the event.
           * */
-         self.getPointFromEvent = function(e) {
-            return GAMapService.getPointFromEvent(e);
+         self.getPointFromEvent = function(event) {
+            return GAMapService.getPointFromEvent(event);
          };
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#getLayers
+		  * @description
           * Gets all the layers currently associated with the map instance
-          * @returns {Layer[]}
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
+          * @return {Layer[]} - An array of layers currently on the map
+		  * @example
+		  * <code><pre>var layers = $scope.mapController.getLayers();
+		  * $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
           * */
          self.getLayers = function() {
             return GAMapService.getLayers($scope.mapInstance);
@@ -162,9 +231,15 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
          };
 
          /**
+		  * @ngdoc method
+		  * @name gawebtoolkit.core.map-directives:gaMap#zoomToLayer
+		  * @description
           * If possible, performs an action to zoom in on the extent of a layer associated with Id
-          *
+		  * @methodOf gawebtoolkit.core.map-directives:gaMap
           * @param {string} layerId - Id of the layer to zoom too.
+		  * @example
+		  * <code><pre>var layers = $scope.mapController.getLayers();
+		  * $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
           * */
          self.zoomToLayer = function(layerId) {
             GAMapService.zoomToLayer($scope.mapInstance, layerId);
@@ -190,7 +265,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
           * Changes the associated layerId visibility
           *
           * @param layerId {string} - An id of the layer
-          * @param visibility {Boolean} - Boolean indicating if the layer should be hidden(false) or shown(true)
+          * @param visibility {boolean} - Boolean indicating if the layer should be hidden(false) or shown(true)
           * */
          self.setLayerVisibility = function(layerId, visibility) {
             GAMapService.setLayerVisibility($scope.mapInstance, layerId, visibility);
@@ -210,7 +285,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
           * Implementation to extend bounding box to encompass all LonLat's provided.
           *
           * @param geoJsonCoordinates {geoJsonCoordinates}
-          * @param projection {String}
+          * @param projection {string}
           * @return {Object}
           * */
          self.createBounds = function(geoJsonCoordinates, projection) {
@@ -477,6 +552,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
          self.raiseLayerDrawOrder = function(layerId, delta) {
             GALayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta);
          };
+		  var layersReadyDeferred = $q.defer();
+		  self.layersReady = function () {
+		  	return layersReadyDeferred.promise;
+		  };
 
          $scope.gaMap = self;
 
@@ -522,24 +601,27 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
          $scope.$broadcast('mapControllerReady', self);
 
          $scope.$on('$destroy', function() {
-            $('#' + $scope.mapElementId).empty();
+			 //clean up resources
          });
 
          $timeout(function() {
             asyncLayersDeferred = $q.defer();
             asyncLayersDeferred.promise.then(function() {
+				var initialLayers = self.getLayers();
                /**
                 * Sends an instance of all map layers when they are all loaded to parent listeners
                 * @eventType emit
                 * @event layersReady
                 * */
-               $scope.$emit('layersReady', self.getLayers());
+               $scope.$emit('layersReady', initialLayers);
                /**
                 * Sends an instance of all map layers when they are all loaded to child listeners
                 * @eventType broadcast
                 * @event layersReady
                 * */
-               $scope.$broadcast('layersReady', self.getLayers());
+               $scope.$broadcast('layersReady', initialLayers);
+				layersReadyDeferred.resolve(initialLayers);
+
                $scope.layersReady = true;
             });
             if ($scope.waitingForNumberOfLayers === 0) {

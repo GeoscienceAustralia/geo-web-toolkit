@@ -5,22 +5,15 @@ var app = angular.module('gawebtoolkit.core.layer-directives', [ 'gawebtoolkit.c
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.directives.directive:gaMapLayer
- * @param {string} layerAttribution
- * @param {string} layerName
- * @param {string} layerUrl
- * @param {string} layers
- * @param {string} layerType
- * @param {string} wrapDateLine
- * @param {string} visibility
- * @param {string} controllerEmitEventName
+ * @name gawebtoolkit.core.layer-directives:gaMapLayer
  * @description
  *
  * @scope
  * @restrict E
  * @example
  */
-app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', function($timeout, $compile, GALayerService) {
+app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$http','$log',
+	function($timeout, $compile, GALayerService,$http, $log) {
    'use strict';
    return {
       restrict : "E",
@@ -147,6 +140,9 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', function
                initialiseLayer();
             }
          });
+         if (attrs.layerType.indexOf('Google') === 0) {
+            initialiseLayer();
+         }
       }
    };
 } ]);

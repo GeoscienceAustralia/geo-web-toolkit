@@ -5,7 +5,7 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.directives.directive:gaFeatureLayer
+ * @name gawebtoolkit.core.feature-directives:gaFeatureLayer
  * @description
  *
  * @requires gaMap
@@ -150,9 +150,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 } ]);
 /**
  * @ngdoc directive
- * @name gawebtoolkit.directives.directive:gaFeature
- * @param {Object} geoJsonFeature
- * @param {string} visibility
+ * @name gawebtoolkit.core.feature-directives:gaFeature
  *
  * @description
  * Wrapper for a native wfs layer

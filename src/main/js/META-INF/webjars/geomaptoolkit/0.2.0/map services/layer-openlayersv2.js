@@ -2,6 +2,7 @@ var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
+var google = google || {};
 var Layer = {
    fromOlv2 : function(olv2Layer) {
       "use strict";
@@ -28,6 +29,8 @@ var Layer = {
          layerType = 'Markers';
       } else if (olv2Layer.id.indexOf('Vector') !== -1) {
          layerType = 'Vector';
+      } else if (olv2Layer.id.indexOf('Google') !== -1) {
+         layerType = 'Google';
       } else {
          console.log('layer type is of an unsupported type - "' + olv2Layer.id
                + '"');
@@ -60,6 +63,12 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
             break;
          case 'Vector':
             layer = service.createFeatureLayer(args);
+            break;
+         case 'GoogleStreet':
+         case 'GoogleHybrid':
+         case 'GoogleSatellite':
+         case 'GoogleTerrain':
+            layer = service.createGoogleMapsLayer(args);
             break;
          default:
             throw new Error("Invalid layerType used to create layer of name " + args.layerName
@@ -113,6 +122,38 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
          }
 
          return layer;
+      },
+      createGoogleMapsLayer : function(args) {
+         var googleLayerType;
+         switch (args.layerType) {
+         case 'GoogleStreet':
+            googleLayerType = google.maps.MapTypeId.STREET;
+            break;
+         case 'GoogleHybrid':
+            googleLayerType = google.maps.MapTypeId.HYBRID;
+            break;
+         case 'GoogleSatellite':
+            googleLayerType = google.maps.MapTypeId.SATELLITE;
+            break;
+         case 'GoogleTerrain':
+            googleLayerType = google.maps.MapTypeId.TERRAIN;
+            break;
+         }
+
+		  var options = {
+			  wrapDateLine : args.wrapDateLine,
+				  transitionEffect : args.transitionEffect,
+				  visibility : args.visibility === true || args.visibility === 'true',
+				  isBaseLayer : args.isBaseLayer === true || args.isBaseLayer === 'true',
+				  tileSize : args.tileSize(args.tileType),
+				  sphericalMercator : args.sphericalMercator,
+				  centerPosition : args.centerPosition,
+				  attribution : args.layerAttribution,
+			  	  numZoomLevels: 20,
+			  	  type: googleLayerType,
+			  	  animationEnabled : true
+		  };
+         return new OpenLayers.Layer.Google(args.layerName, options);
       },
       clearFeatureLayer : function(mapInstance, layerId) {
 
@@ -246,6 +287,8 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
             layerType = 'Markers';
          } else if (layer.id.indexOf('Vector') !== -1) {
             layerType = 'Vector';
+         } else if (layer.id.indexOf('Google')) {
+            layerType = 'Google';
          } else {
             $log('layer type is of an unsupported type - "' + layer.id
                   + '"');
@@ -272,7 +315,7 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
          var layers = mapInstance.getLayersByName(layerName);
 
          if (layers.length > 0) {
-			mapInstance.removeLayer(layers[0]);
+            mapInstance.removeLayer(layers[0]);
          }
       },
       //Should this be labeled as an internal method?
@@ -280,7 +323,7 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
          // Destroys all layers with the specified layer name
          var layers = mapInstance.getLayersByName(layerName);
          for ( var i = 0; i < layers.length; i++) {
-			mapInstance.removeLayer(layers[i]);
+            mapInstance.removeLayer(layers[i]);
          }
       },
       //Deprecated. Anything using this method needs to change.
@@ -290,16 +333,16 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
          mapInstance.removeLayer(layerInstance);
       },
       removeLayerById : function(mapInstance, layerId) {
-         var layer = mapInstance.getLayersBy('id',layerId)[0];
+         var layer = mapInstance.getLayersBy('id', layerId)[0];
          mapInstance.removeLayer(layer);
       },
       removeFeatureFromLayer : function(mapInstance, layerId, featureId) {
-		var layer = mapInstance.getLayersBy('id',layerId)[0];
+         var layer = mapInstance.getLayersBy('id', layerId)[0];
          var feature = layer.getFeatureById(featureId);
          layer.removeFeatures(feature);
       },
       registerFeatureSelected : function(mapInstance, layerId, callback, element) {
-         var layer = mapInstance.getLayersBy('id',layerId)[0];
+         var layer = mapInstance.getLayersBy('id', layerId)[0];
          var layerType = Layer.getLayerType(layer);
          var layerProtocol;
          if (layerType === 'WMS') {
@@ -336,7 +379,9 @@ app.service('olv2LayerService', [ '$log', '$q', function($log, $q) {
          if (layers.length > 0) {
             // Returns count of markers for the first marker layer
 
-            count = layers[0].markers == null ? 0 : layers[0].markers.length;
+            count = layers[0].markers == null
+                  ? 0
+                  : layers[0].markers.length;
          }
          return count;
       },
