@@ -5,7 +5,7 @@ module.exports = function(config) {
    config.set({
 
       // base path that will be used to resolve all patterns (eg. files, exclude)
-      basePath : '../../../../../',
+      basePath : '../../../../',
 
       // frameworks to use
       // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -16,51 +16,52 @@ module.exports = function(config) {
       //      },
 
       // list of files / patterns to load in the browser
-      files : [ 'http://localhost:8080/gamaps/webjars/jquery/1.10.1/jquery.min.js', 'http://localhost:8080/gamaps/webjars/modernizr/2.6.2/modernizr.js',
-            'http://localhost:8080/gamaps/webjars/webshim/1.12.1/minified/polyfiller.js',
-            'http://localhost:8080/gamaps/webjars/webshim/1.12.1/minified/shims/range-ui.js',
-            'http://localhost:8080/gamaps/webjars/angularjs/1.2.8/angular.js', 'http://localhost:8080/gamaps/webjars/angularjs/1.2.8/angular-mocks.js',
-            'http://localhost:8080/gamaps/webjars/bootstrap/3.0.3/js/bootstrap.min.js',
-            'http://localhost:8080/gamaps/webjars/jquery-ui/1.10.2/ui/jquery-ui.js',
-            'http://localhost:8080/gamaps/webjars/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
-            'http://localhost:8080/gamaps/webjars/angular-ui-utils/0.1.0/ui-utils.js', 'http://localhost:8080/gamaps/webjars/angularjs/1.2.8/angular-route.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/map services/layer-openlayersv2.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/map services/map-openlayersv2.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/map services/mapservices.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/control-directives.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/feature-directives.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/layer-directives.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/layer-services.js', 'src/main/webapp/resources/assets/js/gawebtoolkit/core/map-config.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/map-directives.js', 'src/main/webapp/resources/assets/js/gawebtoolkit/core/map-services.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/marker-directives.js', 'src/main/webapp/resources/assets/js/gawebtoolkit/core/core.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/core/services.js', 'src/main/webapp/resources/assets/js/gawebtoolkit/ui/ui-directives.js',
-            'src/main/webapp/resources/assets/js/gawebtoolkit/config/directives.js', 'http://localhost:8080/gamaps/webjars/openlayers/2.13.1/OpenLayers.js',
-            'src/test/webapp/resources/js/*.js', 'src/test/webapp/resources/gawebtoolkit/*.js' ],
+      files : [ 'http://localhost:8080/webjars/jquery/1.10.1/jquery.min.js',
+            'http://localhost:8080/webjars/modernizr/2.6.2/modernizr.js',
+            'http://localhost:8080/webjars/webshim/1.12.1/minified/polyfiller.js',
+            'http://localhost:8080/webjars/webshim/1.12.1/minified/shims/range-ui.js',
+            'http://localhost:8080/webjars/angularjs/1.2.8/angular.js',
+            'http://localhost:8080/webjars/angularjs/1.2.8/angular-mocks.js',
+            'http://localhost:8080/webjars/bootstrap/3.0.3/js/bootstrap.min.js',
+            'http://localhost:8080/webjars/jquery-ui/1.10.2/ui/jquery-ui.js',
+            'http://localhost:8080/webjars/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
+            'http://localhost:8080/webjars/angular-ui-utils/0.1.0/ui-utils.js',
+            'http://localhost:8080/webjars/angularjs/1.2.8/angular-route.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/layer-openlayersv2.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/map-openlayersv2.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/mapservices.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/control-directives.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/feature-directives.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/layer-directives.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/layer-services.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/map-config.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/map-directives.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/map-services.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/marker-directives.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/core.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/services.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/ui/ui-directives.js',
+            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/config/directives.js',
+            'http://localhost:8080/webjars/openlayers/2.13.1/OpenLayers.js',
+            'src/test/js/**/*.js'],
 
       // list of files to exclude
-      exclude : [ 'src/test/webapp/resources/js/karma.*.js' ],
+      exclude : [ 'src/test/js/config/*.js' ],
 
       // preprocess matching files before serving them to the browser
       // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
       preprocessors : {
-         'src/main/webapp/resources/assets/js/gawebtoolkit/core/*.js' : [ 'coverage' ],
-         'src/main/webapp/resources/assets/js/gawebtoolkit/config/*.js' : [ 'coverage' ],
-         'src/main/webapp/resources/assets/js/gawebtoolkit/map services/*.js' : [ 'coverage' ],
-         'src/main/webapp/resources/assets/js/gawebtoolkit/ui/*.js' : [ 'coverage' ]
+         'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/*.js' : [ 'coverage' ],
+         'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/config/*.js' : [ 'coverage' ],
+         'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/*.js' : [ 'coverage' ],
+         'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/ui/*.js' : [ 'coverage' ]
       },
       coverageReporter : {
          type : 'html',
-         dir : 'coverage/'
+         dir : 'target/coverage/'
       },
 
-      // test results reporter to use
-      // possible values: 'dots', 'progress'
-      // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-      reporters : [ 'progress', 'html' ],
-
-      htmlReporter : {
-         outputDir : 'target/karma-reports'
-      },
+      reporters : [ 'progress' ],
 
       // web server port
       port : 9876,
@@ -83,7 +84,12 @@ module.exports = function(config) {
       // if true, Karma captures browsers, runs the tests and exits
       singleRun : false,
 
-      plugins : [ 'karma-jasmine', 'karma-phantomjs-launcher', 'karma-chrome-launcher', 'karma-firefox-launcher', 'karma-ie-launcher', 'karma-html-reporter',
+      plugins : [ 'karma-jasmine',
+            'karma-phantomjs-launcher',
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-ie-launcher',
+            'karma-html-reporter',
             'karma-coverage' ]
 
    });
