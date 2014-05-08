@@ -1,7 +1,6 @@
-target
-node
-node_modules
+/target/
+/node/
+/node_modules/
+/config/
 
-config
-!src/main/js/config
 
