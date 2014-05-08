@@ -16,8 +16,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <js.src.versionToken>GEO-WEB-TOOLKIT-VERSION</js.src.versionToken>
-        <js.src.dir>src/main/js/${project.artifactId}/${js.src.versionToken}</js.src.dir>
+        <js.src.dir>src/main/js</js.src.dir>
+        <js.test.src.dir>src/test/js</js.test.src.dir>
         <js.dest.dir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</js.dest.dir>
     </properties>
 
@@ -67,11 +67,6 @@
 			<groupId>org.webjars</groupId>
 			<artifactId>angular-ui-utils</artifactId>
 			<version>0.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>au.gov.ga</groupId>
-			<artifactId>ga-web-resource-assets</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -153,7 +148,7 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>8.1.9.v20130131</version>
                 <configuration>
-                    <webAppSourceDirectory>${basedir}/src/main/js</webAppSourceDirectory>
+                    <webAppSourceDirectory>${basedir}/${js.src.dir}</webAppSourceDirectory>
                 </configuration>
             </plugin>
 			<plugin>
@@ -191,7 +186,7 @@
 							<goal>karma</goal>
 						</goals>
 						<configuration>
-							<karmaConfPath>src/test/js/config/karma.ci.conf.js</karmaConfPath>
+							<karmaConfPath>${js.test.src.dir}/karma.ci.conf.js</karmaConfPath>
 						</configuration>
 					</execution>
 				</executions>

@@ -5,7 +5,7 @@ module.exports = function(config) {
    config.set({
 
       // base path that will be used to resolve all patterns (eg. files, exclude)
-      basePath : '../../../../',
+      basePath : '../../../',
 
       // frameworks to use
       // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -27,26 +27,26 @@ module.exports = function(config) {
             'http://localhost:8080/webjars/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
             'http://localhost:8080/webjars/angular-ui-utils/0.1.0/ui-utils.js',
             'http://localhost:8080/webjars/angularjs/1.2.8/angular-route.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/layer-openlayersv2.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/map-openlayersv2.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/map services/mapservices.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/control-directives.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/feature-directives.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/layer-directives.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/layer-services.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/map-config.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/map-directives.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/map-services.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/marker-directives.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/core.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/core/services.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/ui/ui-directives.js',
-            'src/main/js/geo-web-toolkit/GEO-WEB-TOOLKIT-VERSION/config/directives.js',
+            'src/main/js/map services/layer-openlayersv2.js',
+            'src/main/js/map services/map-openlayersv2.js',
+            'src/main/js/map services/mapservices.js',
+            'src/main/js/core/control-directives.js',
+            'src/main/js/core/feature-directives.js',
+            'src/main/js/core/layer-directives.js',
+            'src/main/js/core/layer-services.js',
+            'src/main/js/core/map-config.js',
+            'src/main/js/core/map-directives.js',
+            'src/main/js/core/map-services.js',
+            'src/main/js/core/marker-directives.js',
+            'src/main/js/core/core.js',
+            'src/main/js/core/services.js',
+            'src/main/js/ui/ui-directives.js',
+            'src/main/js/config/directives.js',
             'http://localhost:8080/webjars/openlayers/2.13.1/OpenLayers.js',
-            'src/test/js/**/*.js'],
+            'src/test/js/unit/**/*.js'],
 
       // list of files to exclude
-      exclude : [ 'src/test/js/config/*.js' ],
+      exclude : [ 'src/test/js/karma*.js' ],
 
       // preprocess matching files before serving them to the browser
       // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
