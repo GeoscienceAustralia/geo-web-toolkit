@@ -1,5 +1,7 @@
 target
 node
 node_modules
+
 config
+!src/main/js/config
 
