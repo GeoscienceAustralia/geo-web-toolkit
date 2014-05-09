@@ -16,7 +16,8 @@ module.exports = function(config) {
       //      },
 
       // list of files / patterns to load in the browser
-      files : [ 'http://localhost:8080/webjars/jquery/1.10.1/jquery.min.js',
+      files : [
+            'http://localhost:8080/webjars/jquery/1.10.1/jquery.min.js',
             'http://localhost:8080/webjars/modernizr/2.6.2/modernizr.js',
             'http://localhost:8080/webjars/webshim/1.12.1/minified/polyfiller.js',
             'http://localhost:8080/webjars/webshim/1.12.1/minified/shims/range-ui.js',

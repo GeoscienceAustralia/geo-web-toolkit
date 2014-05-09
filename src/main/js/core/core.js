@@ -32,6 +32,16 @@ var jQuery = jQuery || {};
  *  @property {string} units - The unit type of the distance number, eg 'km'
  * */
 
-angular.module('gawebtoolkit.core', [ 'gawebtoolkit.mapservices', 'gawebtoolkit.core.map-directives', 'gawebtoolkit.core.map-services',
-      'gawebtoolkit.core.layer-directives', 'gawebtoolkit.core.layer-services', 'gawebtoolkit.core.control-directives', 'gawebtoolkit.core.feature-directives',
-      'gawebtoolkit.core.marker-directives', 'gawebtoolkit.core.map-config', 'gawebtoolkit.utils' ]);
+angular.module('gawebtoolkit.core',
+    [
+        'gawebtoolkit.mapservices',
+        'gawebtoolkit.core.map-directives',
+        'gawebtoolkit.core.map-services',
+        'gawebtoolkit.core.layer-directives',
+        'gawebtoolkit.core.layer-services',
+        'gawebtoolkit.core.control-directives',
+        'gawebtoolkit.core.feature-directives',
+        'gawebtoolkit.core.marker-directives',
+        'gawebtoolkit.core.map-config',
+        'gawebtoolkit.utils'
+    ]);

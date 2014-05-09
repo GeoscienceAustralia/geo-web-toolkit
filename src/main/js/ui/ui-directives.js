@@ -27,12 +27,16 @@ app
             'gaLayerControl',
             [
                   'GAWTUtils',
-                  function(GAWTUtils) {
+				  '$timeout',
+                  function(GAWTUtils,$timeout) {
                      'use strict';
+					  //Use of modernizr and the 'make visible' scope object is to make sure the range polyfill
+					  //for browsers that don't support the input[type="range"] control get initialised correctly
+					  //This will not effect browsers that support range input.
                      var templateCache = '<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"/>' + '<label for="{{elementId}}" ng-bind="layerData.name"></label>'
-
-                           + '<div ng-show="layerData.visibility">'
-                           + '<input type="range" min="0" max="1.0" step="0.01" ng-model="layerData.opacity" ng-change="changeOpacity()" style="width:100%"/>'
+                           + '<span ng-transclude></span>'
+                           + '<div ng-show="layerData.visibility || makeVisible">'
+                           + '<input type="range" min="0" max="1.0" step="0.01" ng-model="layerData.opacity" ng-change="changeOpacity()"/>'
                            + '</div>';
                      return {
                         restrict : "E",
@@ -48,6 +52,9 @@ app
                            $scope.elementId = GAWTUtils.generateUuid();
                         },
                         link : function($scope, $element, $attrs) {
+							if (!Modernizr.inputtypes.range) {
+								$scope.makeVisible = true;
+							}
                            $scope.changeOpacity = function() {
                               var opacityValue = $scope.layerData.opacity;
                               $scope.mapController.setOpacity($scope.layerData.id, opacityValue);
@@ -69,8 +76,17 @@ app
                               }
                               $scope.mapController.setLayerVisibility($scope.layerData.id, $scope.layerData.visibility);
                            };
-                           //ensure polyfill for range slider is applied.
-                           $($element).updatePolyfill();
+							//TODO come up with a better solution for >=IE9.
+							//HACK problem with initializing control hidden, width is not computed properly
+							//This will make the range bars all appear briefly and then reset back to correct value
+							if (!Modernizr.inputtypes.range) {
+								console.log('test modz');
+								$timeout(function () {
+										$scope.makeVisible = $scope.layerData.visibility;
+								},1500);
+							}
+                           //initial application of polyfill.
+							$($element[0]).updatePolyfill();
                         },
                         transclude : true
                      };
@@ -95,8 +111,11 @@ app.directive('gaLayerOpacitySlider', [ function() {
             var opacityValue = $scope.layerOpacity;
             $scope.mapController.setOpacity($scope.layerId, opacityValue);
          };
+		  $scope.$watch('layerOpacity', function () {
+			  $($element[0]).updatePolyfill();
+		  });
          //ensure polyfill for range slider is applied.
-         $($element[0]).updatePolyfill();
+
       },
       transclude : true
    };
@@ -898,6 +917,7 @@ app.directive('fixIeSelect', function() {
             $timeout(function() {
                $element.css('width', 'auto');
             });
+			 $option = null;
             //$element.css('width','auto');
          });
       } ]
