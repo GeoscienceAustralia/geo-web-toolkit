@@ -364,117 +364,128 @@ app.directive('gaSearchWfsLayer', [function () {
 /**
  *
  * */
-app.directive('gaSearchWfs', ['$q', function ($q) {
+app.directive('gaSearchWfs', ['$q','$interpolate', function ($q,$interpolate) {
 	"use strict";
+	//Using 'result.id' as the result features coming back should have a server id.
+	//Specific property names are dynamic and cannot be relied on.
 	return {
 		restrict: "EA",
 		template: '<input type="text" class="search" ng-model="query" ' +
-			'typeahead="result.properties.NAME for result in getSearchResults($viewValue)" ' +
-			' typeahead-template-url="{{resultTempalteUrl}}" ' +
+			'typeahead="result as result.properties.{{primaryWfsProperty}} for result in getSearchResults($viewValue)" ' +
+			' typeahead-template-url="{{resultTemplateUrl}}" ' +
 			'typeahead-on-select="onSelected($item, $model, $label)" ' +
 			' typeahead-wait-ms="500" typeahead-editable="true"/>' +
 			'<input type="button" class="searchButton" ng-click="searchButtonClicked()" value="search"/>',
 		scope: {
-			url: '@',
-			featureType: '@',
-			featurePrefix: '@',
-			version: '@',
-			geometryName: '@',
-			datumProjection: '@',
-			attribute: '@',
-			resultTempalteUrl: '@',
+			resultTemplateUrl: '@',
 			mapController: '=',
 			searchEndPoints: '=',
 			onResults: '&',
 			onResultsSelected: '&',
-			onPerformSearch: '&'
+			onPerformSearch: '&',
+			primaryWfsProperty: '@'
 		},
-		link: function ($scope, $element, $attrs) {
-			var clients = [];
-			var attribute;
+		compile: function compile() {
+			return {
+				post: function postLink($scope, $element,$attrs) {
+					var clients = [];
+					var attribute;
 
-			$scope.$watch('searchEndPoints', function (newVal) {
-				if (newVal) {
-					clients = [];
-					for (var i = 0; i < $scope.searchEndPoints.length; i++) {
-						var wfsClient = $scope.mapController.createWfsClient($scope.searchEndPoints[i].url, $scope.searchEndPoints[i].featureType,
-							$scope.searchEndPoints[i].featurePrefix, $scope.searchEndPoints[i].version, $scope.searchEndPoints[i].geometryName,
-							$scope.searchEndPoints[i].datumProjection, $scope.searchEndPoints[i].isLonLatOrderValid);
+					$scope.$watch('searchEndPoints', function (newVal) {
+						if (newVal) {
+							clients = [];
+							for (var i = 0; i < $scope.searchEndPoints.length; i++) {
+								var wfsClient = $scope.mapController.createWfsClient($scope.searchEndPoints[i].url, $scope.searchEndPoints[i].featureType,
+									$scope.searchEndPoints[i].featurePrefix, $scope.searchEndPoints[i].version, $scope.searchEndPoints[i].geometryName,
+									$scope.searchEndPoints[i].datumProjection, $scope.searchEndPoints[i].isLonLatOrderValid);
 
-						var clientDto = $scope.mapController.addWfsClient(wfsClient);
-						clientDto.endPointId = $scope.searchEndPoints[i].id;
-						clients.push(clientDto);
-						attribute = $scope.searchEndPoints[i].featureAttributes;
+								var clientDto = $scope.mapController.addWfsClient(wfsClient);
+								clientDto.endPointId = $scope.searchEndPoints[i].id;
+								clients.push(clientDto);
+								attribute = $scope.searchEndPoints[i].featureAttributes;
+							}
+						}
+					});
+
+					if ($attrs.searchEndPoints == null) {
+						var wfsClient = $scope.mapController.createWfsClient($scope.url, $scope.featureType, $scope.featurePrefix, $scope.version,
+							$scope.geometryName, $scope.datumProjection);
+
+						clients.push($scope.mapController.addWfsClient(wfsClient));
 					}
-				}
-			});
 
-			if ($attrs.searchEndPoints == null) {
-				var wfsClient = $scope.mapController.createWfsClient($scope.url, $scope.featureType, $scope.featurePrefix, $scope.version,
-					$scope.geometryName, $scope.datumProjection);
+					var searchFunction = function (query) {
+						$scope.searchResults = [];
+						var deferred = $q.defer();
+						var count = 0;
+						var allResults = [];
 
-				clients.push($scope.mapController.addWfsClient(wfsClient));
-			}
+						//As we are using WFS for search, we iterate over a list of endpoints making the same
+						//query and once all endpoints return, we provide results
+						for (var i = 0; i < clients.length; i++) {
+							var currentClient = clients[i];
+							$scope.mapController.searchWfs(clients[i].clientId, query, attribute).then(function (data) {
 
-			var searchFunction = function (query) {
-				$scope.searchResults = [];
-				var deferred = $q.defer();
-				var count = 0;
-				var allResults = [];
+								if (data == null) {
+									//error
+									deferred.resolve(null);
+									return;
+								}
+								count++;
 
-				//As we are using WFS for search, we iterate over a list of endpoints making the same
-				//query and once all endpoints return, we provide results
-				for (var i = 0; i < clients.length; i++) {
-					var currentClient = clients[i];
-					$scope.mapController.searchWfs(clients[i].clientId, query, attribute).then(function (data) {
+								for (var j = 0; j < data.features.length; j++) {
+									data.features[j].endPointId = currentClient.endPointId;
+									allResults.push(data.features[j]);
+								}
 
-						if (data == null) {
-							//error
-							deferred.resolve(null);
-							return;
+								if (count === clients.length) {
+									deferred.resolve(allResults);
+								}
+							});
 						}
-						count++;
+						return deferred.promise;
+					};
 
-						for (var j = 0; j < data.features.length; j++) {
-							data.features[j].endPointId = currentClient.endPointId;
-							allResults.push(data.features[j]);
+					$scope.getSearchResults = function (query) {
+						if (query != null && query.length >= 3) {
+							return searchFunction(query).then(function (data) {
+								$scope.onResults({
+									data: data
+								});
+								return data;
+							});
+						} else {
+							return [];
 						}
+					};
 
-						if (count === clients.length) {
-							deferred.resolve(allResults);
-						}
-					});
-				}
-				return deferred.promise;
-			};
-
-			$scope.getSearchResults = function (query) {
-				if (query != null && query.length >= 3) {
-					return searchFunction(query).then(function (data) {
-						$scope.onResults({
-							data: data
+					$scope.onSelected = function ($item) {
+						$scope.onResultsSelected({
+							item: $item
 						});
-						return data;
-					});
-				} else {
-					return [];
-				}
-			};
+					};
 
-			$scope.onSelected = function ($item) {
-				$scope.onResultsSelected({
-					item: $item
-				});
-			};
-
-			$scope.searchButtonClicked = function () {
-				if ($scope.query != null) {
-					return searchFunction($scope.query).then(function (data) {
-						$scope.onPerformSearch({
-							data: data
-						});
-						return data;
-					});
+					$scope.searchButtonClicked = function () {
+						if ($scope.query != null) {
+							return searchFunction($scope.query).then(function (data) {
+								$scope.onPerformSearch({
+									data: data
+								});
+								return data;
+							});
+						}
+					};
+				},
+				pre: function preLink(scope,element,attrs) {
+					//Work around the requirement to be able to specify w
+					var typeAheadExpression = element.find('[typeahead]')[0].attributes.typeahead.nodeValue;
+					if(typeAheadExpression.indexOf('{{') !== -1) {
+						var start = typeAheadExpression.indexOf('{{');
+						var end = typeAheadExpression.indexOf('}}') + 2;
+						var substring = typeAheadExpression.substr(start, end-start);
+						var val = scope.$eval($interpolate(substring));
+						typeAheadExpression.replace('{{' + substring + '}}',val);
+					}
 				}
 			};
 		}

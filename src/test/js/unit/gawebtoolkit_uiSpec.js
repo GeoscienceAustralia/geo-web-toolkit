@@ -50,11 +50,8 @@ describe('gawebtoolkit wfs search unit tests', function() {
       mapElement = angular.element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326"></ga-map>');
 
       element = angular
-            .element('<ga-search-wfs url="/gis/services/topography/Australian_Topography/MapServer/WFSServer?"' + 'feature-type="Populated_Places_6"'
-                  + 'feature-prefix="topography_Australian_Topography"'
-                  + 'version="1.1.0"'
-                  + 'geometry-name="Shape"'
-                  + 'datum-projection="EPSG:4326"'
+            .element('<ga-search-wfs' +
+                    'primary-wfs-property="Name" ' +
                   + 'map-controller="mapController"'
                   + 'search-end-points="searchConfig.endPoints"'
                   + 'on-results-selected="onSearchResultsSelected(item)"'
@@ -92,15 +89,21 @@ describe('gawebtoolkit wfs search unit tests', function() {
       
       $scope.$digest();
    }));
+    //TODO these properties were not being used by the directive as it was looking at a single array object of config
+    // Another control should be made that deals with just a single endpoint and looks that the properties below.
+//   it('Validate scope elements on the directive', function() {
+//      expect(element.isolateScope().url === "/gis/services/topography/Australian_Topography/MapServer/WFSServer?").toBe(true);
+//      expect(element.isolateScope().featureType === "Populated_Places_6").toBe(true);
+//      expect(element.isolateScope().featurePrefix === "topography_Australian_Topography").toBe(true);
+//      expect(element.isolateScope().version === "1.1.0").toBe(true);
+//      expect(element.isolateScope().geometryName === "Shape").toBe(true);
+//      expect(element.isolateScope().datumProjection === "EPSG:4326").toBe(true);
+//   });
 
-   it('Validate scope elements on the directive', function() {
-      expect(element.isolateScope().url === "/gis/services/topography/Australian_Topography/MapServer/WFSServer?").toBe(true);
-      expect(element.isolateScope().featureType === "Populated_Places_6").toBe(true);
-      expect(element.isolateScope().featurePrefix === "topography_Australian_Topography").toBe(true);
-      expect(element.isolateScope().version === "1.1.0").toBe(true);
-      expect(element.isolateScope().geometryName === "Shape").toBe(true);
-      expect(element.isolateScope().datumProjection === "EPSG:4326").toBe(true);
-   });
+//   it('Search should take a "primaryWfsProperty"', function () {
+//       expect(element.isolateScope().primaryWfsProperty === 'Name').toBe(true);
+//       //TODO test value is evalulated correctly.
+//   });
 
    it('Search end points array should have atleast 1 entry', function() {
       expect($scope.endPoints.length > 0).toBe(true);

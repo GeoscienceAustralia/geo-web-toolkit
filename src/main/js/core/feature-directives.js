@@ -130,7 +130,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 }
 
                 $scope.$on('$destroy', function () {
-                    mapController.removeLayerById($scope.layerDto.id);
+                    //mapController.removeLayerById($scope.layerDto.id);
                 });
 
                 attrs.$observe('wfsFilterValue', function (newVal) {
