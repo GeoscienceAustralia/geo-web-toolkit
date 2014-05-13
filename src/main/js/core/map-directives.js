@@ -162,7 +162,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param {string=} controlId - An id to help interact with the control when using 'ById' methods
              * */
             self.addControl = function (controlName, controlOptions, elementId, controlId) {
-                GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId);
+                return GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId);
             };
             /**
              * @ngdoc method

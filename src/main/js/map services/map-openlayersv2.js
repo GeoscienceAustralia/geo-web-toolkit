@@ -43,8 +43,7 @@ app.service('olv2MapService', [
     'olv2LayerService',
     'GAWTUtils',
     '$q',
-    '$log',
-    function (olv2LayerService, GAWTUtils, $q, $log) {
+    function (olv2LayerService, GAWTUtils, $q) {
         'use strict';
         //This service provides functionality to answer questions about OLV2 layers, provided all the state
         //This service contains no state, and a mapInstance must be provided.
@@ -190,6 +189,7 @@ app.service('olv2MapService', [
             },
             addControl: function (mapInstance, controlName, controlOptions, elementId, controlId) {
                 controlName = controlName.toLowerCase();
+				var resultControl = {};
                 var div;
                 if (elementId) {
                     div = $('#' + elementId)[0];
@@ -204,11 +204,13 @@ app.service('olv2MapService', [
                         permalink = new OpenLayers.Control.Permalink();
                     }
                     permalink.id = controlId || permalink.id;
+					resultControl.id = permalink.id;
                     mapInstance.addControl(permalink);
                 } else if (controlName === 'overviewmap') {
                     var overviewMap;
                     overviewMap = new OpenLayers.Control.OverviewMap(controlOptions);
                     overviewMap.id = controlId || overviewMap.id;
+					resultControl.id = overviewMap.id;
                     mapInstance.addControl(overviewMap);
                 } else if (controlName === 'scale') {
                     var scale;
@@ -220,6 +222,7 @@ app.service('olv2MapService', [
                         scale = new OpenLayers.Control.Scale();
                     }
                     scale.id = controlId || scale.id;
+					resultControl.id = scale.id;
                     mapInstance.addControl(scale);
                 } else if (controlName === 'scaleline') {
                     var scaleLine;
@@ -231,6 +234,7 @@ app.service('olv2MapService', [
                         scaleLine = new OpenLayers.Control.ScaleLine();
                     }
                     scaleLine.id = controlId || scaleLine.id;
+					resultControl.id = scaleLine.id;
                     mapInstance.addControl(scaleLine);
                 } else if (controlName === 'panzoombar') {
                     var panZoomBar;
@@ -242,6 +246,7 @@ app.service('olv2MapService', [
                         panZoomBar = new OpenLayers.Control.PanZoomBar();
                     }
                     panZoomBar.id = controlId || panZoomBar.id;
+					resultControl.id = panZoomBar.id;
                     mapInstance.addControl(panZoomBar);
                 } else if (controlName === 'mouseposition') {
                     if (controlOptions == null) {
@@ -251,20 +256,30 @@ app.service('olv2MapService', [
                     }
                     var mousePosition = new OpenLayers.Control.MousePosition(controlOptions);
                     mousePosition.id = controlId || mousePosition.id;
+					resultControl.id = mousePosition.id;
                     mapInstance.addControl(mousePosition); // use formatOutput option
                 } else if (controlName === 'attribution') {
                     var attribution = new OpenLayers.Control.Attribution();
                     attribution.id = controlId || attribution.id;
+					resultControl.id = attribution.id;
                     mapInstance.addControl(attribution);
                 } else if (controlName === 'measureline') {
                     var measureLine = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, controlOptions);
                     measureLine.id = controlId || measureLine.id;
+					resultControl.id = measureLine.id;
                     mapInstance.addControl(measureLine);
                 } else if (controlName === 'measurepolygon') {
                     var measurePolygon = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, controlOptions);
                     measurePolygon.id = controlId || measurePolygon.id;
+					resultControl.id = measurePolygon.id;
                     mapInstance.addControl(measurePolygon);
-                }
+                } else if(controlName === 'wmsgetfeatureinfo') {
+					var wmsGetFeatureInfo = new OpenLayers.Control.WMSGetFeatureInfo(controlOptions);
+					wmsGetFeatureInfo.id = controlId || wmsGetFeatureInfo.id;
+					resultControl.id = wmsGetFeatureInfo.id;
+					mapInstance.addControl(wmsGetFeatureInfo);
+				}
+				return resultControl;
                 //TODO log error, invalid control name provided
                 //or return false for layer above to give more useful error.
             },

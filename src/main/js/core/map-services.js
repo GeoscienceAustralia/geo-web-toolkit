@@ -77,7 +77,7 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 //this method should abstract the need to know what map type the instance is.
                 //For now it is current assumed it's openlayers Release 2.13.1
                 var service = mapServiceLocator.getImplementation('olv2');
-                service.addControl(mapInstance, controlName, controlOptions, elementId, controlId);
+                return service.addControl(mapInstance, controlName, controlOptions, elementId, controlId);
             },
             isControlActive: function (mapInstance, controlId) {
                 var service = mapServiceLocator.getImplementation('olv2');

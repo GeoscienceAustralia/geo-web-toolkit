@@ -4,11 +4,11 @@ var console = console || {};
 var $ = $ || {};
 
 var app = angular.module('gawebtoolkit.core.control-directives',
-    [
-        'gawebtoolkit.core.map-directives',
-        'gawebtoolkit.core.map-services',
-        'gawebtoolkit.core.layer-services'
-    ]);
+	[
+		'gawebtoolkit.core.map-directives',
+		'gawebtoolkit.core.map-services',
+		'gawebtoolkit.core.layer-services'
+	]);
 
 /**
  * @ngdoc directive
@@ -22,21 +22,31 @@ var app = angular.module('gawebtoolkit.core.control-directives',
  * @example
  */
 app.directive('gaMapControl', [ function () {
-    'use strict';
-    return {
-        restrict: "E",
-        require: "^gaMap",
-        scope: {
-            mapControlName: '@',
-            mapControlId: '@',
-            controlOptions: "=",
-            containerElementId: '@'
-        },
-        link: function (scope, element, attrs, mapController) {
-            if (!scope.mapControlName) {
-                return;
-            }
-            mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
-        }
-    };
+	'use strict';
+	return {
+		restrict: "E",
+		require: "^gaMap",
+		scope: {
+			mapControlName: '@',
+			mapControlId: '@',
+			controlOptions: "=",
+			containerElementId: '@',
+			controlEnabled: '@'
+		},
+		link: function (scope, element, attrs, mapController) {
+			if (!scope.mapControlName) {
+				return;
+			}
+			scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
+			if(attrs.controlEnabled != null) {
+				attrs.$observe('controlEnabled', function () {
+					if (scope.controlEnabled === 'true') {
+						mapController.activateControl(scope.controlDto.id);
+					} else {
+						mapController.deactivateControl(scope.controlDto.id);
+					}
+				});
+			}
+		}
+	};
 } ]);
