@@ -189,18 +189,14 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.drawPolyLine(mapInstance, points, layerName);
             },
-            createFeature: function (mapInstance, layerId, geoJson) {
-                var service = mapServiceLocator.getImplementation('olv2');
-                return service.createFeature(mapInstance, layerId, geoJson);
-            },
-            addFeatureToLayer: function (mapInstance, layerId, feature) {
-                var service = mapServiceLocator.getImplementation('olv2');
-                return service.addFeatureToLayer(mapInstance, layerId, feature);
-            },
             createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid);
             },
+			getFeatureInfo: function (mapInstance,callback, url,featureType, featurePrefix, geometryName, point) {
+				var service = mapServiceLocator.getImplementation('olv2');
+				return service.getFeatureInfo(mapInstance,callback, url,featureType, featurePrefix, geometryName, point);
+			},
             getMeasureFromEvent: function (mapInstance, e) {
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.getMeasureFromEvent(mapInstance, e);

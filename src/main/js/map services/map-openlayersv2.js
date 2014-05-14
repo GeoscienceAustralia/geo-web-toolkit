@@ -600,6 +600,51 @@ app.service('olv2MapService', [
                 vector.addFeatures([ feature ]);
                 mapInstance.addLayer(vector);
             },
+			getFeatureInfo: function (mapInstance, callback, url, featureType, featurePrefix, geometryName, point) {
+				//return control id for GetFeature control.
+				var originalPx = new OpenLayers.Pixel(point.x,point.y);
+				var llPx = originalPx.add(-mapInstance.zoom, mapInstance.zoom);
+				var urPx = originalPx.add(mapInstance.zoom, -mapInstance.zoom);
+				var ll = mapInstance.getLonLatFromPixel(llPx);
+				var ur = mapInstance.getLonLatFromPixel(urPx);
+				var bounds = new OpenLayers.Bounds(ll.lon, ll.lat, ur.lon, ur.lat);
+				var protocol = new OpenLayers.Protocol.WFS({
+					formatOptions: {
+						outputFormat: 'text/xml'
+					},
+					url: url,
+					version: '1.1.0',
+					srsName: mapInstance.projection,
+					featureType: featureType,
+					featurePrefix: featurePrefix,
+					geometryName: geometryName,
+					maxFeatures: 100
+				});
+				var filter = new OpenLayers.Filter.Spatial({
+					type: OpenLayers.Filter.Spatial.BBOX,
+					value: bounds
+				});
+				protocol.read({
+					filter: filter,
+					callback: function (result) {
+						if(result.success()) {
+							var geoJSONFormat = new OpenLayers.Format.GeoJSON();
+							var geoJson = geoJSONFormat.write(result.features);
+							var geoObject = angular.fromJson(geoJson);
+
+							for (var j = 0; j < geoObject.features.length; j++) {
+								geoObject.features[j].crs = {
+									"type": "name",
+									"properties": {
+										"name": mapInstance.projection
+									}
+								};
+							}
+							callback(geoObject);
+						}
+					}
+				});
+			},
             createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
                 var protocol = new OpenLayers.Protocol.WFS({
                     url: url,
@@ -666,7 +711,7 @@ app.service('olv2MapService', [
                     value: query.toUpperCase() + '*'
                 });
 
-                var results = client.read({
+                client.read({
                     filter: filter,
                     callback: callBackFn
                 });

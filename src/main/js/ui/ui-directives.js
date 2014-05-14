@@ -22,17 +22,14 @@ var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ])
  *           name: //friendly name of the layer
  *       }
  * */
-app.directive('gaLayerControl', ['GAWTUtils', '$timeout', '$compile',
-	function (GAWTUtils, $timeout, $compile) {
+app.directive('gaLayerControl', ['GAWTUtils',
+	function (GAWTUtils) {
 		'use strict';
-		//Use of modernizr and the 'make visible' scope object is to make sure the range polyfill
-		//for browsers that don't support the input[type="range"] control get initialised correctly
-		//This will not effect browsers that support range input.
 		var templateCache =
 			'<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"/>' +
 			'<label for="{{elementId}}" ng-bind="layerData.name"></label>' +
-			'<div ng-show="layerData.visibility || makeVisible">' +
-			'<input type="range" min="0" max="1.0" step="0.01" ng-model="layerData.opacity" ng-change="changeOpacity()"/>' +
+			'<div ng-show="layerData.visibility">' +
+			'<ga-layer-opacity-slider  map-controller="mapController" layer-opacity="layerData.opacity" layer-id="{{layerData.id}}"></ga-layer-opacity-slider>' +
 			'</div>';
 		return {
 			restrict: "E",
@@ -50,11 +47,6 @@ app.directive('gaLayerControl', ['GAWTUtils', '$timeout', '$compile',
 			compile: function compile() {
 				return {
 					post: function postLink(scope, element) {
-						scope.makeVisible = true;
-						element.htmlPolyfill($compile(templateCache)(scope));
-						$timeout(function () {
-							scope.makeVisible = false;
-						}, 800);
 					},
 					pre: function preLink(scope) {
 						scope.changeOpacity = function () {
@@ -88,10 +80,11 @@ app.directive('gaLayerControl', ['GAWTUtils', '$timeout', '$compile',
 /**
  *
  * */
-app.directive('gaLayerOpacitySlider', [ function () {
+app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 	'use strict';
 	var templateCache =
-		'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity" ng-change="changeOpacity()"/>';
+		'<div ui-jq="slider" ui-options="getSliderOptions()"></div>';
+	//'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity" ng-change="changeOpacity()"/>';
 	return {
 		restrict: "E",
 		template: templateCache,
@@ -101,15 +94,38 @@ app.directive('gaLayerOpacitySlider', [ function () {
 			layerOpacity: '=',
 			mapController: '='
 		},
-		link: function ($scope, $element) {
+		controller: function ($scope) {
 			$scope.changeOpacity = function () {
 				var opacityValue = $scope.layerOpacity;
 				$scope.mapController.setOpacity($scope.layerId, opacityValue);
 			};
-			$scope.$watch('layerOpacity', function () {
-				$($element[0]).updatePolyfill();
+			$scope.changeOpacitySlide = function (e, ui) {
+				$scope.layerOpacity = ui.value;
+				//This timeout is needed to avoid $digest cycle issues and to keep jquery UI in sync.
+				//This is a performance hit, but unable to get a reliable update with out.
+				$timeout(function () {
+					$scope.$apply();
+				});
+				$scope.mapController.setOpacity($scope.layerId, ui.value);
+			};
+			$scope.getSliderOptions = function () {
+				return {
+					min: 0.0,
+					max: 1.0,
+					range: false,
+					step:0.01,
+					change: $scope.changeOpacitySlide,
+					value: $scope.layerOpacity
+				};
+			};
+
+		},
+		link: function ($scope, $element) {
+			$scope.$watch('layerOpacity', function (newVal, oldVal) {
+				if(newVal && oldVal !== newVal) {
+					$($element).slider($scope.getSliderOptions());
+				}
 			});
-			//ensure polyfill for range slider is applied.
 
 		},
 		transclude: true
@@ -364,7 +380,7 @@ app.directive('gaSearchWfsLayer', [function () {
 /**
  *
  * */
-app.directive('gaSearchWfs', ['$q','$interpolate', function ($q,$interpolate) {
+app.directive('gaSearchWfs', ['$q', '$interpolate', function ($q, $interpolate) {
 	"use strict";
 	//Using 'result.id' as the result features coming back should have a server id.
 	//Specific property names are dynamic and cannot be relied on.
@@ -387,7 +403,7 @@ app.directive('gaSearchWfs', ['$q','$interpolate', function ($q,$interpolate) {
 		},
 		compile: function compile() {
 			return {
-				post: function postLink($scope, $element,$attrs) {
+				post: function postLink($scope, $element, $attrs) {
 					var clients = [];
 					var attribute;
 
@@ -476,15 +492,15 @@ app.directive('gaSearchWfs', ['$q','$interpolate', function ($q,$interpolate) {
 						}
 					};
 				},
-				pre: function preLink(scope,element,attrs) {
+				pre: function preLink(scope, element) {
 					//Work around the requirement to be able to specify w
 					var typeAheadExpression = element.find('[typeahead]')[0].attributes.typeahead.nodeValue;
-					if(typeAheadExpression.indexOf('{{') !== -1) {
+					if (typeAheadExpression.indexOf('{{') !== -1) {
 						var start = typeAheadExpression.indexOf('{{');
 						var end = typeAheadExpression.indexOf('}}') + 2;
-						var substring = typeAheadExpression.substr(start, end-start);
+						var substring = typeAheadExpression.substr(start, end - start);
 						var val = scope.$eval($interpolate(substring));
-						typeAheadExpression.replace('{{' + substring + '}}',val);
+						typeAheadExpression.replace('{{' + substring + '}}', val);
 					}
 				}
 			};
@@ -632,8 +648,8 @@ app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
 				$('#' + $scope.dialogId).dialog('destroy').remove();
 			});
 
-			$scope.$watch($attrs.uiRefresh, function (data) {
-				$('#' + $scope.dialogId).bind('dialogclose', function (event, ui) {
+			$scope.$watch($attrs.uiRefresh, function () {
+				$('#' + $scope.dialogId).bind('dialogclose', function () {
 					$scope.isClosed = !$scope.isClosed;
 				});
 			});
