@@ -457,6 +457,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 				return GAMapService.getFeatureInfo($scope.mapInstance,callback, url,featureType, featurePrefix, geometryName, point);
 			};
 
+			self.getFeatureInfoFromLayer = function (callback,layerId, point) {
+				return GAMapService.getFeatureInfoFromLayer($scope.mapInstance,callback,layerId, point);
+			};
+
             self.resetMapFired = function () {
                 $scope.$emit('resetMapFired');
 

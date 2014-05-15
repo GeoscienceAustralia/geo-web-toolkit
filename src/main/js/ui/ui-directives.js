@@ -380,7 +380,7 @@ app.directive('gaSearchWfsLayer', [function () {
 /**
  *
  * */
-app.directive('gaSearchWfs', ['$q', '$interpolate', function ($q, $interpolate) {
+app.directive('gaSearchWfs', ['$q', '$interpolate','$log', function ($q, $interpolate,$log) {
 	"use strict";
 	//Using 'result.id' as the result features coming back should have a server id.
 	//Specific property names are dynamic and cannot be relied on.
@@ -443,8 +443,8 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', function ($q, $interpolate) 
 							$scope.mapController.searchWfs(clients[i].clientId, query, attribute).then(function (data) {
 
 								if (data == null) {
-									//error
-									deferred.resolve(null);
+									$log.error("Search server is unavailable.");
+									deferred.resolve([]);
 									return;
 								}
 								count++;
@@ -705,14 +705,14 @@ app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GA
 			$scope.$emit($scope.controllerEmitEventName, self);
 		},
 		link: function ($scope) {
-			$scope.$on('$destroy', function (event, args) {
+			$scope.$on('$destroy', function () {
 				$('#' + $scope.dialogId).dialog('destroy').remove();
 			});
 
 			var dialogConfigWatch = $scope.$watch('dialogConfig', function (data) {
 				if (data != null) {
 					$scope.dialogReady = true;
-					$('#' + $scope.dialogId).bind('dialogclose', function (event) {
+					$('#' + $scope.dialogId).bind('dialogclose', function () {
 						$scope.isClosed = true;
 						$timeout(function () {
 							$scope.$apply();

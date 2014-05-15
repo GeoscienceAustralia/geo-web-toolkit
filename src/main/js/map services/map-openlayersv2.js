@@ -601,7 +601,6 @@ app.service('olv2MapService', [
                 mapInstance.addLayer(vector);
             },
 			getFeatureInfo: function (mapInstance, callback, url, featureType, featurePrefix, geometryName, point) {
-				//return control id for GetFeature control.
 				var originalPx = new OpenLayers.Pixel(point.x,point.y);
 				var llPx = originalPx.add(-mapInstance.zoom, mapInstance.zoom);
 				var urPx = originalPx.add(mapInstance.zoom, -mapInstance.zoom);
@@ -620,6 +619,47 @@ app.service('olv2MapService', [
 					geometryName: geometryName,
 					maxFeatures: 100
 				});
+				var filter = new OpenLayers.Filter.Spatial({
+					type: OpenLayers.Filter.Spatial.BBOX,
+					value: bounds
+				});
+				protocol.read({
+					filter: filter,
+					callback: function (result) {
+						if(result.success()) {
+							var geoJSONFormat = new OpenLayers.Format.GeoJSON();
+							var geoJson = geoJSONFormat.write(result.features);
+							var geoObject = angular.fromJson(geoJson);
+
+							for (var j = 0; j < geoObject.features.length; j++) {
+								geoObject.features[j].crs = {
+									"type": "name",
+									"properties": {
+										"name": mapInstance.projection
+									}
+								};
+							}
+							callback(geoObject);
+						}
+					}
+				});
+			},
+			getFeatureInfoFromLayer: function (mapInstance, callback,layerId,point) {
+				var originalPx = new OpenLayers.Pixel(point.x,point.y);
+				var llPx = originalPx.add(-mapInstance.zoom, mapInstance.zoom);
+				var urPx = originalPx.add(mapInstance.zoom, -mapInstance.zoom);
+				var ll = mapInstance.getLonLatFromPixel(llPx);
+				var ur = mapInstance.getLonLatFromPixel(urPx);
+				var bounds = new OpenLayers.Bounds(ll.lon, ll.lat, ur.lon, ur.lat);
+				var layers = mapInstance.getLayersBy('id',layerId);
+				var layer;
+				if(layers.length > 0) {
+					layer = layers[0];
+				} else {
+					//Throw error;
+
+				}
+				var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
 				var filter = new OpenLayers.Filter.Spatial({
 					type: OpenLayers.Filter.Spatial.BBOX,
 					value: bounds
