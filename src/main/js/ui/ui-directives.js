@@ -113,7 +113,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 					min: 0.0,
 					max: 1.0,
 					range: false,
-					step:0.01,
+					step: 0.01,
 					change: $scope.changeOpacitySlide,
 					value: $scope.layerOpacity
 				};
@@ -122,7 +122,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 		},
 		link: function ($scope, $element) {
 			$scope.$watch('layerOpacity', function (newVal, oldVal) {
-				if(newVal && oldVal !== newVal) {
+				if (newVal && oldVal !== newVal) {
 					$($element).slider($scope.getSliderOptions());
 				}
 			});
@@ -380,17 +380,18 @@ app.directive('gaSearchWfsLayer', [function () {
 /**
  *
  * */
-app.directive('gaSearchWfs', ['$q', '$interpolate','$log', function ($q, $interpolate,$log) {
+app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
 	"use strict";
 	//Using 'result.id' as the result features coming back should have a server id.
 	//Specific property names are dynamic and cannot be relied on.
 	return {
 		restrict: "EA",
 		template: '<input type="text" class="search" ng-model="query" ' +
+			'ng-class="{typeAheadLoading:waitingForResponse}" ' +
 			'typeahead="result as result.properties.{{primaryWfsProperty}} for result in getSearchResults($viewValue)" ' +
-			' typeahead-template-url="{{resultTemplateUrl}}" ' +
+			'typeahead-template-url="{{resultTemplateUrl}}" ' +
 			'typeahead-on-select="onSelected($item, $model, $label)" ' +
-			' typeahead-wait-ms="500" typeahead-editable="true"/>' +
+			'typeahead-wait-ms="500" typeahead-editable="true"/>' +
 			'<input type="button" class="searchButton" ng-click="searchButtonClicked()" value="search"/>',
 		scope: {
 			resultTemplateUrl: '@',
@@ -402,6 +403,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate','$log', function ($q, $interp
 			primaryWfsProperty: '@'
 		},
 		compile: function compile() {
+
 			return {
 				post: function postLink($scope, $element, $attrs) {
 					var clients = [];
@@ -435,6 +437,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate','$log', function ($q, $interp
 						var deferred = $q.defer();
 						var count = 0;
 						var allResults = [];
+						$scope.waitingForResponse = true;
 
 						//As we are using WFS for search, we iterate over a list of endpoints making the same
 						//query and once all endpoints return, we provide results
@@ -456,6 +459,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate','$log', function ($q, $interp
 
 								if (count === clients.length) {
 									deferred.resolve(allResults);
+									$scope.waitingForResponse = false;
 								}
 							});
 						}
@@ -493,6 +497,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate','$log', function ($q, $interp
 					};
 				},
 				pre: function preLink(scope, element) {
+					scope.waitingForResponse = false;
 					//Work around the requirement to be able to specify w
 					var typeAheadExpression = element.find('[typeahead]')[0].attributes.typeahead.nodeValue;
 					if (typeAheadExpression.indexOf('{{') !== -1) {
