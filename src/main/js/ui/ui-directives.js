@@ -388,7 +388,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 		restrict: "EA",
 		template: '<input type="text" class="search" ng-model="query" ' +
 			'ng-class="{typeAheadLoading:waitingForResponse}" ' +
-			'typeahead="result as result.properties.{{primaryWfsProperty}} for result in getSearchResults($viewValue)" ' +
+			'typeahead="result as result.properties[primaryWfsProperty] for result in getSearchResults($viewValue)" ' +
 			'typeahead-template-url="{{resultTemplateUrl}}" ' +
 			'typeahead-on-select="onSelected($item, $model, $label)" ' +
 			'typeahead-wait-ms="500" typeahead-editable="true"/>' +
@@ -498,15 +498,6 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 				},
 				pre: function preLink(scope, element) {
 					scope.waitingForResponse = false;
-					//Work around the requirement to be able to specify w
-					var typeAheadExpression = element.find('[typeahead]')[0].attributes.typeahead.nodeValue;
-					if (typeAheadExpression.indexOf('{{') !== -1) {
-						var start = typeAheadExpression.indexOf('{{');
-						var end = typeAheadExpression.indexOf('}}') + 2;
-						var substring = typeAheadExpression.substr(start, end - start);
-						var val = scope.$eval($interpolate(substring));
-						typeAheadExpression.replace('{{' + substring + '}}', val);
-					}
 				}
 			};
 		}
