@@ -2,40 +2,6 @@ var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
-var Layer = {
-	fromOlv2: function (olv2Layer) {
-		"use strict";
-		return {
-			id: olv2Layer.id,
-			name: olv2Layer.name,
-			type: this.getLayerType(olv2Layer),
-			visibility: olv2Layer.visibility,
-			opacity: olv2Layer.opacity
-		};
-	},
-	getLayerType: function (olv2Layer) {
-		"use strict";
-		var layerType;
-		//I'm not sure what the best way to check the layer type of each layer OpenLayers has,
-		//so this is a bit of a workaround at the moment
-		if (olv2Layer.id.indexOf('WMS') !== -1) {
-			layerType = 'WMS';
-		} else if (olv2Layer.id.indexOf('ArcGIS') !== -1) {
-			layerType = 'ArcGIS';
-		} else if (olv2Layer.id.indexOf('XYZ') !== -1) {
-			layerType = 'XYZ';
-		} else if (olv2Layer.id.indexOf('Markers') !== -1) {
-			layerType = 'Markers';
-		} else if (olv2Layer.id.indexOf('Vector') !== -1) {
-			layerType = 'Vector';
-		} else if (olv2Layer.id.indexOf('Google') !== -1) {
-			layerType = 'Google';
-		} else {
-			console.log('layer type is of an unsupported type - "' + olv2Layer.id + '"');
-		}
-		return layerType;
-	}
-};
 
 var app = angular.module('gawebtoolkit.mapservices.map.openlayersv2',
 	[
@@ -47,8 +13,9 @@ app.service('olv2MapService', [
 	'olv2LayerService',
 	'olv2MapControls',
 	'GAWTUtils',
+	'GeoLayer',
 	'$q',
-	function (olv2LayerService, olv2MapControls, GAWTUtils, $q) {
+	function (olv2LayerService, olv2MapControls, GAWTUtils,GeoLayer, $q) {
 		'use strict';
 		//This service provides functionality to answer questions about OLV2 layers, provided all the state
 		//This service contains no state, and a mapInstance must be provided.
@@ -105,27 +72,27 @@ app.service('olv2MapService', [
 					layer.then(function (resultLayer) {
 						mapInstance.addLayer(resultLayer);
 						service.postLayerAddAction(mapInstance, layer);
-						return {
-							id: layer.id,
-							name: layer.name,
-							type: olv2LayerService.getLayerType(layer),
-							visibility: layer.visibility,
-							opacity: layer.opacity
-						};
+						return new GeoLayer(
+							layer.id,
+							layer.name,
+                            layer.geoLayerType,
+							layer.visibility,
+							layer.opacity
+						);
 					});
 				} else {
-					if (Layer.getLayerType(layer) === 'Google') {
+					if (layer.geoLayerType === 'Google') {
 						mapInstance.zoomDuration = 0;
 					}
 					mapInstance.addLayer(layer);
 					service.postLayerAddAction(mapInstance, layer);
-					return {
-						id: layer.id,
-						name: layer.name,
-						type: olv2LayerService.getLayerType(layer),
-						visibility: layer.visibility,
-						opacity: layer.opacity
-					};
+					return new GeoLayer(
+						layer.id,
+						layer.name,
+                        layer.geoLayerType,
+						layer.visibility,
+						layer.opacity
+					);
 				}
 			},
 			postLayerAddAction: function (mapInstance, layer) {
@@ -199,7 +166,6 @@ app.service('olv2MapService', [
 				if (elementId) {
 					div = $('#' + elementId)[0];
 				}
-
 				//Sensible default for mouse position
 				if (controlName === 'mouseposition') {
 					if (controlOptions == null) {
@@ -265,7 +231,13 @@ app.service('olv2MapService', [
 			getLayers: function (mapInstance) {
 				var layers = [];
 				angular.forEach(mapInstance.layers, function (layer) {
-					layers.push(Layer.fromOlv2(layer));
+					layers.push(new GeoLayer(
+                        layer.id,
+                        layer.name,
+                        layer.geoLayerType,
+                        layer.visibility,
+                        layer.opacity
+                    ));
 				});
 				return layers;
 			},
@@ -277,7 +249,13 @@ app.service('olv2MapService', [
 				var results = [];
 				for (var i = 0; i < layers.length; i++) {
 					var currentLayer = layers[i];
-					results.push(Layer.fromOlv2(currentLayer));
+					results.push(new GeoLayer(
+                        currentLayer.id,
+                        currentLayer.name,
+                        currentLayer.geoLayerType,
+                        currentLayer.visibility,
+                        currentLayer.opacity
+                    ));
 				}
 				return results;
 			},

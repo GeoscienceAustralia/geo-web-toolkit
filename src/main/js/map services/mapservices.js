@@ -25,4 +25,28 @@ var $ = $ || {};
  *  @property {Number} meansure - The number of units of distance
  *  @property {string} units - The unit type of the distance number, eg 'km'
  * */
-angular.module('gawebtoolkit.mapservices', [ 'gawebtoolkit.mapservices.layer.openlayersv2', 'gawebtoolkit.mapservices.map.openlayersv2' ]);
+var app = angular.module('gawebtoolkit.mapservices',
+	[
+		'gawebtoolkit.mapservices.layer.openlayersv2',
+		'gawebtoolkit.mapservices.map.openlayersv2'
+	]);
+//id: olv2Layer.id,
+//	name: olv2Layer.name,
+//	type: this.getLayerType(olv2Layer),
+//	visibility: olv2Layer.visibility,
+//	opacity: olv2Layer.opacity
+
+app.factory('GeoLayer', [function () {
+	"use strict";
+	var GeoLayer = function (id, name, type, visibility, opacity) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.visibility = visibility;
+		this.opacity = opacity;
+	};
+	//define prototypical methods
+	//GeoLayer.prototype.myFunction = function () //available on every instance.
+
+	return GeoLayer;
+}]);

@@ -3,40 +3,6 @@ var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
 var google = google || {};
-var Layer = {
-    fromOlv2: function (olv2Layer) {
-        "use strict";
-        return {
-            id: olv2Layer.id,
-            name: olv2Layer.name,
-            type: this.getLayerType(olv2Layer),
-            visibility: olv2Layer.visibility,
-            opacity: olv2Layer.opacity
-        };
-    },
-    getLayerType: function (olv2Layer) {
-        "use strict";
-        var layerType;
-        //I'm not sure what the best way to check the layer type of each layer OpenLayers has,
-        //so this is a bit of a workaround at the moment
-        if (olv2Layer.id.indexOf('WMS') !== -1) {
-            layerType = 'WMS';
-        } else if (olv2Layer.id.indexOf('ArcGIS') !== -1) {
-            layerType = 'ArcGIS';
-        } else if (olv2Layer.id.indexOf('XYZ') !== -1) {
-            layerType = 'XYZ';
-        } else if (olv2Layer.id.indexOf('Markers') !== -1) {
-            layerType = 'Markers';
-        } else if (olv2Layer.id.indexOf('Vector') !== -1) {
-            layerType = 'Vector';
-        } else if (olv2Layer.id.indexOf('Google') !== -1) {
-            layerType = 'Google';
-        } else {
-            console.log('layer type is of an unsupported type - "' + olv2Layer.id + '"');
-        }
-        return layerType;
-    }
-};
 
 var app = angular.module('gawebtoolkit.mapservices.layer.openlayersv2', []);
 
@@ -77,6 +43,7 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
                             args.layerType
                     );
             }
+			layer.geoLayerType = args.layerType;
             return layer;
         },
         createFeatureLayer: function (args) {
@@ -275,28 +242,6 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
 
             return centerPosition;
         },
-        getLayerType: function (layer) {
-            var layerType;
-            //I'm not sure what the best way to check the layer type of each layer OpenLayers has,
-            //so this is a bit of a workaround at the moment
-            if (layer.id.indexOf('WMS') !== -1) {
-                layerType = 'WMS';
-            } else if (layer.id.indexOf('ArcGIS') !== -1) {
-                layerType = 'ArcGIS';
-            } else if (layer.id.indexOf('XYZ') !== -1) {
-                layerType = 'XYZ';
-            } else if (layer.id.indexOf('Markers') !== -1) {
-                layerType = 'Markers';
-            } else if (layer.id.indexOf('Vector') !== -1) {
-                layerType = 'Vector';
-            } else if (layer.id.indexOf('Google')) {
-                layerType = 'Google';
-            } else {
-                $log('layer type is of an unsupported type - "' + layer.id + '"');
-            }
-
-            return layerType;
-        },
         //Should this be labeled as an internal method?
         getLayerById: function (mapInstance, layerId) {
             var currentLayer;
@@ -344,7 +289,7 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
         },
         registerFeatureSelected: function (mapInstance, layerId, callback, element) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            var layerType = Layer.getLayerType(layer);
+            var layerType = layer.geoLayerType;
             var layerProtocol;
             if (layerType === 'WMS') {
                 layerProtocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);

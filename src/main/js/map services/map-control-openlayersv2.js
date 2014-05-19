@@ -38,6 +38,9 @@ app.service('olv2MapControls', [function () {
 				controlOptions.div = div;
 			}
 			var supportedControl = service.resolveSupportedControl(name);
+			if(supportedControl == null || supportedControl.constructor == null) {
+				throw new Error("Error in map control construction. Unsupported control or missing source for control constructor.");
+			}
 			if(supportedControl.customParams) {
 				//handle first custom param..
 				if(controlOptions) {
@@ -51,7 +54,6 @@ app.service('olv2MapControls', [function () {
 				} else {
 					control = new supportedControl.constructor();
 				}
-
 			}
 			return control;
 		}
