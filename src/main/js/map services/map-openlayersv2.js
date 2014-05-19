@@ -72,13 +72,7 @@ app.service('olv2MapService', [
 					layer.then(function (resultLayer) {
 						mapInstance.addLayer(resultLayer);
 						service.postLayerAddAction(mapInstance, layer);
-						return new GeoLayer(
-							layer.id,
-							layer.name,
-                            layer.geoLayerType,
-							layer.visibility,
-							layer.opacity
-						);
+						return GeoLayer.fromOpenLayersV2Layer(layer);
 					});
 				} else {
 					if (layer.geoLayerType != null && layer.geoLayerType.indexOf('Google') !== -1) {
@@ -86,13 +80,7 @@ app.service('olv2MapService', [
 					}
 					mapInstance.addLayer(layer);
 					service.postLayerAddAction(mapInstance, layer);
-					return new GeoLayer(
-						layer.id,
-						layer.name,
-                        layer.geoLayerType,
-						layer.visibility,
-						layer.opacity
-					);
+					return GeoLayer.fromOpenLayersV2Layer(layer);
 				}
 			},
 			postLayerAddAction: function (mapInstance, layer) {
@@ -231,13 +219,7 @@ app.service('olv2MapService', [
 			getLayers: function (mapInstance) {
 				var layers = [];
 				angular.forEach(mapInstance.layers, function (layer) {
-					layers.push(new GeoLayer(
-                        layer.id,
-                        layer.name,
-                        layer.geoLayerType,
-                        layer.visibility,
-                        layer.opacity
-                    ));
+					layers.push(GeoLayer.fromOpenLayersV2Layer(layer));
 				});
 				return layers;
 			},
@@ -249,13 +231,7 @@ app.service('olv2MapService', [
 				var results = [];
 				for (var i = 0; i < layers.length; i++) {
 					var currentLayer = layers[i];
-					results.push(new GeoLayer(
-                        currentLayer.id,
-                        currentLayer.name,
-                        currentLayer.geoLayerType,
-                        currentLayer.visibility,
-                        currentLayer.opacity
-                    ));
+					results.push(GeoLayer.fromOpenLayersV2Layer(currentLayer));
 				}
 				return results;
 			},

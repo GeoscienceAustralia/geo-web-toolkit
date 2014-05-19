@@ -45,6 +45,10 @@ app.factory('GeoLayer', [function () {
 		this.visibility = visibility;
 		this.opacity = opacity;
 	};
+
+    GeoLayer.fromOpenLayersV2Layer = function(layer) {
+        return new GeoLayer(layer.id,layer.name,layer.geoLayerType,layer.visibility,layer.opacity);
+    };
 	//define prototypical methods
 	//GeoLayer.prototype.myFunction = function () //available on every instance.
 
