@@ -81,7 +81,7 @@ app.service('olv2MapService', [
 						);
 					});
 				} else {
-					if (layer.geoLayerType.indexOf('Google') !== -1) {
+					if (layer.geoLayerType != null && layer.geoLayerType.indexOf('Google') !== -1) {
 						mapInstance.zoomDuration = 0;
 					}
 					mapInstance.addLayer(layer);
