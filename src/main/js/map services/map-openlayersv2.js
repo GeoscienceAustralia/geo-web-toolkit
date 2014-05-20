@@ -316,14 +316,8 @@ app.service('olv2MapService', [
 			 * @param layerId {string} - ID of the layer that is to be the new base layer
 			 * */
 			setBaseLayer: function (mapInstance, layerId) {
-				var numOfLayers = mapInstance.layers.length;
-				for (var i = 0; i < numOfLayers; i++) {
-					var layer = mapInstance.layers[i];
-					if (layer.id === layerId) {
-						mapInstance.setBaseLayer(layer, false);
-						break;
-					}
-				}
+				var layer = mapInstance.getLayersBy('id', layerId)[0];
+                mapInstance.setBaseLayer(layer, false);
 			},
 			/**
 			 * Updates the maps view to center on the lon/lat provided.
