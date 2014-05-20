@@ -543,7 +543,6 @@ app.directive('gaMeasureToggle', [function () {
 				});
 			};
 			$scope.handlePartialMeasure = function (event) {
-				console.log(event);
 				var measurement = $scope.mapController.getMeasureFromEvent(event);
 				$scope.onUpdate({
 					event: measurement
