@@ -496,7 +496,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 						}
 					};
 				},
-				pre: function preLink(scope, element) {
+				pre: function preLink(scope) {
 					scope.waitingForResponse = false;
 				}
 			};

@@ -4,7 +4,7 @@ var console = console || {};
 var $ = $ || {};
 
 //depends on library X2JS
-var X2JS = X2JS || {};
+//var X2JS = X2JS || {};
 
 var app = angular.module('gawebtoolkit.mapservices.data.openlayersv2', []);
 
@@ -14,10 +14,6 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
         getLayersByWMSCapabilities: function (url) {
             var deferred = $q.defer();
             $http.get(url + "?request=GetCapabilities").success(function (data, status, headers, config) {
-                var x2js = new X2JS();
-
-                var responseJson = x2js.xml_str2json(data);
-                var layers = responseJson.WMS_Capabilities.Capability.Layer.Layer;
                 var format = new OpenLayers.Format.WMSCapabilities();
                 var allLayers = format.read(data).capability.layers;
                 var olv2Layers = [];
@@ -28,60 +24,63 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
             });
             return deferred.promise;
         },
-		getWMSFeatures: function (mapInstance, url,layerNames,version,layerProjection, point) {
-			var deferred = $q.defer();
-			var projection = mapInstance.getProjection();
-			var layerProj = layerProjection;
-			if (layerProj && layerProj.equals(mapInstance.getProjectionObject())) {
-				projection = layerProj.getCode();
-			}
-			var params = OpenLayers.Util.extend({
-					service: "WMS",
-					version: version,
-					request: "GetFeatureInfo",
+        getWMSFeatures: function (mapInstance, url, layerNames, version, queryProjection, point) {
+            var deferred = $q.defer();
+            var projection = queryProjection;
+//			if (layerProj && layerProj.equals(mapInstance.getProjectionObject())) {
+//				projection = layerProj.getCode();
+//			}
+            var bounds = mapInstance.getExtent();
+            bounds.transform(mapInstance.projection, queryProjection);
+            var bbox = bounds.toBBOX();
+            //noinspection JSHint
+            var params = OpenLayers.Util.extend({
+                    service: "WMS",
+                    version: version,
+                    request: "GetFeatureInfo",
 //					exceptions: firstLayer.params.EXCEPTIONS,
-					bbox: mapInstance.getExtent().toBBOX(null,
-						false),
-					feature_count: 100,
-					height: mapInstance.getSize().h,
-					width: mapInstance.getSize().w,
-					format: OpenLayers.Format.WMSGetFeatureInfo,
-					info_format: 'text/xml'
-				}, (parseFloat(version) >= 1.3) ?
-				{
-					crs: projection,
-					i: parseInt(point.x),
-					j: parseInt(point.y)
-				} :
-				{
-					srs: projection,
-					x: parseInt(point.x),
-					y: parseInt(point.y)
-				}
-			);
-			if (layerNames.length !== 0) {
-				params = OpenLayers.Util.extend({
-					layers: layerNames,
-					query_layers: layerNames
+                    bbox: bbox,
+                    feature_count: 100,
+                    height: mapInstance.getSize().h,
+                    width: mapInstance.getSize().w,
+                    format: OpenLayers.Format.WMSGetFeatureInfo,
+                    info_format: 'text/xml'
+                }, (parseFloat(version) >= 1.3) ?
+                {
+                    crs: projection,
+                    i: parseInt(point.x),
+                    j: parseInt(point.y)
+                } :
+                {
+                    srs: projection,
+                    x: parseInt(point.x),
+                    y: parseInt(point.y)
+                }
+            );
+            if (layerNames.length !== 0) {
+                //noinspection JSHint
+                params = OpenLayers.Util.extend({
+                    layers: layerNames,
+                    query_layers: layerNames
 //					styles: styleNames
-				}, params);
-			}
-			OpenLayers.Util.applyDefaults(params, {});
-			var requestParams = {
-				url: url,
-				params: OpenLayers.Util.upperCaseObject(params),
-				callback: function (request) {
-					var format = new OpenLayers.Format.WMSGetFeatureInfo();
-					var features = format.read(request.responseText);
-					var geoJsonFormat = new OpenLayers.Format.GeoJSON();
-					var geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
-					deferred.resolve(geoJsonFeatures);
-				},
-				scope: this
-			};
-			OpenLayers.Request.GET(requestParams);
-			return deferred.promise;
-		},
+                }, params);
+            }
+            OpenLayers.Util.applyDefaults(params, {});
+            var requestParams = {
+                url: url,
+                params: OpenLayers.Util.upperCaseObject(params),
+                callback: function (request) {
+                    var format = new OpenLayers.Format.WMSGetFeatureInfo();
+                    var features = format.read(request.responseText);
+                    var geoJsonFormat = new OpenLayers.Format.GeoJSON();
+                    var geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
+                    deferred.resolve(geoJsonFeatures);
+                },
+                scope: this
+            };
+            OpenLayers.Request.GET(requestParams);
+            return deferred.promise;
+        },
         getWMSFeaturesByLayerId: function (mapInstance, url, layerId, point) {
             //This is a modified version of methods used within an OpenLayers control
             //This control was dealing with a data request internally, here we are trying
@@ -120,6 +119,7 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
             if (layerProj && layerProj.equals(mapInstance.getProjectionObject())) {
                 projection = layerProj.getCode();
             }
+            //noinspection JSHint
             var params = OpenLayers.Util.extend({
                     service: "WMS",
                     version: firstLayer.params.VERSION,
@@ -145,6 +145,7 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
                 }
             );
             if (layerNames.length !== 0) {
+                //noinspection JSHint
                 params = OpenLayers.Util.extend({
                     layers: layerNames,
                     query_layers: layerNames,
