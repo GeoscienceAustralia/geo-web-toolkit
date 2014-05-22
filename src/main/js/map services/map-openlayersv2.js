@@ -481,7 +481,8 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
-			getFeatureInfo: function (mapInstance, callback, url, featureType, featurePrefix, geometryName, point) {
+			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point) {
+				var deferred = $q.defer();
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-mapInstance.zoom, mapInstance.zoom);
 				var urPx = originalPx.add(mapInstance.zoom, -mapInstance.zoom);
@@ -520,10 +521,11 @@ app.service('olv2MapService', [
 									}
 								};
 							}
-							callback(geoObject);
+							deferred.resolve(geoObject);
 						}
 					}
 				});
+				return deferred.promise;
 			},
 			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point) {
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
