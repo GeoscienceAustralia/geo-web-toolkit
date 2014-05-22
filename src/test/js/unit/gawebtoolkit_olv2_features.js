@@ -52,10 +52,7 @@ describe(
             expect($scope.mapController !== null);
             var passed = true;
             try {
-                $scope.mapController.getFeatureInfo(function () {
-                        //return feature //TODO currently no way to mock due to reliance on OL
-
-                    },
+                $scope.mapController.getFeatureInfo(
                     'http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer',
                     'testing',
                     'test',
