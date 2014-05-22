@@ -27,9 +27,6 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
         getWMSFeatures: function (mapInstance, url, layerNames, version, queryProjection, point) {
             var deferred = $q.defer();
             var projection = queryProjection;
-//			if (layerProj && layerProj.equals(mapInstance.getProjectionObject())) {
-//				projection = layerProj.getCode();
-//			}
             var bounds = mapInstance.getExtent();
             bounds.transform(mapInstance.projection, queryProjection);
             var bbox = bounds.toBBOX();
