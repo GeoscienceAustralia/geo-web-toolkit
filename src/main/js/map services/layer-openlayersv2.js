@@ -206,10 +206,15 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
             return layerOptions;
         },
         createFeature: function (mapInstance, geoJson) {
-            var reader = new OpenLayers.Format.GeoJSON({
-                'externalProjection': 'EPSG:4326', // TODO hardcoded projection
-                'internalProjection': mapInstance.projection
-            });
+			var reader;
+			if(mapInstance.projection !== geoJson.crs.properties.name) {
+				reader = new OpenLayers.Format.GeoJSON({
+					'externalProjection': geoJson.crs.properties.name,
+					'internalProjection': mapInstance.projection
+				});
+			} else {
+				reader = new OpenLayers.Format.GeoJSON();
+			}
 
             return reader.read(angular.toJson(geoJson), geoJson.type);
         },
