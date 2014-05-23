@@ -141,7 +141,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService',
                         initialiseLayer();
                     }
                 });
-                if (attrs.layerType.indexOf('Google') === 0) {
+                if (attrs.layerType != null && attrs.layerType.indexOf('Google') === 0) {
                     initialiseLayer();
                 }
             }
