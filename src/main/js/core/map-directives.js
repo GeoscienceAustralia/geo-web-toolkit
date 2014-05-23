@@ -528,8 +528,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GALayerService.getLayerFeatures($scope.mapInstance, layerId);
             };
 
-            self.createFeature = function (layerId, geoJson) {
-                return GALayerService.createFeature($scope.mapInstance, layerId, geoJson);
+            self.createFeature = function (geoJson) {
+                return GALayerService.createFeature($scope.mapInstance, geoJson);
             };
 
             self.addFeatureToLayer = function (layerId, feature) {

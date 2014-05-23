@@ -679,7 +679,7 @@ describe(
 			var passed = false;
 			try {
 				var layer = $scope.mapController.getLayers()[0];
-				var feature = $scope.mapController.createFeature(layer.id, $scope.testFeature);
+				var feature = $scope.mapController.createFeature($scope.testFeature);
 				expect(feature != null).toBe(true);
 				passed = true;
 			} catch (e) {
@@ -690,7 +690,7 @@ describe(
 			var passed = false;
 			try {
 				var layer = $scope.mapController.getLayers()[0];
-				var feature = $scope.mapController.createFeature(layer.id, $scope.testFeature);
+				var feature = $scope.mapController.createFeature($scope.testFeature);
 				var featureDto = $scope.mapController.addFeatureToLayer(layer.id, feature);
 				expect(feature != null).toBe(true);
 				expect(featureDto != null).toBe(true);

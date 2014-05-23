@@ -205,7 +205,7 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
             layerOptions.centerPosition = service.parselatLong(layerOptions.centerPosition);
             return layerOptions;
         },
-        createFeature: function (mapInstance, layerId, geoJson, isLonLatOrderValid) {
+        createFeature: function (mapInstance, geoJson) {
             var reader = new OpenLayers.Format.GeoJSON({
                 'externalProjection': 'EPSG:4326', // TODO hardcoded projection
                 'internalProjection': mapInstance.projection

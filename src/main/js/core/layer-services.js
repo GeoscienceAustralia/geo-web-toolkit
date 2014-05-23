@@ -50,9 +50,9 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             var service = mapLayerServiceLocator.getImplementation('olv2');
             return service.defaultLayerOptions(attrs, new GAConfig());
         },
-        createFeature: function (mapInstance, layerId, geoJson, isLonLatOrderValid) {
+        createFeature: function (mapInstance, geoJson) {
             var service = mapLayerServiceLocator.getImplementation('olv2');
-            return service.createFeature(mapInstance, layerId, geoJson, isLonLatOrderValid);
+            return service.createFeature(mapInstance, geoJson);
         },
         registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
             var service = mapLayerServiceLocator.getImplementation('olv2');

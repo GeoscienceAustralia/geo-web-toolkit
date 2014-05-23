@@ -78,8 +78,8 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     return deferred.promise;
                 };
 
-                self.createFeature = function (geoJsonFeature, isLonLatOrderValid) {
-                    return $scope.mapAPI.mapController.createFeature($scope.layerDto.id, geoJsonFeature, isLonLatOrderValid);
+                self.createFeature = function (geoJsonFeature) {
+                    return $scope.mapAPI.mapController.createFeature(geoJsonFeature);
                 };
 
                 self.removeFeature = function (featureId) {
@@ -111,7 +111,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 
                 var addLayerCallback = function () {
                     for (var i = 0; i < $scope.gaFeatures.length; i++) {
-                        var feature = mapController.createFeature($scope.layerDto.id, $scope.gaFeatures[i].feature);
+                        var feature = mapController.createFeature($scope.gaFeatures[i].feature);
                         $scope.gaFeatures[i].deferred.resolve(feature);
                     }
                 };
@@ -160,7 +160,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
  * @restrict E
  * @example
  */
-app.directive('gaFeature', [ '$timeout', function ($timeout) {
+app.directive('gaFeature', [function () {
     'use strict';
     return {
         restrict: "E",
@@ -184,14 +184,14 @@ app.directive('gaFeature', [ '$timeout', function ($timeout) {
                     //Remove old feature to be replaced
                     featureLayerController.removeFeature($scope.featureDto.id);
 
-                    var feature = featureLayerController.createFeature($scope.geoJsonFeature, $scope.isLonLatOrderValid);
+                    var feature = featureLayerController.createFeature($scope.geoJsonFeature);
                     $scope.featureDto = featureLayerController.addFeature(feature);
                 }
             };
 
             if (featureLayerController.isLayerControllerReady()) {
                 if ($scope.geoJsonFeature != null) {
-                    var feature = featureLayerController.createFeature($scope.geoJsonFeature, $scope.isLonLatOrderValid);
+                    var feature = featureLayerController.createFeature($scope.geoJsonFeature);
                     $scope.featureDto = featureLayerController.addFeature(feature);
                 }
             } else {
