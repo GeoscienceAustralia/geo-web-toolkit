@@ -28,6 +28,7 @@ app.directive('gaLayerControl', ['GAWTUtils',
 		var templateCache =
 			'<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"/>' +
 			'<label for="{{elementId}}" ng-bind="layerData.name"></label>' +
+			'<div class="pull-right" ng-transclude></div>' +
 			'<div ng-show="layerData.visibility">' +
 			'<ga-layer-opacity-slider  map-controller="mapController" layer-opacity="layerData.opacity" layer-id="{{layerData.id}}"></ga-layer-opacity-slider>' +
 			'</div>';
@@ -74,7 +75,7 @@ app.directive('gaLayerControl', ['GAWTUtils',
 					}
 				};
 			},
-			transclude: false
+			transclude: true
 		};
 	}]);
 /**
