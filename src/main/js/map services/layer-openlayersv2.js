@@ -82,12 +82,9 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
                     visibility: args.visibility
                 });
             }
-
-            var postAddLayerData = args.postAddLayer();
-
-            if (postAddLayerData != null) {
+            if (args.postAddLayer != null) {
                 service.postAddLayerCache[layer.id] = service.postAddLayerCache[layer.id] || [];
-                service.postAddLayerCache[layer.id][postAddLayerData.id] = postAddLayerData.data;
+                service.postAddLayerCache[layer.id] = args.postAddLayer;
             }
 
             return layer;

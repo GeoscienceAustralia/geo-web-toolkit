@@ -614,6 +614,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 
             $timeout(function () {
                 asyncLayersDeferred = $q.defer();
+				//TODO use $q.all
                 asyncLayersDeferred.promise.then(function () {
                     var initialLayers = self.getLayers();
                     /**

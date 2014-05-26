@@ -32,11 +32,9 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 wfsFeatureAttributes: '@',
                 wfsGeometryName: '@',
                 visibility: '@',
-                onFeatureClick: '&',
-                onFeaturesLoaded: '&',
-                updateResultsEventName: '@',
                 controllerEmitEventName: '@',
                 postAddLayer: '&',
+				onLayerDestroy: '&',
                 isLonLatOrderValid: '@',
                 inputFormat: '@'
             },
@@ -103,8 +101,6 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 
                 var layerOptions = GALayerService.defaultLayerOptions(attrs);
                 layerOptions.datumProjection = mapController.getProjection();
-                layerOptions.onFeatureClick = $scope.onFeatureClick;
-                layerOptions.onFeaturesLoaded = $scope.onFeaturesLoaded;
                 layerOptions.postAddLayer = $scope.postAddLayer;
 
                 var layer = GALayerService.createFeatureLayer(layerOptions);
@@ -130,6 +126,9 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 }
 
                 $scope.$on('$destroy', function () {
+					if($scope.layerDto.id != null) {
+						$scope.onLayerDestroy({map: mapController.getMapInstance()});
+					}
                     //mapController.removeLayerById($scope.layerDto.id);
                 });
 

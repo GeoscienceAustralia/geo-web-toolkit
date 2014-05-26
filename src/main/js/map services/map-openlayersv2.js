@@ -84,20 +84,9 @@ app.service('olv2MapService', [
 				}
 			},
 			postLayerAddAction: function (mapInstance, layer) {
+				console.log('post layer add fired');
 				if (olv2LayerService.postAddLayerCache[layer.id]) {
-					if (olv2LayerService.postAddLayerCache[layer.id].FeaturePopup) {
-						var control = mapInstance.getControlsBy('id', 'featurePopups');
-
-						if (control.length === 0) {
-							control = new OpenLayers.Control.FeaturePopups({
-								id: 'featurePopups'
-							});
-							control.addLayer(layer, olv2LayerService.postAddLayerCache[layer.id].FeaturePopup);
-							mapInstance.addControl(control);
-						} else {
-							control[0].addLayerToControl(layer);
-						}
-					}
+					olv2LayerService.postAddLayerCache[layer.id]({map:mapInstance,layer:layer});
 				}
 			},
 			registerMapMouseMove: function (mapInstance, callback) {

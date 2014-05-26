@@ -409,6 +409,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 				post: function postLink($scope, $element, $attrs) {
 					var clients = [];
 					var attribute;
+					$scope.limitResults = 10;
 
 					$scope.$watch('searchEndPoints', function (newVal) {
 						if (newVal) {
@@ -473,7 +474,9 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 								$scope.onResults({
 									data: data
 								});
-								return data;
+								//Limit typeahead to 10 results
+								var results = data.slice(0,10);
+								return results;
 							});
 						} else {
 							return [];
@@ -487,6 +490,12 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 					};
 
 					$scope.searchButtonClicked = function () {
+						//For the case where typeahead populates the $scope.query value with the selected item
+						//We want to query with the value of the primary property as that will be the text in the
+						//input field.
+						if(typeof $scope.query === 'object' && $scope.query.properties != null) {
+							$scope.query = $scope.query.properties[$scope.primaryWfsProperty];
+						}
 						if ($scope.query != null) {
 							return searchFunction($scope.query).then(function (data) {
 								$scope.onPerformSearch({
