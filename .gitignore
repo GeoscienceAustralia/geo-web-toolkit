@@ -2,5 +2,7 @@
 /node/
 /node_modules/
 /config/
-
-
+/.idea/
+/.settings/
+.project
+.classpath
