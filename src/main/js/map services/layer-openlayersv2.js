@@ -186,6 +186,7 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
                     }
                 };
 
+                //TODO server can respond with a 200 status code even with an error. Needs to be handled.
                 if (data) {
                     resultArgs.options.layerInfo = data;
                     resultArgs.options.numZoomLevels = data.tileInfo.lods.length + 1;

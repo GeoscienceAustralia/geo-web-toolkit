@@ -278,7 +278,7 @@ app.service('olv2MapService', [
 			 * mapController.zoomToExtent(bounds);
 			 * */
 			zoomToExtent: function (mapInstance, extent) {
-				mapInstance.zoomToExtent(extent, true);
+				mapInstance.zoomToExtent(extent, false);
 			},
 			//TODO sensible errors when unsupported layerId is used.
 			zoomToLayer: function (mapInstance, layerId) {
@@ -415,7 +415,7 @@ app.service('olv2MapService', [
 					markers.addMarker(marker);
 				}
 			},
-			getLonLatFromPixel: function (mapInstance, x, y) {
+			getLonLatFromPixel: function (mapInstance, x, y, projection) {
 				//TODO return gaMaps data structure, eg obj = { lat: Number,lon: Number }
 				//If olv2 returns this structure then, should a new object get created instead
 				//of reference to olv2 obj?
@@ -429,7 +429,10 @@ app.service('olv2MapService', [
 					x: x,
 					y: y
 				});
-				if (service.displayProjection && service.displayProjection !== mapInstance.projection) {
+
+				if(projection) {
+					result = result.transform(mapInstance.projection, projection);
+				} else if (service.displayProjection && service.displayProjection !== mapInstance.projection) {
 					result = result.transform(mapInstance.projection, service.displayProjection);
 				}
 				return result;

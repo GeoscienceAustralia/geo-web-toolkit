@@ -177,8 +177,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <code><pre>var lonLat = mapController.getLonLatFromPixel(200,500)
              * // eg, lonLat equals lat: -30.967, lon: 108.552</pre></code>
              * */
-            self.getLonLatFromPixel = function (x, y) {
-                return GAMapService.getLonLatFromPixel($scope.mapInstance, x, y);
+            self.getLonLatFromPixel = function (x, y, projection) {
+                return GAMapService.getLonLatFromPixel($scope.mapInstance, x, y, projection);
             };
 
             /**
@@ -614,7 +614,6 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 
             $timeout(function () {
                 asyncLayersDeferred = $q.defer();
-				//TODO use $q.all
                 asyncLayersDeferred.promise.then(function () {
                     var initialLayers = self.getLayers();
                     /**
