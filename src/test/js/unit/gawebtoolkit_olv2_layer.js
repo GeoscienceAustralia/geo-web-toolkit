@@ -78,7 +78,7 @@ describe(
 					'</ga-map>');
 			$compile(element)($scope);
 			$scope.$digest();
-
+            $timeout.flush();
 		}));
 		it('Should fire layer service function "createLayer" without an exception given valid value', function () {
 
@@ -106,9 +106,13 @@ describe(
 			};
 			var layerOptions = layerService.defaultLayerOptions(args);
 			var layer = layerService.createLayer(layerOptions);
-			var layerDto = $scope.mapController.addLayer(layer);
-			expect(layerDto != null).toBe(true);
-			expect(layerDto.name).toBe("Foo");
+			var layerDto;
+                $scope.mapController.addLayer(layer).then(function (resultLayerDto) {
+                    layerDto = resultLayerDto;
+                    expect(layerDto != null).toBe(true);
+                    expect(layerDto.name).toBe("Foo");
+            });
+
 		});
 		it('Should fire mapController function "zoomToMaxExtent" without an exception given valid map instance', function () {
 			var passed = false;
@@ -239,15 +243,18 @@ describe(
 			expect(passed).toBe(true);
 		});
 		it('Should fire mapController function "getLayers" without an exception ', function () {
-			var passed = false;
-			try {
-				var layers = $scope.mapController.getLayers();
-				expect(layers != null).toBe(true);
-				expect(layers.length > 0).toBe(true);
-				passed = true;
-			} catch (e) {
-			}
-			expect(passed).toBe(true);
+            $timeout(function () {
+                var passed = false;
+                try {
+                    var layers = $scope.mapController.getLayers();
+                    expect(layers != null).toBe(true);
+                    expect(layers.length > 0).toBe(true);
+                    passed = true;
+                } catch (e) {
+                }
+                expect(passed).toBe(true);
+            });
+
 		});
 		it('Should fire mapController function "getLayersByName" without an exception given valid input', function () {
 			var passed = false;
@@ -428,8 +435,7 @@ describe(
 		it('Should fire mapController function "isBaseLayer" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				//base layers are the end of the array cause olv2 says so
-				var layer = $scope.mapController.getLayers()[2];
+				var layer = $scope.mapController.getLayers()[0];
 				var isbaselayer = $scope.mapController.isBaseLayer(layer.id);
 				expect(isbaselayer).toBe(true);
 				passed = true;
@@ -657,7 +663,7 @@ describe(
 		it('Should fire mapController function "filterFeatureLayer" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				var layer = $scope.mapController.getLayers()[0];
+				var layer = $scope.mapController.getLayers()[2];
 				$scope.mapController.filterFeatureLayer(layer.id, 'test', 'NAME');
 				passed = true;
 			} catch (e) {
@@ -667,7 +673,7 @@ describe(
 		it('Should fire mapController function "getLayerFeatures" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				var layer = $scope.mapController.getLayers()[0];
+				var layer = $scope.mapController.getLayers()[2];
 				var features = $scope.mapController.getLayerFeatures(layer.id);
 				expect(features.length > 0).toBe(true);
 				passed = true;
@@ -678,7 +684,7 @@ describe(
 		it('Should fire mapController function "createFeature" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				var layer = $scope.mapController.getLayers()[0];
+				var layer = $scope.mapController.getLayers()[2];
 				var feature = $scope.mapController.createFeature($scope.testFeature);
 				expect(feature != null).toBe(true);
 				passed = true;
@@ -689,7 +695,7 @@ describe(
 		it('Should fire mapController function "addFeatureToLayer" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				var layer = $scope.mapController.getLayers()[0];
+				var layer = $scope.mapController.getLayers()[2];
 				var feature = $scope.mapController.createFeature($scope.testFeature);
 				var featureDto = $scope.mapController.addFeatureToLayer(layer.id, feature);
 				expect(feature != null).toBe(true);
@@ -767,7 +773,7 @@ describe(
 		it('Should fire mapController function "removeFeatureFromLayer" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				var layer = $scope.mapController.getLayers()[0];
+				var layer = $scope.mapController.getLayers()[2];
 				var features = $scope.mapController.getLayerFeatures(layer.id);
 
 				expect(features != null).toBe(true);
@@ -785,7 +791,7 @@ describe(
 		it('Should fire mapController function "raiseLayerDrawOrder" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				var layer = $scope.mapController.getLayers()[0];
+				var layer = $scope.mapController.getLayers()[2];
 				$scope.mapController.raiseLayerDrawOrder(layer.id, 1);
 				var otherLayer = $scope.mapController.getLayers()[0];
 				//result from first get layers is not the same as other layers due to\
@@ -936,6 +942,7 @@ describe(
 					'<div id="gamap"></div></ga-map>');
 			$compile(element)($scope);
 			$scope.$digest();
+            $timeout.flush();
 		}));
 
 		//Tests
@@ -1079,55 +1086,61 @@ describe(
 
 			element = angular
 				.element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-					'<ga-feature-layer layer-name="Australian Landsat Mosaic">' +
+                    '<ga-map-layer layer-name="Australian Landsat Mosaic - Base layer"' +
+                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                    'wrap-date-line="true"' +
+                    'layer-type="WMS"' +
+                    'is-base-layer="true"' +
+                    '></ga-map-layer>' +
+					'<ga-feature-layer layer-name="Australian Landsat Mosaic - feature Layer">' +
 					'<ga-feature geo-json-feature="testFeature"></ga-feature>' +
 					'</ga-feature-layer>' +
 					'</ga-map><div id="gamap"></div>');
 			$compile(element)($scope);
 			$scope.$digest();
-
+            $timeout.flush();
 		}));
 
-		it('Should create a single layer for features', function () {
-			expect($scope.mapController.getMapInstance().layers.length === 1).toBe(true);
-			expect(Object.prototype.toString.call($scope.mapController.getMapInstance().layers[0].features) === '[object Array]').toBe(true);
+		it('Should create a single layer for features and a single base layer', function () {
+			expect($scope.mapController.getMapInstance().layers.length === 2).toBe(true);
+			expect(Object.prototype.toString.call($scope.mapController.getMapInstance().layers[1].features) === '[object Array]').toBe(true);
 		});
 
 		it('Should create a single feature on the parent layer', function () {
-			expect($scope.mapController.getMapInstance().layers[0].features.length === 1).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features.length === 1).toBe(true);
 		});
 
 		it('Should create and add a feature to the parent layer', function () {
-			expect($scope.mapController.getMapInstance().layers[0].features[0] != null).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0] != null).toBe(true);
 		});
 
 		it('Should create a feature from a geoJson object', function () {
-			expect($scope.mapController.getMapInstance().layers[0].features[0].geometry != null).toBe(true);
-			expect($scope.mapController.getMapInstance().layers[0].features[0].geometry.x != null).toBe(true);
-			expect($scope.mapController.getMapInstance().layers[0].features[0].geometry.y != null).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].geometry != null).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].geometry.x != null).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].geometry.y != null).toBe(true);
 		});
 
 		it('Should create a feature on correct layer', function () {
-			expect($scope.mapController.getMapInstance().layers[0].features[0].layer === $scope.mapController.getMapInstance().layers[0]).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].layer === $scope.mapController.getMapInstance().layers[1]).toBe(true);
 		});
 
 		it('Should create a feature from a geoJson object with correct position', function () {
 			//Projection from 4326 to 102100
-			expect($scope.mapController.getMapInstance().layers[0].features[0].geometry.x > 13064344).toBe(true);
-			expect($scope.mapController.getMapInstance().layers[0].features[0].geometry.y < -2910668).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].geometry.x > 13064344).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].geometry.y < -2910668).toBe(true);
 		});
 
 		it('Should create a feature from a geoJson of the correct type', function () {
 			//Projection from 4326 to 102100
-			expect($scope.mapController.getMapInstance().layers[0].features[0].type === 'Feature').toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].type === 'Feature').toBe(true);
 			//Ie, is a point
-			expect($scope.mapController.getMapInstance().layers[0].features[0].geometry.bounds == null).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].geometry.id.indexOf('Point') !== -1).toBe(true);
 		});
 
 		it('Should have properties of the geoJson feature', function () {
-			expect($scope.mapController.getMapInstance().layers[0].features[0].data != null).toBe(true);
-			expect($scope.mapController.getMapInstance().layers[0].features[0].data.name === 'Testing name').toBe(true);
-			expect($scope.mapController.getMapInstance().layers[0].features[0].data.anotherProp === 'Another value').toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].data != null).toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].data.name === 'Testing name').toBe(true);
+			expect($scope.mapController.getMapInstance().layers[1].features[0].data.anotherProp === 'Another value').toBe(true);
 		});
 
 		it('Should be able to modify the geoJson model and changes be reflected in OpenLayers', function () {
@@ -1136,7 +1149,7 @@ describe(
 			$scope.testFeature = featureCopy;
 			$scope.$digest();
 			$timeout(function () {
-				expect($scope.mapController.getMapInstance().layers[0].features[0].data.name).toBe('Test changing');
+				expect($scope.mapController.getMapInstance().layers[1].features[0].data.name).toBe('Test changing');
 			});
 
 		});

@@ -183,17 +183,18 @@ describe(
       'gawebtoolkit core directives unit tests',
       function() {
          'use strict';
-         var $compile, $scope, element;
+         var $compile, $scope, element, layersReadyListener,$timeout;
 
          // Load the myApp module, which contains the directive
          beforeEach(module('testApp'));
 
          // Store references to $rootScope and $compile
          // so they are available to all tests in this describe block
-         beforeEach(inject(function(_$compile_, _$rootScope_) {
+         beforeEach(inject(function(_$compile_, _$rootScope_,_$timeout_) {
             // The injector unwraps the underscores (_) from around the parameter names when matching
             $compile = _$compile_;
             $scope = _$rootScope_;
+            $timeout = _$timeout_;
             element = angular
                   .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"'
                         + 'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"'
@@ -206,8 +207,18 @@ describe(
             $scope.$on('mapControllerReady', function(event, args) {
                $scope.mapController = args;
             });
+             layersReadyListener = jasmine.createSpy('layersReadyListener');
+             $scope.$on('layersReady', function(event, args) {
+                 layersReadyListener(args);
+                 $scope.layerThatAreReady = args;
+             });
+
+             $scope.mapIsReady = function() {
+                return $scope.layerThatAreReady != null;
+             };
             $compile(element)(_$rootScope_);
             $scope.$digest();
+            $timeout.flush();
          }));
 
          it('Should generate an openlayers view within the specified div with matching id', function() {
@@ -220,7 +231,9 @@ describe(
 
          it('Should have added 1 layer', function() {
             //Test that a layer is being added
-            expect($scope.mapController.getLayers().length === 1).toBe(true);
+             expect(layersReadyListener).toHaveBeenCalled();
+             expect(layersReadyListener).toHaveBeenCalledWith($scope.layerThatAreReady);
+             expect($scope.mapController.getLayers().length === 1).toBe(true);
          });
          it('Should have added 1 layer with the name of "Australian Landsat Mosaic"', function() {
             expect($scope.mapController.getLayers()[0].name === 'Australian Landsat Mosaic').toBe(true);

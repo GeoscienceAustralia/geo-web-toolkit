@@ -21,7 +21,8 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
  * @restrict E
  * @example
  */
-app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService', '$q', function ($timeout, $compile, GAMapService, GALayerService, $q) {
+app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService', '$q','$log',
+	function ($timeout, $compile, GAMapService, GALayerService, $q, $log) {
     'use strict';
     return {
         restrict: "E",
@@ -34,20 +35,21 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             initialExtent: '='
         },
         controller: function ($scope) {
+			$log.info('map creation started...');
             $('#' + $scope.mapElementId).empty();
-            var asyncLayersDeferred;
+            $scope.asyncLayersDeferred = $q.defer();
             $scope.waitingForNumberOfLayers = 0;
             var waiting = false;
             var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
                 if (waiting && val === 0) {
-                    asyncLayersDeferred.resolve();
+					$scope.asyncLayersDeferred.resolve();
                     waitForLayersWatch();
                 }
                 if (val > 0) {
                     waiting = true;
                 }
             });
-
+            $scope.layerPromises = [];
             var self = this;
             /**
              * @ngdoc method
@@ -69,15 +71,35 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * var dto = $scope.mapController.addLayer(layer);</pre></code>
              * */
             self.addLayer = function (layer) {
-                //If the data bound to layers changes and layers are re-generated
-                //UI components will want to listen for 'layerAdded' to update
-                //list of current layers for UI
-                var layerDto = GAMapService.addLayer($scope.mapInstance, layer);
-                if ($scope.layersReady) {
-                    $scope.$emit('layerAdded', layer);
-                }
-                return layerDto;
+				if(layer.then !== null && typeof layer.then === 'function') {
+					if ($scope.layersReady) {
+						layer.then(function (resultLayer) {
+							var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer);
+							$scope.$emit('layerAdded', layerDto);
+						});
+					} else {
+						$scope.layerPromises.push(layer);
+					}
+					return layer;
+				}else {
+					var deferred = $q.defer();
+					if ($scope.layersReady) {
+						$log.info(layer);
+						var layerDto = GAMapService.addLayer($scope.mapInstance, layer);
+						$scope.$emit('layerAdded', layerDto);
+						resolveSyncLayer(deferred,layerDto);
+					} else {
+						$scope.layerPromises.push(deferred.promise);
+						resolveSyncLayer(deferred,layer);
+					}
+					return deferred.promise;
+				}
             };
+			var resolveSyncLayer = function (deferred,layer) {
+				$timeout(function () {
+					deferred.resolve(layer);
+				});
+			};
             /**
              * @ngdoc method
              * @name gawebtoolkit.core.map-directives:gaMap#zoomToMaxExtent
@@ -172,6 +194,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @methodOf gawebtoolkit.core.map-directives:gaMap
              * @param {Number} x - number of pixels from the left of the div containing the map
              * @param {Number} y - number of pixels from the top of the div containing the map
+             * @param {string} projection - a projection to convert to from the maps projection
              * @return {LonLat} An object containing Latitude and Longitude in the projection of the map
              * @example
              * <code><pre>var lonLat = mapController.getLonLatFromPixel(200,500)
@@ -559,10 +582,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             self.raiseLayerDrawOrder = function (layerId, delta) {
                 GALayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta);
             };
-            var layersReadyDeferred = $q.defer();
-            self.layersReady = function () {
-                return layersReadyDeferred.promise;
-            };
+//            var layersReadyDeferred = $q.defer();
+//            self.layersReady = function () {
+//                return layersReadyDeferred.promise;
+//            };
 
             $scope.gaMap = self;
 
@@ -608,42 +631,51 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             $scope.$broadcast('mapControllerReady', self);
 
             $scope.$on('$destroy', function () {
+				$log.info('map destruction started...');
                 //clean up resources
                 $(window).off("resize.Viewport");
+				//Wait for digestion
+				$timeout(function () {
+					$log.info('map destruction finishing...');
+					$log.info('removing ' + $scope.mapInstance.layers.length +' layers...');
+					for (var i = 0; i < $scope.mapInstance.layers.length; i++) {
+						var layer = $scope.mapInstance.layers[i];
+						$scope.mapInstance.removeLayer(layer);
+					}
+				});
             });
 
-            $timeout(function () {
-                asyncLayersDeferred = $q.defer();
-                asyncLayersDeferred.promise.then(function () {
-                    var initialLayers = self.getLayers();
-                    /**
-                     * Sends an instance of all map layers when they are all loaded to parent listeners
-                     * @eventType emit
-                     * @event layersReady
-                     * */
-                    $scope.$emit('layersReady', initialLayers);
-                    /**
-                     * Sends an instance of all map layers when they are all loaded to child listeners
-                     * @eventType broadcast
-                     * @event layersReady
-                     * */
-                    $scope.$broadcast('layersReady', initialLayers);
-                    layersReadyDeferred.resolve(initialLayers);
 
-                    $scope.layersReady = true;
-                });
-                if ($scope.waitingForNumberOfLayers === 0) {
-                    asyncLayersDeferred.resolve();
-                }
-            });
         },
-        compile: function compile() {
-            return {
-                post: function postLink(scope, element, attributes) {
+        link: function (scope) {
+			//Wait for full digestion
+				scope.asyncLayersDeferred.promise.then(function () {
+					$q.all(scope.layerPromises).then(function(layers) {
+						var allLayerDtos = [];
+						for (var i = 0; i < layers.length; i++) {
+							var layer = layers[i];
+							var layerDto = GAMapService.addLayer(scope.mapInstance, layer);
+							allLayerDtos.push(layerDto);
+						}
+						/**
+						 * Sends an instance of all map layers when they are all loaded to parent listeners
+						 * @eventType emit
+						 * @event layersReady
+						 * */
+						scope.$emit('layersReady', allLayerDtos);
+						/**
+						 * Sends an instance of all map layers when they are all loaded to child listeners
+						 * @eventType broadcast
+						 * @event layersReady
+						 * */
+						scope.$broadcast('layersReady', allLayerDtos);
+						//layersReadyDeferred.resolve(allLayerDtos);
 
-                }
-            };
-        },
+						scope.layersReady = true;
+						scope.gaMap.setInitialPositionAndZoom();
+					});
+				});
+		},
         transclude: false
     };
 } ]);

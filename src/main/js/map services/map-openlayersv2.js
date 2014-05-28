@@ -15,7 +15,8 @@ app.service('olv2MapService', [
 	'GAWTUtils',
 	'GeoLayer',
 	'$q',
-	function (olv2LayerService, olv2MapControls, GAWTUtils,GeoLayer, $q) {
+	'$log',
+	function (olv2LayerService, olv2MapControls, GAWTUtils,GeoLayer, $q, $log) {
 		'use strict';
 		//This service provides functionality to answer questions about OLV2 layers, provided all the state
 		//This service contains no state, and a mapInstance must be provided.
@@ -84,10 +85,11 @@ app.service('olv2MapService', [
 				}
 			},
 			postLayerAddAction: function (mapInstance, layer) {
-				console.log('post layer add fired');
+				$log.info('post layer add fired');
 				if (olv2LayerService.postAddLayerCache[layer.id]) {
 					olv2LayerService.postAddLayerCache[layer.id]({map:mapInstance,layer:layer});
 				}
+				cleanClientCache(mapInstance,olv2LayerService);
 			},
 			registerMapMouseMove: function (mapInstance, callback) {
 				mapInstance.events.register("mousemove", mapInstance, callback);
@@ -649,5 +651,21 @@ app.service('olv2MapService', [
 			},
 			wfsClientCache: {}
 		};
+		function cleanClientCache(mapInstance, layerService) {
+			for(var cache in layerService.postAddLayerCache) {
+				if(layerService.postAddLayerCache.hasOwnProperty(cache)) {
+					var cacheInUse = false;
+					for (var i = 0; i < mapInstance.layers.length; i++) {
+						var layer = mapInstance.layers[i];
+						if(cache === layer.id) {
+							cacheInUse = true;
+						}
+					}
+					if(!cacheInUse) {
+						layerService.postAddLayerCache[cache] = null;
+					}
+				}
+			}
+		}
 		return service;
 	} ]);
