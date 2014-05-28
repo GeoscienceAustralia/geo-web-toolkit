@@ -83,9 +83,10 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
                 });
             }
             if (args.postAddLayer != null) {
-                service.postAddLayerCache[layer.id] = service.postAddLayerCache[layer.id] || [];
                 service.postAddLayerCache[layer.id] = args.postAddLayer;
             }
+			//Clean up any references to layers that no longer exist.
+
 
             return layer;
         },
@@ -203,6 +204,12 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
             layerOptions.centerPosition = service.parselatLong(layerOptions.centerPosition);
             return layerOptions;
         },
+		cleanupLayer: function (mapInstance, layerId) {
+			var layer = mapInstance.getLayersBy('id',layerId)[0];
+			if(layer != null) {
+				mapInstance.removeLayer(layer);
+			}
+		},
         createFeature: function (mapInstance, geoJson) {
 			var reader;
 			if(mapInstance.projection !== geoJson.crs.properties.name) {

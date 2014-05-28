@@ -10,7 +10,7 @@
 
     <groupId>au.gov.ga</groupId>
 	<artifactId>geo-web-toolkit</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>geo-web-toolkit</name>
 

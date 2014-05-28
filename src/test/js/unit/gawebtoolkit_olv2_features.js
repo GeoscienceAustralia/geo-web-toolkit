@@ -50,35 +50,40 @@ describe(
         //Tests
         it('Should be able to call "getFeatureInfo" with test data and not return errors.', function () {
             expect($scope.mapController !== null);
-            var passed = true;
-            try {
-                $scope.mapController.getFeatureInfo(
-                    'http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer',
-                    'testing',
-                    'test',
-                    'testGeoName',
-                    {x: 20,y:20}
-                );
-            }
-            catch (ex) {
-                passed = false;
-            }
-            expect(passed).toBe(true);
+            $timeout(function () {
+                var passed = true;
+                try {
+                    $scope.mapController.getFeatureInfo(
+                        'http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer',
+                        'testing',
+                        'test',
+                        'testGeoName',
+                        {x: 20,y:20}
+                    );
+                }
+                catch (ex) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
+            });
+
         });
         it('Should be able to call "getFeatureInfoFromLayer" with test data and not return errors.', function () {
             expect($scope.mapController !== null);
-            var passed = true;
-            try {
-                var layers = $scope.mapController.getLayers();
-                $scope.mapController.getFeatureInfoFromLayer(function () {
-                        //return feature //TODO currently no way to mock due to reliance on OL
-                    },layers[0].id,
-                    {x: 20,y:20}
-                );
-            }
-            catch (ex) {
-                passed = false;
-            }
-            expect(passed).toBe(true);
+            $timeout(function () {
+                var passed = true;
+                try {
+                    var layers = $scope.mapController.getLayers();
+                    $scope.mapController.getFeatureInfoFromLayer(function () {
+                            //return feature //TODO currently no way to mock due to reliance on OL
+                        },layers[0].id,
+                        {x: 20,y:20}
+                    );
+                }
+                catch (ex) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
+            });
         });
     });
