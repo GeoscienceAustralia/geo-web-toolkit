@@ -60,6 +60,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 			link: function ($scope, element, attrs, mapController) {
 				attrs.$observe('refreshLayer', function (newVal, oldVal) {
 					if(newVal !== oldVal) {
+						$log.info('refresh for - ' + $scope.layerName);
 						$scope.initialiseLayer();
 					}
 				});
@@ -168,21 +169,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 					$(window).off("resize.Viewport");
 				});
 
-//				attrs.$observe('layerUrl', function (newVal, oldVal) {
-//					if (newVal) {
-//						$scope.initialiseLayer();
-//					}
-//				});
-//
-//				attrs.$observe('layers', function (newVal, oldVal) {
-//					if (newVal) {
-//						$scope.initialiseLayer();
-//					}
-//				});
-				if (attrs.layerType != null && attrs.layerType.indexOf('Google') === 0) {
-					$scope.initialiseLayer();
-				}
-                if($scope.layerType != null && $scope.layerType.length > 0) {
+                if(attrs.refreshLayer == null && $scope.layerType != null && $scope.layerType.length > 0) {
                     $scope.initialiseLayer();
                 }
 			}
