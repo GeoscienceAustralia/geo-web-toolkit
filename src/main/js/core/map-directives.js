@@ -32,13 +32,14 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             displayProjection: '@',
             centerPosition: '@',
             zoomLevel: '@',
-            initialExtent: '='
+			initialExtent: '='
         },
         controller: function ($scope) {
 			$log.info('map creation started...');
             $('#' + $scope.mapElementId).empty();
             $scope.asyncLayersDeferred = $q.defer();
             $scope.waitingForNumberOfLayers = 0;
+            $scope.initialPositionSet = false;
             var waiting = false;
             var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
                 if (waiting && val === 0) {
@@ -644,8 +645,6 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 					}
 				});
             });
-
-
         },
         link: function (scope) {
 			//Wait for full digestion
