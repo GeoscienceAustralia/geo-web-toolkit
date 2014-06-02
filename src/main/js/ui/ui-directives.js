@@ -163,6 +163,7 @@ app.directive('gaLayersDropDown', [ function () {
 			selectedModel: '=',
 			controllerEmitEventName: '@',
 			onSelectedLayerChanged: '&',
+			onLayersInitialised: '&',
 			layerGroupId: '@',
 			includeNone: '@'
 		},
@@ -189,7 +190,7 @@ app.directive('gaLayersDropDown', [ function () {
 					}
 
 					$scope.selectedModel = newVal[0].id;
-					$scope.onSelectedLayerChanged({
+					$scope.onLayersInitialised({
 						layerId: $scope.selectedModel,
 						groupId: $scope.layerGroupId
 					});
@@ -475,8 +476,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 									data: data
 								});
 								//Limit typeahead to 10 results
-								var results = data.slice(0,10);
-								return results;
+                                return data.slice(0, 10);
 							});
 						} else {
 							return [];

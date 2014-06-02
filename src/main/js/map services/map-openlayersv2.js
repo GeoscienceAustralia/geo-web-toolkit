@@ -335,7 +335,7 @@ app.service('olv2MapService', [
 						.getParameterByName('zoom'));
 				} else if (args.initialExtent != null) {
 					var bounds = service.createBounds(mapInstance, args.initialExtent, service.displayProjection);
-					service.zoomToExtent(mapInstance, bounds);
+                    mapInstance.zoomToExtent(bounds, true);
 				} else if (args.centerPosition) {
 					var position = JSON.parse(args.centerPosition);
 					mapInstance.setCenter(new OpenLayers.LonLat(position.lon, position.lat), args.zoomLevel);
@@ -534,7 +534,7 @@ app.service('olv2MapService', [
 					layer = layers[0];
 				} else {
 					//Throw error;
-
+                    throw new Error("Invalid layer id");
 				}
 				var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
 				var filter = new OpenLayers.Filter.Spatial({

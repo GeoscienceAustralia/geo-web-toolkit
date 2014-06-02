@@ -141,6 +141,9 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
                     attribution: args.layerAttribution
                 }
             };
+            if(resultArgs.options.isBaseLayer) {
+                resultArgs.options.resolutions = args.resolutions;
+            }
             return new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzTileCachePath, resultArgs.options);
         },
         createWMSLayer: function (args) {

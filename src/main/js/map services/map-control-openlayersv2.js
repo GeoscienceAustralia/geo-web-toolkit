@@ -13,7 +13,6 @@ app.service('olv2MapControls', [function () {
 		{name:'scale', constructor: OpenLayers.Control.Scale},
 		{name:'scaleline', constructor: OpenLayers.Control.ScaleLine},
 		{name:'panzoombar', constructor: OpenLayers.Control.PanZoomBar},
-		{name:'darwin.panzoombar', constructor: darwin.PanZoomBar},
 		{name:'mouseposition', constructor: OpenLayers.Control.MousePosition},
 		{name:'attribution', constructor: OpenLayers.Control.Attribution},
 		{name:'measureline', constructor: OpenLayers.Control.Measure, customParams: [OpenLayers.Handler.Path]},
@@ -56,7 +55,10 @@ app.service('olv2MapControls', [function () {
 				}
 			}
 			return control;
-		}
+		},
+        registerControl: function (name, constructor) {
+            supportControls.push({name:name,constructor: constructor});
+        }
 	};
 	return service;
 }]);
