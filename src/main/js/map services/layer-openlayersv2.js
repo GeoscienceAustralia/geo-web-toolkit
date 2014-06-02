@@ -142,7 +142,12 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
                 }
             };
             if(resultArgs.options.isBaseLayer) {
-                resultArgs.options.resolutions = args.resolutions;
+                if(args.resolutions) {
+                    resultArgs.options.resolutions = args.resolutions;
+                }
+                if(args.zoomOffset) {
+                    resultArgs.options.zoomOffset = args.zoomOffset;
+                }
             }
             return new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzTileCachePath, resultArgs.options);
         },
