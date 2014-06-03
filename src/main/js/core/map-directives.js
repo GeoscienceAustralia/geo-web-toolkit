@@ -42,6 +42,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             $scope.initialPositionSet = false;
             var waiting = false;
             var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
+                $log.info('layers remaining - ' + val);
                 if (waiting && val === 0) {
 					$scope.asyncLayersDeferred.resolve();
                     waitForLayersWatch();
@@ -75,11 +76,17 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 				if(layer.then !== null && typeof layer.then === 'function') {
 					if ($scope.layersReady) {
 						layer.then(function (resultLayer) {
-							var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer);
-							$scope.$emit('layerAdded', layerDto);
+                            if(resultLayer == null) {
+                                //Failed to load, skip
+                                //Lower layer throws error with data
+                                $log.info("failed to load layer");
+                            } else {
+                                var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer);
+                                $scope.$emit('layerAdded', layerDto);
+                            }
 						});
 					} else {
-						$scope.layerPromises.push(layer);
+						$scope.layerPromises.push(layer.$promise);
 					}
 					return layer;
 				}else {
@@ -650,11 +657,16 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 			//Wait for full digestion
 				scope.asyncLayersDeferred.promise.then(function () {
 					$q.all(scope.layerPromises).then(function(layers) {
+                        $log.info('resolving all layers');
 						var allLayerDtos = [];
 						for (var i = 0; i < layers.length; i++) {
 							var layer = layers[i];
-							var layerDto = GAMapService.addLayer(scope.mapInstance, layer);
-							allLayerDtos.push(layerDto);
+                            if(layer == null) {
+                                $log.info("Layer failed to load");
+                            } else {
+                                var layerDto = GAMapService.addLayer(scope.mapInstance, layer);
+                                allLayerDtos.push(layerDto);
+                            }
 						}
 						/**
 						 * Sends an instance of all map layers when they are all loaded to parent listeners

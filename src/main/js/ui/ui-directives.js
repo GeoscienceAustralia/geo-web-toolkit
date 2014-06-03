@@ -26,11 +26,16 @@ app.directive('gaLayerControl', ['GAWTUtils',
 	function (GAWTUtils) {
 		'use strict';
 		var templateCache =
-			'<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"/>' +
+			'<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>' +
 			'<label for="{{elementId}}" ng-bind="layerData.name"></label>' +
 			'<div class="pull-right" ng-transclude></div>' +
 			'<div ng-show="layerData.visibility">' +
-			'<ga-layer-opacity-slider  map-controller="mapController" layer-opacity="layerData.opacity" layer-id="{{layerData.id}}"></ga-layer-opacity-slider>' +
+			'<ga-layer-opacity-slider ' +
+                'map-controller="mapController" ' +
+                'layer-opacity="layerData.opacity" ' +
+                'layer-id="{{layerData.id}}"' +
+                'layer-disabled="layerDisabled">' +
+            '</ga-layer-opacity-slider>' +
 			'</div>';
 		return {
 			restrict: "E",
@@ -40,7 +45,8 @@ app.directive('gaLayerControl', ['GAWTUtils',
 				mapController: '=',
 				onVisible: '&',
 				onHidden: '&',
-				onOpacityChange: '&'
+				onOpacityChange: '&',
+                layerDisabled: '='
 			},
 			controller: function ($scope) {
 				$scope.elementId = GAWTUtils.generateUuid();
@@ -93,7 +99,8 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 		scope: {
 			layerId: '@',
 			layerOpacity: '=',
-			mapController: '='
+			mapController: '=',
+            layerDisabled: '='
 		},
 		controller: function ($scope) {
 			$scope.changeOpacity = function () {
@@ -116,7 +123,8 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 					range: false,
 					step: 0.01,
 					change: $scope.changeOpacitySlide,
-					value: $scope.layerOpacity
+					value: $scope.layerOpacity,
+                    disabled: $scope.layerDisabled
 				};
 			};
 

@@ -228,6 +228,9 @@ app.directive('gaFeature', [function () {
 				if ($scope.featureDto != null) {
 					featureLayerController.removeFeature($scope.featureDto.id);
 				}
+                if($scope.geoJsonFeatureWatch != null) {
+                    $scope.geoJsonFeatureWatch();
+                }
 			});
 
 			//Data ready on link, create first feature and then listen for changes
@@ -238,7 +241,7 @@ app.directive('gaFeature', [function () {
 //					$scope.featureDto = resultFeature;
 //				});
 //			}
-			$scope.$watch('geoJsonFeature', createFeature);
+            $scope.geoJsonFeatureWatch = $scope.$watch('geoJsonFeature', createFeature);
 		}
 	};
 } ]);

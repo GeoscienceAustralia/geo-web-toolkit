@@ -9,7 +9,7 @@ var app = angular.module('gawebtoolkit.mapservices.layer.openlayersv2', []);
 /*
  * This service wraps olv2 layer functionality that is used via the GAMaps and GALayer service
  * */
-app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
+app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$timeout) {
     'use strict';
     var service = {
         xyzTileCachePath: "/tile/${z}/${y}/${x}",
@@ -178,10 +178,18 @@ app.service('olv2LayerService', [ '$log', '$q', function ($log, $q) {
             //TODO incorporate default options to args via extend
             var deferred = $q.defer();
             var jsonp = new OpenLayers.Protocol.Script();
+            //Due to the way OpenLayers.Protocol.Script works with a adding a new script tag to the head
+            //of the page, we have to manually set a timeout here for 404 layers
+            var scriptTimeout = $timeout(function () {
+                deferred.reject('LayerTimeout');
+            }, 6000);
             jsonp.createRequest(args.layerUrl, {
                 f: 'json',
                 pretty: 'true'
             }, function (data) {
+                //cancel timeout
+                $timeout.cancel(scriptTimeout);
+                $log.info(data);
                 var resultArgs = {
                     layerName: args.layerName,
                     layerUrl: args.layerUrl,

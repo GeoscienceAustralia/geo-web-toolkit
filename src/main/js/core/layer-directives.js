@@ -29,7 +29,8 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				visibility: '@',
 				isBaseLayer: '@',
 				controllerEmitEventName: '@',
-				refreshLayer: '@'
+				refreshLayer: '@',
+                onError:'&'
 			},
 			transclude: false,
 			controller: function ($scope) {
@@ -103,7 +104,8 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 					if(layerOptions.layerType.length === 0) {
 						return;
 					}
-					layer = GALayerService.createLayer(layerOptions);
+                    layer = GALayerService.createLayer(layerOptions);
+
 					//Async layer add
 					mapController.waitingForAsyncLayer();
 					mapController.addLayer(layer).then(function (layerDto) {
@@ -112,7 +114,14 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						mapController.asyncLayerLoaded();
 						$log.info('construction complete...');
 						$scope.constructionInProgress = false;
-					});
+					}, function (error) {
+                        $scope.$emit(layerOptions.layerName + "_error", layerOptions);
+                        $scope.onError({message:"layer failed to load",layer:layerOptions});
+                        addLayerCallback();
+                        mapController.asyncLayerLoaded();
+                        $log.info('construction failed...');
+                        $scope.constructionInProgress = false;
+                    });
 				};
 
 				attrs.$observe('visibility', function () {
