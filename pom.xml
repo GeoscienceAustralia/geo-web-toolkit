@@ -156,7 +156,7 @@
 				<artifactId>frontend-maven-plugin</artifactId>
 				<version>0.0.15</version>
 
-				<!--<executions>
+				<executions>
 					<execution>
 						<id>install node and npm</id>
 						<goals>
@@ -172,13 +172,13 @@
 						<goals>
 							<goal>npm</goal>
 						</goals>
-						&lt;!&ndash; Optional configuration which provides for running any npm command &ndash;&gt;
+						<!-- Optional configuration which provides for running any npm command -->
 						<configuration>
 							<arguments>install</arguments>
 						</configuration>
 					</execution>
 
-                    &lt;!&ndash; Run JS tests using Karma during test phase &ndash;&gt;
+                    <!-- Run JS tests using Karma during test phase -->
 					<execution>
 						<id>javascript tests</id>
 						<phase>test</phase>
@@ -189,7 +189,7 @@
 							<karmaConfPath>${js.test.src.dir}/karma.ci.conf.js</karmaConfPath>
 						</configuration>
 					</execution>
-				</executions>-->
+				</executions>
 
 			</plugin>
 
