@@ -188,7 +188,11 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 pretty: 'true'
             }, function (data) {
                 //cancel timeout
-                $timeout.cancel(scriptTimeout);
+                $timeout.cancel(scriptTimeout)
+                if(data.error != null && data.error.code != null) {
+                    deferred.reject('LayerError - ' + data.error.code);
+                    return;
+                }
                 $log.info(data);
                 var resultArgs = {
                     layerName: args.layerName,
