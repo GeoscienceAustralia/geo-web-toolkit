@@ -188,7 +188,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 pretty: 'true'
             }, function (data) {
                 //cancel timeout
-                $timeout.cancel(scriptTimeout)
+                $timeout.cancel(scriptTimeout);
                 if(data.error != null && data.error.code != null) {
                     deferred.reject('LayerError - ' + data.error.code);
                     return;
@@ -345,8 +345,12 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             };
         },
         registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
-            var layer = service.getLayerById(mapInstance, layerId);
-            layer.events.register(eventName, undefined, callback);
+            var layer = mapInstance.getLayersBy('id', layerId)[0];
+            layer.events.register(eventName, layer, callback);
+        },
+        unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
+            var layer = mapInstance.getLayersBy('id', layerId)[0];
+            layer.events.unregister(eventName,layer,callback);
         },
         //Should this be moved to a separate service as it is more of a helper?
         getMarkerCountForLayerName: function (mapInstance, layerName) {

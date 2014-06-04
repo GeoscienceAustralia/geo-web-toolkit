@@ -525,6 +525,14 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GAMapService.registerMapEvent($scope.mapInstance, eventName, callback);
             };
 
+            self.registerLayerEvent = function (layerId, eventName, callback) {
+                GALayerService.registerLayerEvent($scope.mapInstance,layerId,eventName,callback);
+            };
+
+            self.unRegisterLayerEvent = function(layerId,eventName,callback) {
+                GALayerService.unRegisterLayerEvent($scope.mapInstance,layerId,eventName,callback);
+            };
+
             self.unRegisterMapEvent = function (eventName, callback) {
                 GAMapService.unRegisterMapEvent($scope.mapInstance, eventName, callback);
             };

@@ -22,8 +22,8 @@ var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ])
  *           name: //friendly name of the layer
  *       }
  * */
-app.directive('gaLayerControl', ['GAWTUtils',
-	function (GAWTUtils) {
+app.directive('gaLayerControl', ['GAWTUtils','$timeout',
+	function (GAWTUtils,$timeout) {
 		'use strict';
 		var templateCache =
 			'<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>' +
@@ -46,7 +46,9 @@ app.directive('gaLayerControl', ['GAWTUtils',
 				onVisible: '&',
 				onHidden: '&',
 				onOpacityChange: '&',
-                layerDisabled: '='
+                layerDisabled: '=',
+                onStartLoading: '&',
+                onFinishedLoading: '&'
 			},
 			controller: function ($scope) {
 				$scope.elementId = GAWTUtils.generateUuid();
@@ -54,6 +56,35 @@ app.directive('gaLayerControl', ['GAWTUtils',
 			compile: function compile() {
 				return {
 					post: function postLink(scope, element) {
+                        var loadStartEvent = function () {
+                            scope.onStartLoading({layerId:scope.layerData.id});
+                        };
+                        var loadend = function () {
+                            scope.onFinishedLoading({layerId:scope.layerData.id});
+                        };
+                        $timeout(function () {
+                            scope.mapController.registerLayerEvent(
+                                scope.layerData.id,
+                                "loadstart",loadStartEvent);
+                            scope.mapController.registerLayerEvent(
+                                scope.layerData.id,
+                                "loadend",loadend);
+                        });
+
+                        scope.$on('$destroy', function () {
+                            if(scope.mapController != null) {
+                                scope.mapController.unRegisterLayerEvent(
+                                    scope.layerData.id,
+                                    "loadstart",
+                                    loadStartEvent
+                                );
+                                scope.mapController.unRegisterLayerEvent(
+                                    scope.layerData.id,
+                                    "loadstart",
+                                    loadend
+                                );
+                            }
+                        });
 					},
 					pre: function preLink(scope) {
 						scope.changeOpacity = function () {
