@@ -118,7 +118,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
                         $scope.$emit(layerOptions.layerName + "_error", layerOptions);
                         $scope.onError({message:"layer failed to load",layer:layerOptions});
                         addLayerCallback();
-                        mapController.asyncLayerLoaded();
+                        mapController.asyncLayerError(layer);
                         $log.info('construction failed...');
                         $scope.constructionInProgress = false;
                     });

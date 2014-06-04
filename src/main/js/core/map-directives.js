@@ -86,7 +86,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                             }
 						});
 					} else {
-						$scope.layerPromises.push(layer.$promise);
+						$scope.layerPromises.push(layer);
 					}
 					return layer;
 				}else {
@@ -549,6 +549,14 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * */
             self.asyncLayerLoaded = function () {
                 $scope.waitingForNumberOfLayers--;
+            };
+
+            self.asyncLayerError = function (layer) {
+                $scope.waitingForNumberOfLayers--;
+                var index = $scope.layerPromises.indexOf(layer);
+                if (index > -1) {
+                    $scope.layerPromises.splice(index, 1);
+                }
             };
 
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
