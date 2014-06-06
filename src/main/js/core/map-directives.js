@@ -37,21 +37,45 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
         controller: function ($scope) {
 			$log.info('map creation started...');
             $('#' + $scope.mapElementId).empty();
-            $scope.asyncLayersDeferred = $q.defer();
-            $scope.waitingForNumberOfLayers = 0;
+            //$scope.asyncLayersDeferred = $q.defer();
+            //$scope.waitingForNumberOfLayers = 0;
             $scope.initialPositionSet = false;
-            var waiting = false;
-            var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
-                $log.info('layers remaining - ' + val);
-                if (waiting && val === 0) {
-					$scope.asyncLayersDeferred.resolve();
-                    waitForLayersWatch();
-                }
-                if (val > 0) {
-                    waiting = true;
-                }
-            });
+            //var waiting = false;
+//            var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
+//                $log.info('layers remaining - ' + val);
+//                if (waiting && val === 0) {
+//					$scope.asyncLayersDeferred.resolve();
+//                    waitForLayersWatch();
+//                }
+//                if (val > 0) {
+//                    waiting = true;
+//                }
+//            });
             $scope.layerPromises = [];
+            $scope.layerDtoPromises = [];
+            function orderLayers() {
+                var domLayers = $('ga-map-layer,ga-feature-layer,ga-marker-layer');
+                var allLayers = self.getLayers();
+                var relativeLayerIndex = 0;
+                for (var i = 0; i < domLayers.length; i++) {
+                    var el = domLayers[i];
+
+                    var elementScope = $(el).isolateScope();
+                    var elementLayerId = elementScope.layerDto != null ? elementScope.layerDto.id : null;
+                    if(elementLayerId != null) {
+                        for (var j = 0; j < allLayers.length; j++) {
+                            var currentLayer = allLayers[j];
+                            if(currentLayer.id === elementLayerId) {
+                                if(relativeLayerIndex !== j) {
+                                    //raise/lower layer to correct order
+//                                    self.raiseLayerDrawOrder(currentLayer.id,relativeLayerIndex - j);
+                                }
+                            }
+                        }
+                        relativeLayerIndex++;
+                    }
+                }
+            }
             var self = this;
             /**
              * @ngdoc method
@@ -73,39 +97,55 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * var dto = $scope.mapController.addLayer(layer);</pre></code>
              * */
             self.addLayer = function (layer) {
+                var deferredAll = $q.defer();
+                var deferredLayer = $q.defer();
 				if(layer.then !== null && typeof layer.then === 'function') {
+                    deferredAll = layer;
 					if ($scope.layersReady) {
-						layer.then(function (resultLayer) {
+                        layer.then(function (resultLayer) {
                             if(resultLayer == null) {
                                 //Failed to load, skip
                                 //Lower layer throws error with data
                                 $log.info("failed to load layer");
                             } else {
                                 var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer);
+                                deferredLayer.resolve(layerDto);
+                                orderLayers();
                                 $scope.$emit('layerAdded', layerDto);
                             }
 						});
 					} else {
-						$scope.layerPromises.push(layer);
+						$scope.layerPromises.push(deferredAll);
+                        $scope.layerDtoPromises.push(deferredLayer);
 					}
-					return layer;
 				}else {
-					var deferred = $q.defer();
 					if ($scope.layersReady) {
 						$log.info(layer);
 						var layerDto = GAMapService.addLayer($scope.mapInstance, layer);
+                        deferredLayer.resolve(layerDto);
+                        orderLayers();
 						$scope.$emit('layerAdded', layerDto);
-						resolveSyncLayer(deferred,layerDto);
 					} else {
-						$scope.layerPromises.push(deferred.promise);
-						resolveSyncLayer(deferred,layer);
+						$scope.layerPromises.push(deferredAll.promise);
+                        $scope.layerDtoPromises.push(deferredLayer);
+                        //Wait for digest
+                        $timeout(function () {
+                            deferredAll.resolve(layer);
+                        });
 					}
-					return deferred.promise;
 				}
+                return deferredLayer.promise;
+            };
+
+            self.registerInitialLayer = function (layer) {
+                var deferred = $q.defer();
+
+                return deferred.promise;
             };
 			var resolveSyncLayer = function (deferred,layer) {
 				$timeout(function () {
 					deferred.resolve(layer);
+
 				});
 			};
             /**
@@ -366,6 +406,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     zoomLevel: $scope.zoomLevel,
                     initialExtent: $scope.initialExtent
                 };
+                if(!$scope.centerPosition) {
+                    $scope.centerPosition = {
+                        lon: 0,
+                        lat: 0
+                    };
+                }
                 if (!$scope.initialPositionSet) {
                     GAMapService.setInitialPositionAndZoom($scope.mapInstance, args);
                 }
@@ -546,26 +592,26 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              *
              * Helper function to ensure all layers are loaded, async or other wise.
              * */
-            self.waitingForAsyncLayer = function () {
-                $scope.waitingForNumberOfLayers++;
-            };
+//            self.waitingForAsyncLayer = function () {
+//                $scope.waitingForNumberOfLayers++;
+//            };
 
             /**
              * @private
              *
              * Helper function to ensure all layers are loaded, async or other wise.
              * */
-            self.asyncLayerLoaded = function () {
-                $scope.waitingForNumberOfLayers--;
-            };
+//            self.asyncLayerLoaded = function () {
+//                $scope.waitingForNumberOfLayers--;
+//            };
 
-            self.asyncLayerError = function (layer) {
-                $scope.waitingForNumberOfLayers--;
-                var index = $scope.layerPromises.indexOf(layer);
-                if (index > -1) {
-                    $scope.layerPromises.splice(index, 1);
-                }
-            };
+//            self.asyncLayerError = function (layer) {
+//                $scope.waitingForNumberOfLayers--;
+//                var index = $scope.layerPromises.indexOf(layer);
+//                if (index > -1) {
+//                    $scope.layerPromises.splice(index, 1);
+//                }
+//            };
 
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
                 GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes);
@@ -671,38 +717,104 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
         },
         link: function (scope) {
 			//Wait for full digestion
-				scope.asyncLayersDeferred.promise.then(function () {
-					$q.all(scope.layerPromises).then(function(layers) {
-                        $log.info('resolving all layers');
-						var allLayerDtos = [];
-						for (var i = 0; i < layers.length; i++) {
-							var layer = layers[i];
-                            if(layer == null) {
-                                $log.info("Layer failed to load");
-                            } else {
-                                var layerDto = GAMapService.addLayer(scope.mapInstance, layer);
-                                allLayerDtos.push(layerDto);
-                            }
-						}
-						/**
-						 * Sends an instance of all map layers when they are all loaded to parent listeners
-						 * @eventType emit
-						 * @event layersReady
-						 * */
-						scope.$emit('layersReady', allLayerDtos);
-						/**
-						 * Sends an instance of all map layers when they are all loaded to child listeners
-						 * @eventType broadcast
-						 * @event layersReady
-						 * */
-						scope.$broadcast('layersReady', allLayerDtos);
-						//layersReadyDeferred.resolve(allLayerDtos);
+            $timeout(function () {
+                $q.allSettled(scope.layerPromises).then(function(layers) {
+                    processLayers(layers);
+                }, function (layersWithErrors) {
+                    processLayers(layersWithErrors);
+                });
+            });
+            function processLayers(layers) {
+                $log.info('resolving all layers');
+                var allLayerDtos = [];
+                for (var i = 0; i < layers.length; i++) {
+                    var layer = layers[i];
+                    if(typeof layer === 'string') {
+                        $log.info(layer);
+                        scope.layerDtoPromises[i].reject(layer);
+                    } else {
+                        var layerDto = GAMapService.addLayer(scope.mapInstance, layer);
+                        scope.layerDtoPromises[i].resolve(layerDto);
+                        allLayerDtos.push(layerDto);
+                    }
+                }
+                /**
+                 * Sends an instance of all map layers when they are all loaded to parent listeners
+                 * @eventType emit
+                 * @event layersReady
+                 * */
+                scope.$emit('layersReady', allLayerDtos);
+                /**
+                 * Sends an instance of all map layers when they are all loaded to child listeners
+                 * @eventType broadcast
+                 * @event layersReady
+                 * */
+                scope.$broadcast('layersReady', allLayerDtos);
+                //layersReadyDeferred.resolve(allLayerDtos);
 
-						scope.layersReady = true;
-						scope.gaMap.setInitialPositionAndZoom();
-					});
-				});
+                scope.layersReady = true;
+                scope.gaMap.setInitialPositionAndZoom();
+            }
 		},
         transclude: false
     };
 } ]);
+
+app.config(['$provide', function ($provide) {
+    $provide.decorator('$q', ['$delegate', function ($delegate) {
+        var $q = $delegate;
+
+        // Extention for q
+        $q.allSettled = $q.allSettled || function (promises) {
+            var deferred = $q.defer();
+            if (angular.isArray(promises)) {
+                var states = [];
+                var results = [];
+                var didAPromiseFail = false;
+
+                // First create an array for all promises with their state
+                angular.forEach(promises, function (promise, key) {
+                    states[key] = false;
+                });
+
+                // Helper to check if all states are finished
+                var checkStates = function (states, results, deferred, failed) {
+                    var allFinished = true;
+                    angular.forEach(states, function (state, key) {
+                        if (!state) {
+                            allFinished = false;
+                        }
+                    });
+                    if (allFinished) {
+                        if (failed) {
+                            deferred.reject(results);
+                        } else {
+                            deferred.resolve(results);
+                        }
+                    }
+                }
+
+                // Loop through the promises
+                // a second loop to be sure that checkStates is called when all states are set to false first
+                angular.forEach(promises, function (promise, key) {
+                    $q.when(promise).then(function (result) {
+                        states[key] = true;
+                        results[key] = result;
+                        checkStates(states, results, deferred, didAPromiseFail);
+                    }, function (reason) {
+                        states[key] = true;
+                        results[key] = reason;
+                        didAPromiseFail = true;
+                        checkStates(states, results, deferred, didAPromiseFail);
+                    });
+                });
+            } else {
+                throw 'allSettled can only handle an array of promises (for now)';
+            }
+
+            return deferred.promise;
+        };
+
+        return $q;
+    }]);
+}]);

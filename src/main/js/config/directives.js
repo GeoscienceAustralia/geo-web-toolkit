@@ -21,7 +21,10 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                 $scope.loadConfigData = function () {
                     //init properties
                     var configPath;
-                    if ($attrs.gaConfigPath.indexOf('{{') !== -1) {
+                    if($attrs.configValue != null) {
+                        $scope.configLocal = true;
+                    }
+                    if ($attrs.gaConfigPath != null && $attrs.gaConfigPath.indexOf('{{') !== -1) {
                         configPath = $scope.$eval($interpolate($attrs.gaConfigPath));
                     } else {
                         configPath = $attrs.gaConfigPath;
@@ -62,13 +65,20 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                         $log.error('Failed to load config - ' + status);
                     };
                     //If it fails, to a get call using the provided path (if exists)
-                    if (configPath.length > 0) {
+                    if (configPath != null && configPath.length > 0) {
                         $log.info('config http request starting');
-
+                        $log.info(configPath);
                         $http({
                             method: 'GET',
                             url: configPath
                         }).success(processSuccessResponse).error(processErrorResponse);
+                    }
+                    $log.info($scope.configLocal);
+                    if($scope.configLocal) {
+                        $timeout(function () {
+
+                            processSuccessResponse($scope.$eval($attrs.configValue));
+                        },1000);
                     }
                 };
             },

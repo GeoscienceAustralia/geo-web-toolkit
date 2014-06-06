@@ -26,9 +26,10 @@ app.directive('gaLayerControl', ['GAWTUtils','$timeout',
 	function (GAWTUtils,$timeout) {
 		'use strict';
 		var templateCache =
-			'<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>' +
-			'<label for="{{elementId}}" ng-bind="layerData.name"></label>' +
-			'<div class="pull-right" ng-transclude></div>' +
+			'<label for="{{elementId}}" class="checkbox" style="display:inline-block;width:65%">' +
+                '<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>{{layerData.name}}' +
+            '</label>' +
+			'<div style="display:inline;wdith:30%" ng-transclude></div>' +
 			'<div ng-show="layerData.visibility">' +
 			'<ga-layer-opacity-slider ' +
                 'map-controller="mapController" ' +
@@ -62,6 +63,7 @@ app.directive('gaLayerControl', ['GAWTUtils','$timeout',
                         var loadend = function () {
                             scope.onFinishedLoading({layerId:scope.layerData.id});
                         };
+                        //Event to be cleaned up on map destruction
                         $timeout(function () {
                             scope.mapController.registerLayerEvent(
                                 scope.layerData.id,
@@ -69,21 +71,6 @@ app.directive('gaLayerControl', ['GAWTUtils','$timeout',
                             scope.mapController.registerLayerEvent(
                                 scope.layerData.id,
                                 "loadend",loadend);
-                        });
-
-                        scope.$on('$destroy', function () {
-                            if(scope.mapController != null) {
-                                scope.mapController.unRegisterLayerEvent(
-                                    scope.layerData.id,
-                                    "loadstart",
-                                    loadStartEvent
-                                );
-                                scope.mapController.unRegisterLayerEvent(
-                                    scope.layerData.id,
-                                    "loadstart",
-                                    loadend
-                                );
-                            }
                         });
 					},
 					pre: function preLink(scope) {

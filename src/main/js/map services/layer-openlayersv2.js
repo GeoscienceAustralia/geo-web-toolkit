@@ -181,8 +181,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             //Due to the way OpenLayers.Protocol.Script works with a adding a new script tag to the head
             //of the page, we have to manually set a timeout here for 404 layers
             var scriptTimeout = $timeout(function () {
-                deferred.reject('LayerTimeout');
-            }, 10000);
+                deferred.reject("LayerTimeout");
+            }, 2000);
             jsonp.createRequest(args.layerUrl, {
                 f: 'json',
                 pretty: 'true'
