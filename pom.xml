@@ -174,7 +174,7 @@
 						</goals>
 						<!-- Optional configuration which provides for running any npm command -->
 						<configuration>
-							<arguments>install</arguments>
+							<arguments>--registry "http://registry.npmjs.org/" install</arguments>
 						</configuration>
 					</execution>
 
