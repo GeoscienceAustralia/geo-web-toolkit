@@ -105,23 +105,25 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						return;
 					}
                     layer = GALayerService.createLayer(layerOptions);
-
 					//Async layer add
-					mapController.waitingForAsyncLayer();
+					//mapController.waitingForAsyncLayer();
 					mapController.addLayer(layer).then(function (layerDto) {
 						$scope.layerDto = layerDto;
 						addLayerCallback();
-						mapController.asyncLayerLoaded();
+
 						$log.info('construction complete...');
 						$scope.constructionInProgress = false;
 					}, function (error) {
                         $scope.$emit(layerOptions.layerName + "_error", layerOptions);
                         $scope.onError({message:error,layer:layerOptions});
                         addLayerCallback();
-                        mapController.asyncLayerError(layer);
+                        //mapController.asyncLayerError(layer);
                         $log.info('construction failed...');
                         $scope.constructionInProgress = false;
                     });
+//                    $timeout(function () {
+//                        mapController.asyncLayerLoaded();
+//                    });
 				};
 
 				attrs.$observe('visibility', function () {
@@ -142,7 +144,6 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						}
 					}
 					if (layerIndex != null) {
-						var delta = layerIndex - allLAyers.length + 1;
 						mapController.removeLayerById($scope.layerDto.id);
 						$scope.layerDto = null;
 						initialiseDefaults();
@@ -154,6 +155,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 							$scope.layerDto = layerDto;
 							addLayerCallback();
 							if($scope.layerDto != null) {
+                                var delta = layerIndex - mapController.getLayers().length + 1;
 								mapController.raiseLayerDrawOrder($scope.layerDto.id, delta);
 							}
 						});

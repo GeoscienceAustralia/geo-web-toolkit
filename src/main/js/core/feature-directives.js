@@ -130,11 +130,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 				layerOptions.postAddLayer = $scope.postAddLayer;
 
 				var layer = GALayerService.createFeatureLayer(layerOptions);
-                mapController.waitingForAsyncLayer();
+                //mapController.waitingForAsyncLayer();
 				//Async layer add
 				mapController.addLayer(layer).then(function (layerDto) {
 					$scope.layerDto = layerDto;
-                    mapController.asyncLayerLoaded();
+                    //mapController.asyncLayerLoaded();
 					$scope.layerControllerIsReady = true;
 					$q.all($scope.featurePromises).then(function (allFeatures) {
 						for (var i = 0; i < allFeatures.length; i++) {
