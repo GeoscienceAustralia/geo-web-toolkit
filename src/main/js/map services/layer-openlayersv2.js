@@ -182,7 +182,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             //of the page, we have to manually set a timeout here for 404 layers
             var scriptTimeout = $timeout(function () {
                 deferred.reject("LayerTimeout");
-            }, 2000);
+            }, 10000);
             jsonp.createRequest(args.layerUrl, {
                 f: 'json',
                 pretty: 'true'
