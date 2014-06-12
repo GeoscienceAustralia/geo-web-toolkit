@@ -440,10 +440,10 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             $scope.limitResults = 10;
 
             $scope.$watch('searchEndPoints', function (newVal) {
-                if($scope.mapController == null) {
-                    return;
-                }
                 if (newVal) {
+                    if($scope.mapController == null) {
+                        return;
+                    }
                     clients = [];
                     for (var i = 0; i < $scope.searchEndPoints.length; i++) {
                         var wfsClient = $scope.mapController.createWfsClient($scope.searchEndPoints[i].url, $scope.searchEndPoints[i].featureType,
@@ -459,16 +459,20 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             });
 
             if ($attrs.searchEndPoints == null) {
-                if($scope.mapController == null) {
-                    return;
-                }
-                var wfsClient = $scope.mapController.createWfsClient($scope.url, $scope.featureType, $scope.featurePrefix, $scope.version,
-                    $scope.geometryName, $scope.datumProjection);
+                if($scope.mapController != null) {
+                    var wfsClient = $scope.mapController.createWfsClient($scope.url, $scope.featureType, $scope.featurePrefix, $scope.version,
+                        $scope.geometryName, $scope.datumProjection);
 
-                clients.push($scope.mapController.addWfsClient(wfsClient));
+                    clients.push($scope.mapController.addWfsClient(wfsClient));
+                }
+            }
+            function filterQuery(searchQuery) {
+                return searchQuery.replace('\'','').replace('"','').replace('%','').replace('*','');
             }
 
             var searchFunction = function (query) {
+                query = filterQuery(query);
+                //Due to problems with some implementations of WFS, filter query term values.
                 $scope.searchResults = [];
                 var deferred = $q.defer();
                 var count = 0;
