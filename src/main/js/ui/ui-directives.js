@@ -440,6 +440,9 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             $scope.limitResults = 10;
 
             $scope.$watch('searchEndPoints', function (newVal) {
+                if($scope.mapController == null) {
+                    return;
+                }
                 if (newVal) {
                     clients = [];
                     for (var i = 0; i < $scope.searchEndPoints.length; i++) {
@@ -456,6 +459,9 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             });
 
             if ($attrs.searchEndPoints == null) {
+                if($scope.mapController == null) {
+                    return;
+                }
                 var wfsClient = $scope.mapController.createWfsClient($scope.url, $scope.featureType, $scope.featurePrefix, $scope.version,
                     $scope.geometryName, $scope.datumProjection);
 
