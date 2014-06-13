@@ -1,0 +1,29 @@
+<!--This template is being used in gaMapConfig example-->
+<ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position="{{myConfig.centrePosition}}" zoom-level="{{myConfig.zoomLevel}}">
+    <ga-map-layer 
+        ng-repeat="baseLayer in myConfig.baseMaps" 
+        layer-name="{{baseLayer.name}}" 
+        layer-url="{{baseLayer.url}}"
+        wrap-date-line="{{baseLayer.wrapDateLine}}" 
+        map-bg-color="#{{baseLayer.mapBGColor}}" 
+        layer-type="{{baseLayer.mapType}}" 
+        is-base-layer="{{baseLayer.isBaseLayer}}" 
+        visibility="{{baseLayer.visibility}}" 
+        layer-attribution="{{baseLayer.attribution}}"
+        zoom-to-max="{{baseLayer.zoomToMax}}">
+    </ga-map-layer>
+    <ga-map-layer 
+        ng-repeat="Layer in myConfig.layerMaps" 
+        layer-name="{{Layer.name}}" 
+        layer-url="{{Layer.url}}"
+        layer-type="WMS"
+        zoom-to-max="true"
+        wrap-date-line="{{Layer.wrapDateLine}}" 
+        map-bg-color="#{{Layer.mapBGColor}}" 
+        layer-type="{{Layer.mapType}}" 
+        is-base-layer="{{Layer.isBaseLayer}}" 
+        visibility="{{Layer.visibility}}" 
+        layer-attribution="{{Layer.attribution}}">
+    </ga-map-layer>
+    <ga-map-control ng-repeat="control in myConfig.controls" map-control-name="{{control}}"></ga-map-control>
+</ga-map> 
