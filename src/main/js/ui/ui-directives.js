@@ -411,7 +411,7 @@ app.directive('gaSearchWfsLayer', [function () {
 app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
 	"use strict";
     var template = '<input type="text" class="search-box" ng-model="query" ' +
-        'ng-class="{typeAheadLoading:waitingForResponse}" />' +
+        'ng-class="{typeAheadLoading:waitingForResponse}" placeholder="{{placeHolder}}" />' +
         '<input type="image" class="button search-button" ng-click="searchButtonClicked()" ' +
             'accesskey="4" alt="Search using your entered search criteria" ' +
             'title="Search using your entered search criteria" ' +
@@ -429,12 +429,20 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 			onResultsSelected: '&',
 			onPerformSearch: '&',
 			primaryWfsProperty: '@',
-            'searchIconUrl': '@'
+            searchIconUrl: '@',
+            placeHolder: '@',
+            activateKey: '@'
 		},
         controller: function ($scope) {
             $scope.waitingForResponse = false;
         },
         link: function ($scope, $element, $attrs) {
+            $element.bind('keydown', function (args) {
+                if(args.keyCode == $scope.activateKey) {
+                    $scope.searchButtonClicked();
+                    $scope.$apply();
+                }
+            });
             var clients = [];
             var attribute;
             $scope.limitResults = 10;
