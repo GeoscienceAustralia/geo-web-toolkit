@@ -331,8 +331,15 @@ app.service('olv2MapService', [
 				// If a permalink has been provided use th zoom level and current position provided,
 				// other wise use the defaults provided by the config
 				if (service.getParameterByName('zoom') !== '' && args.centerPosition != null) {
-					mapInstance.setCenter(new OpenLayers.LonLat(service.getParameterByName('lon'), service.getParameterByName('lat')), service
-						.getParameterByName('zoom'));
+                    var nPosition =  new OpenLayers.LonLat(
+                        service.getParameterByName('lon'),
+                        service.getParameterByName('lat')).transform();
+                    var srcProj = new OpenLayers.Projection(service.displayProjection);
+                    var destProj = new OpenLayers.Projection(mapInstance.getProjection());
+                    var transformedExtent = nPosition.transform(srcProj,destProj);
+                    mapInstance.setCenter(
+                        transformedExtent,
+                        service.getParameterByName('zoom'));
 				} else if (args.initialExtent != null) {
 					var bounds = service.createBounds(mapInstance, args.initialExtent, service.displayProjection);
                     mapInstance.zoomToExtent(bounds, true);
