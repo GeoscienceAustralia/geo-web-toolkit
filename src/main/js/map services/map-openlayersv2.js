@@ -482,11 +482,12 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
-			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point) {
+			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
+                tolerance = tolerance || 0;
 				var deferred = $q.defer();
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
-				var llPx = originalPx.add(-mapInstance.zoom, mapInstance.zoom);
-				var urPx = originalPx.add(mapInstance.zoom, -mapInstance.zoom);
+				var llPx = originalPx.add(-tolerance, tolerance);
+				var urPx = originalPx.add(tolerance, -tolerance);
 				var ll = mapInstance.getLonLatFromPixel(llPx);
 				var ur = mapInstance.getLonLatFromPixel(urPx);
 				var bounds = new OpenLayers.Bounds(ll.lon, ll.lat, ur.lon, ur.lat);
@@ -528,10 +529,11 @@ app.service('olv2MapService', [
 				});
 				return deferred.promise;
 			},
-			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point) {
+			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point,tolerance) {
+                tolerance = tolerance || 0;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
-				var llPx = originalPx.add(-mapInstance.zoom, mapInstance.zoom);
-				var urPx = originalPx.add(mapInstance.zoom, -mapInstance.zoom);
+				var llPx = originalPx.add(-tolerance, tolerance);
+				var urPx = originalPx.add(tolerance, -tolerance);
 				var ll = mapInstance.getLonLatFromPixel(llPx);
 				var ur = mapInstance.getLonLatFromPixel(urPx);
 				var bounds = new OpenLayers.Bounds(ll.lon, ll.lat, ur.lon, ur.lat);
