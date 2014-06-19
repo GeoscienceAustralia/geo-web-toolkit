@@ -29,8 +29,8 @@ app.directive('gaLayerControl', ['GAWTUtils','$timeout',
 			'<label for="{{elementId}}" class="checkbox" style="display:inline-block;width:65%">' +
                 '<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>{{layerData.name}}' +
             '</label>' +
-			'<div style="display:inline;wdith:30%" ng-transclude></div>' +
-			'<div ng-show="layerData.visibility">' +
+			'<div style="display:inline;width:30%" ng-transclude></div>' +
+			'<div ng-show="layerData.visibility" class="gaLayerControlSliderContainer">' +
 			'<ga-layer-opacity-slider ' +
                 'map-controller="mapController" ' +
                 'layer-opacity="layerData.opacity" ' +
@@ -405,6 +405,196 @@ app.directive('gaSearchWfsLayer', [function () {
 		}
 	};
 }]);
+
+/**
+ * @ngdoc directive
+ * @name gawebtoolkit.ui.directives:googlePlaceNameSearch
+ * @param {object} mapController - Map controller
+ * @param {string} searchIconUrl - Path to an icon used for search
+ * @param {number} zoomLevel - Zoom level after selection from autocomplete
+ * @param {string} countryCode - Google country code to be used in the search
+ * @description
+ * Simple control exposing google auto complete search which zooms on selection.
+ * @scope
+ * @restrict E
+ * @example
+ */
+app.directive('googlePlaceNameSearch', [function () {
+    "use strict";
+    return {
+        restrict: 'E',
+        template: '<input type="text" class="search-box"  placeholder="{{placeHolder}}" />' +
+            '<input type="image" class="button search-button" accesskey="4" ' +
+            'alt="Search using your entered search criteria" title="Search using your entered search criteria" ' +
+            'src="{{searchIconUrl}}"/>',
+        scope: {
+            mapController: '=',
+            searchIconUrl: '@',
+            zoomLevel: '@',
+            countryCode: '@'
+        },
+        controller: function ($scope) {
+
+        },
+        link: function ($scope, $element, $attrs) {
+            var input = $element.find('input[type="text"]')[0];
+            var googleAC = new google.maps.places.Autocomplete(input, {componentRestrictions: {country: $scope.countryCode}});
+            google.maps.event.addListener(googleAC, 'place_changed', function () {
+                var place = googleAC.getPlace();
+                if(!place.geometry) {
+                    return;
+                }
+                $scope.mapController.zoomTo($scope.zoomLevel);
+                $scope.mapController.setCenter(place.geometry.location.k,place.geometry.location.A, "EPSG:4326");
+            });
+        }
+    };
+}]);
+
+
+/**
+ * @ngdoc directive
+ * @name gawebtoolkit.ui.directives:googlePlaceNameSearch
+ * @param {object} mapController - Map controller
+ * @param {string} searchIconUrl - Path to an icon used for search
+ * @param {number} zoomLevel - Zoom level after selection from autocomplete
+ * @param {string} countryCode - Google country code to be used in the search
+ * @description
+ * Simple control exposing google auto complete search which zooms on selection.
+ * @scope
+ * @restrict E
+ * @example
+ */
+app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q,$timeout) {
+    "use strict";
+    return {
+        restrict: 'E',
+        template: '<input type="text" class="search-box"  placeholder="Place name search" ng-model="query"' +
+            'ng-class="{typeAheadLoading:waitingForResponse}" ' +
+            'typeahead="result as result.properties.name for result in getSearchResults($viewValue)" ' +
+            'typeahead-template-url="{{resultTemplateUrl}}" ' +
+            'typeahead-on-select="onSelected($item, $model, $label)" ' +
+            'typeahead-wait-ms="200" typeahead-editable="true"/>' +
+            '<input type="image" class="button search-button" accesskey="4" ' +
+            'ng-click="searchButtonClicked()" ' +
+            'alt="Search using your entered search criteria" title="Search using your entered search criteria" ' +
+            'src="{{searchIconUrl}}"/>',
+        scope: {
+            mapController: '=',
+            searchIconUrl: '@',
+            geoNamesApiKey: '@',
+            zoomLevel: '@',
+            countryCode: '@',
+            resultTemplateUrl: '@',
+            onResults: '&',
+            onResultsSelected: '&',
+            onPerformSearch: '&',
+            activateKey: '@'
+        },
+        controller: function ($scope) {
+
+        },
+        link: function ($scope, $element, $attrs) {
+            var input = $element.find('input[type="text"]')[0];
+            $element.bind('keydown', function (args) {
+                if(args.keyCode == $scope.activateKey) {
+                    if($scope.typeAheadSelected) {
+                        return;
+                    }
+                    $scope.searchButtonClicked();
+                    $scope.$apply();
+                }
+            });
+            var searchFunction = function (query, rowCount) {
+                //input box is populated with an object on selection of typeahead
+                if(typeof query === 'object') {
+                    query = query.properties.name;
+                }
+                $scope.searchResults = [];
+                var deferred = $q.defer();
+                $scope.waitingForResponse = true;
+                var url = 'http://api.geonames.org/searchJSON?q=' + encodeURIComponent(query).replace("%20","+") +
+                    '&maxRows=' + rowCount + '&country=' + $scope.countryCode.toUpperCase() +
+                    '&username=' + $scope.geoNamesApiKey;
+                $http.get(url).success(function (results) {
+                    $scope.waitingForResponse = false;
+                    var geoJsonResults = [];
+                    for (var i = 0; i < results.geonames.length; i++) {
+                        var geoName = results.geonames[i];
+                        geoJsonResults.push($scope.convertGeoNameToGeoJson(geoName));
+                    }
+                    deferred.resolve(geoJsonResults);
+                });
+
+                return deferred.promise;
+            };
+
+            $scope.getSearchResults = function (query) {
+                if (query != null && query.length >= 3) {
+                    return searchFunction(query,10).then(function (data) {
+                        if($scope.searchInProgress) {
+                            return [];
+                        }
+                        $scope.onResults({
+                            data: data
+                        });
+                        return data;
+                    });
+                } else {
+                    return [];
+                }
+            };
+
+            $scope.onSelected = function ($item) {
+                $scope.typeAheadSelected = true;
+                //Do not re-run query if activateKey is the same as typeahead selection
+                $timeout(function () {
+                    $scope.typeAheadSelected = false;
+                },50);
+                $scope.onResultsSelected({
+                    item: $item
+                });
+            };
+
+            $scope.searchButtonClicked = function () {
+                $scope.searchInProgress = true;
+                if ($scope.query != null) {
+                    return searchFunction($scope.query,50).then(function (data) {
+                        $scope.searchInProgress = false;
+                        $scope.onPerformSearch({
+                            data: data
+                        });
+                        return data;
+                    });
+                }
+            };
+
+            $scope.convertGeoNameToGeoJson = function (geoNameResult) {
+                var geoJson = {
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [geoNameResult.lng,geoNameResult.lat]
+                    },
+                    crs: {
+                        type: "name",
+                        properties: {
+                            name: "EPSG:4326"
+                        }
+                    }
+                };
+                geoJson.properties = {};
+                for(var prop in geoNameResult) {
+                    if(geoNameResult.hasOwnProperty(prop)) {
+                        geoJson.properties[prop] = geoNameResult[prop];
+                    }
+                }
+                return geoJson;
+            };
+        }
+    };
+}]);
+
 /**
  *
  * */
@@ -977,14 +1167,14 @@ app.directive('fixIeSelect', function () {
 			$scope.$watch('options', function () {
 				var $option = $('<option>');
 				// for some reason, it needs both, getting the width and changing CSS options to rerender select
-				$element.css('width');
+				//$element.css('width');
 				$element.addClass('repaint').removeClass('repaint');
 
 				// add and remove option to rerender options
 				$option.appendTo($element).remove();
-				$timeout(function () {
-					$element.css('width', 'auto');
-				});
+//				$timeout(function () {
+//					$element.css('width', 'inherit');
+//				});
 				$option = null;
 				//$element.css('width','auto');
 			});
