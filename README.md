@@ -1,4 +1,4 @@
-# Geo Web Toolkit
+# Geo Web Toolkit [![Build Status](https://travis-ci.org/GeoscienceAustralia/geo-web-toolkit.svg?branch=doco-comments)](https://travis-ci.org/GeoscienceAustralia/geo-web-toolkit)
 
 Geoscience Australia's web mapping toolkit.
 
