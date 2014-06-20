@@ -10,7 +10,7 @@ module.exports = function (grunt) {
                                 'http://maps.google.com/maps/api/js?sensor=false&.js',
                                 'https://code.jquery.com/jquery-1.11.0.js',
                                 'http://code.jquery.com/ui/1.10.4/jquery-ui.js',
-                                'http://localhost/gmap/OpenLayers/OpenLayers.js',
+                                'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js',
                                 'src/main/js/map services/layer-openlayersv2.js',
                                 'src/main/js/map services/map-openlayersv2.js',
                                 'src/main/js/map services/data-openlayersv2.js',
