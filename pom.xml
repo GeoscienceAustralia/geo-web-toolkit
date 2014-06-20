@@ -166,7 +166,12 @@
 							<arguments>install</arguments>
 						</configuration>
 					</execution>
-
+					<execution>
+						<id>grunt build</id>
+						<goals>
+							<goal>grunt</goal>
+						</goals>
+					</execution>
                     <!-- Run JS tests using Karma during test phase -->
 					<execution>
 						<id>javascript tests</id>
