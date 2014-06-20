@@ -3,6 +3,8 @@
 if [ "$TRAVIS_REPO_SLUG" == "GeoscienceAustralia/geo-web-toolkit" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   
   echo -e "Publishing ng-docs...\n"
+  
+  cp -R docs $HOME/docs-latest
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
@@ -11,7 +13,7 @@ if [ "$TRAVIS_REPO_SLUG" == "GeoscienceAustralia/geo-web-toolkit" ] && [ "$TRAVI
 
   cd gh-pages
   git rm -rf ./docs
-  cp -Rf $HOME/docs ./docs
+  cp -Rf $HOME/docs-latest ./docs
   git add -f .
   git commit -m "Lastest ng-docs on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
   git push -fq origin gh-pages > /dev/null
