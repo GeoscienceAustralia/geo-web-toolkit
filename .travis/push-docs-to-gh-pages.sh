@@ -12,7 +12,7 @@ if [ "$TRAVIS_REPO_SLUG" == "GeoscienceAustralia/geo-web-toolkit" ] && [ "$TRAVI
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/GeoscienceAustralia/geo-web-toolkit gh-pages > /dev/null
 
   cd gh-pages
-  git rm -rf ./docs
+  git rm -rf ./docs > /dev/null
   cp -Rf $HOME/docs-latest ./docs
   git add -f .
   git commit -m "Lastest ng-docs on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
