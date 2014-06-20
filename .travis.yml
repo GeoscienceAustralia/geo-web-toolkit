@@ -1,9 +1,14 @@
 branches:
   only:
-    - doco-comments
+  - doco-comments
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 before_install: npm install -g grunt-cli
 install: npm install
 before_script: grunt
+after_success:
+- .travis/push-docs-to-gh-pages.sh
+env:
+  global:
+    secure: Gdq3/nyNOMn1GM7vwTFAxHGJF8TSyhKTUVxZakMi0zEh511knJKqzKW0ynKv6YjI9poZWj08efti9q+XVlkkL8CM6Jh1UBSN8+fR6aZgEB8mbQmKZPfJN+UiA04yYokuyNW2q+vz/53jDYYz20dc1oFRx1S+zCq+KMwWcEa/h+Y=
