@@ -35,7 +35,8 @@ app.directive('gaLayerControl', ['GAWTUtils','$timeout',
                 'map-controller="mapController" ' +
                 'layer-opacity="layerData.opacity" ' +
                 'layer-id="{{layerData.id}}"' +
-                'layer-disabled="layerDisabled">' +
+                'layer-disabled="layerDisabled"' +
+                'title-text="Opacity control for layer - {{layerData.name}}" >' +
             '</ga-layer-opacity-slider>' +
 			'</div>';
 		return {
@@ -118,7 +119,8 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 			layerId: '@',
 			layerOpacity: '=',
 			mapController: '=',
-            layerDisabled: '='
+            layerDisabled: '=',
+            titleText: '@'
 		},
 		controller: function ($scope) {
 			$scope.changeOpacity = function () {
@@ -153,6 +155,10 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 					$($element).slider($scope.getSliderOptions());
 				}
 			});
+            //HACK to give jquery ui slider title text.
+            $timeout(function () {
+                $element.find('.ui-slider-handle').attr('title',$scope.titleText);
+            });
 
 		},
 		transclude: true
