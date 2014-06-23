@@ -1166,15 +1166,16 @@ app.directive('fixIeSelect', function () {
 		controller: [ '$scope', '$element', '$timeout', function ($scope, $element, $timeout) {
 			$scope.$watch('options', function () {
 				var $option = $('<option>');
+                var widthVal = $element.css('width');
 				// for some reason, it needs both, getting the width and changing CSS options to rerender select
-				//$element.css('width');
+				$element.css('width');
 				$element.addClass('repaint').removeClass('repaint');
 
 				// add and remove option to rerender options
 				$option.appendTo($element).remove();
-//				$timeout(function () {
-//					$element.css('width', 'inherit');
-//				});
+				$timeout(function () {
+                    $element.css('width', 'auto');
+				});
 				$option = null;
 				//$element.css('width','auto');
 			});
