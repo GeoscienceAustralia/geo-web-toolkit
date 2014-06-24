@@ -27,5 +27,9 @@ function updateWebjarLocations(config)
 	for (var i = 0; i < config.files.length; i++)
 	{
         //overriding file paths can be done here.
+		if(config.files[i].lastIndexOf('src/main/js/', 0) === 0)
+		{
+			config.files[i] = 'target/classes/META-INF/resources/**/*min.js'; //Testing minified version
+		}
 	}
 }
