@@ -155,13 +155,8 @@
 						</aggregation>
 					</aggregations>
 					<excludes>
-						<exclude>*/*.js</exclude>
-						<exclude>**/*-min.js</exclude>
+						<exclude>**/*.js</exclude>
 					</excludes>
-					<jswarn>false</jswarn>
-					<nosuffix>false</nosuffix>
-					<sourceDirectory>${js.dest.dir}</sourceDirectory>
-					<outputDirectory>${js.dest.dir}</outputDirectory>
 				</configuration>
 				<executions>
 					<execution>
