@@ -76,7 +76,7 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             }
             var coords, centerPosition;
             coords = latlong.split(',');
-            centerPosition = {lat: "", long: ""};
+            centerPosition = {lat: "", lon: ""};
 
             centerPosition.lat = coords[0];
             centerPosition.lon = coords[1];
