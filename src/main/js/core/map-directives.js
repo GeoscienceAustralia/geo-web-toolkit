@@ -34,7 +34,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             zoomLevel: '@',
 			initialExtent: '='
         },
-        controller: function ($scope) {
+        controller: ['$scope',function ($scope) {
 			$log.info('map creation started...');
             $('#' + $scope.mapElementId).empty();
             //$scope.asyncLayersDeferred = $q.defer();
@@ -714,7 +714,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 					}
 				});
             });
-        },
+        }],
         link: function (scope) {
 			//Wait for full digestion
             $timeout(function () {

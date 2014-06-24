@@ -29,7 +29,7 @@ module.exports = function (config) {
             'target/dependencies/META-INF/resources/webjars/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
             'target/dependencies/META-INF/resources/webjars/angular-ui-utils/0.1.0/ui-utils.js',
             'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js',
-            'src/main/js/**/*.js',
+            'target/classes/META-INF/resources/**/*min.js', //Testing minified version
             'src/test/js/**/*.js'],
 
         // list of files to exclude

@@ -33,7 +33,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
                 onError:'&'
 			},
 			transclude: false,
-			controller: function ($scope) {
+			controller: ['$scope',function ($scope) {
 
 				var self = this;
 
@@ -57,7 +57,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				}
 
 				return self;
-			},
+			}],
 			link: function ($scope, element, attrs, mapController) {
 				attrs.$observe('refreshLayer', function (newVal, oldVal) {
 					if(newVal !== oldVal) {

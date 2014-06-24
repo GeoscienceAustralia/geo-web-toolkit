@@ -17,7 +17,7 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
         return {
             restrict: "E",
             scope: true,
-            controller: function ($scope, $element, $attrs, $http) {
+            controller: ['$scope','$element','$attrs',function ($scope, $element, $attrs) {
                 $scope.loadConfigData = function () {
                     //init properties
                     var configPath;
@@ -81,7 +81,7 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                         },1000);
                     }
                 };
-            },
+            }],
             compile: function compile(element, attributes) {
                 //load templateUrl provided and
                 var linkMethodPromise;
