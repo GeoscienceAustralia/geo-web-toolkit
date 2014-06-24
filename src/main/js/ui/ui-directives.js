@@ -52,9 +52,9 @@ app.directive('gaLayerControl', ['GAWTUtils','$timeout',
                 onStartLoading: '&',
                 onFinishedLoading: '&'
 			},
-			controller: function ($scope) {
+			controller: ['$scope',function ($scope) {
 				$scope.elementId = GAWTUtils.generateUuid();
-			},
+			}],
 			compile: function compile() {
 				return {
 					post: function postLink(scope, element) {
@@ -122,7 +122,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
             layerDisabled: '=',
             titleText: '@'
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			$scope.changeOpacity = function () {
 				var opacityValue = $scope.layerOpacity;
 				$scope.mapController.setOpacity($scope.layerId, opacityValue);
@@ -148,7 +148,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 				};
 			};
 
-		},
+		}],
 		link: function ($scope, $element) {
 			$scope.$watch('layerOpacity', function (newVal, oldVal) {
 				if (newVal && oldVal !== newVal) {
@@ -199,7 +199,7 @@ app.directive('gaLayersDropDown', [ function () {
 			layerGroupId: '@',
 			includeNone: '@'
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			var self = this;
 			$scope.selectLayer = function () {
 				$scope.onSelectedLayerChanged({
@@ -210,7 +210,7 @@ app.directive('gaLayersDropDown', [ function () {
 			self.selectLayer = $scope.selectLayer;
 			$scope.$emit($scope.controllerEmitEventName, self);
 
-		},
+		}],
 		link: function ($scope) {
 			$scope.$watch('layersData', function (newVal) {
 				if (newVal && !$scope.selectedModel) {
@@ -252,7 +252,7 @@ app.directive('gaBaseLayersDialog', [ 'GAWTUtils', function (GAWTUtils) {
 			dialogConfig: '=',
 			mapController: '='
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			$(window).bind('resize', function () {
 				//Reinitialise dialog on window resize, resets position to correct relative location
 				//Force last closed state
@@ -294,7 +294,7 @@ app.directive('gaBaseLayersDialog', [ 'GAWTUtils', function (GAWTUtils) {
 			});
 
 			$scope.$emit('baseLayerDialogReady', self);
-		},
+		}],
 		link: function ($scope) {
 			$scope.$on('$destroy', function () {
 				$('#' + $scope.dialogId).dialog('destroy').remove();
@@ -336,7 +336,7 @@ app.directive('gaBaseLayerSelector', ['$timeout', function ($timeout) {
 			mapController: '=',
 			controllerEmitEventName: '@'
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			var self = this;
 
 			self.selectBaseLayer = function (layerId) {
@@ -345,7 +345,7 @@ app.directive('gaBaseLayerSelector', ['$timeout', function ($timeout) {
 
 			$scope.$emit($scope.controllerEmitEventName, self);
 
-		},
+		}],
 		link: function ($scope) {
 			$scope.$watch('selectedBaseLayerId', function (newVal) {
 				if (newVal != null) {
@@ -439,9 +439,9 @@ app.directive('googlePlaceNameSearch', [function () {
             zoomLevel: '@',
             countryCode: '@'
         },
-        controller: function ($scope) {
+        controller: ['$scope',function ($scope) {
 
-        },
+        }],
         link: function ($scope, $element, $attrs) {
             var input = $element.find('input[type="text"]')[0];
             var googleAC = new google.maps.places.Autocomplete(input, {componentRestrictions: {country: $scope.countryCode}});
@@ -497,9 +497,9 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
             onPerformSearch: '&',
             activateKey: '@'
         },
-        controller: function ($scope) {
+        controller: ['$scope',function ($scope) {
 
-        },
+        }],
         link: function ($scope, $element, $attrs) {
             var input = $element.find('input[type="text"]')[0];
             $element.bind('keydown', function (args) {
@@ -629,9 +629,9 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             placeHolder: '@',
             activateKey: '@'
 		},
-        controller: function ($scope) {
+        controller: ['$scope',function ($scope) {
             $scope.waitingForResponse = false;
-        },
+        }],
         link: function ($scope, $element, $attrs) {
             $element.bind('keydown', function (args) {
                 if(args.keyCode == $scope.activateKey) {
@@ -768,7 +768,7 @@ app.directive('gaMeasureToggle', [function () {
 			controllerEmitEventName: '@',
 			mapController: '='
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			var self = this;
 
 			self.activate = function () {
@@ -781,7 +781,7 @@ app.directive('gaMeasureToggle', [function () {
 				return $scope.mapController.isControlActive($scope.mapControlId);
 			};
 			$scope.$emit($scope.controllerEmitEventName, self);
-		},
+		}],
 		link: function ($scope) {
 			$scope.handleMeasurements = function (event) {
 				var measurement = $scope.mapController.getMeasureFromEvent(event);
@@ -856,7 +856,7 @@ app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
 			dialogConfig: '=',
 			mapController: '='
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			$(window).bind('resize', function () {
 				//Reinitialise dialog on window resize, resets position to correct relative location
 				//Force last closed state
@@ -880,7 +880,7 @@ app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
 				return $scope.isClosed;
 			};
 			$scope.$emit('layersDialogReady', self);
-		},
+		}],
 		link: function ($scope, $element, $attrs) {
 			$scope.filterBaseLayers = function (layer) {
 				var layerIsBaseLayer = $scope.mapController.isBaseLayer(layer.id);
@@ -918,7 +918,7 @@ app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GA
 			dialogClosed: '&',
 			dialogOpened: '&'
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			$(window).bind('resize', function () {
 				if ($scope.dialogWindowResize != null) {
 					$scope.dialogConfig = angular.extend($scope.dialogConfig, $scope.dialogWindowResize());
@@ -945,7 +945,7 @@ app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GA
 				return $scope.isClosed;
 			};
 			$scope.$emit($scope.controllerEmitEventName, self);
-		},
+		}],
 		link: function ($scope) {
 			$scope.$on('$destroy', function () {
 				$('#' + $scope.dialogId).dialog('destroy').remove();
@@ -1019,7 +1019,7 @@ app.directive('gaLayerInteractionToggle', [ function () {
 			mapController: '=',
 			layerInteractionId: '='
 		},
-		controller: function ($scope) {
+		controller: ['$scope',function ($scope) {
 			var self = this;
 
 			self.activate = function () {
@@ -1033,7 +1033,7 @@ app.directive('gaLayerInteractionToggle', [ function () {
 			};
 
 			$scope.$emit($scope.controllerEmitEventName, self);
-		},
+		}],
 		link: function ($scope, $element) {
 			$scope.isToggleOn = false;
 
