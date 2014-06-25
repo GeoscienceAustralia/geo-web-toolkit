@@ -138,6 +138,9 @@
                 </executions>
             </plugin>
 
+			<!--
+				Concatenate and minify javascript 
+			 -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
