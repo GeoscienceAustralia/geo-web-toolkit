@@ -951,7 +951,7 @@ describe(
 					'controller-emit-event-name="{{layer.controllerEventName}}"' +
 					'visibility="{{layer.visibility}}" ' +
                     'opacity="{{layer.opacity}}" ' +
-					'></ga-map-layer>' +
+					'refresh-layer="{{layer.refresh}}"></ga-map-layer>' +
 					'<div id="gamap"></div></ga-map>');
 			$compile(element)($scope);
 			$scope.$digest();
@@ -1008,6 +1008,18 @@ describe(
 
             }
             expect(passed).toBe(true);
+        });
+
+        it('Should have reconstructed a layer on change of a refresh value', function () {
+            var layer = $scope.mapController.getLayers()[2];
+            expect(layer.name).toBe('Australian Landsat Mosaic');
+            $scope.mapConfig.layerMaps[0].name = 'Test name change';
+            $scope.mapConfig.layerMaps[0].refresh++;
+            $scope.$digest();
+            runs(function () {
+                var updatedLayer = $scope.mapController.getLayers()[2];
+                expect(updatedLayer.name).toBe('Test name change');
+            });
         });
 
 		it('Should have 3 layers that are not base layers', function () {

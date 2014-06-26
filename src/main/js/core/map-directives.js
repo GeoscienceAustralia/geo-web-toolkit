@@ -53,6 +53,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 //            });
             $scope.layerPromises = [];
             $scope.layerDtoPromises = [];
+            //TODO Auto fix layer orders to match DOM of ga-map.
             function orderLayers() {
                 var domLayers = $('ga-map-layer,ga-feature-layer,ga-marker-layer');
                 var allLayers = self.getLayers();
