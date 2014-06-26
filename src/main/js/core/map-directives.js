@@ -193,6 +193,77 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * Event details coming back will be implementation specific
              * @methodOf gawebtoolkit.core.map-directives:gaMap
              * @param {function} callback - callback function that fires when the mouse move event occurs.
+             * @example
+             * <example module="mapMouseMove">
+             * <file name="mapMouseMove.html">
+             * <div ng-controller="ourMapController">
+                <div id="toolbar">
+                    <a class="btn btn-primary" ng-click="toggleMouseMoveRegistration($event)">{{registerMouseMapMoveButton}}</a>
+                    <span class="alert alert-danger messagebox">
+                        {{mouseMoveStatus}}</span>
+                </div>
+
+                <div id="mapMouseMove"></div>
+                <ga-map
+                    map-element-id="mapMouseMove"
+                    datum-projection='EPSG:102100'
+                    display-projection='EPSG:4326'
+                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                zoom-level="4">
+                <ga-map-layer
+                    layer-name="Overview World Screen"
+                    layer-type="GoogleStreet"
+                    is-base-layer="true">
+                </ga-map-layer>
+                <ga-map-layer
+                    layer-name="Topographic" 
+                    layer-type="WMS"
+                    layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                    is-base-layer="false"
+                    layers="hazardContours"
+                    background-color="#ffffff">
+                </ga-map-layer>
+            </ga-map>
+            </div>
+             * </div>
+             * </file>
+             * <file name="mapMouseMove.js">
+             * var app = angular.module('mapMouseMove', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.registerMouseMapMoveButton = "Register mouse move"
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                        $scope.mouseMoveStatus = "mouseMoveStatus";
+                        $scope.toggleMouseMoveRegistration = function(e) {
+                            $scope.mouseMoveRegistered = true;
+                            $scope.mapController.registerMapMouseMove(function() {
+                                $scope.mouseMoveStatus = "Mouse moving";
+                                $scope.$apply();
+                            });
+                            angular.element(e.target).attr("disabled", true);
+                        };
+                    });
+                }]);
+             * </file>
+             * <file name="ourMapController.css">
+             *  #mapMouseMove {
+                    width:600px;
+                    height:550px;
+                    display: inline-block;
+               }
+               #toolbar {
+                   padding: 0;
+                   float: left;
+               }
+               #toolbar > * {
+                   float: left;
+               }
+               .btn {
+                   margin: 5px 20px;
+               }
+             * </file>
+             * </example>
              * */
             self.registerMapMouseMove = function (callback) {
                 GAMapService.registerMapMouseMove($scope.mapInstance, callback);
@@ -204,6 +275,85 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * Registers an event callback with mapInstance when the mouse stops moving over the map
              * @methodOf gawebtoolkit.core.map-directives:gaMap
              * @param {function} callback - callback function that fires when the mouse move end event occurs.
+             * @example
+             * <example module="mapMouseMoveEnd">
+             * <file name="mapMouseMoveEnd.html">
+             * <div ng-controller="ourMapController">
+                    <div id="toolbar">
+                        <a class="btn btn-primary" ng-click="toggleMouseMoveRegistration($event)">Enable mouse move end track</a>
+                        <span class="alert alert-danger messagebox">
+                            {{registrationStatus + " | " + mouseMoveStatus}}</span>
+                    </div>
+
+                    <div id="mapMouseMoveEnd"></div>
+                    <ga-map
+                        map-element-id="mapMouseMoveEnd"
+                        datum-projection='EPSG:102100'
+                        display-projection='EPSG:4326'
+                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        zoom-level="4">
+                        <ga-map-layer
+                            layer-name="Overview World Screen"
+                            layer-type="GoogleStreet"
+                            is-base-layer="true">
+                        </ga-map-layer>
+                        <ga-map-layer
+                            layer-name="Topographic" 
+                            layer-type="WMS"
+                            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                            is-base-layer="false"
+                            layers="hazardContours"
+                            background-color="#ffffff">
+                        </ga-map-layer>
+                    </ga-map>
+                </div>
+
+             * </file>
+             * 
+             * <file name="mapMouseMoveEnd.js">
+             * var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                        $scope.registrationStatus = "Click on the button";
+                        $scope.mouseMoveStatus = "mouseMoveStatus";
+                        $scope.toggleMouseMoveRegistration = function(e) {
+                            $scope.registrationStatus = "Click and drag the map";
+                            $scope.mapController.registerMapMouseMoveEnd(function() {
+                                $scope.mouseMoveStatus = "Mouse move end";
+                                setTimeout(function () {
+                                    $scope.mouseMoveStatus = "mouseMoveStatus";
+                                    $scope.$apply();
+                                }, 1000);
+                                $scope.$apply();
+                            });
+                            angular.element(e.target).attr("disabled", true);
+                        };
+                    });
+                }]);
+             * </file>
+             * 
+             * <file name="mapMouseMoveEnd.css">
+             *  #mapMouseMoveEnd {
+                    width:600px;
+                    height:550px;
+                    display: inline-block;
+               }
+               #toolbar {
+                   padding: 0;
+                   float: left;
+               }
+               #toolbar > * {
+                   float: left;
+               }
+               .btn {
+                   margin: 5px 20px;
+               }
+
+             * </file>
+             * 
+             * </example>
              * */
             self.registerMapMouseMoveEnd = function (callback) {
                 GAMapService.registerMapMouseMoveEnd($scope.mapInstance, callback);
@@ -216,6 +366,83 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * Event details coming back will be implementation specific
              * @methodOf gawebtoolkit.core.map-directives:gaMap
              * @param {function} callback - callback function that fires when the map is clicked.
+             * @example
+             * <example module="mouseMapClick">
+             * <file name="mouseMapClick.html">
+             * <div ng-controller="ourMapController">
+             *      <div id="toolbar">
+                        <a class="btn btn-primary" ng-click="toggleMouseClickRegistration($event)">{{mouseMapClickButton}}</a>
+                        <span class="alert alert-danger messagebox">
+                            {{mouseClickStatus + " | " + mouseClickMsg}}</span>
+                    </div>
+            
+                    <div id="mouseMapClick"></div>
+                    <ga-map
+                        map-element-id="mouseMapClick"
+                        datum-projection='EPSG:102100'
+                        display-projection='EPSG:4326'
+                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                    zoom-level="4">
+                    <ga-map-layer
+                        layer-name="Overview World Screen"
+                        layer-type="GoogleStreet"
+                        is-base-layer="true">
+                    </ga-map-layer>
+                    <ga-map-layer
+                        layer-name="Topographic" 
+                        layer-type="WMS"
+                        layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                        is-base-layer="false"
+                        layers="hazardContours"
+                        background-color="#ffffff">
+                    </ga-map-layer>
+                </ga-map>
+             * </div>
+             * </file>
+             * <file name="mouseMapClick.js">
+             * var app = angular.module('mouseMapClick', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                        $scope.mouseClickStatus = "mouseClickStatus";
+                        $scope.mouseClickMsg = "mouseClickMsg";
+                        $scope.mouseMapClickButton = "Register mouse click";
+                        $scope.toggleMouseClickRegistration = function(e) {
+                                $scope.mouseClickStatus = "Map click registered";
+                                angular.element(e.target).attr("disabled", "");
+                                $scope.mapController.registerMapClick(mapClickCallback);
+                            };
+
+                        var mapClickCallback = function() {
+                            $scope.mouseClickMsg = "Map Clicked";
+                            setTimeout(function() {
+                                $scope.mouseClickMsg = "mouseClickMsg";
+                                $scope.$apply();
+                            }, 1000);
+                            $scope.$apply();
+                        };
+                    });
+                }]);
+             * </file>
+             * <file name="mouseMapClick.css">
+             *  #mouseMapClick {
+                    width:600px;
+                    height:550px;
+                    display: inline-block;
+               }
+               #toolbar {
+                   padding: 0;
+                   float: left;
+               }
+               #toolbar > * {
+                   float: left;
+               }
+               .btn {
+                   margin: 5px 20px;
+               }
+             * </file>
+             * </example>
              * */
             self.registerMapClick = function (callback) {
                 GAMapService.registerMapClick($scope.mapInstance, callback);
@@ -227,6 +454,92 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * Unregisters a map click event from the map instance.
              * @methodOf gawebtoolkit.core.map-directives:gaMap
              * @param {function} callback - callback function that was originally registered.
+             * @example
+             * <example module="unRegisterMouseMapClick">
+             * <file name="unRegisterMouseMapClick.html">
+             *  <div ng-controller="ourMapController">
+                    <div id="toolbar">
+                        <a class="btn btn-primary" ng-click="unRegisterMouseClickRegistration($event)">{{registerMapClickButton}}</a>
+                        <span class="alert alert-danger messagebox">
+                            {{mouseClickStatus + " | " + mouseClickMsg}}</span>
+                    </div>
+                    <div id="unRegisterMouseMapClick"></div>
+                <ga-map
+                    map-element-id="unRegisterMouseMapClick"
+                    datum-projection='EPSG:102100'
+                    display-projection='EPSG:4326'
+                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    zoom-level="4">
+                    <ga-map-layer
+                        layer-name="Overview World Screen"
+                        layer-type="GoogleStreet"
+                        is-base-layer="true">
+                    </ga-map-layer>
+                    <ga-map-layer
+                        layer-name="Topographic" 
+                        layer-type="WMS"
+                        layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                        is-base-layer="false"
+                        layers="hazardContours"
+                        background-color="#ffffff">
+                    </ga-map-layer>
+                </ga-map>
+            </div>
+             * </file>
+             * <file name="unRegisterMouseMapClick.js">
+             *  var app = angular.module('unRegisterMouseMapClick', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                        $scope.mouseClickStatus = "mouseClickStatus";
+                        $scope.mouseClickMsg = "mouseClickMsg";
+                        $scope.registerMapClickButton = "Register map click";
+                        $scope.unRegisterMouseClickRegistration = function() {
+                            if(!$scope.mouseClickRegistered) {
+                                $scope.mouseClickStatus = "Map click registered";
+                                $scope.mouseClickRegistered = true;
+                                $scope.registerMapClickButton = "Unregister Map Click";
+                                $scope.mapController.registerMapClick(unRegisterMapClickCallback);
+                            }
+
+                            else {
+                                $scope.mouseClickStatus = "Map click not registered";
+                                $scope.mouseClickMsg = "mouseClickMsg";
+                                $scope.mouseClickRegistered = false;
+                                $scope.registerMapClickButton = "Register Map Click";
+                                $scope.mapController.unRegisterMapClick(unRegisterMapClickCallback);
+                            }
+                        };
+                        var unRegisterMapClickCallback = function() {
+                            $scope.mouseClickMsg = "Map Clicked";
+                            setTimeout(function() {
+                                $scope.mouseClickMsg = "mouseClickMsg";
+                                $scope.$apply();
+                            }, 1000)
+                            $scope.$apply();
+                        };
+                    });
+                }]);
+             * </file>
+             * <file name="unRegisterMouseMapClick.css">
+             * #unRegisterMouseMapClick {
+                    width:600px;
+                    height:550px;
+                    display: inline-block;
+               }
+               #toolbar {
+                   padding: 0;
+                   float: left;
+               }
+               #toolbar > * {
+                   float: left;
+               }
+               .btn {
+                   margin: 5px 20px;
+               }
+             * </file>
+             * </example>
              * */
             self.unRegisterMapClick = function (callback) {
                 GAMapService.unRegisterMapClick($scope.mapInstance, callback);
@@ -718,7 +1031,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <example module="setOpacity">
              * <file name="setOpacity.html">
              * <div ng-controller="setOpacityController">
-             * <input placeholder="0-1" type="number" ng-model="opacityLevel" style="width: 50px" /><a class="btn btn-primary" ng-click="setOpacityLevel()">  Set top layer's opacity to {{opacityLevel}}</a>
+             * <input placeholder="0-1" type="number" ng-model="opacityLevel" style="width: 50px; height: auto;" /><a class="btn btn-primary" ng-click="setOpacityLevel()">  Set top layer's opacity to {{opacityLevel}}</a>
              * <div id="setOpacity"></div>
              * <ga-map map-element-id="setOpacity" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
              * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">

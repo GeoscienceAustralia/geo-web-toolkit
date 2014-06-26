@@ -5,23 +5,86 @@ var $ = $ || {};
 angular.module('gawebtoolkit.ui', [ 'gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils' ]);
 
 var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ]);
-/*
- * gaLayerControl
- *
+/**
+ * @ngdoc directive
+ * @name gawebtoolkit.ui.directives:gaLayerControl
+ * @description
  * A control for turning on/off layers via provided '=mapController' as well as opacity slider
- *
- * $scope
- *   '=mapController'
- *       a controller that has access to the mapInstance object that exposes the same contract as 'ga-map'
- *   '=layerData'
- *       structure expected is a minimum of:
+ * @param {Layer[]} layersData - Layers that the toolbar will interact with
+ *  structure expected is a minimum of:
  *       {
  *           id: //unique id of the layer
  *           opacity: //value betweeb 0-100 representing the percentage of opacity of the layer
  *           visibility: //boolean representing if layer is visible
  *           name: //friendly name of the layer
  *       }
- * */
+ * @param {mapController[]} mapController - mapController object
+ * @param {string} onVisible - A callback function when user turns on the layer
+ * @param {string} onHidden - A callback function when user turns off the layer
+ * @param {string} onOpacityChange - A callback function when user changes the opacity of the layer
+ * @scope
+ * @restrict E
+ * @example
+ * <example module="mapWithUIController">
+ * <file name="mapWithUIController.html">
+ * <div ng-controller="ourMapController">
+ * <ga-layer-control
+ *  layer-data="layers[1]"
+ *  map-controller="mapController"
+ *  class="alert alert-info"></ga-layer-control>
+ * <div id="map"></div>
+ * <ga-map
+ *   map-element-id="map"
+ *   datum-projection='EPSG:102100'
+ *   display-projection='EPSG:4326'
+ *   center-position='{"lat":"-3434403","lon":"14517578"}'
+ *   zoom-level="4">
+ *   <ga-map-layer
+ *       layer-name="Overview World Screen"
+ *       layer-type="GoogleStreet"
+ *       is-base-layer="true">
+ *   </ga-map-layer>
+ *   <ga-map-layer
+ *       layer-name="Earthquake hazard contours" 
+ *       layer-type="WMS"
+ *       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+ *       is-base-layer="false"
+ *       layers="hazardContours"
+ *       background-color="#ffffff">
+ *   </ga-map-layer>
+ * </ga-map>
+ * </div>
+ * </file>
+ * <file name="mapWithUIController.js">
+ * var app = angular.module('mapWithUIController',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+ * app.controller("ourMapController",["$scope", function($scope) {
+ *       $scope.$on("mapControllerReady", function(event, args) {
+ *           $scope.mapController = args;
+ *           $scope.$on("layersReady", function() {
+ *               $scope.layers = $scope.mapController.getLayers();
+ *           });
+ *       });
+ *   }]);
+ * </file>
+ * <file name="mapWithUIController.css">
+ * #map {
+ * width: 570pcx;
+ * height: 530px;
+ * }
+ * .alert {
+ *   border: 1px solid silver;
+ *   color:grey;
+ *   position: relative;
+ *   float: left;
+ *   margin-left: 10px;
+ * }
+ * .alert label {
+ *   margin: 10px;
+ * }
+ * </file>
+ * </example>
+ *
+ */
 app.directive('gaLayerControl', ['GAWTUtils',
 	function (GAWTUtils) {
 		'use strict';
@@ -79,8 +142,72 @@ app.directive('gaLayerControl', ['GAWTUtils',
 		};
 	}]);
 /**
+ * @ngdoc directive
+ * @name gawebtoolkit.ui.directives:gaLayerOpacitySlider
+ * @description
+ * Adds an opacity slider to the map and attaches it to selected layer
+ * @param {string} layersId - The ID of the layer
+ * @param {string} layersOpacity - reference to opacity value of the layer
+ * @param {mapController[]} mapController - mapController object
+ * @scope
+ * @restrict E
+ * @example
+ * <example module="mapWithUISlider">
+ * <file name="mapWithUISlider.html">
+ * <div ng-controller="ourMapController">
+ * <div class="opaictySlider">
+ * <ga-layer-opacity-slider
+ *  layer-id="{{layers[1].id}}"
+ *  layer-opacity="layers[1].opacity"
+ *  map-controller="mapController"></ga-layer-opacity-slider>
+ *  </div>
+ * <div id="map"></div>
+ * <ga-map
+ *   map-element-id="map"
+ *   datum-projection='EPSG:102100'
+ *   display-projection='EPSG:4326'
+ *   center-position='{"lat":"-3434403","lon":"14517578"}'
+ *   zoom-level="4">
+ *   <ga-map-layer
+ *       layer-name="Overview World Screen"
+ *       layer-type="GoogleStreet"
+ *       is-base-layer="true">
+ *   </ga-map-layer>
+ *   <ga-map-layer
+ *       layer-name="Earthquake hazard contours" 
+ *       layer-type="WMS"
+ *       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+ *       is-base-layer="false"
+ *       layers="hazardContours"
+ *       background-color="#ffffff">
+ *   </ga-map-layer>
+ * </ga-map>
+ * </div>
+ * </file>
+ * <file name="mapWithUISlider.js">
+ * var app = angular.module('mapWithUISlider',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+ * app.controller("ourMapController",["$scope", function($scope) {
+ *       $scope.$on("mapControllerReady", function(event, args) {
+ *           $scope.mapController = args;
+ *           $scope.$on("layersReady", function() {
+ *               $scope.layers = $scope.mapController.getLayers();
+ *           });
+ *       });
+ *   }]);
+ * </file>
+ * <file name="mapWithUISlider.css">
+ * #map {
+ * width: 570pcx;
+ * height: 530px;
+ * }
+ * .opaictySlider {
+ * width: 200px;
+ * margin-bottom: 20px;
+ * }
+ * </file>
+ * </example>
  *
- * */
+ */
 app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 	'use strict';
 	var templateCache =
@@ -135,14 +262,14 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
 /**
  * @ngdoc directive
  * @name gawebtoolkit.ui.directives:gaLayersDropDown
+ * @description
+ * This control displays a select box of layers and on change, notify via event. Used in a
+ * restricted group of layers. Used for selecting between a list of mutually exclusive layers.
  * @param {Layer[]} layersData - Layers that the control uses to switch layers
  * @param {string} selectedModel - Id of the layer that is currently selected
  * @param {string} controllerEmitEventName - event name that is fired that passes the controller
  * @param {Function} onSelectedLayerChanged - function that is called when the selected value has changed
  * @param {string} layerGroupId - A discriminator that is passed to events to identify which group of layers
- * @description
- * This control displays a select box of layers and on change, notify via event. Used in a
- * restricted group of layers. Used for selecting between a list of mutually exclusive layers.
  * @scope
  * @restrict E
  * @example
@@ -288,6 +415,83 @@ app.directive('gaBaseLayersDialog', [ 'GAWTUtils', function (GAWTUtils) {
  * @scope
  * @restrict E
  * @example
+ * <example module="baseLayerSelector">
+ * <file name="baseLayerSelector.html">
+ * <div ng-controller="ourMapController">
+ *     <ga-base-layer-selector 
+ *        layers-data="baseLayers"
+ *        controller-emit-event-name="ourDropDownEvent"
+ *        map-controller="mapController">
+ *    </ga-base-layer-selector>
+ *    <div id="map"></div>
+ *    <ga-map
+ *        map-element-id="map"
+ *        datum-projection='EPSG:102100'
+ *        display-projection='EPSG:4326'
+ *        center-position='{"lat":"-3434403","lon":"14517578"}'
+ *        zoom-level="4">
+ *        <ga-map-layer
+ *            layer-name="World Image"
+ *            layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
+ *            wrap-date-line="true"
+ *            layer-type="XYZTileCache"
+ *            is-base-layer="true"
+ *            visibility="false">
+ *        </ga-map-layer>
+ *        <ga-map-layer
+ *            layer-name="World Political Boundaries" 
+ *            layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer" 
+ *            wrap-date-line="true" 
+ *            layer-type="XYZTileCache"
+ *            is-base-layer="true"
+ *            visibility="false">
+ *        </ga-map-layer>
+ *        <ga-map-layer
+ *            layer-name="Overview World Screen"
+ *            layer-type="GoogleStreet"
+ *            is-base-layer="true">
+ *        </ga-map-layer>
+ *        <ga-map-layer
+ *            layer-name="Earthquake hazard contours" 
+ *            layer-type="WMS"
+ *            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+ *            is-base-layer="false"
+ *            layers="hazardContours"
+ *            background-color="#ffffff">
+ *        </ga-map-layer>
+ *     </ga-map>
+ * </div>
+ *</file>
+ *<file name="baseLayerSelector.js">
+ *        var app = angular.module('baseLayerSelector',
+ *        ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+ *        app.controller("ourMapController",["$scope", function($scope) {
+ *                $scope.$on("mapControllerReady", function(event, args) {
+ *                    $scope.mapController = args;
+ *                    $scope.$on("layersReady", function() {
+ *                        $scope.layers = $scope.mapController.getLayers();
+ *                        $scope.baseLayers = $scope.layers.filter(function(layer) {
+ *                            return $scope.mapController.isBaseLayer(layer.id);
+ *                        });
+ *                    });
+ *                });
+ *                $scope.$on("ourDropDownEvent", function(event, args) {
+ *                    $scope.dropDownController = args;
+ *                    $scope.selectedLayerChanged = function(layerId) {
+ *                        $scope.mapController.setLayerVisibility(layerId, false);
+ *                    };
+ *                });
+ *            }]);
+ *</file>
+ *<file name="baseLayerSelector.css">
+ *#map {
+ *    width: 670px;
+ *    height: 500px;
+ *    background-color: #21468b;
+ *    margin-top: 10px !important;
+ *}
+ *</file>
+ * </example>
  */
 app.directive('gaBaseLayerSelector', ['$timeout', function ($timeout) {
 	'use strict';
@@ -762,6 +966,125 @@ app.directive('gaDialogToggle', [ function () {
 		}
 	};
 } ]);
+
+/**
+ * @ngdoc directive
+ * @name gawebtoolkit.ui.directives:gaLayerInteractionToggle
+ * @param {string} toggleIconSource - A string value of toggle button's icon URL
+ * @param {object} mapController - controller instance for the map
+ * @param {string} controllerEmitEventName - event that is fired that passes the controller
+ * @param {function} toggleOffCallback - Callback function to be called when toggle button is turns off
+ * @param {function()} toggleOnCallback - Callback function to be called when toggle button turns on
+ * @param {function} onLayerClickCallBack - Callback function to be called when the map layer is clicked
+ * @param {string} layerInteractionId - ID of the layer that this toggle button will interact with
+ * @description
+ * This control provides a button to toggle interaction with a layer on/off
+ * @scope
+ * @restrict E
+ * @example
+ * <example module="layerInteractionToggle">
+ * <file name="layerInteractionToggle.html">
+ * <div ng-controller="ourMapController">
+ *         <div class="toolber">
+            <ga-layer-interaction-toggle 
+                toggle-icon-source="//np.ga.gov.au/gamaps/resources/img/Layers.png"
+                controller-emit-event-name="toggleInteractionEvent"
+                map-controller="mapController"
+                layer-interaction-id="layers[1].id"
+                on-layer-click-callback="clickCallback()"
+                class="toggleInteractionButton">Toggle Interaction of "{{layers[1].name}}" layer on/off
+            </ga-layer-interaction-toggle>
+            <ga-layer-control ng-show="toggleInteractionController.isToggleActive()" layer-data="layers[1]" map-controller="mapController" class="alert alert-info"></ga-layer-control>
+        </div>
+        <div class="alert alert-danger layerClicked">Layer Clicked</div>
+        <div id="map" style="width:90%;height:600px"></div>
+    <ga-map
+        map-element-id="map"
+        datum-projection='EPSG:102100'
+        display-projection='EPSG:4326'
+        center-position='{"lat":"-3434403","lon":"14517578"}'
+        zoom-level="4">
+        <ga-map-layer
+            layer-name="World Image"
+            layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
+            wrap-date-line="true"
+            layer-type="XYZTileCache"
+            is-base-layer="true"
+            visibility="false">
+        </ga-map-layer>
+        <ga-map-layer
+            layer-name="Earthquake hazard contours" 
+            layer-type="WMS"
+            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+            is-base-layer="false"
+            layers="hazardContours"
+            background-color="#ffffff">
+        </ga-map-layer>
+        <ga-map-control map-control-name="mouseposition"></ga-map-control>
+        <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+        <ga-map-control map-control-name="Permalink"></ga-map-control>
+        <ga-map-control map-control-name="ScaleLine"></ga-map-control>
+        <ga-map-control map-control-name="panzoombar"></ga-map-control>            
+    </ga-map>
+
+ * </div>
+ * </file>
+ * 
+ * <file name="layerInteractionToggle.js">
+ *      var app = angular.module('layerInteractionToggle',
+        ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+        app.controller("ourMapController",["$scope", function($scope) {
+                $scope.$on("mapControllerReady", function(event, args) {
+                    $scope.mapController = args;
+                    $scope.$on("layersReady", function() {
+                        $scope.layers = $scope.mapController.getLayers();
+                    });
+                });
+                $scope.$on("toggleInteractionEvent", function(event, args) {
+                    $scope.toggleInteractionController = args;
+                    $scope.clickCallback = function() {
+                        $(".layerClicked").fadeIn();
+                        setTimeout(function() {
+                            $(".layerClicked").fadeOut();
+                        }, 1000);
+                    };
+                });
+            }]);
+        
+        $(".alert-danger")
+                .css({
+                    "margin-top": "10px",
+                    "margin-left": ( ($("#map").width() - $(".alert-danger").width()) / 2 ) + "px"
+        });
+ * </file>
+ * 
+ * <file name="layerInteractionToggle.css">
+ *             #map {
+                background-color: #21468b
+            }
+            .alert-info {
+                float: left;
+                clear: both;
+                min-height: 80px;
+                width: 100%;
+            }
+            .alert-danger {
+                position: absolute;
+                display: none;
+                z-index: 10000;
+            }
+            .alert label {
+                margin-left: 10px;
+            }
+            .toggleInteractionButton {
+                float: left;
+            }
+            .toolber {
+                display: inline-block;
+            }
+ * </file>
+ * </example>
+ */
 app.directive('gaLayerInteractionToggle', [ function () {
 	'use strict';
 	var templateCache =
