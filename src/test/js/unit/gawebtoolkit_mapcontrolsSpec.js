@@ -32,6 +32,8 @@ describe(
 				listener(args);
 				$scope.mapController = args;
 			});
+
+            $scope.activatePermalink = true;
 			element = angular
 				.element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
 					'<ga-map-layer layer-name="Australian Landsat Mosaic"' +
@@ -43,7 +45,7 @@ describe(
 					'is-base-layer="true"' +
 					'>' +
 					'<ga-map-control map-control-name="OverviewMap"></ga-map-control>' +
-					'<ga-map-control map-control-name="Permalink"></ga-map-control>' +
+					'<ga-map-control map-control-name="Permalink" map-control-id="myPermalinkControl" control-enabled="{{activatePermalink}}"></ga-map-control>' +
 					'<ga-map-control map-control-name="ScaleLine"></ga-map-control>' +
 					'<ga-map-control map-control-name="panzoombar"></ga-map-control>' +
 					'<ga-map-control map-control-name="attribution"></ga-map-control>' +
@@ -76,4 +78,21 @@ describe(
 			expect($scope.mapController.isControlActive('myMeasureTest')).toBe(true);
 		});
 
+        it('Should deactivate permalink by changing scoped property', function () {
+            $scope.activatePermalink = false;
+            $scope.$digest();
+            var isControlActive = $scope.mapController.isControlActive('myPermalinkControl');
+            expect(isControlActive === false);
+        });
+
+        it('Should toggle control active after change of value and scope digestion', function () {
+            $scope.activatePermalink = false;
+            $scope.$digest();
+            var isControlActive = $scope.mapController.isControlActive('myPermalinkControl');
+            expect(isControlActive === false);
+            $scope.activatePermalink = true;
+            $scope.$digest();
+            isControlActive = $scope.mapController.isControlActive('myPermalinkControl');
+            expect(isControlActive === true);
+        });
 	});

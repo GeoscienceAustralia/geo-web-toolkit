@@ -1,6 +1,7 @@
 var angular = angular || {};
 var console = console || {};
 var $ = $ || {};
+var google = google || {};
 
 angular.module('gawebtoolkit.ui', [ 'gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils' ]);
 
@@ -22,147 +23,146 @@ var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ])
  *           name: //friendly name of the layer
  *       }
  * */
-app.directive('gaLayerControl', ['GAWTUtils','$timeout',
-	function (GAWTUtils,$timeout) {
-		'use strict';
-		var templateCache =
-			'<label for="{{elementId}}" class="checkbox" style="display:inline-block;width:65%">' +
-                '<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>{{layerData.name}}' +
+app.directive('gaLayerControl', ['GAWTUtils', '$timeout',
+    function (GAWTUtils, $timeout) {
+        'use strict';
+        var templateCache =
+            '<label for="{{elementId}}" class="checkbox" style="display:inline-block;width:65%">' +
+            '<input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()" ng-disabled="layerDisabled"/>{{layerData.name}}' +
             '</label>' +
-			'<div style="display:inline;width:30%" ng-transclude></div>' +
-			'<div ng-show="layerData.visibility" class="gaLayerControlSliderContainer">' +
-			'<ga-layer-opacity-slider ' +
-                'map-controller="mapController" ' +
-                'layer-opacity="layerData.opacity" ' +
-                'layer-id="{{layerData.id}}"' +
-                'layer-disabled="layerDisabled"' +
-                'title-text="Opacity control for layer - {{layerData.name}}" >' +
+            '<div style="display:inline;width:30%" ng-transclude></div>' +
+            '<div ng-show="layerData.visibility" class="gaLayerControlSliderContainer">' +
+            '<ga-layer-opacity-slider ' +
+            'map-controller="mapController" ' +
+            'layer-opacity="layerData.opacity" ' +
+            'layer-id="{{layerData.id}}" ' +
+            'layer-disabled="layerDisabled" ' +
+            'on-opacity-change="changeOpacity(layerId,opacity)" ' +
+            'title-text="Opacity control for layer - {{layerData.name}}" >' +
             '</ga-layer-opacity-slider>' +
-			'</div>';
-		return {
-			restrict: "E",
-			template: templateCache,
-			scope: {
-				layerData: '=',
-				mapController: '=',
-				onVisible: '&',
-				onHidden: '&',
-				onOpacityChange: '&',
+            '</div>';
+        return {
+            restrict: "E",
+            template: templateCache,
+            scope: {
+                layerData: '=',
+                mapController: '=',
+                onVisible: '&',
+                onHidden: '&',
+                onOpacityChange: '&',
                 layerDisabled: '=',
                 onStartLoading: '&',
                 onFinishedLoading: '&'
-			},
-			controller: ['$scope',function ($scope) {
-				$scope.elementId = GAWTUtils.generateUuid();
-			}],
-			compile: function compile() {
-				return {
-					post: function postLink(scope, element) {
+            },
+            controller: ['$scope', function ($scope) {
+                $scope.elementId = GAWTUtils.generateUuid();
+            }],
+            compile: function compile() {
+                return {
+                    post: function postLink(scope) {
                         var loadStartEvent = function () {
-                            scope.onStartLoading({layerId:scope.layerData.id});
+                            scope.onStartLoading({layerId: scope.layerData.id});
                         };
                         var loadend = function () {
-                            scope.onFinishedLoading({layerId:scope.layerData.id});
+                            scope.onFinishedLoading({layerId: scope.layerData.id});
                         };
                         //Event to be cleaned up on map destruction
-                        $timeout(function () {
-                            scope.mapController.registerLayerEvent(
-                                scope.layerData.id,
-                                "loadstart",loadStartEvent);
-                            scope.mapController.registerLayerEvent(
-                                scope.layerData.id,
-                                "loadend",loadend);
+                        scope.$watch('layerData', function (newVal,oldVal) {
+                            if(newVal != null) {
+                                if(scope.mapController == null) {
+                                    throw new Error("mapController is not available");
+                                }
+                                scope.mapController.registerLayerEvent(
+                                    scope.layerData.id,
+                                    "loadstart", loadStartEvent);
+                                scope.mapController.registerLayerEvent(
+                                    scope.layerData.id,
+                                    "loadend", loadend);
+                            }
                         });
-					},
-					pre: function preLink(scope) {
-						scope.changeOpacity = function () {
-							var opacityValue = scope.layerData.opacity;
-							scope.mapController.setOpacity(scope.layerData.id, opacityValue);
-							scope.onOpacityChange({
-								layerId: scope.layerData.id,
-								opacity: opacityValue
-							});
-						};
-						scope.layerClicked = function () {
-							scope.layerData.visibility = !scope.layerData.visibility;
-							if (scope.layerData.visibility) {
-								scope.onVisible({
-									layerId: scope.layerData.id
-								});
-							} else {
-								scope.onHidden({
-									layerId: scope.layerData.id
-								});
-							}
-
-							scope.mapController.setLayerVisibility(scope.layerData.id, scope.layerData.visibility);
-						};
-					}
-				};
-			},
-			transclude: true
-		};
-	}]);
+                    },
+                    pre: function preLink(scope) {
+                        scope.changeOpacity = function (layerId,opacity) {
+                            scope.onOpacityChange({
+                                layerId: layerId,
+                                opacity: opacity
+                            });
+                        };
+                        scope.layerClicked = function () {
+                            scope.layerData.visibility = !scope.layerData.visibility;
+                            if (scope.layerData.visibility) {
+                                scope.onVisible({
+                                    layerId: scope.layerData.id
+                                });
+                            } else {
+                                scope.onHidden({
+                                    layerId: scope.layerData.id
+                                });
+                            }
+                        };
+                    }
+                };
+            },
+            transclude: true
+        };
+    }]);
 /**
  *
  * */
 app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
-	'use strict';
-	var templateCache =
-		'<div ui-jq="slider" ui-options="getSliderOptions()"></div>';
-	//'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity" ng-change="changeOpacity()"/>';
-	return {
-		restrict: "E",
-		template: templateCache,
-		replace: true,
-		scope: {
-			layerId: '@',
-			layerOpacity: '=',
-			mapController: '=',
+    'use strict';
+    var templateCache =
+        '<div ui-jq="slider" ui-options="getSliderOptions()"></div>';
+    //'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity"/>';
+    return {
+        restrict: "E",
+        template: templateCache,
+        replace: true,
+        scope: {
+            layerId: '@',
+            layerOpacity: '=',
+            mapController: '=',
             layerDisabled: '=',
-            titleText: '@'
-		},
-		controller: ['$scope',function ($scope) {
-			$scope.changeOpacity = function () {
-				var opacityValue = $scope.layerOpacity;
-				$scope.mapController.setOpacity($scope.layerId, opacityValue);
-			};
-			$scope.changeOpacitySlide = function (e, ui) {
-				$scope.layerOpacity = ui.value;
-				//This timeout is needed to avoid $digest cycle issues and to keep jquery UI in sync.
-				//This is a performance hit, but unable to get a reliable update with out.
-				$timeout(function () {
-					$scope.$apply();
-				});
-				$scope.mapController.setOpacity($scope.layerId, ui.value);
-			};
-			$scope.getSliderOptions = function () {
-				return {
-					min: 0.0,
-					max: 1.0,
-					range: false,
-					step: 0.01,
-					change: $scope.changeOpacitySlide,
-					value: $scope.layerOpacity,
+            titleText: '@',
+            onOpacityChange:'&'
+        },
+        controller: ['$scope', function ($scope) {
+            $scope.changeOpacitySlide = function (e, ui) {
+                $scope.layerOpacity = ui.value;
+                //This timeout is needed to avoid $digest cycle issues and to keep jquery UI in sync.
+                //This is a performance hit, but unable to get a reliable update with out.
+                $timeout(function () {
+                    $scope.$apply();
+                    $scope.onOpacityChange({layerId:$scope.layerId,opacity:$scope.layerOpacity});
+                });
+            };
+            $scope.getSliderOptions = function () {
+                return {
+                    min: 0.0,
+                    max: 1.0,
+                    range: false,
+                    step: 0.01,
+                    change: $scope.changeOpacitySlide,
+                    value: $scope.layerOpacity,
                     disabled: $scope.layerDisabled
-				};
-			};
+                };
+            };
 
-		}],
-		link: function ($scope, $element) {
-			$scope.$watch('layerOpacity', function (newVal, oldVal) {
-				if (newVal && oldVal !== newVal) {
-					$($element).slider($scope.getSliderOptions());
-				}
-			});
+        }],
+        link: function ($scope, $element) {
+            $scope.$watch('layerOpacity', function (newVal, oldVal) {
+                if (newVal && oldVal !== newVal) {
+                    $($element).slider($scope.getSliderOptions());
+                }
+            });
             //HACK to give jquery ui slider title text.
             $timeout(function () {
-                $element.find('.ui-slider-handle').attr('title',$scope.titleText);
+                $element.find('.ui-slider-handle').attr('title', $scope.titleText);
             });
 
-		},
-		transclude: true
-	};
+        },
+        transclude: true
+    };
 } ]);
 /**
  * @ngdoc directive
@@ -180,134 +180,134 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
  * @example
  */
 app.directive('gaLayersDropDown', [ function () {
-	'use strict';
-	var templateCache =
-		'<div><select fix-ie-select ng-model="selectedModel" ng-change="selectLayer()" ' +
-		'ng-options="dropDownLayer.id as dropDownLayer.name for dropDownLayer in layersData" >' +
-		'</select>' +
-		'</div>';
-	return {
-		restrict: "E",
-		template: templateCache,
-		replace: false,
-		scope: {
-			layersData: '=',
-			selectedModel: '=',
-			controllerEmitEventName: '@',
-			onSelectedLayerChanged: '&',
-			onLayersInitialised: '&',
-			layerGroupId: '@',
-			includeNone: '@'
-		},
-		controller: ['$scope',function ($scope) {
-			var self = this;
-			$scope.selectLayer = function () {
-				$scope.onSelectedLayerChanged({
-					layerId: $scope.selectedModel,
-					groupId: $scope.layerGroupId
-				});
-			};
-			self.selectLayer = $scope.selectLayer;
-			$scope.$emit($scope.controllerEmitEventName, self);
+    'use strict';
+    var templateCache =
+        '<div><select fix-ie-select ng-model="selectedModel" ng-change="selectLayer()" ' +
+        'ng-options="dropDownLayer.id as dropDownLayer.name for dropDownLayer in layersData" >' +
+        '</select>' +
+        '</div>';
+    return {
+        restrict: "E",
+        template: templateCache,
+        replace: false,
+        scope: {
+            layersData: '=',
+            selectedModel: '=',
+            controllerEmitEventName: '@',
+            onSelectedLayerChanged: '&',
+            onLayersInitialised: '&',
+            layerGroupId: '@',
+            includeNone: '@'
+        },
+        controller: ['$scope', function ($scope) {
+            var self = this;
+            $scope.selectLayer = function () {
+                $scope.onSelectedLayerChanged({
+                    layerId: $scope.selectedModel,
+                    groupId: $scope.layerGroupId
+                });
+            };
+            self.selectLayer = $scope.selectLayer;
+            $scope.$emit($scope.controllerEmitEventName, self);
 
-		}],
-		link: function ($scope) {
-			$scope.$watch('layersData', function (newVal) {
-				if (newVal && !$scope.selectedModel) {
-					if ($scope.includeNone && $scope.layersData[0].id !== '$none$') {
-						$scope.layersData.unshift({
-							id: '$none$',
-							name: 'None'
-						});
-					}
+        }],
+        link: function ($scope) {
+            $scope.$watch('layersData', function (newVal) {
+                if (newVal && !$scope.selectedModel) {
+                    if ($scope.includeNone && $scope.layersData[0].id !== '$none$') {
+                        $scope.layersData.unshift({
+                            id: '$none$',
+                            name: 'None'
+                        });
+                    }
 
-					$scope.selectedModel = newVal[0].id;
-					$scope.onLayersInitialised({
-						layerId: $scope.selectedModel,
-						groupId: $scope.layerGroupId
-					});
-				}
-			});
-		},
-		transclude: true
-	};
+                    $scope.selectedModel = newVal[0].id;
+                    $scope.onLayersInitialised({
+                        layerId: $scope.selectedModel,
+                        groupId: $scope.layerGroupId
+                    });
+                }
+            });
+        },
+        transclude: true
+    };
 } ]);
 /**
  * */
 app.directive('gaBaseLayersDialog', [ 'GAWTUtils', function (GAWTUtils) {
-	'use strict';
-	var templateCache =
-		'<div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">' +
-		'<div ng-repeat="layer in layersData">' +
-		'<input type="radio" name="baseLayerSelection" value="{{layer.id}}" ' +
-		'ng-model="$parent.selectedLayerId" ng-click="changeBaseLayer()" />' +
-		'{{layer.name}}' +
-		'</div>' +
-		'</div>';
-	return {
-		restrict: "E",
-		template: templateCache,
-		scope: {
-			layersData: '=',
-			dialogConfig: '=',
-			mapController: '='
-		},
-		controller: ['$scope',function ($scope) {
-			$(window).bind('resize', function () {
-				//Reinitialise dialog on window resize, resets position to correct relative location
-				//Force last closed state
-				$scope.dialogConfig.autoOpen = !$scope.isClosed;
-				$('#' + $scope.dialogId).dialog($scope.dialogConfig);
-			});
-			//Initialise id element to use for cleaning up/closing the dialog
-			$scope.dialogId = GAWTUtils.generateUuid();
-			$scope.isClosed = !$scope.dialogConfig.autoOpen;
-			var self = this;
-			self.openDialog = function () {
-				$('#' + $scope.dialogId).dialog('open');
-				$scope.isClosed = false;
-			};
-			self.closeDialog = function () {
-				$('#' + $scope.dialogId).dialog('close');
-				$scope.isClosed = true;
-			};
-			self.isClosed = function () {
-				return $scope.isClosed;
-			};
+    'use strict';
+    var templateCache =
+        '<div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">' +
+        '<div ng-repeat="layer in layersData">' +
+        '<input type="radio" name="baseLayerSelection" value="{{layer.id}}" ' +
+        'ng-model="$parent.selectedLayerId" ng-click="changeBaseLayer()" />' +
+        '{{layer.name}}' +
+        '</div>' +
+        '</div>';
+    return {
+        restrict: "E",
+        template: templateCache,
+        scope: {
+            layersData: '=',
+            dialogConfig: '=',
+            mapController: '='
+        },
+        controller: ['$scope', function ($scope) {
+            $(window).bind('resize', function () {
+                //Reinitialise dialog on window resize, resets position to correct relative location
+                //Force last closed state
+                $scope.dialogConfig.autoOpen = !$scope.isClosed;
+                $('#' + $scope.dialogId).dialog($scope.dialogConfig);
+            });
+            //Initialise id element to use for cleaning up/closing the dialog
+            $scope.dialogId = GAWTUtils.generateUuid();
+            $scope.isClosed = !$scope.dialogConfig.autoOpen;
+            var self = this;
+            self.openDialog = function () {
+                $('#' + $scope.dialogId).dialog('open');
+                $scope.isClosed = false;
+            };
+            self.closeDialog = function () {
+                $('#' + $scope.dialogId).dialog('close');
+                $scope.isClosed = true;
+            };
+            self.isClosed = function () {
+                return $scope.isClosed;
+            };
 
-			$scope.$watch('selectedBaseLayerId', function (newVal, oldVal) {
-				if (oldVal != null) {
-					$scope.mapController.setBaseLayer(newVal);
+            $scope.$watch('selectedBaseLayerId', function (newVal, oldVal) {
+                if (oldVal != null) {
+                    $scope.mapController.setBaseLayer(newVal);
 //					$scope.mapController.setLayerVisibility(newVal, true);
 //					$scope.mapController.setLayerVisibility(oldVal, false);
-				}
-			});
+                }
+            });
 
-			$scope.$watch('layersData', function (newVal) {
-				if (newVal) {
-					for (var i = 0; i < newVal.length; i++) {
-						if (newVal[i].visibility === true) {
-							$scope.selectedBaseLayerId = newVal[i].id;
-						}
-					}
-				}
-			});
+            $scope.$watch('layersData', function (newVal) {
+                if (newVal) {
+                    for (var i = 0; i < newVal.length; i++) {
+                        if (newVal[i].visibility === true) {
+                            $scope.selectedBaseLayerId = newVal[i].id;
+                        }
+                    }
+                }
+            });
 
-			$scope.$emit('baseLayerDialogReady', self);
-		}],
-		link: function ($scope) {
-			$scope.$on('$destroy', function () {
-				$('#' + $scope.dialogId).dialog('destroy').remove();
-			});
-			var initialiseSelectedLayer = $scope.$watch('layersData', function (data) {
-				if (data) {
-					$scope.selectedBaseLayerId = $scope.layersData[0].id;
-					initialiseSelectedLayer();
-				}
-			});
-		},
-		transclude: true
-	};
+            $scope.$emit('baseLayerDialogReady', self);
+        }],
+        link: function ($scope) {
+            $scope.$on('$destroy', function () {
+                $('#' + $scope.dialogId).dialog('destroy').remove();
+            });
+            var initialiseSelectedLayer = $scope.$watch('layersData', function (data) {
+                if (data) {
+                    $scope.selectedBaseLayerId = $scope.layersData[0].id;
+                    initialiseSelectedLayer();
+                }
+            });
+        },
+        transclude: true
+    };
 }]);
 /**
  * @ngdoc directive
@@ -323,93 +323,93 @@ app.directive('gaBaseLayersDialog', [ 'GAWTUtils', function (GAWTUtils) {
  * @example
  */
 app.directive('gaBaseLayerSelector', ['$timeout', function ($timeout) {
-	'use strict';
-	var templateCache =
-		'<select fix-ie-select ng-options="layer.id as layer.name for layer in layersData" ' +
-		'ng-model="selectedBaseLayerId"></select>';
-	return {
-		restrict: "E",
-		template: templateCache,
-		replace: true,
-		scope: {
-			layersData: '=',
-			mapController: '=',
-			controllerEmitEventName: '@'
-		},
-		controller: ['$scope',function ($scope) {
-			var self = this;
+    'use strict';
+    var templateCache =
+        '<select title="Base layer selector" fix-ie-select ng-options="layer.id as layer.name for layer in layersData" ' +
+        'ng-model="selectedBaseLayerId"></select>';
+    return {
+        restrict: "E",
+        template: templateCache,
+        replace: true,
+        scope: {
+            layersData: '=',
+            mapController: '=',
+            controllerEmitEventName: '@'
+        },
+        controller: ['$scope', function ($scope) {
+            var self = this;
 
-			self.selectBaseLayer = function (layerId) {
-				$scope.selectedBaseLayerId = layerId;
-			};
+            self.selectBaseLayer = function (layerId) {
+                $scope.selectedBaseLayerId = layerId;
+            };
 
-			$scope.$emit($scope.controllerEmitEventName, self);
+            $scope.$emit($scope.controllerEmitEventName, self);
 
-		}],
-		link: function ($scope) {
-			$scope.$watch('selectedBaseLayerId', function (newVal) {
-				if (newVal != null) {
-					$scope.mapController.setBaseLayer(newVal);
-				}
-			});
+        }],
+        link: function ($scope) {
+            $scope.$watch('selectedBaseLayerId', function (newVal) {
+                if (newVal != null) {
+                    $scope.mapController.setBaseLayer(newVal);
+                }
+            });
 
-			$scope.$watch('layersData', function (newVal) {
-				if (newVal) {
-					for (var i = 0; i < newVal.length; i++) {
-						if ($scope.layersData[i].visibility === true) {
-							setSelectedValue($scope.layersData[i]);
-						}
-					}
-				}
-			});
+            $scope.$watch('layersData', function (newVal) {
+                if (newVal) {
+                    for (var i = 0; i < newVal.length; i++) {
+                        if ($scope.layersData[i].visibility === true) {
+                            setSelectedValue($scope.layersData[i]);
+                        }
+                    }
+                }
+            });
 
-			//Timeout is used due to problem with $watch only fires of array changes, not objects inside
-			var setSelectedValue = function (layer) {
-				$timeout(function () {
-					$scope.selectedBaseLayerId = layer.id;
-				});
-			};
-		},
-		transclude: true
-	};
+            //Timeout is used due to problem with $watch only fires of array changes, not objects inside
+            var setSelectedValue = function (layer) {
+                $timeout(function () {
+                    $scope.selectedBaseLayerId = layer.id;
+                });
+            };
+        },
+        transclude: true
+    };
 }]);
 /**
  *
  * */
 app.directive('gaSearchWfsLayer', [function () {
-	"use strict";
-	var templateCache =
-		'<input type="text" class="search" ng-model="query" value="Place name search"/>' +
-		'<input type="button" class="searchButton" ng-click="searchWfs()" value="search"/>';
-	return {
-		restrict: "EA",
-		template: templateCache,
-		scope: {
-			layerId: '@',
-			query: '=',
-			attributes: '@',
-			onQuerySearch: '&',
-			onQueryChange: '&',
-			onQueryResults: '&',
-			mapController: '='
-		},
-		link: function ($scope) {
-			$scope.searchWfs = function () {
-				$scope.onQuerySearch({
-					layerId: $scope.layerId,
-					attributes: $scope.attributes,
-					query: $scope.query
-				});
-			};
-			$scope.$watch('query', function () {
-				$scope.onQueryChange({
-					layerId: $scope.layerId,
-					attributes: $scope.attributes,
-					query: $scope.query
-				});
-			});
-		}
-	};
+    "use strict";
+    var templateCache =
+        '<input type="text" class="search" ng-model="query" value="Place name search"/>' +
+        '<input type="button" class="searchButton" ng-click="searchWfs()" value="search"/>';
+    return {
+        restrict: "EA",
+        template: templateCache,
+        scope: {
+            layerId: '@',
+            query: '=',
+            attributes: '@',
+            onQuerySearch: '&',
+            onQueryChange: '&',
+            onQueryResults: '&',
+            mapController: '='
+        },
+        link: function ($scope) {
+            $scope.searchWfs = function () {
+                $scope.onQuerySearch({
+                    layerId: $scope.layerId,
+                    attributes: $scope.attributes,
+                    query: $scope.query
+                });
+            };
+            $scope.$watch('query', function () {
+                $scope.onQueryChange({
+                    layerId: $scope.layerId,
+                    attributes: $scope.attributes,
+                    query: $scope.query
+                });
+            });
+        }
+    };
 }]);
 
 /**
@@ -439,7 +439,7 @@ app.directive('googlePlaceNameSearch', [function () {
             zoomLevel: '@',
             countryCode: '@'
         },
-        controller: ['$scope',function ($scope) {
+        controller: ['$scope', function ($scope) {
 
         }],
         link: function ($scope, $element, $attrs) {
@@ -447,11 +447,11 @@ app.directive('googlePlaceNameSearch', [function () {
             var googleAC = new google.maps.places.Autocomplete(input, {componentRestrictions: {country: $scope.countryCode}});
             google.maps.event.addListener(googleAC, 'place_changed', function () {
                 var place = googleAC.getPlace();
-                if(!place.geometry) {
+                if (!place.geometry) {
                     return;
                 }
                 $scope.mapController.zoomTo($scope.zoomLevel);
-                $scope.mapController.setCenter(place.geometry.location.k,place.geometry.location.A, "EPSG:4326");
+                $scope.mapController.setCenter(place.geometry.location.k, place.geometry.location.A, "EPSG:4326");
             });
         }
     };
@@ -471,7 +471,7 @@ app.directive('googlePlaceNameSearch', [function () {
  * @restrict E
  * @example
  */
-app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q,$timeout) {
+app.directive('geoNamesPlaceSearch', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
     "use strict";
     return {
         restrict: 'E',
@@ -497,14 +497,14 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
             onPerformSearch: '&',
             activateKey: '@'
         },
-        controller: ['$scope',function ($scope) {
+        controller: ['$scope', function ($scope) {
 
         }],
         link: function ($scope, $element, $attrs) {
             var input = $element.find('input[type="text"]')[0];
             $element.bind('keydown', function (args) {
-                if(args.keyCode == $scope.activateKey) {
-                    if($scope.typeAheadSelected) {
+                if (args.keyCode == $scope.activateKey) {
+                    if ($scope.typeAheadSelected) {
                         return;
                     }
                     $scope.searchButtonClicked();
@@ -513,13 +513,13 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
             });
             var searchFunction = function (query, rowCount) {
                 //input box is populated with an object on selection of typeahead
-                if(typeof query === 'object') {
+                if (typeof query === 'object') {
                     query = query.properties.name;
                 }
                 $scope.searchResults = [];
                 var deferred = $q.defer();
                 $scope.waitingForResponse = true;
-                var url = 'http://api.geonames.org/searchJSON?q=' + encodeURIComponent(query).replace("%20","+") +
+                var url = 'http://api.geonames.org/searchJSON?q=' + encodeURIComponent(query).replace("%20", "+") +
                     '&maxRows=' + rowCount + '&country=' + $scope.countryCode.toUpperCase() +
                     '&username=' + $scope.geoNamesApiKey;
                 $http.get(url).success(function (results) {
@@ -537,8 +537,8 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
 
             $scope.getSearchResults = function (query) {
                 if (query != null && query.length >= 3) {
-                    return searchFunction(query,10).then(function (data) {
-                        if($scope.searchInProgress) {
+                    return searchFunction(query, 10).then(function (data) {
+                        if ($scope.searchInProgress) {
                             return [];
                         }
                         $scope.onResults({
@@ -556,7 +556,7 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
                 //Do not re-run query if activateKey is the same as typeahead selection
                 $timeout(function () {
                     $scope.typeAheadSelected = false;
-                },50);
+                }, 50);
                 $scope.onResultsSelected({
                     item: $item
                 });
@@ -565,7 +565,7 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
             $scope.searchButtonClicked = function () {
                 $scope.searchInProgress = true;
                 if ($scope.query != null) {
-                    return searchFunction($scope.query,50).then(function (data) {
+                    return searchFunction($scope.query, 50).then(function (data) {
                         $scope.searchInProgress = false;
                         $scope.onPerformSearch({
                             data: data
@@ -580,7 +580,7 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
                     type: "Feature",
                     geometry: {
                         type: "Point",
-                        coordinates: [geoNameResult.lng,geoNameResult.lat]
+                        coordinates: [geoNameResult.lng, geoNameResult.lat]
                     },
                     crs: {
                         type: "name",
@@ -590,8 +590,8 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
                     }
                 };
                 geoJson.properties = {};
-                for(var prop in geoNameResult) {
-                    if(geoNameResult.hasOwnProperty(prop)) {
+                for (var prop in geoNameResult) {
+                    if (geoNameResult.hasOwnProperty(prop)) {
                         geoJson.properties[prop] = geoNameResult[prop];
                     }
                 }
@@ -605,36 +605,36 @@ app.directive('geoNamesPlaceSearch', ['$http','$q','$timeout',function ($http,$q
  *
  * */
 app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
-	"use strict";
+    "use strict";
     var template = '<input type="text" class="search-box" ng-model="query" ' +
         'ng-class="{typeAheadLoading:waitingForResponse}" placeholder="{{placeHolder}}" />' +
         '<input type="image" class="button search-button" ng-click="searchButtonClicked()" ' +
-            'accesskey="4" alt="Search using your entered search criteria" ' +
-            'title="Search using your entered search criteria" ' +
-            'src="{{searchIconUrl}}">';
-	//Using 'result.id' as the result features coming back should have a server id.
-	//Specific property names are dynamic and cannot be relied on.
-	return {
-		restrict: "EA",
-		template: template,
-		scope: {
-			resultTemplateUrl: '@',
-			mapController: '=',
-			searchEndPoints: '=',
-			onResults: '&',
-			onResultsSelected: '&',
-			onPerformSearch: '&',
-			primaryWfsProperty: '@',
+        'accesskey="4" alt="Search using your entered search criteria" ' +
+        'title="Search using your entered search criteria" ' +
+        'src="{{searchIconUrl}}">';
+    //Using 'result.id' as the result features coming back should have a server id.
+    //Specific property names are dynamic and cannot be relied on.
+    return {
+        restrict: "EA",
+        template: template,
+        scope: {
+            resultTemplateUrl: '@',
+            mapController: '=',
+            searchEndPoints: '=',
+            onResults: '&',
+            onResultsSelected: '&',
+            onPerformSearch: '&',
+            primaryWfsProperty: '@',
             searchIconUrl: '@',
             placeHolder: '@',
             activateKey: '@'
-		},
-        controller: ['$scope',function ($scope) {
+        },
+        controller: ['$scope', function ($scope) {
             $scope.waitingForResponse = false;
         }],
         link: function ($scope, $element, $attrs) {
             $element.bind('keydown', function (args) {
-                if(args.keyCode == $scope.activateKey) {
+                if (args.keyCode == $scope.activateKey) {
                     $scope.searchButtonClicked();
                     $scope.$apply();
                 }
@@ -645,7 +645,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
 
             $scope.$watch('searchEndPoints', function (newVal) {
                 if (newVal) {
-                    if($scope.mapController == null) {
+                    if ($scope.mapController == null) {
                         return;
                     }
                     clients = [];
@@ -663,7 +663,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             });
 
             if ($attrs.searchEndPoints == null) {
-                if($scope.mapController != null) {
+                if ($scope.mapController != null) {
                     var wfsClient = $scope.mapController.createWfsClient($scope.url, $scope.featureType, $scope.featurePrefix, $scope.version,
                         $scope.geometryName, $scope.datumProjection);
 
@@ -671,7 +671,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
                 }
             }
             function filterQuery(searchQuery) {
-                return searchQuery.replace('\'','').replace('"','').replace('%','').replace('*','');
+                return searchQuery.replace('\'', '').replace('"', '').replace('%', '').replace('*', '');
             }
 
             var searchFunction = function (query) {
@@ -734,7 +734,7 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
                 //For the case where typeahead populates the $scope.query value with the selected item
                 //We want to query with the value of the primary property as that will be the text in the
                 //input field.
-                if(typeof $scope.query === 'object' && $scope.query.properties != null) {
+                if (typeof $scope.query === 'object' && $scope.query.properties != null) {
                     $scope.query = $scope.query.properties[$scope.primaryWfsProperty];
                 }
                 if ($scope.query != null) {
@@ -748,81 +748,81 @@ app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $inter
             };
         },
         transclude: true
-	};
+    };
 } ]);
 /**
  *
  * */
 app.directive('gaMeasureToggle', [function () {
-	"use strict";
-	return {
-		restrict: "EA",
-		template: '<button type="button" ng-click="handleToggle()"><div ng-transclude></div></button> ',
-		scope: {
-			resolveStyle: '&',
-			toggleOnCallback: '&',
-			toggleOffCallback: '&',
-			onFinish: '&',
-			onUpdate: '&',
-			mapControlId: '@',
-			controllerEmitEventName: '@',
-			mapController: '='
-		},
-		controller: ['$scope',function ($scope) {
-			var self = this;
+    "use strict";
+    return {
+        restrict: "EA",
+        template: '<button type="button" ng-click="handleToggle()"><div ng-transclude></div></button> ',
+        scope: {
+            resolveStyle: '&',
+            toggleOnCallback: '&',
+            toggleOffCallback: '&',
+            onFinish: '&',
+            onUpdate: '&',
+            mapControlId: '@',
+            controllerEmitEventName: '@',
+            mapController: '='
+        },
+        controller: ['$scope', function ($scope) {
+            var self = this;
 
-			self.activate = function () {
-				$scope.activate();
-			};
-			self.deactivate = function () {
-				$scope.deactivate();
-			};
-			self.isToggleActive = function () {
-				return $scope.mapController.isControlActive($scope.mapControlId);
-			};
-			$scope.$emit($scope.controllerEmitEventName, self);
-		}],
-		link: function ($scope) {
-			$scope.handleMeasurements = function (event) {
-				var measurement = $scope.mapController.getMeasureFromEvent(event);
-				$scope.onFinish({
-					event: measurement
-				});
-			};
-			$scope.handlePartialMeasure = function (event) {
-				var measurement = $scope.mapController.getMeasureFromEvent(event);
-				$scope.onUpdate({
-					event: measurement
-				});
-			};
-			$scope.activate = function () {
-				$scope.mapController.activateControl($scope.mapControlId);
-				$scope.mapController.registerControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
-				$scope.mapController.registerControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
-				$scope.toggleOnCallback();
-			};
-			$scope.deactivate = function () {
-				$scope.mapController.deactivateControl($scope.mapControlId);
-				$scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
-				$scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
-				$scope.toggleOffCallback();
-			};
-			$scope.handleToggle = function () {
-				if ($scope.mapController.isControlActive($scope.mapControlId)) {
-					$scope.deactivate();
-				} else {
-					$scope.activate();
-				}
-			};
+            self.activate = function () {
+                $scope.activate();
+            };
+            self.deactivate = function () {
+                $scope.deactivate();
+            };
+            self.isToggleActive = function () {
+                return $scope.mapController.isControlActive($scope.mapControlId);
+            };
+            $scope.$emit($scope.controllerEmitEventName, self);
+        }],
+        link: function ($scope) {
+            $scope.handleMeasurements = function (event) {
+                var measurement = $scope.mapController.getMeasureFromEvent(event);
+                $scope.onFinish({
+                    event: measurement
+                });
+            };
+            $scope.handlePartialMeasure = function (event) {
+                var measurement = $scope.mapController.getMeasureFromEvent(event);
+                $scope.onUpdate({
+                    event: measurement
+                });
+            };
+            $scope.activate = function () {
+                $scope.mapController.activateControl($scope.mapControlId);
+                $scope.mapController.registerControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
+                $scope.mapController.registerControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
+                $scope.toggleOnCallback();
+            };
+            $scope.deactivate = function () {
+                $scope.mapController.deactivateControl($scope.mapControlId);
+                $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
+                $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
+                $scope.toggleOffCallback();
+            };
+            $scope.handleToggle = function () {
+                if ($scope.mapController.isControlActive($scope.mapControlId)) {
+                    $scope.deactivate();
+                } else {
+                    $scope.activate();
+                }
+            };
 
-			$scope.$on('$destroy', function () {
-				$scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
-				$scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handleMeasurements);
-			});
-		},
-		transclude: true,
-		replace: true
-	};
+            $scope.$on('$destroy', function () {
+                $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
+                $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handleMeasurements);
+            });
+        },
+        transclude: true,
+        replace: true
+    };
 } ]);
 /*
  * gaLayersDialog renders a list of layers that can be turned off and on
@@ -841,324 +841,324 @@ app.directive('gaMeasureToggle', [function () {
  *   filterFn ? This directive could be expanded to customise the way the layers are filtered
  * */
 app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
-	'use strict';
-	var templateCache =
-		'<div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">' +
-		'<div ng-repeat="layer in layersData">' +
-		'<ga-layer-control map-controller="mapController" layer-data="layer"></ga-layer-control>' +
-		'</div>' +
-		'</div>';
-	return {
-		restrict: "E",
-		template: templateCache,
-		scope: {
-			layersData: '=',
-			dialogConfig: '=',
-			mapController: '='
-		},
-		controller: ['$scope',function ($scope) {
-			$(window).bind('resize', function () {
-				//Reinitialise dialog on window resize, resets position to correct relative location
-				//Force last closed state
-				$scope.dialogConfig.autoOpen = !$scope.isClosed;
-				$('#' + $scope.dialogId).dialog($scope.dialogConfig);
-			});
-			//Initialise id element to use for cleaning up/closing the dialog
-			$scope.dialogId = GAWTUtils.generateUuid();
+    'use strict';
+    var templateCache =
+        '<div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">' +
+        '<div ng-repeat="layer in layersData">' +
+        '<ga-layer-control map-controller="mapController" layer-data="layer"></ga-layer-control>' +
+        '</div>' +
+        '</div>';
+    return {
+        restrict: "E",
+        template: templateCache,
+        scope: {
+            layersData: '=',
+            dialogConfig: '=',
+            mapController: '='
+        },
+        controller: ['$scope', function ($scope) {
+            $(window).bind('resize', function () {
+                //Reinitialise dialog on window resize, resets position to correct relative location
+                //Force last closed state
+                $scope.dialogConfig.autoOpen = !$scope.isClosed;
+                $('#' + $scope.dialogId).dialog($scope.dialogConfig);
+            });
+            //Initialise id element to use for cleaning up/closing the dialog
+            $scope.dialogId = GAWTUtils.generateUuid();
 
-			$scope.isClosed = !$scope.dialogConfig.autoOpen;
-			var self = this;
-			self.openDialog = function () {
-				$('#' + $scope.dialogId).dialog('open');
-				$scope.isClosed = false;
-			};
-			self.closeDialog = function () {
-				$('#' + $scope.dialogId).dialog('close');
-				$scope.isClosed = true;
-			};
-			self.isClosed = function () {
-				return $scope.isClosed;
-			};
-			$scope.$emit('layersDialogReady', self);
-		}],
-		link: function ($scope, $element, $attrs) {
-			$scope.filterBaseLayers = function (layer) {
-				var layerIsBaseLayer = $scope.mapController.isBaseLayer(layer.id);
-				return !layerIsBaseLayer;
-			};
-			$scope.$on('$destroy', function () {
-				$('#' + $scope.dialogId).dialog('destroy').remove();
-			});
+            $scope.isClosed = !$scope.dialogConfig.autoOpen;
+            var self = this;
+            self.openDialog = function () {
+                $('#' + $scope.dialogId).dialog('open');
+                $scope.isClosed = false;
+            };
+            self.closeDialog = function () {
+                $('#' + $scope.dialogId).dialog('close');
+                $scope.isClosed = true;
+            };
+            self.isClosed = function () {
+                return $scope.isClosed;
+            };
+            $scope.$emit('layersDialogReady', self);
+        }],
+        link: function ($scope, $element, $attrs) {
+            $scope.filterBaseLayers = function (layer) {
+                var layerIsBaseLayer = $scope.mapController.isBaseLayer(layer.id);
+                return !layerIsBaseLayer;
+            };
+            $scope.$on('$destroy', function () {
+                $('#' + $scope.dialogId).dialog('destroy').remove();
+            });
 
-			$scope.$watch($attrs.uiRefresh, function () {
-				$('#' + $scope.dialogId).bind('dialogclose', function () {
-					$scope.isClosed = !$scope.isClosed;
-				});
-			});
-		},
-		transclude: true
-	};
+            $scope.$watch($attrs.uiRefresh, function () {
+                $('#' + $scope.dialogId).bind('dialogclose', function () {
+                    $scope.isClosed = !$scope.isClosed;
+                });
+            });
+        },
+        transclude: true
+    };
 }]);
 /**
  *
  * */
 app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GAWTUtils) {
-	'use strict';
-	var templateCache =
-		'<div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">' +
-		'<div ng-transclude></div>' +
-		'</div>';
-	return {
-		restrict: "AE",
-		template: templateCache,
-		scope: {
-			controllerEmitEventName: '@',
-			dialogConfig: '=',
-			dialogWindowResize: '&',
-			dialogClosed: '&',
-			dialogOpened: '&'
-		},
-		controller: ['$scope',function ($scope) {
-			$(window).bind('resize', function () {
-				if ($scope.dialogWindowResize != null) {
-					$scope.dialogConfig = angular.extend($scope.dialogConfig, $scope.dialogWindowResize());
-				}
-				//Reinitialise dialog on window resize, resets position to correct relative location
-				//Force last closed state
-				$scope.dialogConfig.autoOpen = !$scope.isClosed;
-				$('#' + $scope.dialogId).dialog($scope.dialogConfig);
-			});
-			//Initialise id element to use for cleaning up/closing the dialog
-			$scope.dialogId = GAWTUtils.generateUuid();
-			var self = this;
-			self.openDialog = function () {
-				$('#' + $scope.dialogId).dialog('open');
-				$scope.isClosed = false;
-				$scope.dialogOpened();
-			};
-			self.closeDialog = function () {
-				$('#' + $scope.dialogId).dialog('close');
-				$scope.isClosed = true;
-				$scope.dialogClosed();
-			};
-			self.isClosed = function () {
-				return $scope.isClosed;
-			};
-			$scope.$emit($scope.controllerEmitEventName, self);
-		}],
-		link: function ($scope) {
-			$scope.$on('$destroy', function () {
-				$('#' + $scope.dialogId).dialog('destroy').remove();
-			});
+    'use strict';
+    var templateCache =
+        '<div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">' +
+        '<div ng-transclude></div>' +
+        '</div>';
+    return {
+        restrict: "AE",
+        template: templateCache,
+        scope: {
+            controllerEmitEventName: '@',
+            dialogConfig: '=',
+            dialogWindowResize: '&',
+            dialogClosed: '&',
+            dialogOpened: '&'
+        },
+        controller: ['$scope', function ($scope) {
+            $(window).bind('resize', function () {
+                if ($scope.dialogWindowResize != null) {
+                    $scope.dialogConfig = angular.extend($scope.dialogConfig, $scope.dialogWindowResize());
+                }
+                //Reinitialise dialog on window resize, resets position to correct relative location
+                //Force last closed state
+                $scope.dialogConfig.autoOpen = !$scope.isClosed;
+                $('#' + $scope.dialogId).dialog($scope.dialogConfig);
+            });
+            //Initialise id element to use for cleaning up/closing the dialog
+            $scope.dialogId = GAWTUtils.generateUuid();
+            var self = this;
+            self.openDialog = function () {
+                $('#' + $scope.dialogId).dialog('open');
+                $scope.isClosed = false;
+                $scope.dialogOpened();
+            };
+            self.closeDialog = function () {
+                $('#' + $scope.dialogId).dialog('close');
+                $scope.isClosed = true;
+                $scope.dialogClosed();
+            };
+            self.isClosed = function () {
+                return $scope.isClosed;
+            };
+            $scope.$emit($scope.controllerEmitEventName, self);
+        }],
+        link: function ($scope) {
+            $scope.$on('$destroy', function () {
+                $('#' + $scope.dialogId).dialog('destroy').remove();
+            });
 
-			var dialogConfigWatch = $scope.$watch('dialogConfig', function (data) {
-				if (data != null) {
-					$scope.dialogReady = true;
-					$('#' + $scope.dialogId).bind('dialogclose', function () {
-						$scope.isClosed = true;
-						$timeout(function () {
-							$scope.$apply();
-						});
-						$scope.dialogClosed();
-					});
-					$scope.isClosed = !data.autoOpen;
-					dialogConfigWatch();
-				}
-			});
+            var dialogConfigWatch = $scope.$watch('dialogConfig', function (data) {
+                if (data != null) {
+                    $scope.dialogReady = true;
+                    $('#' + $scope.dialogId).bind('dialogclose', function () {
+                        $scope.isClosed = true;
+                        $timeout(function () {
+                            $scope.$apply();
+                        });
+                        $scope.dialogClosed();
+                    });
+                    $scope.isClosed = !data.autoOpen;
+                    dialogConfigWatch();
+                }
+            });
 
-		},
-		transclude: true
-	};
+        },
+        transclude: true
+    };
 }]);
 /**
  * */
 app.directive('gaDialogToggle', [ function () {
-	'use strict';
-	var templateCache = '<button type="button" ng-click="toggleDialog()"><div ng-transclude></div></button>';
-	return {
-		restrict: "E",
-		replace: "true",
-		template: templateCache,
-		transclude: true,
-		scope: {
-			gaDialogController: '=',
-			gaToggleClicked: '&'
-		},
-		link: function ($scope) {
-			$scope.toggleDialog = function () {
-				var dialogOpen = !$scope.gaDialogController.isClosed();
-				if (!dialogOpen) {
-					$scope.gaDialogController.openDialog();
-				} else {
-					$scope.gaDialogController.closeDialog();
-				}
-				$scope.gaToggleClicked({
-					dialogController: $scope.gaDialogController
-				});
-			};
-		}
-	};
+    'use strict';
+    var templateCache = '<button type="button" ng-click="toggleDialog()"><div ng-transclude></div></button>';
+    return {
+        restrict: "E",
+        replace: "true",
+        template: templateCache,
+        transclude: true,
+        scope: {
+            gaDialogController: '=',
+            gaToggleClicked: '&'
+        },
+        link: function ($scope) {
+            $scope.toggleDialog = function () {
+                var dialogOpen = !$scope.gaDialogController.isClosed();
+                if (!dialogOpen) {
+                    $scope.gaDialogController.openDialog();
+                } else {
+                    $scope.gaDialogController.closeDialog();
+                }
+                $scope.gaToggleClicked({
+                    dialogController: $scope.gaDialogController
+                });
+            };
+        }
+    };
 } ]);
 app.directive('gaLayerInteractionToggle', [ function () {
-	'use strict';
-	var templateCache =
-		'<button ng-click="toggleClicked()" class="gaUiToggleOff" type="button">' +
-		'<div ng-transclude></div>' +
-		'</button>';
-	return {
-		restrict: "E",
-		replace: "true",
-		template: templateCache,
-		transclude: true,
-		scope: {
-			toggleIconSource: '@',
-			controllerEmitEventName: '@',
-			toggleOnCallback: '&',
-			toggleOffCallback: '&',
-			onLayerClickCallback: '&',
-			mapController: '=',
-			layerInteractionId: '='
-		},
-		controller: ['$scope',function ($scope) {
-			var self = this;
+    'use strict';
+    var templateCache =
+        '<button ng-click="toggleClicked()" class="gaUiToggleOff" type="button">' +
+        '<div ng-transclude></div>' +
+        '</button>';
+    return {
+        restrict: "E",
+        replace: "true",
+        template: templateCache,
+        transclude: true,
+        scope: {
+            toggleIconSource: '@',
+            controllerEmitEventName: '@',
+            toggleOnCallback: '&',
+            toggleOffCallback: '&',
+            onLayerClickCallback: '&',
+            mapController: '=',
+            layerInteractionId: '='
+        },
+        controller: ['$scope', function ($scope) {
+            var self = this;
 
-			self.activate = function () {
-				$scope.activate();
-			};
-			self.deactivate = function () {
-				$scope.deactivate();
-			};
-			self.isToggleActive = function () {
-				return $scope.isToggleOn;
-			};
+            self.activate = function () {
+                $scope.activate();
+            };
+            self.deactivate = function () {
+                $scope.deactivate();
+            };
+            self.isToggleActive = function () {
+                return $scope.isToggleOn;
+            };
 
-			$scope.$emit($scope.controllerEmitEventName, self);
-		}],
-		link: function ($scope, $element) {
-			$scope.isToggleOn = false;
+            $scope.$emit($scope.controllerEmitEventName, self);
+        }],
+        link: function ($scope, $element) {
+            $scope.isToggleOn = false;
 
-			$scope.activate = function () {
-				$scope.mapController.registerMapClick(callback);
-				$element.removeClass('gaUiToggleOff');
-				$element.addClass('gaUiToggleOn');
-				$scope.isToggleOn = true;
-				$scope.toggleOnCallback();
+            $scope.activate = function () {
+                $scope.mapController.registerMapClick(callback);
+                $element.removeClass('gaUiToggleOff');
+                $element.addClass('gaUiToggleOn');
+                $scope.isToggleOn = true;
+                $scope.toggleOnCallback();
 
-			};
-			$scope.deactivate = function () {
-				$scope.mapController.unRegisterMapClick(callback);
-				$element.removeClass('gaUiToggleOn');
-				$element.addClass('gaUiToggleOff');
-				$scope.isToggleOn = false;
-				$scope.toggleOffCallback();
-			};
-			$scope.toggleClicked = function () {
-				$scope.isToggleOn = !$scope.isToggleOn;
-				if ($scope.isToggleOn) {
-					$scope.activate();
-				} else {
-					$scope.deactivate();
-				}
-			};
+            };
+            $scope.deactivate = function () {
+                $scope.mapController.unRegisterMapClick(callback);
+                $element.removeClass('gaUiToggleOn');
+                $element.addClass('gaUiToggleOff');
+                $scope.isToggleOn = false;
+                $scope.toggleOffCallback();
+            };
+            $scope.toggleClicked = function () {
+                $scope.isToggleOn = !$scope.isToggleOn;
+                if ($scope.isToggleOn) {
+                    $scope.activate();
+                } else {
+                    $scope.deactivate();
+                }
+            };
 
-			var callback = function (e) {
-				var xyPoint = $scope.mapController.getPointFromEvent(e);
-				$scope.onLayerClickCallback({
-					point: xyPoint,
-					interactionId: $scope.layerInteractionId
-				});
-			};
-		}
-	};
+            var callback = function (e) {
+                var xyPoint = $scope.mapController.getPointFromEvent(e);
+                $scope.onLayerClickCallback({
+                    point: xyPoint,
+                    interactionId: $scope.layerInteractionId
+                });
+            };
+        }
+    };
 } ]);
 /**
  * gaZoomToExtentButton
  * Notes: beforeZoom param 'points' is the underlying implementation object
  **/
 app.directive('gaZoomToExtentButton', [ function () {
-	"use strict";
-	return {
-		restrict: 'E',
-		template: '<button type="button" ng-click="zoom()"><div ng-transclude></div></button>',
-		scope: {
-			extentPoints: '=',
-			mapController: '=',
-			beforeZoom: '&'
-		},
-		link: function ($scope) {
-			$scope.zoomTo = function () {
-				var bounds = $scope.mapController.createBounds($scope.extentPoints);
-				$scope.beforeZoom({
-					points: bounds
-				});
-				$scope.mapController.zoomToExtent(bounds);
-			};
-		},
-		transclude: true
-	};
+    "use strict";
+    return {
+        restrict: 'E',
+        template: '<button type="button" ng-click="zoom()"><div ng-transclude></div></button>',
+        scope: {
+            extentPoints: '=',
+            mapController: '=',
+            beforeZoom: '&'
+        },
+        link: function ($scope) {
+            $scope.zoomTo = function () {
+                var bounds = $scope.mapController.createBounds($scope.extentPoints);
+                $scope.beforeZoom({
+                    points: bounds
+                });
+                $scope.mapController.zoomToExtent(bounds);
+            };
+        },
+        transclude: true
+    };
 } ]);
 /**
  * */
 app.directive('gaZoomToCenterPositionAnchor', [ function () {
-	"use strict";
-	return {
-		restrict: 'E',
-		template: '<a ng-click="zoomTo()"><div ng-transclude></div></a>',
-		scope: {
-			geoJsonCoord: '=',
-			projection: '@',
-			mapController: '=',
-			zoomLevel: '@'
-		},
-		link: function ($scope) {
-			$scope.zoomTo = function () {
-				$scope.mapController.setCenter($scope.geoJsonCoord[1], $scope.geoJsonCoord[0], $scope.projection);
-				$scope.mapController.zoomTo($scope.zoomLevel);
-			};
-		},
-		transclude: true
-	};
+    "use strict";
+    return {
+        restrict: 'E',
+        template: '<a ng-click="zoomTo()"><div ng-transclude></div></a>',
+        scope: {
+            geoJsonCoord: '=',
+            projection: '@',
+            mapController: '=',
+            zoomLevel: '@'
+        },
+        link: function ($scope) {
+            $scope.zoomTo = function () {
+                $scope.mapController.setCenter($scope.geoJsonCoord[1], $scope.geoJsonCoord[0], $scope.projection);
+                $scope.mapController.zoomTo($scope.zoomLevel);
+            };
+        },
+        transclude: true
+    };
 } ]);
 /**
  *
  * */
 app.directive('gaZoomToLayerButton', [ function () {
-	"use strict";
-	return {
-		restrict: 'E',
-		template: '<button type="button" ng-click="zoom()"><div ng-transclude></div></button>',
-		scope: {
-			layerId: '@',
-			mapController: '=',
-			beforeZoom: '&'
-		},
-		link: function ($scope) {
-			$scope.zoomTo = function () {
-				$scope.mapController.zoomToLayer($scope.layerId);
-			};
-		},
-		transclude: true
-	};
+    "use strict";
+    return {
+        restrict: 'E',
+        template: '<button type="button" ng-click="zoom()"><div ng-transclude></div></button>',
+        scope: {
+            layerId: '@',
+            mapController: '=',
+            beforeZoom: '&'
+        },
+        link: function ($scope) {
+            $scope.zoomTo = function () {
+                $scope.mapController.zoomToLayer($scope.layerId);
+            };
+        },
+        transclude: true
+    };
 } ]);
 /**
  * */
 app.directive('gaToggle', [ function () {
-	'use strict';
-	var templateCache = '<button type="button" ng-click="toggle()"><div ng-transclude></div></button>';
-	return {
-		restrict: "E",
-		replace: "true",
-		template: templateCache,
-		transclude: true,
-		scope: {
-			gaToggleClicked: '&'
-		},
-		link: function ($scope) {
-			$scope.toggle = function () {
-				$scope.gaToggleClicked();
-			};
-		}
-	};
+    'use strict';
+    var templateCache = '<button type="button" ng-click="toggle()"><div ng-transclude></div></button>';
+    return {
+        restrict: "E",
+        replace: "true",
+        template: templateCache,
+        transclude: true,
+        scope: {
+            gaToggleClicked: '&'
+        },
+        link: function ($scope) {
+            $scope.toggle = function () {
+                $scope.gaToggleClicked();
+            };
+        }
+    };
 }]);
 /*
  * Work around from suggestion in angularjs issues on github
@@ -1166,25 +1166,25 @@ app.directive('gaToggle', [ function () {
  * Modified with timeout to avoid digestion cycle problems with data
  * */
 app.directive('fixIeSelect', function () {
-	"use strict";
-	return {
-		restrict: 'A',
-		controller: [ '$scope', '$element', '$timeout', function ($scope, $element, $timeout) {
-			$scope.$watch('options', function () {
-				var $option = $('<option>');
+    "use strict";
+    return {
+        restrict: 'A',
+        controller: [ '$scope', '$element', '$timeout', function ($scope, $element, $timeout) {
+            $scope.$watch('options', function () {
+                var $option = $('<option>');
                 var widthVal = $element.css('width');
-				// for some reason, it needs both, getting the width and changing CSS options to rerender select
-				$element.css('width');
-				$element.addClass('repaint').removeClass('repaint');
+                // for some reason, it needs both, getting the width and changing CSS options to rerender select
+                $element.css('width');
+                $element.addClass('repaint').removeClass('repaint');
 
-				// add and remove option to rerender options
-				$option.appendTo($element).remove();
-				$timeout(function () {
+                // add and remove option to rerender options
+                $option.appendTo($element).remove();
+                $timeout(function () {
                     $element.css('width', 'auto');
-				});
-				$option = null;
-				//$element.css('width','auto');
-			});
-		} ]
-	};
+                });
+                $option = null;
+                //$element.css('width','auto');
+            });
+        } ]
+    };
 });

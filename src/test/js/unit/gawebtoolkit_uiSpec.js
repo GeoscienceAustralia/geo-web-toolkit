@@ -14,14 +14,22 @@ var afterEach = afterEach || {};
 describe('gawebtoolkit ui component tests',
     function () {
         'use strict';
-        var $compile, $scope, element;
+        var $compile, $scope, element,$timeout;
 
-        beforeEach(inject(function (_$compile_, _$rootScope_) {
+        beforeEach(module('testApp'));
+
+        beforeEach(inject(function (_$compile_, _$rootScope_,_$timeout_) {
             // The injector unwraps the underscores (_) from around the parameter names when matching
             $compile = _$compile_;
             $scope = _$rootScope_;
+            $timeout = _$timeout_;
+            $scope.$on('mapControllerReady', function (event, args) {
+                $scope.mapController = args;
+            });
             element = angular
-                .element('<div><ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"'
+                .element('<div>' +
+                    '<ga-layer-control id="layerControl" map-controller="mapController" layer-data="testLayerData" on-visible="testOnVisible(layerId)"></ga-layer-control>' +
+                    '<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"'
                     + 'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"'
                     + 'wrap-date-line="true"'
                     + 'zoom-to-max="true"'
@@ -30,6 +38,8 @@ describe('gawebtoolkit ui component tests',
                     + 'is-base-layer="true"'
                     + '></ga-map-layer></ga-map><div id="gamap"></div></div>');
             $compile(element)(_$rootScope_);
+            $scope.$digest();
+            $timeout.flush();
         }));
     });
 

@@ -47,7 +47,13 @@ app.factory('GeoLayer', [function () {
 	};
 
     GeoLayer.fromOpenLayersV2Layer = function(layer) {
-        return new GeoLayer(layer.id,layer.name,layer.geoLayerType,layer.visibility,layer.opacity);
+        var opacity;
+        if(typeof layer.opacity === 'string') {
+            opacity = Number(layer.opacity);
+        } else {
+            opacity = layer.opacity;
+        }
+        return new GeoLayer(layer.id,layer.name,layer.geoLayerType,layer.visibility,opacity);
     };
 	//define prototypical methods
 	//GeoLayer.prototype.myFunction = function () //available on every instance.

@@ -40,6 +40,15 @@ describe(
 				$scope.mapController = args;
 			});
 
+            $scope.testWmsLayer = {
+                "mapType": "WMS",
+                "visibility": true,
+                "name": "Australian Seabed Features",
+                "url": "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
+                "layers": "Geomorphic_Features",
+                "opacity": 1.0
+            }
+
 			$scope.testFeature = {
 				"type": "Feature",
 				"crs": {
@@ -81,7 +90,6 @@ describe(
             $timeout.flush();
 		}));
 		it('Should fire layer service function "createLayer" without an exception given valid value', function () {
-
 			var args = {
 				layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
 				layerName: "Foo",
@@ -345,6 +353,7 @@ describe(
 			}
 			expect(passed).toBe(true);
 		});
+
 		it('Should fire mapController function "setLayerVisibility" with an exception given invalid input', function () {
 			var passed = false;
 			try {
@@ -806,8 +815,8 @@ describe(
 		it('Should instantiate an OpenLayers map', function () {
 			expect($scope.mapController.getMapInstance() != null).toBe(true);
 		});
-		it('Should have added 2 layer to the map instnace', function () {
-			expect($scope.mapController.getMapInstance().layers.length === 3).toBe(true);
+		it('Should have added 3 layers to the map instnace', function () {
+			expect($scope.mapController.getMapInstance().layers.length).toBe(3);
 		});
 		it('Should have the correct projection on the map instance', function () {
 			expect($scope.mapController.getMapInstance().projection === 'EPSG:102100').toBe(true);
@@ -898,7 +907,8 @@ describe(
 						"url": "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
 						"layers": "Australian Landsat",
 						"opacity": 1.0,
-						"tileType": "large"
+						"tileType": "large",
+                        "refresh":0
 					},
 					{
 						"controllerEventName": "layer2Controller",
@@ -907,7 +917,8 @@ describe(
 						"name": "Australian Seabed Features",
 						"url": "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
 						"layers": "Geomorphic_Features",
-						"opacity": 1.0
+						"opacity": 1.0,
+                        "refresh":0
 					},
 					{
 						"controllerEventName": "layer3Controller",
@@ -918,7 +929,8 @@ describe(
 						"layers": "Framework Boundaries,Framework Boundaries SS,Roads SS,Roads MS,Roads,State Names on Boundaries,State Names Anno MS,State Names Anno SS,Populated Places,Populated Places MS,Populated Places SS,Cities",
 						"tileType": "large",
 						"attribution": "Geoscience Australia Topography <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a>",
-						"opacity": 1.0
+						"opacity": 1.0,
+                        "refresh":0
 					}
 				]
 			};
@@ -937,7 +949,8 @@ describe(
 					'wrap-date-line="{{layer.wrapDateLine}}"' +
 					'layer-type="{{layer.mapType}}"' +
 					'controller-emit-event-name="{{layer.controllerEventName}}"' +
-					'visibility="{{layer.visibility}}"' +
+					'visibility="{{layer.visibility}}" ' +
+                    'opacity="{{layer.opacity}}" ' +
 					'></ga-map-layer>' +
 					'<div id="gamap"></div></ga-map>');
 			$compile(element)($scope);
@@ -962,6 +975,40 @@ describe(
 			}
 			expect(baseLayers.length === 2).toBe(true);
 		});
+
+        it('Should change layer visibility based on observed value', function () {
+            var passed = false;
+            try {
+                var layer = $scope.mapController.getLayers()[3];
+                expect(layer.name).toBe("Australian Seabed Features");
+                expect(layer.visibility).toBe(true);
+                $scope.mapConfig.layerMaps[1].visibility = false;
+                $scope.$digest();
+                layer = $scope.mapController.getLayers()[3];
+                expect(layer.visibility).toBe(false);
+                passed = true;
+            } catch (e) {
+
+            }
+            expect(passed).toBe(true);
+        });
+
+        it('Should change layer opacity based on observed value', function () {
+            var passed = false;
+            try {
+                var layer = $scope.mapController.getLayers()[3];
+                expect(layer.name).toBe("Australian Seabed Features");
+                expect(layer.opacity).toBe(1);
+                $scope.mapConfig.layerMaps[1].opacity = 0.5;
+                $scope.$digest();
+                layer = $scope.mapController.getLayers()[3];
+                expect(layer.opacity).toBe(0.5);
+                passed = true;
+            } catch (e) {
+
+            }
+            expect(passed).toBe(true);
+        });
 
 		it('Should have 3 layers that are not base layers', function () {
 			var mapLayers = [];
@@ -1151,6 +1198,6 @@ describe(
 			$timeout(function () {
 				expect($scope.mapController.getMapInstance().layers[1].features[0].data.name).toBe('Test changing');
 			});
-
+            $timeout.flush();
 		});
 	});

@@ -28,12 +28,14 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				wrapDateLine: '@',
 				visibility: '@',
 				isBaseLayer: '@',
+                opacity: '@',
 				controllerEmitEventName: '@',
 				refreshLayer: '@',
                 onError:'&'
 			},
 			transclude: false,
 			controller: ['$scope',function ($scope) {
+
 
 				var self = this;
 
@@ -65,6 +67,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						$scope.initialiseLayer();
 					}
 				});
+
 				$scope.mapAPI = {};
 				$scope.mapAPI.mapController = mapController;
 				var layerOptions, layer;
@@ -131,6 +134,13 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
 					}
 				});
+                attrs.$observe('opacity', function () {
+                    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                        $log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
+                        mapController.setOpacity($scope.layerDto.id, $scope.opacity);
+                    }
+                });
+
 				$scope.initCount = 0;
 				function reconstructLayer() {
 					$log.info('reconstructing layer...');
