@@ -28,5 +28,93 @@ list.</p>
 </ul>
 </div></td></tr></tbody></table></div>
 <h2 id="example">Example</h2>
-<div class="example"></div>
+<div class="example"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-gabaselayerselector-page"><h4 id="example_source">Source</h4>
+<div source-edit="baseLayerSelector" source-edit-deps="angular.js baseLayerSelector.js" source-edit-html="baseLayerSelector.html" source-edit-css="baseLayerSelector.css" source-edit-js="baseLayerSelector.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="baseLayerSelector.html">
+<pre class="prettyprint linenums" ng-set-text="baseLayerSelector.html"></pre>
+<script type="text/ng-template" id="baseLayerSelector.html">
+<div ng-controller="ourMapController">
+    <ga-base-layer-selector 
+       layers-data="baseLayers"
+       controller-emit-event-name="ourDropDownEvent"
+       map-controller="mapController">
+   </ga-base-layer-selector>
+   <div id="map"></div>
+   <ga-map
+       map-element-id="map"
+       datum-projection='EPSG:102100'
+       display-projection='EPSG:4326'
+       center-position='{"lat":"-3434403","lon":"14517578"}'
+       zoom-level="4">
+       <ga-map-layer
+           layer-name="World Image"
+           layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
+           wrap-date-line="true"
+           layer-type="XYZTileCache"
+           is-base-layer="true"
+           visibility="false">
+       </ga-map-layer>
+       <ga-map-layer
+           layer-name="World Political Boundaries" 
+           layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer" 
+           wrap-date-line="true" 
+           layer-type="XYZTileCache"
+           is-base-layer="true"
+           visibility="false">
+       </ga-map-layer>
+       <ga-map-layer
+           layer-name="Overview World Screen"
+           layer-type="GoogleStreet"
+           is-base-layer="true">
+       </ga-map-layer>
+       <ga-map-layer
+           layer-name="Earthquake hazard contours" 
+           layer-type="WMS"
+           layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+           is-base-layer="false"
+           layers="hazardContours"
+           background-color="#ffffff">
+       </ga-map-layer>
+    </ga-map>
+</div>
+</script>
+</div>
+<div class="tab-pane" title="baseLayerSelector.css">
+<pre class="prettyprint linenums" ng-set-text="baseLayerSelector.css"></pre>
+<style type="text/css" id="baseLayerSelector.css">
+#map {
+   width: 670px;
+   height: 500px;
+   background-color: #21468b;
+   margin-top: 10px !important;
+}
+</style>
+</div>
+<div class="tab-pane" title="baseLayerSelector.js">
+<pre class="prettyprint linenums" ng-set-text="baseLayerSelector.js"></pre>
+<script type="text/ng-template" id="baseLayerSelector.js">
+       var app = angular.module('baseLayerSelector',
+       ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+       app.controller("ourMapController",["$scope", function($scope) {
+               $scope.$on("mapControllerReady", function(event, args) {
+                   $scope.mapController = args;
+                   $scope.$on("layersReady", function() {
+                       $scope.layers = $scope.mapController.getLayers();
+                       $scope.baseLayers = $scope.layers.filter(function(layer) {
+                           return $scope.mapController.isBaseLayer(layer.id);
+                       });
+                   });
+               });
+               $scope.$on("ourDropDownEvent", function(event, args) {
+                   $scope.dropDownController = args;
+                   $scope.selectedLayerChanged = function(layerId) {
+                       $scope.mapController.setLayerVisibility(layerId, false);
+                   };
+               });
+           }]);
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="baseLayerSelector" ng-set-html="baseLayerSelector.html" ng-eval-javascript="baseLayerSelector.js"></div>
+</div></div>
 </div>

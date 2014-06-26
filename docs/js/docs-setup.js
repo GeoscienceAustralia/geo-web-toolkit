@@ -55,7 +55,7 @@ NG_DOCS={
       "type": "directive",
       "moduleName": "gawebtoolkit.core",
       "shortDescription": "Overview",
-      "keywords": "$on $scope action add addcontrol addlayer addourcontrol adds angular api app appropriate args array associated au australia background-color base baselayerid bg-primary boolean btn btn-primary byid callback calling calls center center-position centerposition centred changes check checkbaselayer checkbaselayercontroller checkbox checklayer chklayer chklayer1 chklayer2 class click clicked coming comma console control controlid controller controlname controloptions convert coordinates core create created createlayer creates css current currently currentzoomlevel datum datumprojection defined details directive display displayprojection div dom dto dumplayers dumplayersbyname element elementid epsg equals event extent extracted extracts false ffffff finds fire fires foo form function ga gamap gamaplayer gawebtoolkit geojson geowebtoolkit getlayers getlayersbyname getlonlatfrompixel getpixelfromlonlat getpointfromevent googlestreet gov hazardcontours height help hidden html http implementation indicating initial initialextent input instance interact is-base-layer isbaselayer islayerbaselayer js lat latitude latlon layer layer-name layer-type layer-url layerid layername layers layersready layertype layerurl layervisibility left level list location log lon longitude lonlat map map-control-name map-directives map-element-id mapcontroller mapcontrollerready mapelementid mapinstance maps margin-top max maximum method methods module mouse mouseposition move movement moving nationalmap ng-change ng-click ng-controller ng-model non-base number object objet occurs olv2 opacity opacitylevel openlayers originally ourappcontroller ourcustomcontrol ourmapapp overview panzoombar performs pixels placeholder point position programmatically projection provided registered registermapclick registermapmousemove registermapmousemoveend registers rendered representing return returns script separated service set setcenter setcenterposition setlayervisibility setopacity setopacitycontroller setopacitylevel sets setvisibility setzoomlevel simple simplemap specific start stops style toggle top topographic transform true type underlying unregistermapclick unregisters var view visibility width wms worked works zoom zoom-level zoomlevel zooms zoomto zoomtolayer zoomtomax zoomtomaxextent zoomtomaxjs zootomax"
+      "keywords": "$apply $on $scope action add addcontrol addlayer addourcontrol adds alert alert-danger angular api app appropriate args array associated attr au australia auto background-color base baselayerid bg-primary boolean btn btn-primary button byid callback calling calls center center-position centerposition centred changes check checkbaselayer checkbaselayercontroller checkbox checklayer chklayer chklayer1 chklayer2 class click clicked coming comma console control controlid controller controlname controloptions convert coordinates core create created createlayer creates css current currently currentzoomlevel datum datum-projection datumprojection defined details directive disabled display display-projection displayprojection div dom drag dto dumplayers dumplayersbyname element elementid epsg equals event extent extracted extracts false ffffff finds fire fires float foo form function ga gamap gamaplayer gawebtoolkit geojson geowebtoolkit getlayers getlayersbyname getlonlatfrompixel getpixelfromlonlat getpointfromevent googlestreet gov hazardcontours height help hidden html http implementation indicating initial initialextent inline-block input instance interact is-base-layer isbaselayer islayerbaselayer js lat latitude latlon layer layer-name layer-type layer-url layerid layername layers layersready layertype layerurl layervisibility left level list location log lon longitude lonlat map map-control-name map-directives map-element-id mapclickcallback mapcontroller mapcontrollerready mapelementid mapinstance mapmousemove mapmousemoveend maps margin margin-top max maximum messagebox method methods module mouse mouseclickmsg mouseclickregistered mouseclickstatus mousemapclick mousemapclickbutton mousemoveregistered mousemovestatus mouseposition move movement moving nationalmap ng-change ng-click ng-controller ng-model non-base number object objet occurs olv2 opacity opacitylevel openlayers originally ourappcontroller ourcustomcontrol ourmapapp ourmapcontroller overview padding panzoombar performs pixels placeholder point position programmatically projection provided register registered registermapclick registermapclickbutton registermapmousemove registermapmousemoveend registermousemapmovebutton registers registrationstatus rendered representing return returns screen script separated service set setcenter setcenterposition setlayervisibility setopacity setopacitycontroller setopacitylevel sets settimeout setvisibility setzoomlevel simple simplemap specific start stops style target toggle togglemouseclickregistration togglemousemoveregistration toolbar top topographic track transform true type underlying unregister unregistermapclick unregistermapclickcallback unregistermouseclickregistration unregistermousemapclick unregisters var view visibility width wms worked works world zoom zoom-level zoomlevel zooms zoomto zoomtolayer zoomtomax zoomtomaxextent zoomtomaxjs zootomax"
     },
     {
       "section": "api",
@@ -73,7 +73,34 @@ NG_DOCS={
       "type": "directive",
       "moduleName": "gawebtoolkit.ui",
       "shortDescription": "This control displays a select box of layers and on change, switches base layers between the proivided",
-      "keywords": "api base box change control controller controlleremiteventname directive directives displays event fired gawebtoolkit instance layers layersdata list map mapcontroller passes proivided select switch switches ui"
+      "keywords": "$on $scope angular api app args au background-color base baselayers baselayerselector boundaries box center-position change contours control controller controller-emit-event-name controlleremiteventname core css datum-projection directive directives display-projection displays dropdowncontroller earthquake epsg event false ffffff filter fired function ga gawebtoolkit getlayers googlestreet gov hazard hazardcontours height html http image instance is-base-layer isbaselayer js lat layer-name layer-type layer-url layers layers-data layersdata layersready list lon map map-controller map-element-id mapcontroller mapcontrollerready margin-top module ng-controller ourdropdownevent ourmapcontroller overview passes political proivided return screen select selectedlayerchanged setlayervisibility switch switches true ui var visibility width wms world wrap-date-line xyztilecache zoom-level"
+    },
+    {
+      "section": "api",
+      "id": "gawebtoolkit.ui.directives:gaLayerControl",
+      "shortName": "gaLayerControl",
+      "type": "directive",
+      "moduleName": "gawebtoolkit.ui",
+      "shortDescription": "A control for turning on/off layers via provided &#39;=mapController&#39; as well as opacity slider",
+      "keywords": "$on $scope alert alert-info angular api app args au background-color betweeb border callback center-position changes class color contours control controller core css datum-projection directive directives display-projection earthquake epsg expected false ffffff float function ga gawebtoolkit getlayers googlestreet gov hazard hazardcontours height html http interact is-base-layer js label lat layer layer-data layer-name layer-type layer-url layers layersdata layersready left lon map map-controller map-element-id mapcontroller mapcontrollerready mapwithuicontroller margin margin-left minimum module ng-controller object onhidden onopacitychange onvisible opacity ourmapcontroller overview percentage position provided relative representing screen silver slider solid structure toolbar true turning turns ui user var visibility visible width wms world zoom-level"
+    },
+    {
+      "section": "api",
+      "id": "gawebtoolkit.ui.directives:gaLayerInteractionToggle",
+      "shortName": "gaLayerInteractionToggle",
+      "type": "directive",
+      "moduleName": "gawebtoolkit.ui",
+      "shortDescription": "This control provides a button to toggle interaction with a layer on/off",
+      "keywords": "$on $scope absolute alert alert-danger alert-info angular api app args au background-color button callback called center-position class clear clickcallback clicked contours control controller controller-emit-event-name controlleremiteventname core css datum-projection directive directives display display-projection earthquake epsg event fadein fadeout false ffffff fired float function ga gawebtoolkit getlayers gov hazard hazardcontours html http icon image inline-block instance interact interaction is-base-layer istoggleactive js label lat layer layer-data layer-interaction-id layer-name layer-type layer-url layerclicked layerinteractionid layerinteractiontoggle layers layersready left lon map map-control-name map-controller map-element-id mapcontroller mapcontrollerready margin-left margin-top min-height module mouseposition ng-controller ng-show on-layer-click-callback onlayerclickcallback ourmapcontroller overviewmap panzoombar passes permalink png position px scaleline settimeout string style toggle toggle-icon-source toggleiconsource toggleinteractionbutton toggleinteractioncontroller toggleinteractionevent toggleoffcallback toggleoncallback toolber true turns ui url var visibility width wms world wrap-date-line xyztilecache z-index zoom-level"
+    },
+    {
+      "section": "api",
+      "id": "gawebtoolkit.ui.directives:gaLayerOpacitySlider",
+      "shortName": "gaLayerOpacitySlider",
+      "type": "directive",
+      "moduleName": "gawebtoolkit.ui",
+      "shortDescription": "Adds an opacity slider to the map and attaches it to selected layer",
+      "keywords": "$on $scope adds angular api app args attaches au background-color center-position class contours controller core css datum-projection directive directives display-projection earthquake epsg false ffffff function ga gawebtoolkit getlayers googlestreet gov hazard hazardcontours height html http is-base-layer js lat layer layer-id layer-name layer-opacity layer-type layer-url layers layersid layersopacity layersready lon map map-controller map-element-id mapcontroller mapcontrollerready mapwithuislider margin-bottom module ng-controller object opacity opaictyslider ourmapcontroller overview reference screen selected slider true ui var width wms world zoom-level"
     },
     {
       "section": "api",
@@ -91,11 +118,14 @@ NG_DOCS={
   "html5Mode": false,
   "startPage": "/api",
   "scripts": [
-    "angular.min.js",
-    "angular-route.js",
-    "js?sensor=false&.js",
     "jquery-1.11.0.js",
     "jquery-ui.js",
+    "bootstrap.min.js",
+    "angular.min.js",
+    "angular-route.js",
+    "ui-bootstrap-tpls.js",
+    "angular-ui-utils.min.js",
+    "js?sensor=false&.js",
     "OpenLayers.js",
     "layer-openlayersv2.js",
     "map-openlayersv2.js",
