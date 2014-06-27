@@ -70,6 +70,7 @@ var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ])
  * #map {
  * width: 570pcx;
  * height: 530px;
+ * display: inline-block;
  * }
  * .alert {
  *   border: 1px solid silver;

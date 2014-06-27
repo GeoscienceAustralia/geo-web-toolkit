@@ -160,6 +160,80 @@ $scope.mapController = args;
 </div></div>
 </div>
 </li>
+<li><h3 id="methods_getdisplayprojection">getDisplayProjection()</h3>
+<div class="getdisplayprojection"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getdisplayprojection-page"><p>Get original datum projection provided to the map on initialisation, eg $scope.datumProjection</p>
+</div><h5 id="methods_getdisplayprojection_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getdisplayprojection-page"><p>Returns the projection value in string format</p>
+</div></td></tr></table><h4 id="methods_getdisplayprojection_example">Example</h4>
+<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getdisplayprojection-page"><h6 id="methods_getdisplayprojection_example_source">Source</h6>
+<div source-edit="getDisplayProjection" source-edit-deps="angular.js getDisplayProjection.js" source-edit-html="getDisplayProjection.html" source-edit-css="getProjection.css" source-edit-js="getDisplayProjection.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="getDisplayProjection.html">
+<pre class="prettyprint linenums" ng-set-text="getDisplayProjection.html"></pre>
+<script type="text/ng-template" id="getDisplayProjection.html">
+ <div ng-controller="ourMapController">
+                    <div id="toolbar">
+                        <a class="btn btn-primary" ng-click="projection = mapController.getDisplayProjection()">Get Display Projection: {{projection}}</a>
+                    </div>
+                    <div id="getDisplayProjection"></div>
+                    <ga-map
+                        map-element-id="getDisplayProjection"
+                        datum-projection='EPSG:102100'
+                        display-projection='EPSG:4326'
+                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        zoom-level="4">
+                        <ga-map-layer
+                            layer-name="Overview World Screen"
+                            layer-type="GoogleStreet"
+                            is-base-layer="true">
+                        </ga-map-layer>
+                        <ga-map-layer
+                            layer-name="Topographic" 
+                            layer-type="WMS"
+                            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                            is-base-layer="false"
+                            layers="hazardContours"
+                            background-color="#ffffff">
+                        </ga-map-layer>
+                    </ga-map>
+                </div>
+</script>
+</div>
+<div class="tab-pane" title="getProjection.css">
+<pre class="prettyprint linenums" ng-set-text="getProjection.css"></pre>
+<style type="text/css" id="getProjection.css">
+ #getDisplayProjection {
+                    width: 600px;
+                    height:500px;
+                    display: inline-block;
+                }
+                #toolbar {
+                   padding: 0;
+                   float: left;
+                }
+                #toolbar > * {
+                   float: left;
+                }
+                .btn {
+                   margin: 5px 20px;
+                }
+</style>
+</div>
+<div class="tab-pane" title="getDisplayProjection.js">
+<pre class="prettyprint linenums" ng-set-text="getDisplayProjection.js"></pre>
+<script type="text/ng-template" id="getDisplayProjection.js">
+ var app = angular.module('getDisplayProjection', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                    });
+                }]);
+</script>
+</div>
+</div><h6 id="methods_getdisplayprojection_example_demo">Demo</h6>
+<div class="well doc-example-live animate-container" ng-embed-app="getDisplayProjection" ng-set-html="getDisplayProjection.html" ng-eval-javascript="getDisplayProjection.js"></div>
+</div></div>
+</div>
+</li>
 <li><h3 id="methods_getlayers">getLayers()</h3>
 <div class="getlayers"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayers-page"><p>Gets all the layers currently associated with the map instance</p>
 </div><h5 id="methods_getlayers_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayers-page"><ul>
@@ -273,7 +347,91 @@ console.log( $scope.mapController.getLayersByName("Simple map layer name") );
 </div></td></tr></tbody></table><h5 id="methods_getlonlatfrompixel_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-lonlat">LonLat</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><p>An object containing Latitude and Longitude in the projection of the map</p>
 </div></td></tr></table><h4 id="methods_getlonlatfrompixel_example">Example</h4>
 <div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><p><code><pre class="prettyprint linenums">var lonLat = mapController.getLonLatFromPixel(200,500)
-// eg, lonLat equals lat: -30.967, lon: 108.552</pre></code></p>
+// eg, lonLat equals lat: -30.967, lon: 108.552</pre></code>
+<h6 id="methods_getlonlatfrompixel_example_source">Source</h6>
+<div source-edit="getLonLat" source-edit-deps="angular.js getLonLat.js" source-edit-html="getLonLat.html" source-edit-css="getLonLat.css" source-edit-js="getLonLat.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="getLonLat.html">
+<pre class="prettyprint linenums" ng-set-text="getLonLat.html"></pre>
+<script type="text/ng-template" id="getLonLat.html">
+<div ng-controller="ourMapController">
+                <div id="toolbar">
+                    <a class="btn btn-primary" ng-click="toggleMouseClickRegistration($event)">{{registerMapClickButton}}</a>
+                    <span ng-show="isMapClickRegistered" class="alert alert-danger messagebox">
+                        {{mouseClickStatus + " | " + mouseClickMsg}}</span>
+                </div>        
+                <div id="getLonLat"></div>
+                <ga-map
+                    map-element-id="getLonLat"
+                    datum-projection='EPSG:102100'
+                    display-projection='EPSG:4326'
+                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    zoom-level="4">
+                    <ga-map-layer
+                        layer-name="Overview World Screen"
+                        layer-type="GoogleStreet"
+                        is-base-layer="true">
+                    </ga-map-layer>
+                    <ga-map-layer
+                        layer-name="Topographic" 
+                        layer-type="WMS"
+                        layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                        is-base-layer="false"
+                        layers="hazardContours"
+                        background-color="#ffffff">
+                    </ga-map-layer>
+                </ga-map>
+              </div>
+</script>
+</div>
+<div class="tab-pane" title="getLonLat.css">
+<pre class="prettyprint linenums" ng-set-text="getLonLat.css"></pre>
+<style type="text/css" id="getLonLat.css">
+ #getLonLat {
+                    width:600px;
+                    height:500px;
+                    display: inline-block
+               }
+               #toolbar {
+                   padding: 0;
+                   float: left;
+               }
+               #toolbar > * {
+                   float: left;
+               }
+               .btn {
+                   margin: 5px 20px;
+               }
+</style>
+</div>
+<div class="tab-pane" title="getLonLat.js">
+<pre class="prettyprint linenums" ng-set-text="getLonLat.js"></pre>
+<script type="text/ng-template" id="getLonLat.js">
+ var app = angular.module('getLonLat', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                        $scope.mouseClickStatus = "mouseClickStatus";
+                        $scope.mouseClickMsg = "mouseClickMsg";
+                        $scope.registerMapClickButton = "Register map click";
+                        $scope.toggleMouseClickRegistration = function(e) {
+                                $scope.isMapClickRegistered = true;
+                                $scope.mouseClickStatus = "Map click registered";
+                                angular.element(e.target).attr("disabled", "");
+                                $scope.mapController.registerMapClick(mapClickCallback);
+                            };
+
+                        var mapClickCallback = function(e) {
+                            LonLatObj = $scope.mapController.getLonLatFromPixel(e.pageX, e.pageY, $scope.mapController.getProjection());
+                            $scope.mouseClickMsg = "Longitude: " + LonLatObj.lon + " | Latitude: " + LonLatObj.lat;
+                            $scope.$apply();
+                        };
+                    });
+                }]);
+</script>
+</div>
+</div><h6 id="methods_getlonlatfrompixel_example_demo">Demo</h6>
+<div class="well doc-example-live animate-container" ng-embed-app="getLonLat" ng-set-html="getLonLat.html" ng-eval-javascript="getLonLat.js"></div>
 </div></div>
 </div>
 </li>
@@ -304,6 +462,80 @@ worked out from number of pixels from the left of the div containing the map</li
 <li>A point object extracted from the event.</li>
 </ul>
 </div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getprojection">getProjection()</h3>
+<div class="getprojection"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getprojection-page"><p>Get original datum projection provided to the map on initialisation, eg $scope.datumProjection</p>
+</div><h5 id="methods_getprojection_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getprojection-page"><p>Returns the projection value in string format</p>
+</div></td></tr></table><h4 id="methods_getprojection_example">Example</h4>
+<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getprojection-page"><h6 id="methods_getprojection_example_source">Source</h6>
+<div source-edit="getMapProjection" source-edit-deps="angular.js getProjection.js" source-edit-html="getProjection.html" source-edit-css="getProjection.css" source-edit-js="getProjection.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="getProjection.html">
+<pre class="prettyprint linenums" ng-set-text="getProjection.html"></pre>
+<script type="text/ng-template" id="getProjection.html">
+ <div ng-controller="ourMapController">
+                    <div id="toolbar">
+                        <a class="btn btn-primary" ng-click="projection = mapController.getProjection()">Get Projection: {{projection}}</a>
+                    </div>
+                    <div id="getMapProjection"></div>
+                    <ga-map
+                        map-element-id="getMapProjection"
+                        datum-projection='EPSG:102100'
+                        display-projection='EPSG:4326'
+                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        zoom-level="4">
+                        <ga-map-layer
+                            layer-name="Overview World Screen"
+                            layer-type="GoogleStreet"
+                            is-base-layer="true">
+                        </ga-map-layer>
+                        <ga-map-layer
+                            layer-name="Topographic" 
+                            layer-type="WMS"
+                            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                            is-base-layer="false"
+                            layers="hazardContours"
+                            background-color="#ffffff">
+                        </ga-map-layer>
+                    </ga-map>
+                </div>
+</script>
+</div>
+<div class="tab-pane" title="getProjection.css">
+<pre class="prettyprint linenums" ng-set-text="getProjection.css"></pre>
+<style type="text/css" id="getProjection.css">
+ #getMapProjection {
+                    width: 600px;
+                    height:500px;
+                    display: inline-block;
+                }
+                #toolbar {
+                   padding: 0;
+                   float: left;
+                }
+                #toolbar > * {
+                   float: left;
+                }
+                .btn {
+                   margin: 5px 20px;
+                }
+</style>
+</div>
+<div class="tab-pane" title="getProjection.js">
+<pre class="prettyprint linenums" ng-set-text="getProjection.js"></pre>
+<script type="text/ng-template" id="getProjection.js">
+ var app = angular.module('getMapProjection', ['gawebtoolkit.core']);
+                app.controller('ourMapController',['$scope', function ($scope) {
+                    $scope.mouseMoveRegistered = false;
+                    $scope.$on('mapControllerReady', function(event,args) {
+                        $scope.mapController = args;
+                    });
+                }]);
+</script>
+</div>
+</div><h6 id="methods_getprojection_example_demo">Demo</h6>
+<div class="well doc-example-live animate-container" ng-embed-app="getMapProjection" ng-set-html="getProjection.html" ng-eval-javascript="getProjection.js"></div>
+</div></div>
+</div>
 </li>
 <li><h3 id="methods_isbaselayer">isBaseLayer(layerId)</h3>
 <div class="isbaselayer"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-isbaselayer-page"><p>Returns true if layer with the associated Id is a base layer</p>
@@ -646,6 +878,99 @@ var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
 </div>
 </div><h6 id="methods_registermapmousemoveend_example_demo">Demo</h6>
 <div class="well doc-example-live animate-container" ng-embed-app="mapMouseMoveEnd" ng-set-html="mapMouseMoveEnd.html" ng-eval-javascript="mapMouseMoveEnd.js"></div>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setbaselayer">setBaseLayer(layerId)</h3>
+<div class="setbaselayer"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setbaselayer-page"><p>Changes the current base layer to the layer associated with the Id provided</p>
+</div><h5 id="methods_setbaselayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setbaselayer-page"><ul>
+<li>id of the new base layer.</li>
+</ul>
+</div></td></tr></tbody></table><h4 id="methods_setbaselayer_example">Example</h4>
+<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setbaselayer-page"><h6 id="methods_setbaselayer_example_source">Source</h6>
+<div source-edit="setBaseLayer" source-edit-deps="angular.js setBaseLayer.js" source-edit-html="setBaseLayer.html" source-edit-css="setBaseLayer.css" source-edit-js="setBaseLayer.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="setBaseLayer.html">
+<pre class="prettyprint linenums" ng-set-text="setBaseLayer.html"></pre>
+<script type="text/ng-template" id="setBaseLayer.html">
+<div ng-controller="ourMapController">
+                <select
+                    id="selectBaseLayer"
+                    ng-model="selectedBaseLayer"
+                    ng-change="mapController.setBaseLayer(selectedBaseLayer)"
+                    ng-options="baseLayer.id as baseLayer.name for baseLayer in baseLayers"></select>
+                <div id="setBaseLayer"></div>
+                <ga-map
+                    map-element-id="setBaseLayer"
+                    datum-projection='EPSG:102100'
+                    display-projection='EPSG:4326'
+                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    zoom-level="4">
+                    <ga-map-layer
+                        layer-name="World Image"
+                        layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
+                        wrap-date-line="true"
+                        layer-type="XYZTileCache"
+                        is-base-layer="true"
+                        visibility="false">
+                    </ga-map-layer>
+                    <ga-map-layer
+                        layer-name="World Political Boundaries" 
+                        layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer" 
+                        wrap-date-line="true" 
+                        layer-type="XYZTileCache"
+                        is-base-layer="true"
+                        visibility="false">
+                    </ga-map-layer>
+                    <ga-map-layer
+                        layer-name="Overview World Screen"
+                        layer-type="GoogleStreet"
+                        is-base-layer="true">
+                    </ga-map-layer>
+                    </ga-map-layer>
+                    <ga-map-layer
+                        layer-name="Earthquake hazard contours" 
+                        layer-type="WMS"
+                        layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+                        is-base-layer="false"
+                        layers="hazardContours"
+                        background-color="#ffffff">
+                    </ga-map-layer>
+                </ga-map>
+               </div>
+</script>
+</div>
+<div class="tab-pane" title="setBaseLayer.css">
+<pre class="prettyprint linenums" ng-set-text="setBaseLayer.css"></pre>
+<style type="text/css" id="setBaseLayer.css">
+ #setBaseLayer {
+                    background-color: #21468b;
+                    margin-top: 10px !important;
+                    width: 600px;
+                    height: 500px;
+                }
+</style>
+</div>
+<div class="tab-pane" title="setBaseLayer.js">
+<pre class="prettyprint linenums" ng-set-text="setBaseLayer.js"></pre>
+<script type="text/ng-template" id="setBaseLayer.js">
+var app = angular.module('setBaseLayer',
+                ['gawebtoolkit.core']);
+                app.controller("ourMapController",["$scope", function($scope) {
+                    $scope.$on("mapControllerReady", function(event, args) {
+                        $scope.mapController = args;
+                        $scope.$on("layersReady", function() {
+                            $scope.layers = $scope.mapController.getLayers();
+                            $scope.baseLayers = $scope.layers.filter(function(layer) {
+                                return $scope.mapController.isBaseLayer(layer.id);
+                            });
+                            $scope.selectedBaseLayer = $scope.baseLayers[0].id;
+                        });
+                    });
+                }]);
+</script>
+</div>
+</div><h6 id="methods_setbaselayer_example_demo">Demo</h6>
+<div class="well doc-example-live animate-container" ng-embed-app="setBaseLayer" ng-set-html="setBaseLayer.html" ng-eval-javascript="setBaseLayer.js"></div>
 </div></div>
 </div>
 </li>
