@@ -110,6 +110,24 @@ NG_DOCS={
       "moduleName": "gawebtoolkit.ui",
       "shortDescription": "This control displays a select box of layers and on change, notify via event. Used in a",
       "keywords": "api box called change changed control controller controlleremiteventname currently directive directives discriminator displays event events exclusive fired function gawebtoolkit group identify layer layergroupid layers layersdata list mutually notify onselectedlayerchanged passed passes restricted select selected selectedmodel selecting switch ui"
+    },
+    {
+      "section": "api",
+      "id": "gawebtoolkit.ui.directives:googlePlaceNameSearch",
+      "shortName": "googlePlaceNameSearch",
+      "type": "directive",
+      "moduleName": "gawebtoolkit.ui",
+      "shortDescription": "Simple control exposing google auto complete search which zooms on selection.",
+      "keywords": "api auto autocomplete code complete control controller country countrycode directive directives exposing gawebtoolkit google icon level map mapcontroller path search searchiconurl selection simple ui zoom zoomlevel zooms"
+    },
+    {
+      "section": "api",
+      "id": "gawebtoolkit.ui.directives:googlePlaceNameSearch",
+      "shortName": "googlePlaceNameSearch",
+      "type": "directive",
+      "moduleName": "gawebtoolkit.ui",
+      "shortDescription": "Simple control exposing google auto complete search which zooms on selection.",
+      "keywords": "api auto autocomplete code complete control controller country countrycode directive directives exposing gawebtoolkit google icon level map mapcontroller path search searchiconurl selection simple ui zoom zoomlevel zooms"
     }
   ],
   "apis": {

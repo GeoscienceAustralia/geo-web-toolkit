@@ -2,11 +2,17 @@ var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
+var jQuery = jQuery || {};
+
 /**
  *  An object that represents a longitude and latitude position on the map in within the map instance projection.
  *  @typedef {Object} LonLat
  *  @property {Number} lat - Latitude value as a decimal
  *  @property {Number} lon - Longitude value as a decimal
+ *
+ *  Coordinates object of a geoJson object. This is an array of 2 value arrays representing
+ *  lon, lat as [{Number},{Number}].
+ *  @typedef {[][]} geoJsonCoordinates
  *
  *  Point geometry
  *  @typedef {Object} Point
@@ -25,38 +31,17 @@ var $ = $ || {};
  *  @property {Number} meansure - The number of units of distance
  *  @property {string} units - The unit type of the distance number, eg 'km'
  * */
-var app = angular.module('gawebtoolkit.mapservices',
-	[
-		'gawebtoolkit.mapservices.layer.openlayersv2',
-		'gawebtoolkit.mapservices.map.openlayersv2'
-	]);
-//id: olv2Layer.id,
-//	name: olv2Layer.name,
-//	type: this.getLayerType(olv2Layer),
-//	visibility: olv2Layer.visibility,
-//	opacity: olv2Layer.opacity
 
-app.factory('GeoLayer', [function () {
-	"use strict";
-	var GeoLayer = function (id, name, type, visibility, opacity) {
-		this.id = id;
-		this.name = name;
-		this.type = type;
-		this.visibility = visibility;
-		this.opacity = opacity;
-	};
-
-    GeoLayer.fromOpenLayersV2Layer = function(layer) {
-        var opacity;
-        if(typeof layer.opacity === 'string') {
-            opacity = Number(layer.opacity);
-        } else {
-            opacity = layer.opacity;
-        }
-        return new GeoLayer(layer.id,layer.name,layer.geoLayerType,layer.visibility,opacity);
-    };
-	//define prototypical methods
-	//GeoLayer.prototype.myFunction = function () //available on every instance.
-
-	return GeoLayer;
-}]);
+angular.module('gawebtoolkit.core',
+    [
+        'gawebtoolkit.mapservices',
+        'gawebtoolkit.core.map-directives',
+        'gawebtoolkit.core.map-services',
+        'gawebtoolkit.core.layer-directives',
+        'gawebtoolkit.core.layer-services',
+        'gawebtoolkit.core.control-directives',
+        'gawebtoolkit.core.feature-directives',
+        'gawebtoolkit.core.marker-directives',
+        'gawebtoolkit.core.map-config',
+        'gawebtoolkit.utils'
+    ]);
