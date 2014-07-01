@@ -1,0 +1,40 @@
+{
+    "title" : "Topography",
+    "id": "map",
+    "datumProjection":"EPSG:102100",
+    "displayProjection": "EPSG:4326",
+    "backgroundcolour": "#21468b",
+    "centrePosition": {"lat":"3868551","lon":"-10403008"},
+    "zoomLevel":3,
+    "baseMaps": [
+        {
+            "isBaseLayer":true,
+            "mapType":"WMS",
+            "visibility":true,
+            "name":"World Image",
+            "url":"http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer",
+            "mapBGColor":"194584",
+            "opacity":1.0,
+            "wrapDateLine":true,
+            "attribution":"World <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a> and <a target='_blank' href='http://www.naturalearthdata.com/'>Natural Earth</a>"
+        }
+    ],
+    "layerMaps": [
+        {
+            "isBaseLayer":false,
+            "mapType":"WMS",
+            "visibility":true,
+            "name":"Australian Topography",
+            "url":"http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer",
+            "mapBGColor":"194584",
+            "opacity":1.0
+        }
+    ],
+    "controls": [
+        "mouseposition",
+        "OverviewMap",
+        "Permalink",
+        "ScaleLine",
+        "panzoombar"
+    ]
+}

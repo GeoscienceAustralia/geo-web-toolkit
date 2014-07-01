@@ -4,5 +4,7 @@
 /config/
 /.idea/
 /.settings/
+/docs/
 .project
 .classpath
+*.log

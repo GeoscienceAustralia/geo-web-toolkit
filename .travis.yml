@@ -1,0 +1,10 @@
+branches:
+  only:
+  - doco-comments
+language: java
+after_success:
+- chmod +x .travis/push-docs-to-gh-pages.sh
+- .travis/push-docs-to-gh-pages.sh
+env:
+  global:
+    secure: Gdq3/nyNOMn1GM7vwTFAxHGJF8TSyhKTUVxZakMi0zEh511knJKqzKW0ynKv6YjI9poZWj08efti9q+XVlkkL8CM6Jh1UBSN8+fR6aZgEB8mbQmKZPfJN+UiA04yYokuyNW2q+vz/53jDYYz20dc1oFRx1S+zCq+KMwWcEa/h+Y=

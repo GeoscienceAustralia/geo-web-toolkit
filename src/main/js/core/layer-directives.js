@@ -8,10 +8,47 @@ var app = angular.module('gawebtoolkit.core.layer-directives', [ 'gawebtoolkit.c
  * @ngdoc directive
  * @name gawebtoolkit.core.layer-directives:gaMapLayer
  * @description
+ * ## Overview ##
+ * gaMapLayer adds layer to the page. This tag should be placed within the gaMap tag
+ * @param {string|@} layerAttribution - The id of the element where the map is to be rendered
+ * @param {string|@} layerName - A name allocated to the layer for future reference
+ * @param {string|@} layerUrl - A string value that defines the URL from which the content of the layer will be loaded.
+ * @param {string|@=} layers - A comma separated value that tells the remote server which layers of data should is requested form the server. This will be used to make the right request form the remote server that is defined by layerUrl.
+ * @param {number|@=} layerType - The type of the data that is being load on the layer.
+ * Following types are supported:
+ * <ul>
+     <li>WMS</li>
+     <li>arcgiscache</li>
+     <li>xyzfilecache</li>
+ </ul>
+ * <font color="red">Note:</font> This directive does not support WFS type. In order to request for WFS type <a href="#/api/gawebtoolkit.core.feature-directives:gaFeatureLayer">gaFeatureLayer</a> should be used.
+ * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
+ *@param {string|@} visibility -  A boolean value ('true', 'false') for toggling layer on/off 
+ *@param {string|@} isBaseLayer -  A boolean value ('true', 'false') telling the server if this layer is base layer or not 
+ *@param {string|@} controllerEmitEventName -  A string value that allocates an AngularJS controller to this layer to be used in JavaScript codes. This will be used in cases that the layer should be controllable with JS codes.
+ * Following functions are supported by this controller:
+ * <ul>
+     <li>hide</li>
+     <li>show</li>
+     <li>setOpacity</li>
+ </ul>
  *
+ * @reqires gaMap
  * @scope
  * @restrict E
  * @example
+<example module="simpleMap">
+<file name="index.html">
+    <div id="map"></div>
+    <ga-map map-element-id="map" center-position='{"lat":"3868551","lon":"-10403008"}' zoom-level="3">
+        <ga-map-layer layer-name="baseLayer" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS"></ga-map-layer>
+        
+        <ga-map-layer layer-name="Topographic" layer-url="http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer" map-bg-color="#194584" is-base-layer="false" layer-type="WMS"></ga-map-layer>
+    </ga-map>
+</file>
+<file name="style.css">#map {width: 650px;height:600px;}</file>
+<file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+</example>
  */
 app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 	function ($timeout, $compile, GALayerService, $log) {
