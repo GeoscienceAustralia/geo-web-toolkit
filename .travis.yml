@@ -1,6 +1,6 @@
 branches:
   only:
-  - doco-comments
+  - master
 language: java
 after_success:
 - chmod +x .travis/push-docs-to-gh-pages.sh
