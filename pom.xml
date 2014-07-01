@@ -13,7 +13,7 @@
         <js.src.dir>src/main/js</js.src.dir>
         <js.test.src.dir>src/test/js</js.test.src.dir>
         <js.webjar.dir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</js.webjar.dir>
-        <js.dest.dir>${project.build.directory}/${project.artifactId}</js.dest.dir>
+        <js.dest.dir>${project.build.directory}/dist</js.dest.dir>
     </properties>
 
 	<dependencies>
