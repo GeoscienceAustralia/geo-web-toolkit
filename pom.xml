@@ -12,7 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <js.src.dir>src/main/js</js.src.dir>
         <js.test.src.dir>src/test/js</js.test.src.dir>
-        <js.dest.dir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</js.dest.dir>
+        <js.webjar.dir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</js.webjar.dir>
+        <js.dest.dir>${project.build.directory}/${project.artifactId}</js.dest.dir>
     </properties>
 
 	<dependencies>
@@ -121,10 +122,26 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${js.dest.dir}</outputDirectory>
+                            <outputDirectory>${js.webjar.dir}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${js.src.dir}</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-2</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${js.dest.dir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${js.webjar.dir}</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
@@ -145,7 +162,7 @@
                     <aggregations>
                         <aggregation>
                             <insertNewLine>true</insertNewLine>
-                            <output>${js.dest.dir}/${project.artifactId}.js</output>
+                            <output>${js.webjar.dir}/${project.artifactId}.js</output>
                             <inputDir>${js.src.dir}</inputDir>
                             <includes>
                                 <include>**/*.js</include>
@@ -158,8 +175,8 @@
                     </excludes>
                     <jswarn>false</jswarn>
                     <nosuffix>false</nosuffix>
-                    <sourceDirectory>${js.dest.dir}</sourceDirectory>
-                    <outputDirectory>${js.dest.dir}</outputDirectory>
+                    <sourceDirectory>${js.webjar.dir}</sourceDirectory>
+                    <outputDirectory>${js.webjar.dir}</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
