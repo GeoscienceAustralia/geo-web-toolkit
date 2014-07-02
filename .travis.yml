@@ -7,4 +7,4 @@ after_success:
 - .travis/push-docs-to-gh-pages.sh
 env:
   global:
-    secure: Gdq3/nyNOMn1GM7vwTFAxHGJF8TSyhKTUVxZakMi0zEh511knJKqzKW0ynKv6YjI9poZWj08efti9q+XVlkkL8CM6Jh1UBSN8+fR6aZgEB8mbQmKZPfJN+UiA04yYokuyNW2q+vz/53jDYYz20dc1oFRx1S+zCq+KMwWcEa/h+Y=
+    secure: B+sWXwiifc0PEtkulxDL3CczglofMOQx2ldZozjxWgxhQmXX75A+pBlW3WwKmH5lvbnzOeObcfzkzptQrMU59G8DZL19ls6FbZv59fyyd39UpyGS5Jk7KbOP5WCNZvJnkvawgo+ZfFzbn8jxoAabX4etSyp3Lha09S1oREQMuQs=
