@@ -113,12 +113,12 @@ NG_DOCS={
     },
     {
       "section": "api",
-      "id": "gawebtoolkit.ui.directives:googlePlaceNameSearch",
-      "shortName": "googlePlaceNameSearch",
+      "id": "gawebtoolkit.ui.directives:geoNamesPlaceSearch",
+      "shortName": "geoNamesPlaceSearch",
       "type": "directive",
       "moduleName": "gawebtoolkit.ui",
       "shortDescription": "Simple control exposing google auto complete search which zooms on selection.",
-      "keywords": "api auto autocomplete code complete control controller country countrycode directive directives exposing gawebtoolkit google icon level map mapcontroller path search searchiconurl selection simple ui zoom zoomlevel zooms"
+      "keywords": "activatekey activating api auto autocomplete called code complete control controller country countrycode directive directives exposing function gawebtoolkit geonames geonamesapikey google html icon key level map mapcontroller onperformsearch onresults onresultsselected org path performed result resulttemplateurl returned search searchiconurl selected selection service simple template ui url username web zoom zoomlevel zooms"
     },
     {
       "section": "api",

@@ -7110,11 +7110,17 @@ app.directive('googlePlaceNameSearch', [function () {
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.ui.directives:googlePlaceNameSearch
+ * @name gawebtoolkit.ui.directives:geoNamesPlaceSearch
  * @param {object} mapController - Map controller
  * @param {string} searchIconUrl - Path to an icon used for search
+ * @param {string} geoNamesApiKey - Username to use for geonames.org web service
  * @param {number} zoomLevel - Zoom level after selection from autocomplete
- * @param {string} countryCode - Google country code to be used in the search
+ * @param {string} countryCode - Country code to be used in the search
+ * @param {string} resultTemplateUrl - URL for the result template HTML
+ * @param {Function} onResults - function called when results are returned
+ * @param {Function} onResultsSelected -  function called when a result is selected
+ * @param {Function} onPerformSearch - function called when search is performed
+ * @param {number} activateKey - key code for activating the search
  * @description
  * Simple control exposing google auto complete search which zooms on selection.
  * @scope
