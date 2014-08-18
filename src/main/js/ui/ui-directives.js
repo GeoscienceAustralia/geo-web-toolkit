@@ -136,12 +136,14 @@ app.directive('gaLayerControl', ['GAWTUtils', '$timeout',
                                 if(scope.mapController == null) {
                                     throw new Error("mapController is not available");
                                 }
-                                scope.mapController.registerLayerEvent(
-                                    scope.layerData.id,
-                                    "loadstart", loadStartEvent);
-                                scope.mapController.registerLayerEvent(
-                                    scope.layerData.id,
-                                    "loadend", loadend);
+								if (scope.layerData.id != null) {
+	                                scope.mapController.registerLayerEvent(
+	                                    scope.layerData.id,
+	                                    "loadstart", loadStartEvent);
+	                                scope.mapController.registerLayerEvent(
+	                                    scope.layerData.id,
+	                                    "loadend", loadend);
+								}
                             }
                         });
                     },
