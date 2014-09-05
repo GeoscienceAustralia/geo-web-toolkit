@@ -1459,6 +1459,22 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             self.drawPolyLine = function (points, layerName) {
                 GAMapService.drawPolyLine($scope.mapInstance, points, layerName);
             };
+            
+            self.removeFeature = function (layerName) {
+                return GAMapService.removeFeature($scope.mapInstance, layerName);
+            };
+            
+            self.drawFeature = function (args) {
+                return GAMapService.drawFeature($scope.mapInstance, args);
+            };
+            
+            self.drawLabel = function (args) {
+                return GAMapService.drawLabel($scope.mapInstance, args);
+            };   
+            
+            self.drawLabelWithPoint = function (args) {
+                return GAMapService.drawLabelWithPoint($scope.mapInstance, args);
+            };           
 
             self.isControlActive = function (controlId) {
                 return GAMapService.isControlActive($scope.mapInstance, controlId);
@@ -1482,8 +1498,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             self.resetMapFired = function () {
                 $scope.$emit('resetMapFired');
 
-            };
-
+            };            
             /**
              * TBC
              * */
