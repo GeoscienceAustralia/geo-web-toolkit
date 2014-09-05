@@ -482,6 +482,107 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
+			removeFeature: function (mapInstance, layerName) {	
+				var vectors = mapInstance.getLayersByName(layerName);
+				
+				// Function is called when a feature is selected
+				function onFeatureSelect(feature) {
+					vectors[0].removeFeatures(feature);
+	            }
+
+				// Create the select control
+				var selectCtrl = new OpenLayers.Control.SelectFeature(vectors[0], {
+	                onSelect: onFeatureSelect
+	            });
+
+				mapInstance.addControl(selectCtrl);	
+				
+				return selectCtrl;
+			},
+			drawFeature: function (mapInstance, args) {		
+	            var vectors = mapInstance.getLayersByName(args.layerName);
+				var vector;
+				
+				// Create the layer if it doesn't exist
+	            if (vectors.length > 0) {
+	            	vector = vectors[0];
+	            } else {
+	            	vector = new OpenLayers.Layer.Vector(args.layerName);
+					mapInstance.addLayer(vector);
+	            }
+
+				var control;
+				// Create a new control with the appropriate style
+				if (args.featureType.toLowerCase() == 'point') {
+					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
+					vector.style = {fillColor: args.color, fillOpacity : args.opacity, pointRadius : args.radius, strokeColor: args.color, strokeOpacity : args.opacity};
+				} else if (args.featureType.toLowerCase() == 'line') {
+					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);	
+					vector.style = {strokeColor: args.color, strokeOpacity : args.opacity};				
+				} else if  (args.featureType.toLowerCase() == 'box') {
+					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+	                    handlerOptions: {
+	                        sides: 4,
+	                        irregular: true
+	                    }
+	                });	
+					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};			
+				} else if  (args.featureType.toLowerCase() == 'polygon') {
+					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);		
+					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};		
+				}
+	
+				mapInstance.addControl(control);
+
+				return control;
+			},
+			drawLabel: function (mapInstance, args) {			
+				var vectors = mapInstance.getLayersByName(args.layerName);
+				var vector;
+				if (vectors.length > 0) {
+					vector = vectors[0];
+				} else {
+					vector = new OpenLayers.Layer.Vector(args.layerName);
+					mapInstance.addLayer(vector);
+				}
+			
+				// Create a point to display the text
+	            var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
+	            var pointFeature = new OpenLayers.Feature.Vector(point);
+	            
+	            // Add the text to the style of the layer
+	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelSelect: true};	
+
+	            vector.addFeatures([pointFeature]);
+	            return pointFeature;
+			},
+			drawLabelWithPoint: function (mapInstance, args) {			
+				var vectors = mapInstance.getLayersByName(args.layerName);
+				var vector;
+				
+				if (vectors.length > 0) {
+					vector = vectors[0];
+				} else {
+					vector = new OpenLayers.Layer.Vector(args.layerName);
+					mapInstance.addLayer(vector);
+				}
+				
+				// Create a point to display the text
+				var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
+	            var pointFeature = new OpenLayers.Feature.Vector(point);
+	            
+	            // Create a circle to display the point
+	            var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(point, args.pointRadius, 40, 0);
+	            var circlePoint = new OpenLayers.Geometry.Collection([circle, point]);
+	            var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
+	            
+	            // Add the text to the style of the layer
+	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelYOffset : args.labelYOffset, labelSelect: true,
+	            		fillColor : args.pointColor, strokeColor : args.pointColor, fillOpacity : args.pointOpacity, strokeOpcaity : args.pointOpacity};	
+	            vector.addFeatures([pointFeature, circleFeature]);
+	            
+	            return circleFeature;
+			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                 tolerance = tolerance || 0;
 				var deferred = $q.defer();
