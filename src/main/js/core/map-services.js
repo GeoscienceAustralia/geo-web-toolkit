@@ -191,6 +191,22 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.drawPolyLine(mapInstance, points, layerName);
             },
+            removeFeature: function (mapInstance, layerName) {
+                var service = mapServiceLocator.getImplementation('olv2');
+                return service.removeFeature(mapInstance, layerName);
+            },
+            drawFeature: function (mapInstance, args) {
+                var service = mapServiceLocator.getImplementation('olv2');
+                return service.drawFeature(mapInstance, args);
+            },
+            drawLabel: function (mapInstance, args) {
+                var service = mapServiceLocator.getImplementation('olv2');
+                return service.drawLabel(mapInstance, args);
+            },
+            drawLabelWithPoint: function (mapInstance, args) {
+                var service = mapServiceLocator.getImplementation('olv2');
+                return service.drawLabelWithPoint(mapInstance, args);
+            },
             createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid);
