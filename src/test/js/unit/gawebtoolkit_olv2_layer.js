@@ -1096,12 +1096,12 @@ describe(
 			expect(olv2FirstLayer.visibility === true).toBe(true);
 		});
 
-		it('Should be able to change opacity via layerController', function () {
-			var olv2FirstLayer = $scope.mapController.getMapInstance().layers[2];
-			expect(olv2FirstLayer.opacity === 1.0).toBe(true);
-			$scope.layerController1.setOpacity(0.5);
-			expect(olv2FirstLayer.opacity === 0.5).toBe(true);
-		});
+//		it('Should be able to change opacity via layerController', function () {
+//			var olv2FirstLayer = $scope.mapController.getMapInstance().layers[2];
+//			expect(olv2FirstLayer.opacity === 1.0).toBe(true);
+//			$scope.layerController1.setOpacity(0.5);
+//			expect(olv2FirstLayer.opacity === 0.5).toBe(true);
+//		});
 	});
 describe(
 	'OpenLayers v2.1.13 "ga-feature-layer" implementation tests',

@@ -138,7 +138,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     tileSize: args.tileSize(args.tileType),
                     sphericalMercator: args.sphericalMercator,
                     centerPosition: args.centerPosition,
-                    attribution: args.layerAttribution
+                    attribution: args.layerAttribution,
+                    opacity: args.opacity
                 }
             };
             if(resultArgs.options.isBaseLayer) {
@@ -165,7 +166,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 sphericalMercator: args.sphericalMercator,
                 tileType: args.tileType,
                 projection: args.datumProjection,
-                transparent: args.transparent
+                transparent: args.transparent,
+                opacity: args.opacity
                 //centerPosition: args.centerPosition
             };
             return new OpenLayers.Layer.WMS(resultArgs.layerName, resultArgs.layerUrl, {
@@ -193,7 +195,6 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     deferred.reject('LayerError - ' + data.error.code);
                     return;
                 }
-                $log.info(data);
                 var resultArgs = {
                     layerName: args.layerName,
                     layerUrl: args.layerUrl,
@@ -203,7 +204,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                         isBaseLayer: args.isBaseLayer === true || args.isBaseLayer === 'true',
                         tileSize: args.tileSize(),
                         alwaysInRange: false,
-                        displayInLayerSwitcher: false
+                        displayInLayerSwitcher: false,
+                        opacity: args.opacity
                     }
                 };
 
