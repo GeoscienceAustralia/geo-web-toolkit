@@ -272,7 +272,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
                     max: 1.0,
                     range: false,
                     step: 0.01,
-                    change: $scope.changeOpacitySlide,
+                    slide: $scope.changeOpacitySlide,
                     value: $scope.layerOpacity,
                     disabled: $scope.layerDisabled
                 };
