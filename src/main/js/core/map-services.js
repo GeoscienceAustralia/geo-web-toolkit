@@ -171,9 +171,9 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation('olv2');
                 service.mapResized(mapInstance);
             },
-            setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl) {
+            setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
                 var service = mapServiceLocator.getImplementation('olv2');
-                service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl);
+                service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl, args);
             },
             getLonLatFromPixel: function (mapInstance, x, y, projection) {
                 var service = mapServiceLocator.getImplementation('olv2');
