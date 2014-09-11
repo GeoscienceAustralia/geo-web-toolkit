@@ -1405,8 +1405,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param iconUrl {string} - A url to the desired icon for the marker
              *
              * */
-            self.setMapMarker = function (point, markerGroupName, iconUrl) {
-                GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl);
+            self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
+                GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args);
             };
             /**
              * Removes the first layer found that matches the name provided
