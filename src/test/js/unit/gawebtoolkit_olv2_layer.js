@@ -496,7 +496,7 @@ describe(
 		it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
 			var passed = false;
 			try {
-				$scope.mapController.setMapMarker({x: 50, y: 50}, 'testgroupname', 'http://localhost:8080');
+				$scope.mapController.setMapMarker({x: 50, y: 50}, 'testgroupname', 'http://localhost:8080', {width: 50, height: 50});
 				expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
 				passed = true;
 			} catch (e) {
