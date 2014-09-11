@@ -403,12 +403,12 @@ app.service('olv2MapService', [
 					mapInstance.layers[i].redraw(true);
 				}
 			},
-			setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl) {
+			setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
 				var markerLayer = mapInstance.getLayersBy('name', markerGroupName);
 
 				var opx = mapInstance.getLonLatFromPixel(coords);
-
-				var size = new OpenLayers.Size(21, 25);
+				
+				var size = new OpenLayers.Size(args.width, args.height);
 				var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
 				var icon = new OpenLayers.Icon(iconUrl, size, offset);
 				var marker = new OpenLayers.Marker(opx, icon.clone());
