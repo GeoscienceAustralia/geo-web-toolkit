@@ -68,6 +68,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
                 opacity: '@',
 				controllerEmitEventName: '@',
 				refreshLayer: '@',
+				maxZoomLevel: '@', 
                 onError:'&'
 			},
 			transclude: false,
@@ -97,7 +98,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 
 				return self;
 			}],
-			link: function ($scope, element, attrs, mapController) {
+			link: function ($scope, element, attrs, mapController) { $log.info(attrs);
 				attrs.$observe('refreshLayer', function (newVal, oldVal) {
 					if(newVal !== oldVal) {
 						$log.info('refresh for - ' + $scope.layerName);

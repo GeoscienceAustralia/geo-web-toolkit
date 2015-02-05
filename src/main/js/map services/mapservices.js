@@ -47,13 +47,24 @@ app.factory('GeoLayer', [function () {
 	};
 
     GeoLayer.fromOpenLayersV2Layer = function(layer) {
+    	// OpenLayers v2 does not store layer type for ArcGISCache layers
+    	var useLayerType = layer.id.indexOf("_ArcGISCache_") === -1;
+    	var layerType;
+    	
+    	if (useLayerType) {
+    		layerType = layer.geoLayerType;
+    	} else {
+    		layerType = "ArcGISCache";
+    	}
+
         var opacity;
         if(typeof layer.opacity === 'string') {
             opacity = Number(layer.opacity);
         } else {
             opacity = layer.opacity;
         }
-        return new GeoLayer(layer.id,layer.name,layer.geoLayerType,layer.visibility,opacity);
+        
+        return new GeoLayer(layer.id,layer.name,layerType,layer.visibility,opacity);
     };
 	//define prototypical methods
 	//GeoLayer.prototype.myFunction = function () //available on every instance.

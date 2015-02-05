@@ -142,6 +142,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     opacity: args.opacity
                 }
             };
+            
             if(resultArgs.options.isBaseLayer) {
                 if(args.resolutions) {
                     resultArgs.options.resolutions = args.resolutions;
@@ -150,6 +151,13 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     resultArgs.options.zoomOffset = args.zoomOffset;
                 }
             }
+
+            if (args.maxZoomLevel != null) {
+                if (args.maxZoomLevel.length > 0) {
+	            	resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel) ;
+                }
+            }    
+            
             return new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzTileCachePath, resultArgs.options);
         },
         createWMSLayer: function (args) {
@@ -170,6 +178,13 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 opacity: args.opacity
                 //centerPosition: args.centerPosition
             };
+            
+            if (args.maxZoomLevel != null) {
+                if (args.maxZoomLevel.length > 0) {
+	            	resultArgs.numZoomLevels = parseInt(args.maxZoomLevel) ;
+                }
+            }
+
             return new OpenLayers.Layer.WMS(resultArgs.layerName, resultArgs.layerUrl, {
                 layers: resultArgs.layers,
                 format: resultArgs.format,
@@ -209,10 +224,17 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     }
                 };
 
+                if (args.maxZoomLevel != null) {
+                    if (args.maxZoomLevel.length > 0) {
+    	            	resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel);
+                    }
+                }
                 //TODO server can respond with a 200 status code even with an error. Needs to be handled.
                 if (data) {
                     resultArgs.options.layerInfo = data;
-                    resultArgs.options.numZoomLevels = data.tileInfo.lods.length + 1;
+                    if (resultArgs.options.numZoomLevels == null) {
+                    	resultArgs.options.numZoomLevels = data.tileInfo.lods.length + 1;
+                    }
                 }
 
                 var layerResult = new OpenLayers.Layer.ArcGISCache(resultArgs.layerName, resultArgs.layerUrl, resultArgs.options);
