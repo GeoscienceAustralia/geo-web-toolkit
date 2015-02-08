@@ -68,5 +68,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-ngdocs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.registerTask('default',['karma','uglify','ngdocs']);
+	grunt.registerTask('default',['uglify','ngdocs']);
 };
