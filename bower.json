@@ -19,6 +19,6 @@
     "jquery-ui": "~1.11.2",
     "angular-ui": "~0.4.0",
     "angular-ui-utils": "~0.1.1",
-    "OpenLayers" : "https://github.com/openlayers/openlayers/releases/download/release-2.13.1/OpenLayers-2.13.1.zip"
+    "OpenLayers" : "git+https://github.com/openlayers/openlayers.git#release-2.13.1"
   }
 }
