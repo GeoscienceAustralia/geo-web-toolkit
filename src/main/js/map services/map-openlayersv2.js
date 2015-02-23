@@ -147,19 +147,13 @@ app.service('olv2MapService', [
 				}
 				//Sensible default for mouse position
 				if (controlName === 'mouseposition') {
-					if (controlOptions == null) {
-						controlOptions = {
-							//displayProjection: service.displayProjection
-						};
-					}
+                    controlOptions = controlOptions || {};
 				}
 				var con = olv2MapControls.createControl(controlName, controlOptions, div);
 				con.id = controlId || con.id;
 				mapInstance.addControl(con);
 				resultControl.id = con.id;
 				return resultControl;
-				//TODO log error, invalid control name provided
-				//or return false for layer above to give more useful error.
 			},
 			getControls: function (mapInstance) {
 				var controls = [];
@@ -285,6 +279,9 @@ app.service('olv2MapService', [
 			//TODO sensible errors when unsupported layerId is used.
 			zoomToLayer: function (mapInstance, layerId) {
 				var layer = mapInstance.getLayersBy('id', layerId)[0];
+                if(layer == null) {
+                    throw new ReferenceError('Layer not found - id: "' + layerId + '".')
+                }
 				//Only valid for some layers
 				var extent = layer.getExtent();
 				//var transformedExtent = extent.transform(new OpenLayers.Projection(mapInstance.getProjection()), layer.projection);
@@ -407,7 +404,7 @@ app.service('olv2MapService', [
 				var markerLayer = mapInstance.getLayersBy('name', markerGroupName);
 
 				var opx = mapInstance.getLonLatFromPixel(coords);
-				
+
 				var size = new OpenLayers.Size(args.width, args.height);
 				var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
 				var icon = new OpenLayers.Icon(iconUrl, size, offset);
@@ -482,9 +479,9 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
-			removeFeature: function (mapInstance, layerName) {	
+			removeFeature: function (mapInstance, layerName) {
 				var vectors = mapInstance.getLayersByName(layerName);
-				
+
 				// Function is called when a feature is selected
 				function onFeatureSelect(feature) {
 					vectors[0].removeFeatures(feature);
@@ -495,14 +492,14 @@ app.service('olv2MapService', [
 	                onSelect: onFeatureSelect
 	            });
 
-				mapInstance.addControl(selectCtrl);	
-				
+				mapInstance.addControl(selectCtrl);
+
 				return selectCtrl;
 			},
-			drawFeature: function (mapInstance, args) {		
+			drawFeature: function (mapInstance, args) {
 	            var vectors = mapInstance.getLayersByName(args.layerName);
 				var vector;
-				
+
 				// Create the layer if it doesn't exist
 	            if (vectors.length > 0) {
 	            	vector = vectors[0];
@@ -517,26 +514,26 @@ app.service('olv2MapService', [
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
 					vector.style = {fillColor: args.color, fillOpacity : args.opacity, pointRadius : args.radius, strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if (args.featureType.toLowerCase() == 'line') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);	
-					vector.style = {strokeColor: args.color, strokeOpacity : args.opacity};				
+					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
+					vector.style = {strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'box') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
 	                    handlerOptions: {
 	                        sides: 4,
 	                        irregular: true
 	                    }
-	                });	
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};			
+	                });
+					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'polygon') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);		
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};		
+					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
+					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};
 				}
-	
+
 				mapInstance.addControl(control);
 
 				return control;
 			},
-			drawLabel: function (mapInstance, args) {			
+			drawLabel: function (mapInstance, args) {
 				var vectors = mapInstance.getLayersByName(args.layerName);
 				var vector;
 				if (vectors.length > 0) {
@@ -545,42 +542,42 @@ app.service('olv2MapService', [
 					vector = new OpenLayers.Layer.Vector(args.layerName);
 					mapInstance.addLayer(vector);
 				}
-			
+
 				// Create a point to display the text
 	            var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
-	            
+
 	            // Add the text to the style of the layer
-	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelSelect: true};	
+	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelSelect: true};
 
 	            vector.addFeatures([pointFeature]);
 	            return pointFeature;
 			},
-			drawLabelWithPoint: function (mapInstance, args) {			
+			drawLabelWithPoint: function (mapInstance, args) {
 				var vectors = mapInstance.getLayersByName(args.layerName);
 				var vector;
-				
+
 				if (vectors.length > 0) {
 					vector = vectors[0];
 				} else {
 					vector = new OpenLayers.Layer.Vector(args.layerName);
 					mapInstance.addLayer(vector);
 				}
-				
+
 				// Create a point to display the text
 				var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
-	            
+
 	            // Create a circle to display the point
 	            var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(point, args.pointRadius, 40, 0);
 	            var circlePoint = new OpenLayers.Geometry.Collection([circle, point]);
 	            var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
-	            
+
 	            // Add the text to the style of the layer
 	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelYOffset : args.labelYOffset, labelSelect: true,
-	            		fillColor : args.pointColor, strokeColor : args.pointColor, fillOpacity : args.pointOpacity, strokeOpcaity : args.pointOpacity};	
+	            		fillColor : args.pointColor, strokeColor : args.pointColor, fillOpacity : args.pointOpacity, strokeOpacity : args.pointOpacity};
 	            vector.addFeatures([pointFeature, circleFeature]);
-	            
+
 	            return circleFeature;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {

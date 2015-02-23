@@ -87,8 +87,8 @@ var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ])
  * </example>
  *
  */
-app.directive('gaLayerControl', ['GAWTUtils', '$timeout',
-    function (GAWTUtils, $timeout) {
+app.directive('gaLayerControl', ['GAWTUtils',
+    function (GAWTUtils) {
         'use strict';
         var templateCache =
             '<label for="{{elementId}}" class="checkbox" style="display:inline-block;width:65%">' +
@@ -131,7 +131,7 @@ app.directive('gaLayerControl', ['GAWTUtils', '$timeout',
                             scope.onFinishedLoading({layerId: scope.layerData.id});
                         };
                         //Event to be cleaned up on map destruction
-                        scope.$watch('layerData', function (newVal,oldVal) {
+                        scope.$watch('layerData', function (newVal) {
                             if(newVal != null) {
                                 if(scope.mapController == null) {
                                     throw new Error("mapController is not available");
@@ -649,7 +649,7 @@ app.directive('googlePlaceNameSearch', [function () {
         controller: ['$scope', function ($scope) {
 
         }],
-        link: function ($scope, $element, $attrs) {
+        link: function ($scope, $element) {
             var input = $element.find('input[type="text"]')[0];
             var googleAC = new google.maps.places.Autocomplete(input, {componentRestrictions: {country: $scope.countryCode}});
             google.maps.event.addListener(googleAC, 'place_changed', function () {
@@ -713,7 +713,7 @@ app.directive('geoNamesPlaceSearch', ['$http', '$q', '$timeout', function ($http
         controller: ['$scope', function ($scope) {
 
         }],
-        link: function ($scope, $element, $attrs) {
+        link: function ($scope, $element) {
             var input = $element.find('input[type="text"]')[0];
             $element.bind('keydown', function (args) {
                 if (args.keyCode == $scope.activateKey) {
@@ -749,19 +749,19 @@ app.directive('geoNamesPlaceSearch', ['$http', '$q', '$timeout', function ($http
             };
 
             $scope.getSearchResults = function (query) {
-                if (query != null && query.length >= 3) {
-                    return searchFunction(query, 10).then(function (data) {
-                        if ($scope.searchInProgress) {
-                            return [];
-                        }
-                        $scope.onResults({
-                            data: data
-                        });
-                        return data;
-                    });
-                } else {
+                if (!(query != null && query.length >= 3)) {
                     return [];
                 }
+
+                return searchFunction(query, 10).then(function (data) {
+                    if ($scope.searchInProgress) {
+                        return [];
+                    }
+                    $scope.onResults({
+                        data: data
+                    });
+                    return data;
+                });
             };
 
             $scope.onSelected = function ($item) {

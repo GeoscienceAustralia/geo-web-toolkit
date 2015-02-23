@@ -150,17 +150,6 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return deferredLayer.promise;
             };
 
-            self.registerInitialLayer = function (layer) {
-                var deferred = $q.defer();
-
-                return deferred.promise;
-            };
-			var resolveSyncLayer = function (deferred,layer) {
-				$timeout(function () {
-					deferred.resolve(layer);
-
-				});
-			};
             /**
              * @ngdoc method
              * @name gawebtoolkit.core.map-directives:gaMap#zoomToMaxExtent
@@ -1736,7 +1725,7 @@ app.config(['$provide', function ($provide) {
                 // Helper to check if all states are finished
                 var checkStates = function (states, results, deferred, failed) {
                     var allFinished = true;
-                    angular.forEach(states, function (state, key) {
+                    angular.forEach(states, function (state) {
                         if (!state) {
                             allFinished = false;
                         }
@@ -1748,7 +1737,7 @@ app.config(['$provide', function ($provide) {
                             deferred.resolve(results);
                         }
                     }
-                }
+                };
 
                 // Loop through the promises
                 // a second loop to be sure that checkStates is called when all states are set to false first
