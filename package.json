@@ -10,7 +10,7 @@
 	"grunt-cli": "^0.1.13",
     "grunt-ngdocs": "^0.2.2",
     "grunt-karma": "~0.7.1",
-    "karma": "~0.10",
+    "karma": "~0.12",
     "karma-jasmine": "~0.1.5",
     "karma-phantomjs-launcher": "~0.1.2",
     "karma-chrome-launcher": "~0.1",
