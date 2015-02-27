@@ -499,6 +499,10 @@ app.service('olv2MapService', [
 				
 				return selectCtrl;
 			},
+			removeFeature: function (mapInstance, layerName, feature) {	
+				var vectors = mapInstance.getLayersByName(layerName);
+				vectors[0].removeFeatures(feature);
+			},
 			drawFeature: function (mapInstance, args) {		
 	            var vectors = mapInstance.getLayersByName(args.layerName);
 				var vector;
@@ -581,9 +585,12 @@ app.service('olv2MapService', [
 	            		fillColor : args.pointColor, strokeColor : args.pointColor, fillOpacity : args.pointOpacity, strokeOpcaity : args.pointOpacity};	
 	            vector.addFeatures([pointFeature, circleFeature]);
 	            
-	            return circleFeature;
+	            var features = [pointFeature, circleFeature];
+	            
+	            return features;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
+				console.log('getFeatureInfo');
                 tolerance = tolerance || 0;
 				var deferred = $q.defer();
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
