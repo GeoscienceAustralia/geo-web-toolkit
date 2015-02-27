@@ -17,18 +17,16 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'target/dependencies/META-INF/resources/webjars/jquery/1.10.1/jquery.min.js',
-            'target/dependencies/META-INF/resources/webjars/angularjs/1.2.8/angular.js',
-            'target/dependencies/META-INF/resources/webjars/angularjs/1.2.8/angular-route.js',
-            'target/dependencies/META-INF/resources/webjars/angularjs/1.2.8/angular-mocks.js',
-            'target/dependencies/META-INF/resources/webjars/modernizr/2.6.2/modernizr.js',
-            'target/dependencies/META-INF/resources/webjars/webshim/1.14.2/minified/polyfiller.js',
-            'target/dependencies/META-INF/resources/webjars/webshim/1.14.2/minified/shims/range-ui.js',
-            'target/dependencies/META-INF/resources/webjars/bootstrap/3.0.3/js/bootstrap.min.js',
-            'target/dependencies/META-INF/resources/webjars/jquery-ui/1.10.2/ui/jquery-ui.js',
-            'target/dependencies/META-INF/resources/webjars/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
-            'target/dependencies/META-INF/resources/webjars/angular-ui-utils/0.1.0/ui-utils.js',
-            'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js',
+            'bower_components/jquery/dist/jquery.js',
+            'bower_components/angular/angular.js',
+            'bower_components/angular-route/angular-route.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            'bower_components/modernizr/modernizr.js',
+            'bower_components/bootstrap/dist/js/bootstrap.js',
+            'bower_components/jquery-ui/jquery-ui.js',
+            'bower_components/angular-ui/build/angular-ui.js',
+            'bower_components/angular-ui-utils/ui-utils.js',
+            'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
             'src/main/js/**/*.js',
             'src/test/js/**/*.js'],
 

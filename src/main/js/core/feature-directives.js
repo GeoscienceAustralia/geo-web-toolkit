@@ -1011,8 +1011,8 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     </file>
 </example>
  */
-app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log',
-    function ($timeout, $compile, $q, GALayerService, $log) {
+app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService',
+    function ($timeout, $compile, $q, GALayerService) {
         'use strict';
         return {
             restrict: "E",

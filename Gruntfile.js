@@ -1,5 +1,4 @@
 module.exports = function (grunt) {
-	http:// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		ngdocs: {
@@ -9,7 +8,7 @@ module.exports = function (grunt) {
                                 'http://code.jquery.com/ui/1.10.4/jquery-ui.js',
                                 'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js',
                                 'angular.js',
-                                'http://code.angularjs.org/1.2.8/angular-route.js',
+                                'bower_components/angular-route/angular-route.js',
                                 'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
                                 'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
                                 'http://maps.google.com/maps/api/js?sensor=false&.js',
@@ -39,8 +38,35 @@ module.exports = function (grunt) {
 				src: ['src/**/*.js', '!src/**/*.spec.js'],
 				title: 'API Documentation'
 			}
-		}
+		},
+        uglify: {
+            options: {
+                mangle: false
+            },
+            my_target: {
+                files: {
+                    'src/main/js/geo-web-toolkit-min.js':
+                        [
+                            'src/main/js/config/*.js',
+                            'src/main/js/core/*.js',
+                            'src/main/js/map services/*.js',
+                            'src/main/js/ui/*.js'
+                        ]
+                }
+            }
+        },
+        karma: {
+            unit: {
+                configFile: 'src/test/js/karma.conf.js',
+                runnerPort: 9999,
+                singleRun: true,
+                browsers: ['PhantomJS'],
+                logLevel: 'ERROR'
+            }
+        }
 	});
+    grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-ngdocs');
-	grunt.registerTask('default',['ngdocs']);
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.registerTask('default',['uglify','ngdocs']);
 };
