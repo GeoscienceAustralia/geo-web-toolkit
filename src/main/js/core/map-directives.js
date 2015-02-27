@@ -1464,6 +1464,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GAMapService.removeFeature($scope.mapInstance, layerName);
             };
             
+            self.removeFeature = function (layerName, feature) {
+                return GAMapService.removeFeature($scope.mapInstance, layerName, feature);
+            };
+            
             self.drawFeature = function (args) {
                 return GAMapService.drawFeature($scope.mapInstance, args);
             };
