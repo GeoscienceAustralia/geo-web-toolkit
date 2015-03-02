@@ -1449,7 +1449,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GAMapService.drawPolyLine($scope.mapInstance, points, layerName);
             };
             
-            self.removeFeature = function (layerName) {
+            self.removeSelectedFeature = function (layerName) {
                 return GAMapService.removeFeature($scope.mapInstance, layerName);
             };
             

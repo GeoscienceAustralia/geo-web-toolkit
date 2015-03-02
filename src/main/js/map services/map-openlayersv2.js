@@ -479,7 +479,7 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
-			removeFeature: function (mapInstance, layerName) {
+			removeSelectedFeature: function (mapInstance, layerName) {
 				var vectors = mapInstance.getLayersByName(layerName);
 
 				// Function is called when a feature is selected
