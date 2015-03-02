@@ -191,10 +191,6 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.drawPolyLine(mapInstance, points, layerName);
             },
-            removeFeature: function (mapInstance, layerName) {
-                var service = mapServiceLocator.getImplementation('olv2');
-                return service.removeFeature(mapInstance, layerName);
-            },
             removeFeature: function (mapInstance, layerName, feature) {
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.removeFeature(mapInstance, layerName, feature);
