@@ -193,7 +193,7 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
             },
             removeSelectedFeature: function (mapInstance, layerName) {
                 var service = mapServiceLocator.getImplementation('olv2');
-                return service.removeFeature(mapInstance, layerName);
+                return service.removeSelectedFeature(mapInstance, layerName);
             },
             removeFeature: function (mapInstance, layerName, feature) {
                 var service = mapServiceLocator.getImplementation('olv2');
