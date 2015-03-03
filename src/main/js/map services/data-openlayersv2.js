@@ -10,6 +10,93 @@ var app = angular.module('gawebtoolkit.mapservices.data.openlayersv2', []);
 
 app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
     "use strict";
+    function generateRequestParams(queryProjection, mapInstance, point, version, infoTextContentType) {
+        var projection = queryProjection;
+        var bounds = mapInstance.getExtent();
+        bounds.transform(mapInstance.projection, queryProjection);
+        var bbox = bounds.toBBOX();
+
+        var halfHeight = mapInstance.getSize().h / 2;
+        var halfWidth = mapInstance.getSize().w / 2;
+        var centerPoint = new OpenLayers.Geometry.Point(halfWidth, halfHeight);
+
+        var requestWidth = mapInstance.getSize().w;
+        var requestHeight = mapInstance.getSize().h;
+        var finalPoint = {
+            x: point.x,
+            y: point.y
+        };
+        var newBounds;
+        // Split the screen into a quadrant and re-calculate the bounding box, WMS has issues with screen width of greater than 2050
+        if (mapInstance.getSize().w >= 2050) {
+            if (point.x > centerPoint.x) {
+                // right
+                if (point.y > centerPoint.y) {
+                    // bottom
+                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, centerPoint.y));
+                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(mapInstance.getSize().w, mapInstance.getSize().h));
+                    newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
+
+                    finalPoint.x = point.x - halfWidth;
+                    finalPoint.y = point.y - halfHeight;
+                } else {
+                    // top
+                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, 0));
+                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(mapInstance.getSize().w, mapInstance.getSize().h));
+                    newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
+
+                    finalPoint.x = point.x - halfWidth;
+                }
+            } else {
+                // left
+                if (point.y > centerPoint.y) {
+                    // bottom
+                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(0, centerPoint.y));
+                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, mapInstance.getSize().h));
+                    newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
+
+                    finalPoint.y = point.y - halfHeight;
+                } else {
+                    // top
+                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(0, 0));
+                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, centerPoint.y));
+                    newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
+                }
+            }
+
+            newBounds.transform(mapInstance.projection, queryProjection);
+            bbox = newBounds.toBBOX();
+            requestHeight = Math.floor(halfHeight);
+            requestWidth = Math.floor(halfWidth);
+        }
+
+        //noinspection JSHint
+        var params = OpenLayers.Util.extend({
+                service: "WMS",
+                version: version,
+                request: "GetFeatureInfo",
+//					exceptions: firstLayer.params.EXCEPTIONS,
+                bbox: bbox,
+                feature_count: 100,
+                height: requestHeight,
+                width: requestWidth,
+                format: OpenLayers.Format.WMSGetFeatureInfo,
+                info_format: infoTextContentType
+            }, (parseFloat(version) >= 1.3) ?
+            {
+                crs: projection,
+                i: parseInt(finalPoint.x),
+                j: parseInt(finalPoint.y)
+            } :
+            {
+                srs: projection,
+                x: parseInt(finalPoint.x),
+                y: parseInt(finalPoint.y)
+            }
+        );
+        return params;
+    }
+
     return {
         getLayersByWMSCapabilities: function (url) {
             var deferred = $q.defer();
@@ -24,88 +111,10 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
             });
             return deferred.promise;
         },
-        getWMSFeatures: function (mapInstance, url, layerNames, version, queryProjection, point) {
+        getWMSFeatures: function (mapInstance, url, layerNames, version, queryProjection, point, contentType) {
+            var infoTextContentType = contentType || 'text/xml';
             var deferred = $q.defer();
-            var projection = queryProjection;
-            var bounds = mapInstance.getExtent();
-            bounds.transform(mapInstance.projection, queryProjection);
-            var bbox = bounds.toBBOX();
-            
-            var halfHeight = mapInstance.getSize().h / 2;
-            var halfWidth = mapInstance.getSize().w / 2;    
-            var centerPoint = new OpenLayers.Geometry.Point(halfWidth, halfHeight);
-            
-            var requestWidth = mapInstance.getSize().w;
-            var requestHeight = mapInstance.getSize().h;
-            
-            var newBounds;
-            // Split the screen into a quadrant and re-calculate the bounding box, WMS has issues with screen width of greater than 2050
-            if (mapInstance.getSize().w >= 2050) {
-	            if (point.x > centerPoint.x) {
-	            	// right
-	            	if (point.y > centerPoint.y) {
-	            		// bottom
-	            		var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, centerPoint.y));
-	            		var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(mapInstance.getSize().w, mapInstance.getSize().h));
-	            		newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
-	            		
-	            		point.x = point.x - halfWidth;
-	            		point.y = point.y - halfHeight;
-	            	} else {
-	            		// top
-	                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, 0));
-	                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(mapInstance.getSize().w, mapInstance.getSize().h));
-	            		newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
-	            		
-	            		point.x = point.x - halfWidth;
-	            	}
-	            } else {
-	            	// left	
-	            	if (point.y > centerPoint.y) {
-	            		// bottom
-	                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(0, centerPoint.y));
-	                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, mapInstance.getSize().h));
-	            		newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
-	            		
-	            		point.y = point.y - halfHeight;
-	            	} else {
-	            		// top
-	                    var topLeft = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(0, 0));
-	                    var bottomRight = mapInstance.getLonLatFromPixel(new OpenLayers.Geometry.Point(centerPoint.x, centerPoint.y));
-	            		newBounds = new OpenLayers.Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);
-	            	}
-	            }
-	        	
-                newBounds.transform(mapInstance.projection, queryProjection);
-                bbox = newBounds.toBBOX();
-                requestHeight = Math.floor(halfHeight);
-                requestWidth = Math.floor(halfWidth);
-            }
-            
-            //noinspection JSHint
-            var params = OpenLayers.Util.extend({
-                    service: "WMS",
-                    version: version,
-                    request: "GetFeatureInfo",
-//					exceptions: firstLayer.params.EXCEPTIONS,
-                    bbox: bbox,
-                    feature_count: 100,
-                    height: requestHeight,
-                    width: requestWidth,
-                    format: OpenLayers.Format.WMSGetFeatureInfo,
-                    info_format: 'text/xml'
-                }, (parseFloat(version) >= 1.3) ?
-                {
-                    crs: projection,
-                    i: parseInt(point.x),
-                    j: parseInt(point.y)
-                } :
-                {
-                    srs: projection,
-                    x: parseInt(point.x),
-                    y: parseInt(point.y)
-                }
-            );
+            var params = generateRequestParams(queryProjection, mapInstance, point, version, infoTextContentType);
             if (layerNames.length !== 0) {
                 //noinspection JSHint
                 params = OpenLayers.Util.extend({
