@@ -119,9 +119,6 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
             case 'application/json':
                 result = OpenLayers.Format.GeoJSON;
                 break;
-            case 'application/vnd.esri.wms_featureinfo_xml':
-                result = OpenLayers.Format.ArcXML.Features;
-                break;
             default:
                 result = OpenLayers.Format.WMSGetFeatureInfo;
                 break;
