@@ -99,11 +99,17 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
 
     function resolveOpenLayersFormatConstructorByInfoFormat(infoFormat) {
         var result;
-        switch (infoFormat) {
+        var infoType;
+        if(infoFormat && typeof infoFormat === 'string' && infoFormat.startsWith('application/vnd.ogc.gml/3')) {
+            infoType = 'application/vnd.ogc.gml/3';
+        } else {
+            infoType = infoFormat;
+        }
+        switch (infoType) {
             case 'application/vnd.ogc.gml':
                 result = OpenLayers.Format.GML.v2;
                 break;
-            case 'application/vnd.ogc.gml/3.1.1':
+            case 'application/vnd.ogc.gml/3':
                 result = OpenLayers.Format.GML.v3;
                 break;
             case 'text/html':
@@ -112,6 +118,9 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
                 break;
             case 'application/json':
                 result = OpenLayers.Format.GeoJSON;
+                break;
+            case 'application/vnd.esri.wms_featureinfo_xml':
+                result = OpenLayers.Format.ArcXML.Features;
                 break;
             default:
                 result = OpenLayers.Format.WMSGetFeatureInfo;
@@ -150,7 +159,7 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
                 url: url,
                 params: OpenLayers.Util.upperCaseObject(params),
                 callback: function (request) {
-                    var format = new (resolveOpenLayersFormatConstructorByInfoFormat(contentType))();
+                    var format = new (resolveOpenLayersFormatConstructorByInfoFormat(infoTextContentType))();
                     var features = format.read(request.responseText);
                     var geoJsonFormat = new OpenLayers.Format.GeoJSON();
                     var geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
