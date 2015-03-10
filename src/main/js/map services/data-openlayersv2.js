@@ -97,6 +97,28 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
         return params;
     }
 
+    function resolveOpenLayersFormatConstructorByInfoFormat(infoFormat) {
+        var result;
+        switch (infoFormat) {
+            case 'application/vnd.ogc.gml':
+                result = OpenLayers.Format.GML.v2;
+                break;
+            case 'application/vnd.ogc.gml/3.1.1':
+                result = OpenLayers.Format.GML.v3;
+                break;
+            case 'text/html':
+            case 'text/plain':
+                result = OpenLayers.Format.Text;
+                break;
+            case 'application/json':
+                result = OpenLayers.Format.GeoJSON;
+                break;
+            default:
+                result = OpenLayers.Format.WMSGetFeatureInfo;
+                break;
+        }
+        return result;
+    }
     return {
         getLayersByWMSCapabilities: function (url) {
             var deferred = $q.defer();
@@ -128,7 +150,7 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
                 url: url,
                 params: OpenLayers.Util.upperCaseObject(params),
                 callback: function (request) {
-                    var format = new OpenLayers.Format.WMSGetFeatureInfo();
+                    var format = new (resolveOpenLayersFormatConstructorByInfoFormat(contentType))();
                     var features = format.read(request.responseText);
                     var geoJsonFormat = new OpenLayers.Format.GeoJSON();
                     var geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));

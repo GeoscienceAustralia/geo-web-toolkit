@@ -98,7 +98,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 
 				return self;
 			}],
-			link: function ($scope, element, attrs, mapController) { $log.info(attrs);
+			link: function ($scope, element, attrs, mapController) {
 				attrs.$observe('refreshLayer', function (newVal, oldVal) {
 					if(newVal !== oldVal) {
 						$log.info('refresh for - ' + $scope.layerName);
