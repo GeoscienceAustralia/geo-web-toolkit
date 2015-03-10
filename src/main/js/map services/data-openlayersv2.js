@@ -100,7 +100,7 @@ app.service('WMSDataService', [ '$q', '$http', function ($q, $http) {
     function resolveOpenLayersFormatConstructorByInfoFormat(infoFormat) {
         var result;
         var infoType;
-        if(infoFormat && typeof infoFormat === 'string' && infoFormat.startsWith('application/vnd.ogc.gml/3')) {
+        if(infoFormat && typeof infoFormat === 'string' && infoFormat.indexOf('application/vnd.ogc.gml/3') === 0) {
             infoType = 'application/vnd.ogc.gml/3';
         } else {
             infoType = infoFormat;
