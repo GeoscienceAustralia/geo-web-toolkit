@@ -970,7 +970,7 @@ app.directive('gaMeasureToggle', [function () {
     "use strict";
     return {
         restrict: "EA",
-        template: '<button type="button" ng-click="handleToggle()"><div ng-transclude></div></button> ',
+        template: '<button type="button" ng-click="handleToggle()" class="gaUiToggleOff"><div ng-transclude></div></button> ',
         scope: {
             resolveStyle: '&',
             toggleOnCallback: '&',
@@ -995,7 +995,7 @@ app.directive('gaMeasureToggle', [function () {
             };
             $scope.$emit($scope.controllerEmitEventName, self);
         }],
-        link: function ($scope) {
+        link: function ($scope,$element) {
             $scope.handleMeasurements = function (event) {
                 var measurement = $scope.mapController.getMeasureFromEvent(event);
                 $scope.onFinish({
@@ -1012,12 +1012,16 @@ app.directive('gaMeasureToggle', [function () {
                 $scope.mapController.activateControl($scope.mapControlId);
                 $scope.mapController.registerControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
                 $scope.mapController.registerControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
+                $element.removeClass('gaUiToggleOff');
+                $element.addClass('gaUiToggleOn');
                 $scope.toggleOnCallback();
             };
             $scope.deactivate = function () {
                 $scope.mapController.deactivateControl($scope.mapControlId);
                 $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
                 $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
+                $element.removeClass('gaUiToggleOn');
+                $element.addClass('gaUiToggleOff');
                 $scope.toggleOffCallback();
             };
             $scope.handleToggle = function () {
