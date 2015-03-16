@@ -282,13 +282,14 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
         link: function ($scope, $element) {
             $scope.$watch('layerOpacity', function (newVal, oldVal) {
                 if (newVal && oldVal !== newVal) {
-                    $($element).slider($scope.getSliderOptions());
+                    //HACK to give jquery ui slider title text.
+                    $timeout(function () {
+                        $($element).slider($scope.getSliderOptions());
+                        $element.find('.ui-slider-handle').attr('title', $scope.titleText);
+                    });
                 }
             });
-            //HACK to give jquery ui slider title text.
-            $timeout(function () {
-                $element.find('.ui-slider-handle').attr('title', $scope.titleText);
-            });
+
 
         },
         transclude: true
