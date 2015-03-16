@@ -267,7 +267,6 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
                 });
             };
             $scope.getSliderOptions = function () {
-                console.log($scope.layerOpacity);
                 return {
                     min: 0.0,
                     max: 1.0,
@@ -283,15 +282,13 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
         link: function ($scope, $element) {
             $scope.$watch('layerOpacity', function (newVal, oldVal) {
                 if (newVal && oldVal !== newVal) {
-                    console.log(newVal);
-                    //HACK to give jquery ui slider title text.
-                    $timeout(function () {
-                        $($element).slider($scope.getSliderOptions());
-                        $element.find('.ui-slider-handle').attr('title', $scope.titleText);
-                    });
+                    $($element).slider($scope.getSliderOptions());
                 }
             });
-
+            //HACK to give jquery ui slider title text.
+            $timeout(function () {
+                $element.find('.ui-slider-handle').attr('title', $scope.titleText);
+            });
 
         },
         transclude: true
@@ -999,6 +996,7 @@ app.directive('gaMeasureToggle', [function () {
             $scope.$emit($scope.controllerEmitEventName, self);
         }],
         link: function ($scope,$element) {
+
             $scope.handleMeasurements = function (event) {
                 var measurement = $scope.mapController.getMeasureFromEvent(event);
                 $scope.onFinish({
