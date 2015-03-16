@@ -267,7 +267,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
                 });
             };
             $scope.getSliderOptions = function () {
-                $log.info($scope.layerOpacity);
+                console.log($scope.layerOpacity);
                 return {
                     min: 0.0,
                     max: 1.0,
@@ -283,7 +283,7 @@ app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
         link: function ($scope, $element) {
             $scope.$watch('layerOpacity', function (newVal, oldVal) {
                 if (newVal && oldVal !== newVal) {
-                    $log.info(newVal);
+                    console.log(newVal);
                     //HACK to give jquery ui slider title text.
                     $timeout(function () {
                         $($element).slider($scope.getSliderOptions());
