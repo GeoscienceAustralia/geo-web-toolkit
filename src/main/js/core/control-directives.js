@@ -80,9 +80,9 @@ app.directive('gaMapControl', [ function () {
 				return;
 			}
             //Allow developers to manipulate options before loaded
-            if(scope.preOptionsLoaded != null) {
-                scope.controlOptions = scope.preOptionsLoaded({options: scope.controlOptions});
-            }
+            var modifiedControlOptions = scope.preOptionsLoaded({options: scope.controlOptions});
+            scope.controlOptions = modifiedControlOptions === undefined ? scope.controlOptions : modifiedControlOptions;
+
 			scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
 			if(attrs.controlEnabled != null) {
 				attrs.$observe('controlEnabled', function () {
