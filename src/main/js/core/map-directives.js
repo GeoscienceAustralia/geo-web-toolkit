@@ -44,7 +44,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             displayProjection: '@',
             centerPosition: '@',
             zoomLevel: '@',
-			initialExtent: '='
+			initialExtent: '=',
+            framework:'@'
         },
         controller: ['$scope',function ($scope) {
 			$log.info('map creation started...');
@@ -121,7 +122,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                                 //Lower layer throws error with data
                                 $log.info("failed to load layer");
                             } else {
-                                var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer);
+                                var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer, $scope.framework);
                                 deferredLayer.resolve(layerDto);
                                 orderLayers();
                                 $scope.$emit('layerAdded', layerDto);
@@ -134,7 +135,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 				}else {
 					if ($scope.layersReady) {
 						$log.info(layer);
-						var layerDto = GAMapService.addLayer($scope.mapInstance, layer);
+						var layerDto = GAMapService.addLayer($scope.mapInstance, layer, $scope.framework);
                         deferredLayer.resolve(layerDto);
                         orderLayers();
 						$scope.$emit('layerAdded', layerDto);
@@ -183,7 +184,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.zoomToMaxExtent = function () {
-                GAMapService.zoomToMaxExtent($scope.mapInstance);
+                GAMapService.zoomToMaxExtent($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -220,7 +221,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.currentZoomLevel = function () {
-                return GAMapService.currentZoomLevel($scope.mapInstance);
+                return GAMapService.currentZoomLevel($scope.mapInstance, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -303,7 +304,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.registerMapMouseMove = function (callback) {
-                GAMapService.registerMapMouseMove($scope.mapInstance, callback);
+                GAMapService.registerMapMouseMove($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -393,7 +394,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.registerMapMouseMoveEnd = function (callback) {
-                GAMapService.registerMapMouseMoveEnd($scope.mapInstance, callback);
+                GAMapService.registerMapMouseMoveEnd($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -482,7 +483,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.registerMapClick = function (callback) {
-                GAMapService.registerMapClick($scope.mapInstance, callback);
+                GAMapService.registerMapClick($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -579,7 +580,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.unRegisterMapClick = function (callback) {
-                GAMapService.unRegisterMapClick($scope.mapInstance, callback);
+                GAMapService.unRegisterMapClick($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -620,7 +621,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.addControl = function (controlName, controlOptions, elementId, controlId) {
-                return GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId);
+                return GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -710,7 +711,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getLonLatFromPixel = function (x, y, projection) {
-                return GAMapService.getLonLatFromPixel($scope.mapInstance, x, y, projection);
+                return GAMapService.getLonLatFromPixel($scope.mapInstance, x, y, projection, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -725,7 +726,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * // eg, point equals x: 25, y: 63</pre></code>
              * */
             self.getPixelFromLonLat = function (lon, lat) {
-                return GAMapService.getPixelFromLonLat($scope.mapInstance, lon, lat);
+                return GAMapService.getPixelFromLonLat($scope.mapInstance, lon, lat, $scope.framework);
             };
 
             /**
@@ -739,7 +740,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @return {Point} - A point object extracted from the event.
              * */
             self.getPointFromEvent = function (event) {
-                return GAMapService.getPointFromEvent(event);
+                return GAMapService.getPointFromEvent(event, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -779,7 +780,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getLayers = function () {
-                return GAMapService.getLayers($scope.mapInstance);
+                return GAMapService.getLayers($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -821,7 +822,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getLayersByName = function (layerName) {
-                return GAMapService.getLayersByName($scope.mapInstance, layerName);
+                return GAMapService.getLayersByName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -862,7 +863,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.zoomToLayer = function (layerId) {
-                GAMapService.zoomToLayer($scope.mapInstance, layerId);
+                GAMapService.zoomToLayer($scope.mapInstance, layerId, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1043,7 +1044,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.setLayerVisibility = function (layerId, visibility) {
-                GAMapService.setLayerVisibility($scope.mapInstance, layerId, visibility);
+                GAMapService.setLayerVisibility($scope.mapInstance, layerId, visibility, $scope.framework);
             };
 
             /**
@@ -1053,7 +1054,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @return {Object}
              * */
             self.createBoundingBox = function (lonLatArray) {
-                return GAMapService.createBoundingBox($scope.mapInstance, lonLatArray);
+                return GAMapService.createBoundingBox($scope.mapInstance, lonLatArray, $scope.framework);
             };
             /**
              * Creates a bounding object and returns an implementation specific object
@@ -1064,7 +1065,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @return {Object}
              * */
             self.createBounds = function (geoJsonCoordinates, projection) {
-                return GAMapService.createBounds($scope.mapInstance, geoJsonCoordinates, projection);
+                return GAMapService.createBounds($scope.mapInstance, geoJsonCoordinates, projection, $scope.framework);
             };
             /**
              * Zooms map to bounds around provided LonLat array
@@ -1072,7 +1073,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param lonLatArray {LonLat[]} - array of LonLat to build a bounds to zoom too.
              * */
             self.zoomToExtent = function (lonLatArray) {
-                GAMapService.zoomToExtent($scope.mapInstance, lonLatArray);
+                GAMapService.zoomToExtent($scope.mapInstance, lonLatArray, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1113,7 +1114,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.zoomTo = function (zoomLevel) {
-                GAMapService.zoomTo($scope.mapInstance, zoomLevel);
+                GAMapService.zoomTo($scope.mapInstance, zoomLevel, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1198,7 +1199,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.setBaseLayer = function (layerId) {
-                GAMapService.setBaseLayer($scope.mapInstance, layerId);
+                GAMapService.setBaseLayer($scope.mapInstance, layerId, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1241,7 +1242,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.setCenter = function (lat, lon, projection) {
-                GAMapService.setCenter($scope.mapInstance, lat, lon, projection);
+                GAMapService.setCenter($scope.mapInstance, lat, lon, projection, $scope.framework);
+            };
+
+            self.getInitialExtent = function () {
+                return $scope.initialExtent;
             };
 
             self.setInitialPositionAndZoom = function () {
@@ -1261,7 +1266,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     };
                 }
                 if (!$scope.initialPositionSet) {
-                    GAMapService.setInitialPositionAndZoom($scope.mapInstance, args);
+                    GAMapService.setInitialPositionAndZoom($scope.mapInstance, args, $scope.framework);
                 }
 
                 $scope.initialPositionSet = true;
@@ -1318,7 +1323,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.isBaseLayer = function (layerId) {
-                return GAMapService.isBaseLayer($scope.mapInstance, layerId);
+                return GAMapService.isBaseLayer($scope.mapInstance, layerId, $scope.framework);
             };
 
             /**
@@ -1375,7 +1380,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>             
              * */
             self.setOpacity = function (layerId, opacity) {
-                GAMapService.setOpacity($scope.mapInstance, layerId, opacity);
+                GAMapService.setOpacity($scope.mapInstance, layerId, opacity, $scope.framework);
             };
             /**
              * Returns the map element Id that was originally passed to gaMap
@@ -1395,7 +1400,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              *
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
-                GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args);
+                GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
             };
             /**
              * Removes the first layer found that matches the name provided
@@ -1404,7 +1409,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              *
              * */
             self.removeLayerByName = function (layerName) {
-                GALayerService.removeLayerByName($scope.mapInstance, layerName);
+                GALayerService.removeLayerByName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * Removes all layers matching the name provided
@@ -1412,7 +1417,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param layerName {string} - Name of the named layer
              * */
             self.removeLayersByName = function (layerName) {
-                GALayerService.removeLayersByName($scope.mapInstance, layerName);
+                GALayerService.removeLayersByName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * Removes layer by reference to a layer object
@@ -1420,7 +1425,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @deprecated
              * */
             self.removeLayer = function (layerInstance) {
-                GALayerService.removeLayer($scope.mapInstance, layerInstance);
+                GALayerService.removeLayer($scope.mapInstance, layerInstance, $scope.framework);
             };
 
             /**
@@ -1428,7 +1433,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param layerId {string} - Id of a layer to remove
              * */
             self.removeLayerById = function (layerId) {
-                GALayerService.removeLayerById($scope.mapInstance, layerId);
+                GALayerService.removeLayerById($scope.mapInstance, layerId, $scope.framework);
             };
             /**
              * Gets the count of markers of the first layer matching the name provided
@@ -1437,7 +1442,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @return {Number}
              * */
             self.getMarkerCountForLayerName = function (layerName) {
-                return GALayerService.getMarkerCountForLayerName($scope.mapInstance, layerName);
+                return GALayerService.getMarkerCountForLayerName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * Draws a polyline on the map provided an array of LatLons on a new layer of the provided name.
@@ -1446,46 +1451,46 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param points {LonLat[]} - Array of LonLat to draw.
              * */
             self.drawPolyLine = function (points, layerName) {
-                GAMapService.drawPolyLine($scope.mapInstance, points, layerName);
+                GAMapService.drawPolyLine($scope.mapInstance, points, layerName, $scope.framework);
             };
             
             self.removeSelectedFeature = function (layerName) {
-                return GAMapService.removeSelectedFeature($scope.mapInstance, layerName);
+                return GAMapService.removeSelectedFeature($scope.mapInstance, layerName, $scope.framework);
             };
             
             self.removeFeature = function (layerName, feature) {
-                return GAMapService.removeFeature($scope.mapInstance, layerName, feature);
+                return GAMapService.removeFeature($scope.mapInstance, layerName, feature, $scope.framework);
             };
             
             self.drawFeature = function (args) {
-                return GAMapService.drawFeature($scope.mapInstance, args);
+                return GAMapService.drawFeature($scope.mapInstance, args, $scope.framework);
             };
             
             self.drawLabel = function (args) {
-                return GAMapService.drawLabel($scope.mapInstance, args);
+                return GAMapService.drawLabel($scope.mapInstance, args, $scope.framework);
             };   
             
             self.drawLabelWithPoint = function (args) {
-                return GAMapService.drawLabelWithPoint($scope.mapInstance, args);
+                return GAMapService.drawLabelWithPoint($scope.mapInstance, args, $scope.framework);
             };           
 
             self.isControlActive = function (controlId) {
-                return GAMapService.isControlActive($scope.mapInstance, controlId);
+                return GAMapService.isControlActive($scope.mapInstance, controlId, $scope.framework);
             };
 
             /**
              * TBC
              * */
             self.registerFeatureSelected = function (layerId, callback, element) {
-                return GALayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element);
+                return GALayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element, $scope.framework);
             };
 
 			self.getFeatureInfo = function (callback,url,featureType, featurePrefix, geometryName, point, tolerance) {
-				return GAMapService.getFeatureInfo($scope.mapInstance,callback, url,featureType, featurePrefix, geometryName, point, tolerance);
+				return GAMapService.getFeatureInfo($scope.mapInstance,callback, url,featureType, featurePrefix, geometryName, point, tolerance, $scope.framework);
 			};
 
 			self.getFeatureInfoFromLayer = function (callback,layerId, point,tolerance) {
-				return GAMapService.getFeatureInfoFromLayer($scope.mapInstance,callback,layerId, point,tolerance);
+				return GAMapService.getFeatureInfoFromLayer($scope.mapInstance,callback,layerId, point,tolerance, $scope.framework);
 			};
 
             self.resetMapFired = function () {
@@ -1496,44 +1501,44 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * TBC
              * */
             self.activateControl = function (controlId) {
-                GAMapService.activateControl($scope.mapInstance, controlId);
+                GAMapService.activateControl($scope.mapInstance, controlId, $scope.framework);
             };
 
             self.deactivateControl = function (controlId) {
-                GAMapService.deactivateControl($scope.mapInstance, controlId);
+                GAMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
             };
             /**
              * TBC
              * */
             self.registerControlEvent = function (controlId, eventName, callback) {
-                GAMapService.registerControlEvent($scope.mapInstance, controlId, eventName, callback);
+                GAMapService.registerControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
             };
 
             /**
              * TBC
              * */
             self.unRegisterControlEvent = function (controlId, eventName, callback) {
-                GAMapService.unRegisterControlEvent($scope.mapInstance, controlId, eventName, callback);
+                GAMapService.unRegisterControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
             };
 
             self.registerMapEvent = function (eventName, callback) {
-                GAMapService.registerMapEvent($scope.mapInstance, eventName, callback);
+                GAMapService.registerMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
             };
 
             self.registerLayerEvent = function (layerId, eventName, callback) {
-                GALayerService.registerLayerEvent($scope.mapInstance,layerId,eventName,callback);
+                GALayerService.registerLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
             };
 
             self.unRegisterLayerEvent = function(layerId,eventName,callback) {
-                GALayerService.unRegisterLayerEvent($scope.mapInstance,layerId,eventName,callback);
+                GALayerService.unRegisterLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
             };
 
             self.unRegisterMapEvent = function (eventName, callback) {
-                GAMapService.unRegisterMapEvent($scope.mapInstance, eventName, callback);
+                GAMapService.unRegisterMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
             };
 
             self.getCurrentMapExtent = function () {
-                return GAMapService.getCurrentMapExtent($scope.mapInstance);
+                return GAMapService.getCurrentMapExtent($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -1563,49 +1568,51 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 //            };
 
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
-                GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes);
+                GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             };
 
             self.getLayerFeatures = function (layerId) {
-                return GALayerService.getLayerFeatures($scope.mapInstance, layerId);
+                return GALayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
             };
 
             self.createFeature = function (geoJson) {
-                return GALayerService.createFeature($scope.mapInstance, geoJson);
+                return GALayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
             };
 
             self.addFeatureToLayer = function (layerId, feature) {
-                return GALayerService.addFeatureToLayer($scope.mapInstance, layerId, feature);
+                return GALayerService.addFeatureToLayer($scope.mapInstance, layerId, feature, $scope.framework);
             };
 
             self.createWfsClient = function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
-                return GAMapService.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid);
+                return GAMapService.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid, $scope.framework);
             };
 
             self.addWfsClient = function (wfsClient) {
-                return GAMapService.addWfsClient(wfsClient);
+                return GAMapService.addWfsClient(wfsClient, $scope.framework);
             };
 
             self.searchWfs = function (clientId, query, attribute) {
-                return GAMapService.searchWfs($scope.mapInstance, clientId, query, attribute);
+                return GAMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
             };
 
             self.getMeasureFromEvent = function (event) {
-                return GAMapService.getMeasureFromEvent($scope.mapInstance, event);
+                return GAMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
             };
 
             self.removeFeatureFromLayer = function (layerId, featureId) {
-                GALayerService.removeFeatureFromLayer($scope.mapInstance, layerId, featureId);
+                GALayerService.removeFeatureFromLayer($scope.mapInstance, layerId, featureId, $scope.framework);
             };
 
             self.raiseLayerDrawOrder = function (layerId, delta) {
-                GALayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta);
+                GALayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
             };
 //            var layersReadyDeferred = $q.defer();
 //            self.layersReady = function () {
 //                return layersReadyDeferred.promise;
 //            };
-
+            self.getFrameworkVersion = function () {
+                return $scope.framework;
+            };
             $scope.gaMap = self;
 
             /**
@@ -1613,7 +1620,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * Default bind to handle window resizing
              * */
             $(window).bind('resize', function () {
-                GAMapService.mapResized($scope.mapInstance);
+                GAMapService.mapResized($scope.mapInstance, $scope.framework);
             });
 
             //Allowing other directives to get mapInstance from scope could lead
@@ -1627,8 +1634,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             $scope.mapInstance = GAMapService.initialiseMap({
                 mapElementId: $scope.mapElementId,
                 datumProjection: $scope.datumProjection,
-                displayProjection: $scope.displayProjection
-            });
+                displayProjection: $scope.displayProjection,
+                initialExtent: $scope.initialExtent,
+                centerPosition: $scope.centerPosition,
+                zoomLevel: $scope.zoomLevel
+            }, $scope.framework);
 
             /**
              * Sends an instance of the map to any parent listens
@@ -1659,7 +1669,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 					$log.info('removing ' + $scope.mapInstance.layers.length +' layers...');
 					for (var i = 0; i < $scope.mapInstance.layers.length; i++) {
 						var layer = $scope.mapInstance.layers[i];
-						$scope.mapInstance.removeLayer(layer);
+						$scope.mapInstance.removeLayer(layer, $scope.framework);
 					}
 				});
             });
@@ -1682,7 +1692,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                         $log.info(layer);
                         scope.layerDtoPromises[i].reject(layer);
                     } else {
-                        var layerDto = GAMapService.addLayer(scope.mapInstance, layer);
+                        var layerDto = GAMapService.addLayer(scope.mapInstance, layer, scope.framework);
                         scope.layerDtoPromises[i].resolve(layerDto);
                         allLayerDtos.push(layerDto);
                     }

@@ -69,7 +69,8 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				controllerEmitEventName: '@',
 				refreshLayer: '@',
 				maxZoomLevel: '@', 
-                onError:'&'
+                onError:'&',
+                format:'@'
 			},
 			transclude: false,
 			controller: ['$scope',function ($scope) {
@@ -99,6 +100,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				return self;
 			}],
 			link: function ($scope, element, attrs, mapController) {
+                $scope.framework = mapController.getFrameworkVersion();
 				attrs.$observe('refreshLayer', function (newVal, oldVal) {
 					if(newVal !== oldVal) {
 						$log.info('refresh for - ' + $scope.layerName);
@@ -137,15 +139,18 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				}
 
 				var constructLayer = function () {
-
+                    console.log($scope.framework);
 					initialiseDefaults();
 					$scope.constructionInProgress = true;
-					layerOptions = GALayerService.defaultLayerOptions(attrs);
+					layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                    layerOptions.initialExtent = mapController.getInitialExtent();
+                    layerOptions.format = $scope.format;
 					$log.info(layerOptions.layerName + ' - constructing...');
 					if(layerOptions.layerType.length === 0) {
 						return;
 					}
-                    layer = GALayerService.createLayer(layerOptions);
+
+                    layer = GALayerService.createLayer(layerOptions,$scope.framework);
 					//Async layer add
 					//mapController.waitingForAsyncLayer();
 					mapController.addLayer(layer).then(function (layerDto) {
@@ -195,9 +200,10 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						mapController.removeLayerById($scope.layerDto.id);
 						$scope.layerDto = null;
 						initialiseDefaults();
-						layerOptions = GALayerService.defaultLayerOptions(attrs);
-
-						layer = GALayerService.createLayer(layerOptions);
+						layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                        layerOptions.initialExtent = mapController.getInitialExtent();
+                        layerOptions.format = $scope.format;
+						layer = GALayerService.createLayer(layerOptions,$scope.framework);
 						//Async layer add
 						mapController.addLayer(layer).then(function (layerDto) {
 							$scope.layerDto = layerDto;

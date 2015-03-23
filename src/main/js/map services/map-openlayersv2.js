@@ -587,7 +587,6 @@ app.service('olv2MapService', [
 	            return features;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
-				console.log('getFeatureInfo');
                 tolerance = tolerance || 0;
 				var deferred = $q.defer();
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);

@@ -1,7 +1,7 @@
 var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var ol = ol || {};
-var app = angular.module('gawebtoolkit.core.map-services', [ 'gawebtoolkit.mapservices' ]);
+var app = angular.module('gawebtoolkit.core.map-services', ['gawebtoolkit.mapservices']);
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.
@@ -9,11 +9,9 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
     function ($log, GAConfig, mapServiceLocator) {
         'use strict';
         return {
-            initialiseMap: function (args) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            initialiseMap: function (args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 try {
                     return service.initialiseMap(args, new GAConfig());
                 } catch (e) {
@@ -21,231 +19,245 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                     throw e;
                 }
             },
-            zoomToMaxExtent: function (mapInstance) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            zoomToMaxExtent: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.zoomToMaxExtent(mapInstance);
             },
-            zoomTo: function (mapInstance, zoomLevel) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            zoomTo: function (mapInstance, zoomLevel, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.zoomTo(mapInstance, zoomLevel);
             },
-            currentZoomLevel: function (mapInstance) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            currentZoomLevel: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.currentZoomLevel(mapInstance);
             },
-            addLayer: function (mapInstance, layer) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            addLayer: function (mapInstance, layer, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.addLayer(mapInstance, layer);
             },
-            registerMapMouseMove: function (mapInstance, callback) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            registerMapMouseMove: function (mapInstance, callback, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.registerMapMouseMove(mapInstance, callback);
             },
-            registerMapMouseMoveEnd: function (mapInstance, callback) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            registerMapMouseMoveEnd: function (mapInstance, callback, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.registerMapMouseMoveEnd(mapInstance, callback);
             },
-            registerMapClick: function (mapInstance, callback) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            registerMapClick: function (mapInstance, callback, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.registerMapClick(mapInstance, callback);
             },
-            unRegisterMapClick: function (mapInstance, callback) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            unRegisterMapClick: function (mapInstance, callback, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.unRegisterMapClick(mapInstance, callback);
             },
-            registerMapEvent: function (mapInstance, eventName, callback) {
+            registerMapEvent: function (mapInstance, eventName, callback, version) {
                 var service = mapServiceLocator.getImplementation('olv2');
-                service.registerMapEvent(mapInstance, eventName, callback);
+                service.registerMapEvent(mapInstance, eventName, callback, version);
             },
-            unRegisterMapEvent: function (mapInstance, eventName, callback) {
+            unRegisterMapEvent: function (mapInstance, eventName, callback, version) {
                 var service = mapServiceLocator.getImplementation('olv2');
-                service.unRegisterMapEvent(mapInstance, eventName, callback);
+                service.unRegisterMapEvent(mapInstance, eventName, callback, version);
             },
-            getCurrentMapExtent: function (mapInstance) {
+            getCurrentMapExtent: function (mapInstance, version) {
                 var service = mapServiceLocator.getImplementation('olv2');
                 return service.getCurrentMapExtent(mapInstance);
             },
-            addControl: function (mapInstance, controlName, controlOptions, elementId, controlId) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            addControl: function (mapInstance, controlName, controlOptions, elementId, controlId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.addControl(mapInstance, controlName, controlOptions, elementId, controlId);
             },
-            isControlActive: function (mapInstance, controlId) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            isControlActive: function (mapInstance, controlId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.isControlActive(mapInstance, controlId);
             },
-            activateControl: function (mapInstance, controlId) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            activateControl: function (mapInstance, controlId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.activateControl(mapInstance, controlId);
             },
-            deactivateControl: function (mapInstance, controlId) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            deactivateControl: function (mapInstance, controlId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.deactivateControl(mapInstance, controlId);
             },
-            registerControlEvent: function (mapInstance, controlId, eventName, callback) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            registerControlEvent: function (mapInstance, controlId, eventName, callback, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.registerControlEvent(mapInstance, controlId, eventName, callback);
             },
-            unRegisterControlEvent: function (mapInstance, controlId, eventName, callback) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            unRegisterControlEvent: function (mapInstance, controlId, eventName, callback, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.unRegisterControlEvent(mapInstance, controlId, eventName, callback);
             },
-            getLayers: function (mapInstance) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            getLayers: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.getLayers(mapInstance);
             },
-            getLayersByName: function (mapInstance, layerName) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            getLayersByName: function (mapInstance, layerName, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.getLayersByName(mapInstance, layerName);
             },
-            zoomToLayer: function (mapInstance, layerId) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            zoomToLayer: function (mapInstance, layerId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.zoomToLayer(mapInstance, layerId);
             },
-            setLayerVisibility: function (mapInstance, layerId, visibility) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            setLayerVisibility: function (mapInstance, layerId, visibility, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.setLayerVisibility(mapInstance, layerId, visibility);
             },
-            createBoundingBox: function (mapInstance, lonLatArray) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            createBoundingBox: function (mapInstance, lonLatArray, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.createBoundingBox(mapInstance, lonLatArray);
             },
-            createBounds: function (mapInstance, lonLatArray, projection) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            createBounds: function (mapInstance, lonLatArray, projection, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.createBounds(mapInstance, lonLatArray, projection);
             },
-            zoomToExtent: function (mapInstance, extent) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            zoomToExtent: function (mapInstance, extent, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.zoomToExtent(mapInstance, extent);
             },
-            setCenter: function (mapInstance, lat, lon, projection) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            setCenter: function (mapInstance, lat, lon, projection, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.setCenter(mapInstance, lat, lon, projection);
             },
-            setInitialPositionAndZoom: function (mapInstance, args) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            setInitialPositionAndZoom: function (mapInstance, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.setInitialPositionAndZoom(mapInstance, args, new GAConfig());
             },
-            setBaseLayer: function (mapInstance, layerId) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            setBaseLayer: function (mapInstance, layerId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.setBaseLayer(mapInstance, layerId);
             },
-            isBaseLayer: function (mapInstance, layerId) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            isBaseLayer: function (mapInstance, layerId, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.isBaseLayer(mapInstance, layerId);
             },
-            setOpacity: function (mapInstance, layerId, opacity) {
-                //TODO if we are support multiple map types, eg google/openlayers/leaflets
-                //this method should abstract the need to know what map type the instance is.
-                //For now it is current assumed it's openlayers Release 2.13.1
-                var service = mapServiceLocator.getImplementation('olv2');
+            setOpacity: function (mapInstance, layerId, opacity, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.setOpacity(mapInstance, layerId, opacity);
             },
-            mapResized: function (mapInstance) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            mapResized: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.mapResized(mapInstance);
             },
-            setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl, args);
             },
-            getLonLatFromPixel: function (mapInstance, x, y, projection) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            getLonLatFromPixel: function (mapInstance, x, y, projection, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.getLonLatFromPixel(mapInstance, x, y, projection);
             },
-            getPixelFromLonLat: function (mapInstance, lon, lat) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            getPixelFromLonLat: function (mapInstance, lon, lat, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.getPixelFromLonLat(mapInstance, lon, lat);
             },
-            getPointFromEvent: function (e) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            getPointFromEvent: function (e, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.getPointFromEvent(e);
             },
-            drawPolyLine: function (mapInstance, points, layerName) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            drawPolyLine: function (mapInstance, points, layerName, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawPolyLine(mapInstance, points, layerName);
             },
-            removeSelectedFeature: function (mapInstance, layerName) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            removeSelectedFeature: function (mapInstance, layerName, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.removeSelectedFeature(mapInstance, layerName);
             },
-            removeFeature: function (mapInstance, layerName, feature) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            removeFeature: function (mapInstance, layerName, feature, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.removeFeature(mapInstance, layerName, feature);
             },
-            drawFeature: function (mapInstance, args) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            drawFeature: function (mapInstance, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawFeature(mapInstance, args);
             },
-            drawLabel: function (mapInstance, args) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            drawLabel: function (mapInstance, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawLabel(mapInstance, args);
             },
-            drawLabelWithPoint: function (mapInstance, args) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            drawLabelWithPoint: function (mapInstance, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawLabelWithPoint(mapInstance, args);
             },
-            createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
-                var service = mapServiceLocator.getImplementation('olv2');
-                return service.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid);
+            createWfsClient: function (url, featureType, featurePrefix, wfsVersion, geometryName, datumProjection, isLonLatOrderValid, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.createWfsClient(url, featureType, featurePrefix, wfsVersion, geometryName, datumProjection, isLonLatOrderValid);
             },
-			getFeatureInfo: function (mapInstance,callback, url,featureType, featurePrefix, geometryName, point,tolerance) {
-				var service = mapServiceLocator.getImplementation('olv2');
-				return service.getFeatureInfo(mapInstance,callback, url,featureType, featurePrefix, geometryName, point,tolerance);
-			},
-			getFeatureInfoFromLayer: function (mapInstance,callback, layerId, point,tolerance) {
-				var service = mapServiceLocator.getImplementation('olv2');
-				return service.getFeatureInfoFromLayer(mapInstance,callback, layerId, point,tolerance);
-			},
-            getMeasureFromEvent: function (mapInstance, e) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            getFeatureInfo: function (mapInstance, callback, url, featureType, featurePrefix, geometryName, point, tolerance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getFeatureInfo(mapInstance, callback, url, featureType, featurePrefix, geometryName, point, tolerance);
+            },
+            getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point, tolerance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getFeatureInfoFromLayer(mapInstance, callback, layerId, point, tolerance);
+            },
+            getMeasureFromEvent: function (mapInstance, e, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.getMeasureFromEvent(mapInstance, e);
             },
-            addWfsClient: function (wfsClient) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            addWfsClient: function (wfsClient, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.addWfsClient(wfsClient);
             },
-            searchWfs: function (mapInstance, clientId, query, attribute) {
-                var service = mapServiceLocator.getImplementation('olv2');
+            searchWfs: function (mapInstance, clientId, query, attribute, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
                 return service.searchWfs(mapInstance, clientId, query, attribute);
             }
         };
-    } ]);
+    }]);
 
-app.service('mapServiceLocator', [ '$injector', function ($injector) {
+app.service('mapServiceLocator', ['$injector', function ($injector) {
     "use strict";
     var implementations = {
-        'olv2': 'olv2MapService'
+        'olv2': 'olv2MapService',
+        'olv3': 'olv3MapService'
     };
     return {
         getImplementation: function (mapType) {
             return $injector.get(implementations[mapType]);
         }
     };
-} ]);
+}]);

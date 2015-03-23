@@ -28,7 +28,9 @@ var $ = $ || {};
 var app = angular.module('gawebtoolkit.mapservices',
 	[
 		'gawebtoolkit.mapservices.layer.openlayersv2',
-		'gawebtoolkit.mapservices.map.openlayersv2'
+        'gawebtoolkit.mapservices.map.openlayersv2',
+        'gawebtoolkit.mapservices.layer.openlayersv3',
+        'gawebtoolkit.mapservices.map.openlayersv3'
 	]);
 //id: olv2Layer.id,
 //	name: olv2Layer.name,
@@ -65,6 +67,19 @@ app.factory('GeoLayer', [function () {
         }
         
         return new GeoLayer(layer.id,layer.name,layerType,layer.visibility,opacity);
+    };
+
+    GeoLayer.fromOpenLayersV3Layer = function(layer) {
+        // OpenLayers v2 does not store layer type for ArcGISCache layers
+        var layerType =layer.geoLayerType;
+        var opacity;
+        if(typeof layer.opacity === 'string') {
+            opacity = Number(layer.opacity);
+        } else {
+            opacity = layer.opacity;
+        }
+
+        return new GeoLayer(layer.id,layer.name,layerType,layer.visible,opacity);
     };
 	//define prototypical methods
 	//GeoLayer.prototype.myFunction = function () //available on every instance.
