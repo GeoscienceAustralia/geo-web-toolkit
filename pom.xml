@@ -3,11 +3,7 @@
 
     <groupId>au.gov.ga</groupId>
 	<artifactId>geo-web-toolkit</artifactId>
-<<<<<<< HEAD
-	<version>1.0.0</version>
-=======
-	<version>1.0.2-SNAPSHOT</version>
->>>>>>> 9531338798770648a7da75c8806cbca05528935b
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>geo-web-toolkit</name>
 
