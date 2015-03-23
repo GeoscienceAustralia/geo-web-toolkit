@@ -8,6 +8,12 @@
 	<packaging>jar</packaging>
     <name>geo-web-toolkit</name>
 
+
+    <scm>
+        <url>http://rhe-neo-dev-repo.dev.lan/git/summary/geo-web-toolkit.git</url>
+        <connection>scm:git:http://rhe-neo-dev-repo.dev.lan/git/r/geo-web-toolkit.git</connection>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <js.src.dir>src/main/js</js.src.dir>
