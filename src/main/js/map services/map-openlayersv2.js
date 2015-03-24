@@ -342,7 +342,11 @@ app.service('olv2MapService', [
                     mapInstance.zoomToExtent(bounds, true);
 				} else if (args.centerPosition) {
 					var position = JSON.parse(args.centerPosition);
-					mapInstance.setCenter(new OpenLayers.LonLat(position.lon, position.lat), args.zoomLevel);
+                    var centerPos = new OpenLayers.LonLat(position[0], position[1]);
+                    var srcProjection = new OpenLayers.Projection(service.displayProjection);
+                    var destProjection = new OpenLayers.Projection(mapInstance.getProjection());
+                    var transformedCenter = centerPos.transform(srcProjection,destProjection);
+					mapInstance.setCenter(transformedCenter, args.zoomLevel);
 
 				} else {
 					//No options passed, zoom to max

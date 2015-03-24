@@ -333,7 +333,7 @@
             getLayerBy: function (mapInstance, propertyName, propertyValue) {
                 var layer = null;
                 var foundResult = false;
-                this.getLayers().forEach(function (lyr) {
+                mapInstance.getLayers().forEach(function (lyr) {
                     if (propertyValue === lyr.get(propertyName) && foundResult === false) {
                         layer = lyr;
                         foundResult = true;

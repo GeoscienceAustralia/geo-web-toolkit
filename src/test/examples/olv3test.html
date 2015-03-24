@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="http://openlayers.org/en/v3.2.1/css/ol.css"/>
     <title>OpenLayers 3 Example Map</title>
 </head>
-<body>
-<h1>OpenLayers 3 Example Map</h1>
+<body ng-controller="mainController">
+<h1 id="test111">OpenLayers 3 Example Map</h1>
 <div id="map" style="width:100%;height:500px;"></div>
-<ga-map map-element-id="map" framework="olv3" display-projection="EPSG:4326" datum-projection="EPSG:102100" initial-extent="[[100, 10],[176, -55]]" zoom-level="4" center-position="[130, -25]">
+<ga-map ng-if="frameworkType != null" map-element-id="map" framework="{{frameworkType}}" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]">
     <ga-map-layer layer-name="test1"
                   layer-type="WMS"
                   layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"
@@ -35,6 +35,21 @@
 </ga-map>
 <script>
     var app = angular.module('simpleMap',['gawebtoolkit.core']);
+
+    app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
+        $scope.frameworkType = 'olv2';
+        $('#test111').on('click', function () {
+            console.log('test111');
+            $scope.$apply(function () {
+                $scope.frameworkTypeOldVal = angular.copy($scope.frameworkType);
+                $scope.frameworkType = null;
+
+                $timeout(function () {
+                    $scope.frameworkType = $scope.frameworkTypeOldVal == 'olv2' ? 'olv3' : 'olv2';
+                },100)
+            });
+        });
+    }]);
 
 </script>
 

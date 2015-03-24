@@ -53,6 +53,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             //$scope.asyncLayersDeferred = $q.defer();
             //$scope.waitingForNumberOfLayers = 0;
             $scope.initialPositionSet = false;
+
             //var waiting = false;
 //            var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
 //                $log.info('layers remaining - ' + val);
@@ -1665,16 +1666,17 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 $(window).off("resize.Viewport");
 				//Wait for digestion
 				$timeout(function () {
-					$log.info('map destruction finishing...');
-					$log.info('removing ' + $scope.mapInstance.layers.length +' layers...');
-					for (var i = 0; i < $scope.mapInstance.layers.length; i++) {
-						var layer = $scope.mapInstance.layers[i];
-						$scope.mapInstance.removeLayer(layer, $scope.framework);
-					}
+                    $log.info('map destruction finishing...');
+                    $log.info('removing ' + $scope.gaMap.getLayers().length +' layers...');
+                    var allLayers = $scope.gaMap.getLayers();
+                    for (var i = 0; i < allLayers.length; i++) {
+                        var layer = allLayers[i];
+                        $scope.gaMap.removeLayerById(layer.id);
+                    }
 				});
             });
         }],
-        link: function (scope) {
+        link: function (scope,element,attrs) {
 			//Wait for full digestion
             $timeout(function () {
                 $q.allSettled(scope.layerPromises).then(function(layers) {
@@ -1683,6 +1685,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     processLayers(layersWithErrors);
                 });
             });
+
             function processLayers(layers) {
                 $log.info('resolving all layers');
                 var allLayerDtos = [];
