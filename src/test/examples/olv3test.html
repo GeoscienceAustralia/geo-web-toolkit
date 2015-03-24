@@ -39,6 +39,10 @@
     var app = angular.module('simpleMap',['gawebtoolkit.core']);
 
     app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
+        $scope.$on('mapControllerReady', function (mapController) {
+            console.log(mapController);
+            $scope.mapController = mapController;
+        });
         $scope.frameworkType = 'olv2';
         $('#test111').on('click', function () {
             console.log('test111');
