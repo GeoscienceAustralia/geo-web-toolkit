@@ -143,10 +143,14 @@
 
                 sourceOptions.crossOrigin = 'anonymous';
                 sourceOptions.params = {
-                    'LAYERS': args.layers
+                    'LAYERS': args.layers,
+                    'TILED': true
                 };
                 if(args.format) {
                     sourceOptions.params.FORMAT = args.format;
+                }
+                if(args.wrapDateLine) {
+                    sourceOptions.wrapX = true;
                 }
                 sourceOptions.serverType = ('mapserver');
 
@@ -157,7 +161,7 @@
                 }
 
 
-                var wmsSource = new ol.source.ImageWMS(sourceOptions);
+                var wmsSource = new ol.source.TileWMS(sourceOptions);
                 var layerOptions = {};
                 //layerOptions.extent = [
                 //    args.initialExtent[0][0],
@@ -170,7 +174,7 @@
                 //layerOptions.opacity = args.opacity;
 
 
-                return new ol.layer.Image(layerOptions);
+                return new ol.layer.Tile(layerOptions);
                 //var resultArgs = {
                 //    layerName: args.layerName,
                 //    layerUrl: args.layerUrl,
