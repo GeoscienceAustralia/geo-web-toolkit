@@ -10,7 +10,7 @@
      * */
     app.service('olv3LayerService', [ '$log', '$q','$timeout', function ($log, $q,$timeout) {
         var service = {
-            xyzTileCachePath: "/tile/${z}/${y}/${x}",
+            xyzTileCachePath: "/tile/{z}/{y}/{x}",
             createLayer: function (args) {
                 var layer;
                 //var options = service.defaultLayerOptions(args);
@@ -124,39 +124,18 @@
 
             },
             createXYZLayer: function (args) {
-                //TODO incorporate default options to args via extend
-                var resultArgs = {
-                    layerName: args.layerName,
-                    layerUrl: args.layerUrl,
-                    options: {
-                        wrapDateLine: args.wrapDateLine,
-                        transitionEffect: args.transitionEffect,
-                        visibility: args.visibility === true || args.visibility === 'true',
-                        isBaseLayer: args.isBaseLayer === true || args.isBaseLayer === 'true',
-                        tileSize: args.tileSize(args.tileType),
-                        sphericalMercator: args.sphericalMercator,
-                        centerPosition: args.centerPosition,
-                        attribution: args.layerAttribution,
-                        opacity: args.opacity
-                    }
+                var sourceOptions = {
+                    url: args.layerUrl + service.xyzTileCachePath,
+                    crossOrigin: '*/*'
                 };
 
-                if(resultArgs.options.isBaseLayer) {
-                    if(args.resolutions) {
-                        resultArgs.options.resolutions = args.resolutions;
-                    }
-                    if(args.zoomOffset) {
-                        resultArgs.options.zoomOffset = args.zoomOffset;
-                    }
-                }
+                var layerOptions = {
+                    opacity: args.opacity,
+                    source: new ol.source.XYZ(sourceOptions),
+                    visible: args.visibility === true || args.visibility === 'true'
+                };
 
-                if (args.maxZoomLevel != null) {
-                    if (args.maxZoomLevel.length > 0) {
-                        resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel) ;
-                    }
-                }
-
-                return new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzTileCachePath, resultArgs.options);
+                return new ol.layer.Tile(layerOptions);
             },
             createWMSLayer: function (args) {
                 var sourceOptions = {};
@@ -171,12 +150,12 @@
                 }
                 sourceOptions.serverType = ('mapserver');
 
-                sourceOptions.attributions = [new ol.Attribution({
-                    html: '&copy; ' +
-                    '<a href="http://www.geo.admin.ch/internet/geoportal/' +
-                    'en/home.html">' +
-                    'Pixelmap 1:1000000 / geo.admin.ch</a>'
-                })];
+                if(args.layerAttribution != null) {
+                    sourceOptions.attributions = [new ol.Attribution({
+                        html: args.layerAttribution
+                    })];
+                }
+
 
                 var wmsSource = new ol.source.ImageWMS(sourceOptions);
                 var layerOptions = {};

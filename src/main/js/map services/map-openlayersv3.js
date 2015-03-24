@@ -33,7 +33,7 @@
                     var center = JSON.parse(args.centerPosition);
                     viewOptions.center = ol.proj.transform([center[0],center[1]],args.displayProjection,args.datumProjection);
                     viewOptions.zoom = parseInt(args.zoomLevel);
-
+                    viewOptions.extent = viewOptions.projection.getExtent();
                     var view = new ol.View(viewOptions);
                     config.target = args.mapElementId;
                     config.view = view;

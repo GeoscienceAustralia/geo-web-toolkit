@@ -11,22 +11,9 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
  * gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/gawebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.
  * @param {string|@} layerName - A name allocated to the layer for future reference
  * @param {string|@} url - A string value that defines the URL from which the content of the layer will be loaded
- * @param {number|@=} serverType - The type of the data that is being load on the layer. For this directive it will always "WFS"
- * @param {number|@=} wfsFeatureList - a string of comma separated features supported by WFS server
- * @param {string|@} wfsFilterValue - TBA
- * @param {string|@} wfsVersion -  TBA 
- * @param {string|@} wfsFeaturePrefix -  TBA 
- * @param {string|@} wfsFeatureType -  TBA
- * @param {string|@} wfsFeatureNs -  TBA
- * @param {string|@} wfsFeatureAttributes -  TBA
- * @param {string|@} wfsGeometryName -  TBA
- * @param {string|@} onFeatureClick -  TBA
- * @param {string|@} onFeaturesLoaded -  TBA
- * @param {string|@} updateResultsEventName -  TBA
- * @param {string|@} postAddLayer -  TBA
- * @param {string|@} isLonLatOrderValid -  TBA
- * @param {string|@} inputFormat -  TBA
+ * @param {function|@} postAddLayer -  Function callback fired after the layer is added
  * @param {string|@} controllerEmitEventName -  An string value that will be allocated to this layer as controller. This controller can be called in JS codes in order to control the layer programatically
+ * @param {string|@} onLayerDestroy - Function callback fired on the destruction of a layer
  *  * Following functions are supported by this controller:
  * <ul>
      <li>hide</li>
@@ -1020,21 +1007,10 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
             scope: {
                 url: '@',
                 layerName: '@',
-                serverType: '@',
-                wfsFeatureList: '@', // comma separated features
-                wfsFilterValue: '@',
-                wfsVersion: '@',
-                wfsFeaturePrefix: '@',
-                wfsFeatureType: '@',
-                wfsFeatureNs: '@',
-                wfsFeatureAttributes: '@',
-                wfsGeometryName: '@',
                 visibility: '@',
                 controllerEmitEventName: '@',
                 postAddLayer: '&',
-                onLayerDestroy: '&',
-                isLonLatOrderValid: '@',
-                inputFormat: '@'
+                onLayerDestroy: '&'
             },
             controller: ['$scope',function ($scope) {
                 $scope.layerControllerIsReady = false;
@@ -1151,14 +1127,6 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     });
 
                     //mapController.removeLayerById($scope.layerDto.id);
-                });
-
-                attrs.$observe('wfsFilterValue', function (newVal) {
-                    if (newVal) {
-                        $timeout(function () {
-                            mapController.filterFeatureLayer($scope.layerDto.id, newVal, $scope.wfsFeatureAttributes);
-                        });
-                    }
                 });
 
                 attrs.$observe('visibility', function (newVal) {
