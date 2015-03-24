@@ -180,12 +180,12 @@
 
                 var wmsSource = new ol.source.ImageWMS(sourceOptions);
                 var layerOptions = {};
-                layerOptions.extent = [
-                    args.initialExtent[0][0],
-                    args.initialExtent[0][1],
-                    args.initialExtent[1][0],
-                    args.initialExtent[1][1]
-                ];
+                //layerOptions.extent = [
+                //    args.initialExtent[0][0],
+                //    args.initialExtent[0][1],
+                //    args.initialExtent[1][0],
+                //    args.initialExtent[1][1]
+                //];
                 layerOptions.source = wmsSource;
                 //layerOptions.visible = args.visibility;
                 //layerOptions.opacity = args.opacity;

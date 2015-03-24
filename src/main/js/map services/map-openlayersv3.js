@@ -29,10 +29,7 @@
                     //.controls = [];
                     //convert olv2 params to olv3.
                     var viewOptions = {};
-                    var projection = ol.proj.get(args.datumProjection);
-                    projection.setExtent([485869.5728, 76443.1884, 837076.5648, 299941.7864]);
-                    viewOptions.extent = [args.initialExtent[0][0],args.initialExtent[0][1],args.initialExtent[1][0],args.initialExtent[1][1]];
-                    viewOptions.projection = projection;
+                    viewOptions.projection = ol.proj.get(args.datumProjection);
                     var center = JSON.parse(args.centerPosition);
                     viewOptions.center = ol.proj.transform([center[0],center[1]],args.displayProjection,args.datumProjection);
                     viewOptions.zoom = parseInt(args.zoomLevel);
