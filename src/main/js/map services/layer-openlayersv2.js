@@ -284,17 +284,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             if (!latlong) {
                 return null;
             }
-            var coords, centerPosition;
-            coords = latlong.split(',');
-            centerPosition = {
-                lat: "",
-                lon: ""
-            };
-
-            centerPosition.lat = coords[0];
-            centerPosition.lon = coords[1];
-
-            return centerPosition;
+            return angular.fromJson(latlong);
         },
         //Should this be labeled as an internal method?
         getLayerById: function (mapInstance, layerId) {

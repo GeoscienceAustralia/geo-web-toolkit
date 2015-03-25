@@ -71,7 +71,10 @@
                     'layer-url="http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer" ' +
                     'layers="Populated_Places_1,Populated_Places_2,Populated_Places_3,Populated_Places_4,Populated_Places_5,Populated_Places_6,Populated_Places_7,Populated_Places_8"> ' +
                     '</ga-map-layer> ' +
-                    '<ga-map-control map-control-name="scaleline" map-control-id="myOverviewTestId"></ga-map-control> ' +
+                    '<ga-feature-layer layer-name="feature layer1">' +
+                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
+                    '</ga-feature-layer>' +
+                    '<ga-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></ga-map-control> ' +
                     '</ga-map> ' +
                     '<div id="map"></div>';
                 element = angular
@@ -496,7 +499,7 @@
                 var passed = false;
                 try {
                     $scope.mapController.removeLayerByName('Test layer name 1');
-                    expect($scope.mapController.getLayers().length).toBe(1);
+                    expect($scope.mapController.getLayers().length).toBe(2);
                     passed = true;
                 } catch (e) {
                 }
@@ -506,7 +509,7 @@
                 var passed = false;
                 try {
                     $scope.mapController.removeLayersByName('Test layer name 1');
-                    expect($scope.mapController.getLayers().length).toBe(1);
+                    expect($scope.mapController.getLayers().length).toBe(2);
                     passed = true;
                 } catch (e) {
                 }
@@ -517,7 +520,7 @@
                 try {
                     var currentLayer = $scope.mapController.getLayers()[0];
                     $scope.mapController.removeLayerById(currentLayer.id);
-                    expect($scope.mapController.getLayers().length).toBe(1);
+                    expect($scope.mapController.getLayers().length).toBe(2);
                     passed = true;
                 } catch (e) {
                 }
@@ -580,8 +583,8 @@
             it('Should fire mapController function "activateControl" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    $scope.mapController.activateControl('myOverviewTestId');
-                    var isActive = $scope.mapController.isControlActive('myOverviewTestId');
+                    $scope.mapController.activateControl('myScaleLineTestId');
+                    var isActive = $scope.mapController.isControlActive('myScaleLineTestId');
                     expect(isActive).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -591,11 +594,11 @@
             it('Should fire mapController function "deactivateControl" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    $scope.mapController.activateControl('myOverviewTestId');
-                    var isActive = $scope.mapController.isControlActive('myOverviewTestId');
+                    $scope.mapController.activateControl('myScaleLineTestId');
+                    var isActive = $scope.mapController.isControlActive('myScaleLineTestId');
                     expect(isActive).toBe(true);
-                    $scope.mapController.deactivateControl('myOverviewTestId');
-                    var isInactive = !$scope.mapController.isControlActive('myOverviewTestId');
+                    $scope.mapController.deactivateControl('myScaleLineTestId');
+                    var isInactive = !$scope.mapController.isControlActive('myScaleLineTestId');
                     expect(isInactive).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -607,7 +610,7 @@
                 try {
                     var func = function () {
                     };
-                    $scope.mapController.registerControlEvent('myOverviewTestId', 'activate', func);
+                    $scope.mapController.registerControlEvent('myScaleLineTestId', 'activate', func);
                     passed = true;
                 } catch (e) {
                 }
@@ -618,8 +621,8 @@
                 try {
                     var func = function () {
                     };
-                    $scope.mapController.registerControlEvent('myOverviewTestId', 'activate', func);
-                    $scope.mapController.unRegisterControlEvent('myOverviewTestId', 'activate', func);
+                    $scope.mapController.registerControlEvent('myScaleLineTestId', 'activate', func);
+                    $scope.mapController.unRegisterControlEvent('myScaleLineTestId', 'activate', func);
                     passed = true;
                 } catch (e) {
                 }

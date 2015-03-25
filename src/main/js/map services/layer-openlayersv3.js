@@ -297,17 +297,7 @@
                 if (!latlong) {
                     return null;
                 }
-                var coords, centerPosition;
-                coords = latlong.split(',');
-                centerPosition = {
-                    lat: "",
-                    lon: ""
-                };
-
-                centerPosition.lat = coords[0];
-                centerPosition.lon = coords[1];
-
-                return centerPosition;
+                return angular.fromJson(latlong);
             },
             //Should this be labeled as an internal method?
             getLayerById: function (mapInstance, layerId) {
@@ -365,31 +355,7 @@
                 layer.getSource().removeFeature(feature);
             },
             registerFeatureSelected: function (mapInstance, layerId, callback, element) {
-                var layer = mapInstance.getLayersBy('id', layerId)[0];
-                var layerType = layer.geoLayerType;
-                var layerProtocol;
-                if (layerType === 'WMS') {
-                    layerProtocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
-                }
-                var control = mapInstance.getControl("ctrlGetFeature");
-                if (control) {
-                    mapInstance.removeControl(control);
-                }
-
-                control = new OpenLayers.Control.GetFeature({
-                    protocol: layerProtocol,
-                    box: true,
-                    hover: true,
-                    multipleKey: "shiftKey",
-                    toggleKey: "ctrlKey"
-                });
-                control.metadata = control.metadata || {};
-                control.metadata.type = 'getfeature';
-                control.events.register("featureselected", element, callback);
-                return {
-                    id: "ctrlGetFeature", //Only one at a time
-                    name: "getfeature"
-                };
+                throw new Error("NotImplementedError");
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
                 var layer = mapInstance.getLayersBy('id', layerId)[0];
@@ -401,47 +367,10 @@
             },
             //Should this be moved to a separate service as it is more of a helper?
             getMarkerCountForLayerName: function (mapInstance, layerName) {
-                var layers = mapInstance.getLayersByName(layerName);
-                var count = 0;
-                if (layers.length > 0) {
-                    // Returns count of markers for the first marker layer
-
-                    count = layers[0].markers == null ?
-                        0 :
-                        layers[0].markers.length;
-                }
-                return count;
+                throw new Error("NotImplementedError");
             },
-            filterFeatureLayer: function (mapInstance, layerId, filterValue, featureAttributes) {
-                var layer = service.getLayerById(mapInstance, layerId);
-                var filterArray = service.parseFeatureAttributes(featureAttributes);
-                var olFilters = [];
-
-                for (var i = 0; i < filterArray.length; i++) {
-                    olFilters.push(new OpenLayers.Filter.Comparison({
-                        type: OpenLayers.Filter.Comparison.LIKE,
-                        property: filterArray[i],
-                        matchCase: false,
-                        value: filterValue.toUpperCase() + '*'
-                    }));
-                }
-
-                var filter = new OpenLayers.Filter.Logical({
-                    type: OpenLayers.Filter.Logical.OR,
-                    filters: olFilters
-                });
-
-                if (filter.filters.length === 1) {
-                    layer.filter = olFilters[0];
-                    layer.refresh({
-                        force: true
-                    });
-                } else {
-                    layer.filter = filter;
-                    layer.refresh({
-                        force: true
-                    });
-                }
+            filterFeatureLayer: function (mapInstance, layerId, filterValue) {
+                throw new Error("NotImplementedError");
             },
             parseFeatureAttributes: function (featureAttributes) {
                 if (!featureAttributes) {
@@ -461,16 +390,31 @@
                 var features = [];
 
                 var layer = service.getLayerById(mapInstance, layerId);
-
-                for (var i = 0; i < layer.features.length; i++) {
-                    features.push(layer.features[i]);
+                var source = layer.getSource();
+                if(typeof source.getFeatures !== 'function') {
+                    throw new Error('Layer does not have a valid source for features.');
+                }
+                var existingFeatures = source.getFeatures();
+                for (var i = 0; i < existingFeatures.length; i++) {
+                    features.push(existingFeatures[i]);
                 }
 
                 return features;
             },
             raiseLayerDrawOrder: function (mapInstance, layerId, delta) {
                 var layer = service.getLayerById(mapInstance, layerId);
-                mapInstance.raiseLayer(layer, delta);
+                var allLayers = mapInstance.getLayers();
+                var layerIndex;
+                for (var i = 0; i < allLayers.length; i++) {
+                    var currentLayer = allLayers[i];
+                    if(currentLayer.id === layer.id) {
+                        layerIndex = i;
+                        break;
+                    }
+                }
+                var updatedIndex = layerIndex - delta;
+                mapInstance.getLayers().removeAt(layerIndex);
+                mapInstance.getLayers().insertAt(updatedIndex - 1,layer);
             },
             postAddLayerCache: {}
         };
