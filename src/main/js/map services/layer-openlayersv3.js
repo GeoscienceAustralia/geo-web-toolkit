@@ -1,4 +1,4 @@
-/* global angular, OpenLayers, $, google*/
+/* global angular, ol, $, google*/
 
 (function () {
     "use strict";
@@ -52,7 +52,7 @@
                 var layer;
 
                 if (args.url == null) {
-                    layer = new OpenLayers.Layer.Vector(args.layerName);
+                    layer = new ol.layer.Vector(args.layerName);
                 } else {
                     service.postAddLayerCache = service.postAddLayerCache || [];
                     //TODO remove fixed style, should default out of config
@@ -135,7 +135,11 @@
                     visible: args.visibility === true || args.visibility === 'true'
                 };
 
-                return new ol.layer.Tile(layerOptions);
+                var result = new ol.layer.Tile(layerOptions);
+                result.name = args.layerName;
+                // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
+                // More info at - https://github.com/openlayers/ol3/issues/2907
+                return result;
             },
             createWMSLayer: function (args) {
                 var sourceOptions = {};
@@ -163,46 +167,15 @@
 
                 var wmsSource = new ol.source.TileWMS(sourceOptions);
                 var layerOptions = {};
-                //layerOptions.extent = [
-                //    args.initialExtent[0][0],
-                //    args.initialExtent[0][1],
-                //    args.initialExtent[1][0],
-                //    args.initialExtent[1][1]
-                //];
+
                 layerOptions.source = wmsSource;
-                //layerOptions.visible = args.visibility;
-                //layerOptions.opacity = args.opacity;
-
-
-                return new ol.layer.Tile(layerOptions);
-                //var resultArgs = {
-                //    layerName: args.layerName,
-                //    layerUrl: args.layerUrl,
-                //    layers: args.layers,
-                //    wrapDateLine: args.wrapDateLine,
-                //    visibility: args.visibility === true || args.visibility === 'true',
-                //    isBaseLayer: args.isBaseLayer === true || args.isBaseLayer === 'true',
-                //    transitionEffect: args.transitionEffect,
-                //    tileSize: args.tileSize(args.tileType),
-                //    sphericalMercator: args.sphericalMercator,
-                //    tileType: args.tileType,
-                //    projection: args.datumProjection,
-                //    transparent: args.transparent,
-                //    opacity: args.opacity
-                //    //centerPosition: args.centerPosition
-                //};
-                //
-                //if (args.maxZoomLevel != null) {
-                //    if (args.maxZoomLevel.length > 0) {
-                //        resultArgs.numZoomLevels = parseInt(args.maxZoomLevel) ;
-                //    }
-                //}
-                //
-                //return new OpenLayers.Layer.WMS(resultArgs.layerName, resultArgs.layerUrl, {
-                //    layers: resultArgs.layers,
-                //    format: resultArgs.format,
-                //    transparent: resultArgs.transparent
-                //}, resultArgs);
+                layerOptions.visible = args.visibility;
+                layerOptions.opacity = args.opacity;
+                var result = new ol.layer.Tile(layerOptions);
+                // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
+                // More info at - https://github.com/openlayers/ol3/issues/2907
+                result.name = args.layerName;
+                return result;
             },
             createArcGISCacheLayer: function (args) {
                 //TODO incorporate default options to args via extend
@@ -269,27 +242,38 @@
             },
             createFeature: function (mapInstance, geoJson) {
                 var reader;
-                if(mapInstance.projection !== geoJson.crs.properties.name) {
-                    reader = new OpenLayers.Format.GeoJSON({
-                        'externalProjection': geoJson.crs.properties.name,
-                        'internalProjection': mapInstance.projection
+                if(mapInstance.getView().getProjection() !== geoJson.crs.properties.name) {
+                    reader = new ol.format.GeoJSON({
+                        'defaultDataProjection': geoJson.crs.properties.name
                     });
                 } else {
-                    reader = new OpenLayers.Format.GeoJSON();
+                    reader = new new ol.format.GeoJSON({
+                        'defaultDataProjection': mapInstance.getView().getProjection()
+                    });
                 }
 
-                return reader.read(angular.toJson(geoJson), geoJson.type);
+                return reader.readFeature(angular.toJson(geoJson), {
+                    'dataProjection': geoJson.crs.properties.name,
+                    'featureProjection': mapInstance.getView().getProjection()
+                });
             },
             addFeatureToLayer: function (mapInstance, layerId, feature) {
                 var layer = service.getLayerById(mapInstance, layerId);
-
+                var source = layer.getSource();
+                if(typeof source.getFeatures !== 'function') {
+                    throw new Error('Layer does not have a valid source for features.');
+                }
+                var writer = new ol.format.GeoJSON();
+                var featureJson;
                 if (feature instanceof Array) {
                     layer.addFeatures(feature);
+                    featureJson = writer.writeFeatures(feature);
                 } else {
-                    layer.addFeatures([ feature ]);
+                    layer.addFeature(feature);
+                    featureJson = writer.writeFeature(feature);
                 }
-                var writer = new OpenLayers.Format.GeoJSON();
-                var featureDto = angular.fromJson(writer.write(feature));
+
+                var featureDto = angular.fromJson(writer.write(featureJson));
                 featureDto.id = feature.id;
                 return featureDto;
             },

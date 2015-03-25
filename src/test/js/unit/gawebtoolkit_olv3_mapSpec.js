@@ -54,7 +54,7 @@
                 };
                 proj4.defs("EPSG:102113","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
                 proj4.defs("EPSG:102100","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
-                var ele = '<ga-map map-element-id="map" framework="{{frameworkType}}" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]"> ' +
+                var ele = '<div id="map"></div><ga-map map-element-id="map" framework="olv3" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]"> ' +
                     '<ga-map-layer layer-name="Test layer name 1" ' +
                     'layer-type="WMS" ' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer" ' +
@@ -75,8 +75,7 @@
                     '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
                     '</ga-feature-layer>' +
                     '<ga-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></ga-map-control> ' +
-                    '</ga-map> ' +
-                    '<div id="map"></div>';
+                    '</ga-map> ';
                 element = angular
                     .element(ele);
                 $compile(element)($scope);
@@ -87,6 +86,7 @@
                 var args = {
                     layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
                     layerName: "Foo",
+                    layers:"Australian Landsat",
                     wrapDateLine: true,
                     layerType: "WMS",
                     isBaseLayer: true
@@ -683,6 +683,16 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "createFeature" without an exception given valid input', function () {
+                var passed = false;
+                try {
+                    var feature = $scope.mapController.createFeature($scope.testFeature);
+                    expect(feature != null).toBe(true);
+                    passed = true;
+                } catch (e) {
+                }
+                expect(passed).toBe(true);
+            });
+            it('Should "createFeature" with expected output', function () {
                 var passed = false;
                 try {
                     var feature = $scope.mapController.createFeature($scope.testFeature);
