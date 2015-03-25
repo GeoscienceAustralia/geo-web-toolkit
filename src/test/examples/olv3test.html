@@ -13,7 +13,7 @@
     <title>OpenLayers 3 Example Map</title>
 </head>
 <body ng-controller="mainController">
-<h1 id="test111">OpenLayers 3 Example Map</h1>
+<h1 id="test111" ng-bind="frameworkName"></h1>
 <div id="map" style="width:100%;height:500px;"></div>
 <!-- Investigate bug limiting fullscreen size. WIDTH and HEIGHT values seem to be using size of window. -->
 <ga-map ng-if="frameworkType != null" map-element-id="map" framework="{{frameworkType}}" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]">
@@ -44,15 +44,15 @@
             $scope.mapController = mapController;
         });
         $scope.frameworkType = 'olv2';
+        $scope.frameworkName = 'OpenLayers 2';
         $('#test111').on('click', function () {
-            console.log('test111');
             $scope.$apply(function () {
                 $scope.frameworkTypeOldVal = angular.copy($scope.frameworkType);
                 $scope.frameworkType = null;
-
                 $timeout(function () {
                     $scope.frameworkType = $scope.frameworkTypeOldVal == 'olv2' ? 'olv3' : 'olv2';
-                },100)
+                    $scope.frameworkName = $scope.frameworkTypeOldVal == 'olv2' ? 'OpenLayers 3' : 'OpenLayers 2';
+                },10)
             });
         });
     }]);
@@ -60,7 +60,7 @@
 </script>
 
 
-<div id="map1" style="width:100%;height:500px;"></div>
+<!--<div id="map1" style="width:100%;height:500px;"></div>
 <script>
     // Transparent Proj4js support: ol.proj.get() creates and returns a projection
     // known to Proj4js if it is unknown to OpenLayers, and registers functions to
@@ -129,7 +129,7 @@
     map.addLayer(layers[1])
     map.addControl(new ol.control.ScaleLine());
 
-</script>
+</script>-->
 
 </body>
 </html>

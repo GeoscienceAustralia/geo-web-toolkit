@@ -1,0 +1,12 @@
+<script type="text/ng-template" src="geo-web-toolkit/components/geo-names-place-search.html">
+    <input type="text" class="search-box"  placeholder="Place name search" ng-model="query"
+           ng-class="{typeAheadLoading:waitingForResponse}"
+           typeahead="result as result.properties.name for result in getSearchResults($viewValue)"
+           typeahead-template-url="{{resultTemplateUrl}}"
+           typeahead-on-select="onSelected($item, $model, $label)"
+           typeahead-wait-ms="200" typeahead-editable="true"/>
+    <input type="image" class="button search-button" accesskey="4"
+           ng-click="searchButtonClicked()"
+           alt="Search using your entered search criteria" title="Search using your entered search criteria"
+           src="{{searchIconUrl}}"/>
+</script>

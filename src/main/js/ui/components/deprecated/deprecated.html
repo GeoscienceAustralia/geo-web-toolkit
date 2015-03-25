@@ -1,0 +1,15 @@
+<script type="text/ng-template" src="geo-web-toolkit/components/search-wfs.html">
+    <input type="text" class="search-box" ng-model="query"
+           ng-class="{typeAheadLoading:waitingForResponse}" placeholder="{{placeHolder}}" />
+    <input type="image" class="button search-button" ng-click="searchButtonClicked()"
+           accesskey="4" alt="Search using your entered search criteria"
+           title="Search using your entered search criteria"
+           src="{{searchIconUrl}}">
+</script>
+<script type="text/ng-template" src="geo-web-toolkit/components/layers-dialog.html">
+    <div ui-jq="dialog" ui-options="dialogConfig" id="{{dialogId}}">
+        <div ng-repeat="layer in layersData">
+            <ga-layer-control map-controller="mapController" layer-data="layer"></ga-layer-control>
+        </div>
+    </div>
+</script>
