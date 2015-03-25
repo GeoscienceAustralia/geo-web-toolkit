@@ -8,6 +8,6 @@
         'gawebtoolkit.ui.components.base-layer-selector',
         'gawebtoolkit.ui.components.google-place-name-search',
         'gawebtoolkit.ui.components.geo-place-name-search',
-        'gawebtoolkit.ui.components.search-wfs'
+        'gawebtoolkit.ui.components.deprecated'
     ]);
 })();

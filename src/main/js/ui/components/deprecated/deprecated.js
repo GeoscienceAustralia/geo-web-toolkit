@@ -1,7 +1,7 @@
 /* global angular, $ */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.search-wfs',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('gawebtoolkit.ui.components.deprecated',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
 
     /*
      * gaLayersDialog renders a list of layers that can be turned off and on
