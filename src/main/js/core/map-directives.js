@@ -152,6 +152,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return deferredLayer.promise;
             };
 
+            self.createLayer = function(layerArgs) {
+                var layerOptions = GALayerService.defaultLayerOptions(layerArgs,$scope.framework);
+                return GALayerService.createLayer(layerOptions,$scope.framework);
+            };
+
             /**
              * @ngdoc method
              * @name gawebtoolkit.core.map-directives:gaMap#zoomToMaxExtent

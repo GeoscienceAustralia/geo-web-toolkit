@@ -2,26 +2,24 @@
 (function () {
     "use strict";
     describe(
-        'OpenLayers v2.1.13 "ga-map" implementation tests',
+        'OpenLayers v3 "ga-map" implementation tests',
         function () {
             var $compile,
                 $scope,
                 $timeout,
                 element,
-                mapControllerListener,
-                layerService;
+                mapControllerListener;
 
             // Load the myApp module, which contains the directive
             beforeEach(module('testApp'));
 
             // Store references to $rootScope and $compile
             // so they are available to all tests in this describe block
-            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, GALayerService) {
+            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_) {
                 // The injector unwraps the underscores (_) from around the parameter names when matching
                 $compile = _$compile_;
                 $timeout = _$timeout_;
                 $scope = _$rootScope_;
-                layerService = GALayerService;
                 mapControllerListener = jasmine.createSpy('mapControllerListener');
                 $scope.$on('mapControllerReady', function (event, args) {
                     mapControllerListener(args);
@@ -56,24 +54,28 @@
                 };
                 proj4.defs("EPSG:102113","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
                 proj4.defs("EPSG:102100","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
+                var ele = '<ga-map map-element-id="map" framework="{{frameworkType}}" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Test layer name 1" ' +
+                    'layer-type="WMS" ' +
+                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer" ' +
+                    'layers="World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second" ' +
+                    'wrap-date-line="true" ' +
+                    'visibility="true" ' +
+                    'max-zoom-level="13" ' +
+                    'format="image/png" ' +
+                    'is-base-layer="true">' +
+                    '</ga-map-layer>' +
+                    '<ga-map-layer layer-name="Test layer name 2" ' +
+                    'layer-type="WMS" ' +
+                    'wrap-date-line="true" ' +
+                    'layer-url="http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer" ' +
+                    'layers="Populated_Places_1,Populated_Places_2,Populated_Places_3,Populated_Places_4,Populated_Places_5,Populated_Places_6,Populated_Places_7,Populated_Places_8"> ' +
+                    '</ga-map-layer> ' +
+                    '<ga-map-control map-control-name="scaleline" map-control-id="myOverviewTestId"></ga-map-control> ' +
+                    '</ga-map> ' +
+                    '<div id="map"></div>';
                 element = angular
-                    .element('<ga-map framework="olv3" map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
-                    'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
-                    '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
-                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                    'wrap-date-line="true"' +
-                    'layer-type="WMS"' +
-                    'is-base-layer="true"' +
-                    '></ga-map-layer>' +
-                    '<ga-feature-layer layer-name="feature layer1">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-feature-layer layer-name="feature layer2">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></ga-map-control>' +
-                    '<div id="gamap"></div>' +
-                    '</ga-map>');
+                    .element(ele);
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -86,8 +88,7 @@
                     layerType: "WMS",
                     isBaseLayer: true
                 };
-                var layerOptions = layerService.defaultLayerOptions(args);
-                var layer = layerService.createLayer(layerOptions);
+                var layer = $scope.mapController.createLayer(args);
                 expect(layer != null).toBe(true);
                 expect(layer.name).toBe("Foo");
             });
@@ -101,8 +102,7 @@
                     layerType: "WMS",
                     isBaseLayer: true
                 };
-                var layerOptions = layerService.defaultLayerOptions(args);
-                var layer = layerService.createLayer(layerOptions);
+                var layer = $scope.mapController.createLayer(args);
                 var layerDto;
                 $scope.mapController.addLayer(layer).then(function (resultLayerDto) {
                     layerDto = resultLayerDto;
@@ -256,7 +256,7 @@
             it('Should fire mapController function "getLayersByName" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var layers = $scope.mapController.getLayersByName('Australian Landsat Mosaic');
+                    var layers = $scope.mapController.getLayersByName('Test layer name 1');
                     expect(layers != null).toBe(true);
                     expect(layers.length > 0).toBe(true);
                     passed = true;
@@ -300,7 +300,7 @@
             it('Should fire mapController function "zoomToLayer" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var layer = $scope.mapController.getLayersByName('Australian Landsat Mosaic')[0];
+                    var layer = $scope.mapController.getLayersByName('Test layer name 1')[0];
                     $scope.mapController.zoomToLayer(layer.id);
                     passed = true;
                 } catch (e) {
@@ -476,7 +476,7 @@
                 var passed = false;
                 try {
                     var mapElementId = $scope.mapController.getMapElementId();
-                    expect(mapElementId).toBe('gamap');
+                    expect(mapElementId).toBe('map');
                     passed = true;
                 } catch (e) {
                 }
@@ -495,8 +495,8 @@
             it('Should fire mapController function "removeLayerByName" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    $scope.mapController.removeLayerByName('Australian Landsat Mosaic');
-                    expect($scope.mapController.getLayers().length).toBe(2);
+                    $scope.mapController.removeLayerByName('Test layer name 1');
+                    expect($scope.mapController.getLayers().length).toBe(1);
                     passed = true;
                 } catch (e) {
                 }
@@ -505,8 +505,8 @@
             it('Should fire mapController function "removeLayersByName" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    $scope.mapController.removeLayersByName('Australian Landsat Mosaic');
-                    expect($scope.mapController.getLayers().length).toBe(2);
+                    $scope.mapController.removeLayersByName('Test layer name 1');
+                    expect($scope.mapController.getLayers().length).toBe(1);
                     passed = true;
                 } catch (e) {
                 }
@@ -517,7 +517,7 @@
                 try {
                     var currentLayer = $scope.mapController.getLayers()[0];
                     $scope.mapController.removeLayerById(currentLayer.id);
-                    expect($scope.mapController.getLayers().length).toBe(2);
+                    expect($scope.mapController.getLayers().length).toBe(1);
                     passed = true;
                 } catch (e) {
                 }
@@ -526,7 +526,7 @@
             it('Should fire mapController function "getMarkerCountForLayerName" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var markerCount = $scope.mapController.getMarkerCountForLayerName('Australian Landsat Mosaic');
+                    var markerCount = $scope.mapController.getMarkerCountForLayerName('Test layer name 1');
                     expect(markerCount).toBe(0);
                     passed = true;
                 } catch (e) {

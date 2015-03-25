@@ -43,7 +43,8 @@ module.exports = function (grunt) {
             options: {
                 mangle: false,
                 sourceMap: true,
-                sourceMapName: 'src/main/js/geo-web-toolkit-min.js.map'
+                sourceMapName: 'src/main/js/geo-web-toolkit-min.js.map',
+                beautify: true
             },
             my_target: {
                 files: {
@@ -91,4 +92,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.registerTask('default',['uglify','ngdocs','ngtemplates','concat']);
+    grunt.registerTask('test',['default','karma']);
 };

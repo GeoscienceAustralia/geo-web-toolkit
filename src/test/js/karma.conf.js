@@ -26,12 +26,20 @@ module.exports = function (config) {
             'bower_components/jquery-ui/jquery-ui.js',
             'bower_components/angular-ui/build/angular-ui.js',
             'bower_components/angular-ui-utils/ui-utils.js',
+            'bower_components/proj4/dist/proj4.js',
             'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
+            'bower_components/ol3/build/ol.js',
             'src/main/js/**/*.js',
             'src/test/js/**/*.js'],
 
         // list of files to exclude
-        exclude: [ 'src/test/js/karma*.js' ],
+        exclude: [
+            'src/test/js/karma*.js',
+            'src/main/js/config/*.js',
+            'src/main/js/core/*.js',
+            'src/main/js/map services/*.js',
+            'src/main/js/ui/*.js'
+        ],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
