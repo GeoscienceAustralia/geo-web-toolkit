@@ -51,38 +51,45 @@
                 //If args.url is not provided, give blank layer that supports features.
                 var layer;
 
+
+
                 if (args.url == null) {
-                    layer = new ol.layer.Vector(args.layerName);
+                    layer = new ol.layer.Vector({ source: new ol.source.Vector() });
                 } else {
                     service.postAddLayerCache = service.postAddLayerCache || [];
                     //TODO remove fixed style, should default out of config
-                    layer = new OpenLayers.Layer.Vector(args.layerName, {
-                        strategies: [ new OpenLayers.Strategy.Fixed() ],
-                        styleMap: new OpenLayers.StyleMap({
-                            'default': new OpenLayers.Style({
-                                pointRadius: '10',
-                                fillOpacity: 0.6,
-                                fillColor: '#ffcc66',
-                                strokeColor: '#cc6633'
+                    //Place holder style
+                    var style = new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(255, 255, 255, 0.6)'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#319FD3',
+                            width: 1
+                        }),
+                        text: new ol.style.Text({
+                            font: '12px Calibri,sans-serif',
+                            fill: new ol.style.Fill({
+                                color: '#000'
                             }),
-                            'select': {
-                                fillColor: '#8aeeef'
-                            }
-                        }),
-                        protocol: new OpenLayers.Protocol.WFS({
-                            url: args.url,
-                            featureType: args.wfsFeatureType,
-                            featurePrefix: args.wfsFeaturePrefix,
-                            version: args.wfsVersion,
-                            geometryName: args.wfsGeometryName,
-                            srsName: args.datumProjection
-                        }),
-                        visibility: args.visibility
+                            stroke: new ol.style.Stroke({
+                                color: '#fff',
+                                width: 3
+                            })
+                        })
+                    });
+
+                    layer = new ol.layer.Vector({
+                        source: new ol.source.GeoJSON({
+                            projection: args.datumProjection,
+                            url: args.url
+                        })
                     });
                 }
-                if (args.postAddLayer != null) {
+                //TODO Layer IDs are not provided by OLV3, UUIDs should be generated for each layer created.
+                /*if (args.postAddLayer != null) {
                     service.postAddLayerCache[layer.id] = args.postAddLayer;
-                }
+                }*/
                 //Clean up any references to layers that no longer exist.
 
 
@@ -136,7 +143,7 @@
                 };
 
                 var result = new ol.layer.Tile(layerOptions);
-                result.name = args.layerName;
+                result.set('name',args.layerName);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
                 // More info at - https://github.com/openlayers/ol3/issues/2907
                 return result;
@@ -174,7 +181,7 @@
                 var result = new ol.layer.Tile(layerOptions);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
                 // More info at - https://github.com/openlayers/ol3/issues/2907
-                result.name = args.layerName;
+                result.set('name',args.layerName);
                 return result;
             },
             createArcGISCacheLayer: function (args) {
@@ -288,6 +295,8 @@
                 return service.getLayerBy(mapInstance,'id',layerId);
             },
             getLayerBy: function (mapInstance, propertyName, propertyValue) {
+                //TODO MAJOR - This currently doesn't work in OLV3. Investigate options for identifying layers
+                // May have to generate ID ourselves and use layer.set('id',val);
                 var layer = null;
                 var foundResult = false;
                 mapInstance.getLayers().forEach(function (lyr) {

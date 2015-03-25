@@ -93,7 +93,7 @@
                 };
                 var layer = $scope.mapController.createLayer(args);
                 expect(layer != null).toBe(true);
-                expect(layer.name).toBe("Foo");
+                expect(layer.get('name')).toBe("Foo");
             });
             it('Should fire mapController function "addLayer" without an exception given valid value', function () {
                 //Adds a layer, create with test args and then pass to add as addLayer method expects implementation of a layer
@@ -101,6 +101,7 @@
                 var args = {
                     layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
                     layerName: "Foo",
+                    layers:"Australian Landsat",
                     wrapDateLine: true,
                     layerType: "WMS",
                     isBaseLayer: true

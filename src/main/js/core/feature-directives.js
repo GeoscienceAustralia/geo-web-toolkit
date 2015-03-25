@@ -1008,6 +1008,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 url: '@',
                 layerName: '@',
                 visibility: '@',
+                projection: '@',
                 controllerEmitEventName: '@',
                 postAddLayer: '&',
                 onLayerDestroy: '&'
@@ -1099,11 +1100,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 $scope.mapAPI = {};
                 $scope.mapAPI.mapController = mapController;
 
-                var layerOptions = GALayerService.defaultLayerOptions(attrs);
-                layerOptions.datumProjection = mapController.getProjection();
+                var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                 layerOptions.postAddLayer = $scope.postAddLayer;
 
-                var layer = GALayerService.createFeatureLayer(layerOptions);
+                var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
                 //mapController.waitingForAsyncLayer();
                 //Async layer add
                 mapController.addLayer(layer).then(function (layerDto) {
