@@ -249,7 +249,10 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             return layerOptions;
         },
 		cleanupLayer: function (mapInstance, layerId) {
-			var layer = mapInstance.getLayersBy('id',layerId)[0];
+            if(mapInstance.layers == null || mapInstance.layers.length === 0) {
+                return;
+            }
+            var layer = service.getLayerById(mapInstance, layerId);
 			if(layer != null) {
 				mapInstance.removeLayer(layer);
 			}

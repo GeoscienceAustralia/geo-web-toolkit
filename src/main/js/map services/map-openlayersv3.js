@@ -37,7 +37,11 @@
 
                     viewOptions.zoom = parseInt(args.zoomLevel);
                     viewOptions.extent = viewOptions.projection.getExtent();
+                    if(args.maxZoomLevel) {
+                        viewOptions.maxZoom = args.maxZoomLevel;
+                    }
                     var view = new ol.View(viewOptions);
+                    view.geoMaxZoom = 28; //Default max zoom;
                     config.target = args.mapElementId;
                     config.view = view;
                     config.controls = [];
@@ -62,7 +66,21 @@
                     return mapInstance.getView().getZoom();
                 },
                 addLayer: function (mapInstance, layer) {
+                    var layerMaxZoomLevel = layer.geoMaxZoom;
 
+                    if(layerMaxZoomLevel && layerMaxZoomLevel < mapInstance.getView().geoMaxZoom) {
+                        var view = mapInstance.getView();
+                        var options = {
+                            projections: view.getProjection().code_,
+                            center: view.getCenter(),
+                            zoom: view.getZoom(),
+                            maxZoom: layerMaxZoomLevel,
+                            minZoom:1
+                        };
+                        console.log(options);
+                        var nView = new ol.View(options);
+                        mapInstance.setView(nView);
+                    }
                     if (layer.then != null && typeof layer.then === 'function') {
                         layer.then(function (resultLayer) {
                             mapInstance.addLayer(resultLayer);
@@ -73,7 +91,7 @@
                         if (layer.geoLayerType != null && layer.geoLayerType.indexOf('Google') !== -1) {
                             mapInstance.zoomDuration = 0;
                         }
-                        console.log(mapInstance.getControls());
+
                         mapInstance.addLayer(layer);
                         service.postLayerAddAction(mapInstance, layer);
                         return GeoLayer.fromOpenLayersV3Layer(layer);

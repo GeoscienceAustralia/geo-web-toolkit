@@ -68,7 +68,8 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
                 opacity: '@',
 				controllerEmitEventName: '@',
 				refreshLayer: '@',
-				maxZoomLevel: '@', 
+				maxZoomLevel: '@',
+                minZoomLevel: '@',
                 onError:'&',
                 format:'@'
 			},
@@ -139,7 +140,6 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				}
 
 				var constructLayer = function () {
-                    console.log($scope.framework);
 					initialiseDefaults();
 					$scope.constructionInProgress = true;
 					layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);

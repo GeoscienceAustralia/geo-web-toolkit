@@ -42,6 +42,10 @@
                         );
                 }
                 layer.geoLayerType = args.layerType;
+                if(args.maxZoomLevel) {
+                    layer.geoMaxZoom = parseInt(args.maxZoomLevel);
+                }
+
                 return layer;
             },
             createFeatureLayer: function (args) {

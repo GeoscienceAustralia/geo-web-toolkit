@@ -21,7 +21,7 @@
                   layer-type="WMS"
                   layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"
                   layers="World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second"
-                  wrap-date-line="true"
+                  wrap-date-line="false"
                   visibility="true"
                   max-zoom-level="13"
                   format="image/png"
@@ -33,12 +33,32 @@
                   layer-url="http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer"
                   layers="Populated_Places_1,Populated_Places_2,Populated_Places_3,Populated_Places_4,Populated_Places_5,Populated_Places_6,Populated_Places_7,Populated_Places_8">
     </ga-map-layer>
+    <ga-feature-layer layer-name="feature layer1">
+    <ga-feature geo-json-feature="testFeature"></ga-feature>
+    </ga-feature-layer>
     <ga-map-control map-control-name="scaleline"></ga-map-control>
 </ga-map>
 <script>
     var app = angular.module('simpleMap',['gawebtoolkit.core']);
 
     app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
+        $scope.testFeature = {
+            "type": "Feature",
+            "crs": {
+                "type": "name",
+                "properties": {
+                    "name": "EPSG:4326"
+                }
+            },
+            "properties": {
+                "name": "Testing name",
+                "anotherProp": "Another value"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [ 117.359, -25.284 ]
+            }
+        };
         $scope.$on('mapControllerReady', function (mapController) {
             console.log(mapController);
             $scope.mapController = mapController;
