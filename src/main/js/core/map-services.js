@@ -60,15 +60,15 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 service.unRegisterMapClick(mapInstance, callback);
             },
             registerMapEvent: function (mapInstance, eventName, callback, version) {
-                var service = mapServiceLocator.getImplementation('olv2');
+                var useVersion = version || "olv2", service = mapServiceLocator.getImplementation(useVersion);
                 service.registerMapEvent(mapInstance, eventName, callback, version);
             },
             unRegisterMapEvent: function (mapInstance, eventName, callback, version) {
-                var service = mapServiceLocator.getImplementation('olv2');
+                var useVersion = version || "olv2", service = mapServiceLocator.getImplementation(useVersion);
                 service.unRegisterMapEvent(mapInstance, eventName, callback, version);
             },
             getCurrentMapExtent: function (mapInstance, version) {
-                var service = mapServiceLocator.getImplementation('olv2');
+                var useVersion = version || "olv2", service = mapServiceLocator.getImplementation(useVersion);
                 return service.getCurrentMapExtent(mapInstance);
             },
             addControl: function (mapInstance, controlName, controlOptions, elementId, controlId, version) {

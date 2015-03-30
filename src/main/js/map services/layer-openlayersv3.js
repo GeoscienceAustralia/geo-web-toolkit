@@ -8,7 +8,7 @@
     /*
      * This service wraps olv3 layer functionality that is used via the GAMaps and GALayer service
      * */
-    app.service('olv3LayerService', [ '$log', '$q','$timeout', 'GeoLayer', function ($log, $q,$timeout,GeoLayer) {
+    app.service('olv3LayerService', [ '$log', '$q','$timeout', 'GeoLayer','GAWTUtils', function ($log, $q,$timeout,GeoLayer,GAWTUtils) {
         var service = {
             xyzTileCachePath: "/tile/{z}/{y}/{x}",
             createLayer: function (args) {
@@ -281,6 +281,7 @@
                 }
 
                 var featureDto = angular.fromJson(featureJson);
+                feature.id = feature.getId() || GAWTUtils.generateUuid();
                 featureDto.id = feature.id;
                 return featureDto;
             },
@@ -309,11 +310,7 @@
             },
             getLayerByName: function (mapInstance,layerName) {
                 // If more than one layer has the same name then only the first will be destroyed
-                var layers = service.getLayerBy(mapInstance,'name',layerName);
-
-                if (layers.length > 0) {
-                    mapInstance.removeLayer(layers[0]);
-                }
+                return service.getLayerBy(mapInstance,'name',layerName);
             },
             getLayersBy: function (mapInstance, propertyName, propertyValue) {
                 var layers = mapInstance.getLayers();
@@ -326,19 +323,30 @@
                 });
                 return results;
             },
+            _getLayersBy: function (mapInstance, propertyName, propertyValue) {
+                var layers = mapInstance.getLayers();
+                var results = [];
+                layers.forEach(function (layer) {
+                    var propVal = layer.get(propertyName);
+                    if(propVal && propVal.indexOf(propertyValue) !== -1) {
+                        results.push(layer);
+                    }
+                });
+                return results;
+            },
             //Should this be labeled as an internal method?
             removeLayerByName: function (mapInstance, layerName) {
                 // If more than one layer has the same name then only the first will be destroyed
-                var layers = service.getLayerByName(mapInstance,layerName);
+                var layer = service.getLayerByName(mapInstance,layerName);
 
-                if (layers.length > 0) {
-                    mapInstance.removeLayer(layers[0]);
+                if (layer) {
+                    mapInstance.removeLayer(layer);
                 }
             },
             //Should this be labeled as an internal method?
             removeLayersByName: function (mapInstance, layerName) {
                 // Destroys all layers with the specified layer name
-                var layers = service.getLayerByName(mapInstance, layerName);
+                var layers = service._getLayersBy(mapInstance,'name', layerName);
                 for (var i = 0; i < layers.length; i++) {
                     mapInstance.removeLayer(layers[i]);
                 }
@@ -350,16 +358,42 @@
                 mapInstance.removeLayer(layerInstance);
             },
             removeLayerById: function (mapInstance, layerId) {
-                var layer = service.getLayerBy(mapInstance,'id', layerId);
+                var layer = service._getLayersBy(mapInstance,'id', layerId)[0];
                 mapInstance.removeLayer(layer);
             },
             removeFeatureFromLayer: function (mapInstance, layerId, featureId) {
                 var layer = service.getLayerById(mapInstance, layerId);
-                var feature = layer.getSource().getFeatureById(featureId);
-                layer.getSource().removeFeature(feature);
+                var features = layer.getSource().getFeatures();
+                for (var i = 0; i < features.length; i++) {
+                    var feature = features[i];
+                    if(feature.id === featureId) {
+                        layer.getSource().removeFeature(feature);
+                        break;
+                    }
+                }
             },
             registerFeatureSelected: function (mapInstance, layerId, callback, element) {
-                throw new Error("NotImplementedError");
+                service.registeredInteractions = service.registeredInteractions || [];
+                for (var i = 0; i < service.registeredInteractions.length; i++) {
+                    var interaction = service.registeredInteractions[i];
+                    if(interaction.id === '' + layerId + '_features') {
+                        //Remove existing, limitation, only one feature selection event at once...?
+                        mapInstance.removeInteraction(interaction.select);
+                    }
+                }
+                var selectClick = new ol.interaction.Select({
+                    condition: ol.events.condition.click
+                });
+                selectClick.on('select', function (e) {
+                    if(e.target.get('id') === layerId) {
+                        callback(e);
+                    }
+                });
+                service.registeredInteractions.push({
+                    id: layerId + '_features',
+                    select: selectClick
+                });
+                mapInstance.addInteraction(selectClick);
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
                 var layer = mapInstance.getLayersBy('id', layerId)[0];
@@ -371,7 +405,8 @@
             },
             //Should this be moved to a separate service as it is more of a helper?
             getMarkerCountForLayerName: function (mapInstance, layerName) {
-                throw new Error("NotImplementedError");
+                var layer = service.getLayerBy(mapInstance,'name',layerName);
+                return layer == null ? 0 : typeof layer.getSource().getFeatures === "undefined" ? 0 : layer.getSource().getFeatures().length;
             },
             filterFeatureLayer: function (mapInstance, layerId, filterValue) {
                 throw new Error("NotImplementedError");
@@ -390,35 +425,36 @@
 
                 return results;
             },
+            //TODO Returning OL features, should return standard format, not leak implementation
             getLayerFeatures: function (mapInstance, layerId) {
                 var features = [];
 
                 var layer = service.getLayerById(mapInstance, layerId);
                 var source = layer.getSource();
-                if(typeof source.getFeatures !== 'function') {
+                if(source.getFeatures == null) {
                     return features;
                 }
                 var existingFeatures = source.getFeatures();
                 for (var i = 0; i < existingFeatures.length; i++) {
-                    features.push(existingFeatures[i]);
+                    var f = existingFeatures[i];
+                    features.push(f);
                 }
-
                 return features;
             },
             raiseLayerDrawOrder: function (mapInstance, layerId, delta) {
                 var layer = service.getLayerById(mapInstance, layerId);
                 var allLayers = mapInstance.getLayers();
                 var layerIndex;
-                for (var i = 0; i < allLayers.length; i++) {
-                    var currentLayer = allLayers[i];
-                    if(currentLayer.id === layer.id) {
+                for (var i = 0; i < allLayers.getLength(); i++) {
+                    var currentLayer = allLayers.item(i);
+                    if(currentLayer.get('id') === layerId) {
                         layerIndex = i;
                         break;
                     }
                 }
                 var updatedIndex = layerIndex - delta;
                 mapInstance.getLayers().removeAt(layerIndex);
-                mapInstance.getLayers().insertAt(updatedIndex - 1,layer);
+                mapInstance.getLayers().insertAt(updatedIndex,layer);
             },
             postAddLayerCache: {}
         };

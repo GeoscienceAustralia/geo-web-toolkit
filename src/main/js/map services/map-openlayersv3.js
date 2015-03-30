@@ -41,7 +41,7 @@
                     config.target = args.mapElementId;
                     config.view = view;
                     config.controls = [];
-
+                    service.displayProjection = args.displayProjection;
                     return new ol.Map(config);
                 },
                 // http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
@@ -113,26 +113,33 @@
                     mapInstance.un(eventName,callback);
                 },
                 getCurrentMapExtent: function (mapInstance) {
-                    //var currentExtent = mapInstance.getExtent();
-                    //if (currentExtent == null) {
-                    //    return null;
-                    //}
-                    //currentExtent = currentExtent.transform(mapInstance.projection, service.displayProjection);
+                    var ext = mapInstance.getView().getProjection().getExtent();
+                    if (ext == null) {
+                        return null;
+                    }
+                    var trExt = ol.proj.transformExtent(ext,mapInstance.getView().getProjection().code_, service.displayProjection);
                     var result = [];
-                    //var topLeft = [currentExtent.left, currentExtent.top];
-                    //var topRight = [currentExtent.right, currentExtent.top];
-                    //var bottomLeft = [currentExtent.left, currentExtent.bottom];
-                    //var bottomRight = [currentExtent.right, currentExtent.bottom];
-                    //result.push(topLeft);
-                    //result.push(topRight);
-                    //result.push(bottomLeft);
-                    //result.push(bottomRight);
-
+                    var topLeft = [ trExt[0], trExt[3] ];
+                    var topRight = [ trExt[2], trExt[3] ];
+                    var bottomLeft = [ trExt[0], trExt[1] ];
+                    var bottomRight = [ trExt[2], trExt ];
+                    result.push(topLeft);
+                    result.push(topRight);
+                    result.push(bottomLeft);
+                    result.push(bottomRight);
                     return result;
                 },
                 //return bool
                 isControlActive: function (mapInstance, controlId) {
                     //TODO no active state in olv3
+                    var controls = mapInstance.getControls();
+                    for (var i = 0; i < controls.getLength(); i++) {
+                        var control = controls.item(i);
+                        if(control.get('id') === controlId) {
+                            return true;
+                        }
+                    }
+                    return false;
                 },
                 //return geo-web-toolkit control dto
                 addControl: function (mapInstance, controlName, controlOptions, elementId, controlId) {
@@ -156,10 +163,10 @@
                 getControls: function (mapInstance) {
                     var controls = [];
                     var olv2Controls = mapInstance.getControls();
-                    for (var i = 0; i < olv2Controls.length; i++) {
-                        var control = olv2Controls[i];
+                    for (var i = 0; i < olv2Controls.getLength(); i++) {
+                        var control = olv2Controls.item(i);
                         controls.push({
-                            id: control.metadata.id || control.id,
+                            id: control.metadata.id || control.get('id'),
                             name: control.metadata.type
                         });
                     }
@@ -168,11 +175,11 @@
                 //return olv3 control
                 getControlById: function (mapInstance, controlId) {
                     var result;
-                    var olv2Controls = mapInstance.getControls();
+                    var controls = mapInstance.getControls();
 
-                    for (var i = 0; i < olv2Controls.length; i++) {
-                        var control = olv2Controls[i];
-                        if (control.id === controlId) {
+                    for (var i = 0; i < controls.getLength(); i++) {
+                        var control = controls.item(i);
+                        if (control.get('id') === controlId) {
                             result = control;
                             break;
                         }
@@ -181,11 +188,42 @@
                 },
                 //return void
                 activateControl: function (mapInstance, controlId) {
-
+                    var isActive = service.isControlActive(mapInstance,controlId);
+                    var cachedControl = service._getCachedControl(controlId);
+                    if(!isActive && cachedControl) {
+                        mapInstance.addControl(cachedControl);
+                        service._removeCachedControl(controlId);
+                    }
+                },
+                _getCachedControl: function (controlId) {
+                    service.cachedControls = service.cachedControls || [];
+                    for (var i = 0; i < service.cachedControls.length; i++) {
+                        var cachedControl = service.cachedControls[i];
+                        if(cachedControl.get('id') === controlId) {
+                            return cachedControl;
+                        }
+                    }
+                    return null;
+                },
+                _removeCachedControl: function (controlId) {
+                    service.cachedControls = service.cachedControls || [];
+                    for (var i = 0; i < service.cachedControls.length; i++) {
+                        var cachedControl = service.cachedControls[i];
+                        if(cachedControl.get('id') === controlId) {
+                            service.cachedControls[i] = null;
+                        }
+                    }
+                    return null;
                 },
                 //return void
                 deactivateControl: function (mapInstance, controlId) {
-
+                    var isActive = service.isControlActive(mapInstance,controlId);
+                    var cachedControl = service._getCachedControl(controlId);
+                    var currentControl = service.getControlById(mapInstance,controlId);
+                    if(isActive && !cachedControl) {
+                        service.cachedControls.push(currentControl);
+                        mapInstance.removeControl(currentControl);
+                    }
                 },
                 //return void
                 registerControlEvent: function (mapInstance, controlId, eventName, callback) {
@@ -384,24 +422,34 @@
                     }
                 },
                 setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
-                    var markerLayer = mapInstance.getLayersBy('name', markerGroupName);
+                    var markerLayer = olv3LayerService.getLayerBy(mapInstance,'name', markerGroupName);
 
-                    var opx = mapInstance.getLonLatFromPixel(coords);
+                    var iconFeature = new ol.Feature({
+                        geometry: new ol.geom.Point([coords.x,coords.y])
+                    });
 
-                    var size = new OpenLayers.Size(args.width, args.height);
-                    var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-                    var icon = new OpenLayers.Icon(iconUrl, size, offset);
-                    var marker = new OpenLayers.Marker(opx, icon.clone());
-                    marker.map = mapInstance;
+                    var iconStyle = new ol.style.Style({
+                        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                            anchor: [0.5, 46],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'pixels',
+                            opacity: args.opacity || 1.0,
+                            src: iconUrl
+                        }))
+                    });
 
+                    iconFeature.setStyle(iconStyle);
                     // Marker layer exists so get the layer and add the marker
-                    if (markerLayer != null && markerLayer.length > 0) {
-                        markerLayer[0].addMarker(marker);
+                    if (markerLayer != null) {
+                        markerLayer.getSource().addMarker(iconFeature);
                     } else { // Marker layer does not exist so we create the layer then add the marker
-                        var markers = new OpenLayers.Layer.Markers(markerGroupName);
-
-                        mapInstance.addLayer(markers);
-                        markers.addMarker(marker);
+                        var source = new ol.source.Vector();
+                        source.addFeature(iconFeature);
+                        markerLayer = new ol.layer.Vector({
+                            source: source
+                        });
+                        markerLayer.set('name',markerGroupName);
+                        mapInstance.addLayer(markerLayer);
                     }
                 },
                 getLonLatFromPixel: function (mapInstance, x, y, projection) {
