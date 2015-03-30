@@ -21,6 +21,7 @@
     "karma-junit-reporter": "~0.2",
     "karma-phantomjs-launcher": "~0.1.2",
     "karma-sourcemap-loader": "^0.3.4",
-    "phantomjs": "~1.9.8"
+    "phantomjs": "~1.9.8",
+    "openlayers": "~3.4.0"
   }
 }

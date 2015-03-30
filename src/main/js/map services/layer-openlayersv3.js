@@ -160,9 +160,13 @@
                 if(args.format) {
                     sourceOptions.params.FORMAT = args.format;
                 }
+
+                //default wrap
+                sourceOptions.wrapX = true;
                 if(args.wrapDateLine) {
                     sourceOptions.wrapX = true;
                 }
+
                 sourceOptions.serverType = ('mapserver');
 
                 if(args.layerAttribution != null) {

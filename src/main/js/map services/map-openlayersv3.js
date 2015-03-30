@@ -388,7 +388,7 @@
                 },
                 isBaseLayer: function (mapInstance, layerId) {
                     var layers = mapInstance.getLayers();
-                    var layerDrawIndex;
+                    var layerDrawIndex = null;
                     var i = 0;
                     var found = false;
                     layers.forEach(function (layer) {
