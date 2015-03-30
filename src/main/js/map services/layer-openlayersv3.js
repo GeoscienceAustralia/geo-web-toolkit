@@ -8,7 +8,7 @@
     /*
      * This service wraps olv3 layer functionality that is used via the GAMaps and GALayer service
      * */
-    app.service('olv3LayerService', [ '$log', '$q','$timeout', function ($log, $q,$timeout) {
+    app.service('olv3LayerService', [ '$log', '$q','$timeout', 'GeoLayer', function ($log, $q,$timeout,GeoLayer) {
         var service = {
             xyzTileCachePath: "/tile/{z}/{y}/{x}",
             createLayer: function (args) {
@@ -273,14 +273,14 @@
                 var writer = new ol.format.GeoJSON();
                 var featureJson;
                 if (feature instanceof Array) {
-                    layer.addFeatures(feature);
+                    source.addFeatures(feature);
                     featureJson = writer.writeFeatures(feature);
                 } else {
-                    layer.addFeature(feature);
+                    source.addFeature(feature);
                     featureJson = writer.writeFeature(feature);
                 }
 
-                var featureDto = angular.fromJson(writer.write(featureJson));
+                var featureDto = angular.fromJson(featureJson);
                 featureDto.id = feature.id;
                 return featureDto;
             },
@@ -314,6 +314,17 @@
                 if (layers.length > 0) {
                     mapInstance.removeLayer(layers[0]);
                 }
+            },
+            getLayersBy: function (mapInstance, propertyName, propertyValue) {
+                var layers = mapInstance.getLayers();
+                var results = [];
+                layers.forEach(function (layer) {
+                    var propVal = layer.get(propertyName);
+                    if(propVal && propVal.indexOf(propertyValue) !== -1) {
+                        results.push(GeoLayer.fromOpenLayersV3Layer(layer));
+                    }
+                });
+                return results;
             },
             //Should this be labeled as an internal method?
             removeLayerByName: function (mapInstance, layerName) {
@@ -385,7 +396,7 @@
                 var layer = service.getLayerById(mapInstance, layerId);
                 var source = layer.getSource();
                 if(typeof source.getFeatures !== 'function') {
-                    throw new Error('Layer does not have a valid source for features.');
+                    return features;
                 }
                 var existingFeatures = source.getFeatures();
                 for (var i = 0; i < existingFeatures.length; i++) {

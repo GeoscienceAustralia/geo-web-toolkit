@@ -56,10 +56,10 @@
                 },
                 zoomToMaxExtent: function (mapInstance) {
                     //TODO, no 'maxExtent' in olv3. Look for alternative or way to compute.
-                    mapInstance.view.setZoom(18);
+                    mapInstance.getView().setZoom(18);
                 },
                 currentZoomLevel: function (mapInstance) {
-                    return mapInstance.getZoom();
+                    return mapInstance.getView().getZoom();
                 },
                 addLayer: function (mapInstance, layer) {
 
@@ -147,9 +147,9 @@
                         controlOptions = controlOptions || {};
                     }
                     var con = olv3MapControls.createControl(controlName, controlOptions, div);
-                    con.id = controlId || con.id;
+                    con.set('id',controlId || con.get('id') || GAWTUtils.generateUuid());
                     mapInstance.addControl(con);
-                    resultControl.id = con.id;
+                    resultControl.id = con.get('id');
                     return resultControl;
                 },
                 //return olv3 control with .metadata { id: '', name: '' }
@@ -207,18 +207,23 @@
                     });
                     return layers;
                 },
+                _getLayersBy: function (mapInstance, propertyName, propertyValue) {
+                    var layers = mapInstance.getLayers();
+                    var results = [];
+                    layers.forEach(function (layer) {
+                        var propVal = layer.get(propertyName);
+                        if(propVal && propVal.indexOf(propertyValue) !== -1) {
+                            results.push(layer);
+                        }
+                    });
+                    return results;
+                },
                 //Returns array of geo-web-toolkit layer DTO by name using olv3 getLayerByName?
                 getLayersByName: function (mapInstance, layerName) {
                     if (typeof layerName !== 'string' && typeof layerName !== 'number') {
                         throw new TypeError('Expected number');
                     }
-                    var layers = mapInstance.getLayersBy('name', layerName);
-                    var results = [];
-                    for (var i = 0; i < layers.length; i++) {
-                        var currentLayer = layers[i];
-                        results.push(GeoLayer.fromOpenLayersV3Layer(currentLayer));
-                    }
-                    return results;
+                    return olv3LayerService.getLayersBy(mapInstance,'name',layerName);
                 },
                 /**
                  * Updated the layer visibility on the map instance via the provided layerId
@@ -227,7 +232,11 @@
                  * @param visibility {Boolean} - true or false indicating if the layer is to be visible or not
                  * */
                 setLayerVisibility: function (mapInstance, layerId, visibility) {
-
+                    if(typeof visibility !== 'string' && typeof visibility !== 'boolean') {
+                        throw new TypeError('Invalid visibility value "' + visibility + '"');
+                    }
+                    var layer = olv3LayerService.getLayerBy(mapInstance,'id', layerId);
+                    layer.setVisible(visibility);
                 },
                 /**
                  * Methods that takes a geoJson coordinates array and returns OpenLayers boundingbox
@@ -236,7 +245,13 @@
                  * @return {Object} - OpenLayers bounding box
                  * */
                 createBoundingBox: function (mapInstance, geoJsonCoordinateArray) {
-
+                    var geomPoints = [];
+                    for (var i = 0; i < geoJsonCoordinateArray.length; i++) {
+                        var coord = geoJsonCoordinateArray[i];
+                        geomPoints.push(new ol.geom.Point(coord));
+                    }
+                    var geomCollection = new ol.geom.GeometryCollection(geomPoints);
+                    return geomCollection.getExtent();
                 },
                 /**
                  * Method that takes a geoJson coordinates array and returns OpenLayers.Bounds
@@ -262,14 +277,18 @@
                 },
                 //TODO sensible errors when unsupported layerId is used.
                 zoomToLayer: function (mapInstance, layerId) {
-                    var layer = mapInstance.getLayersBy('id', layerId)[0];
+                    var layer = olv3LayerService.getLayerBy(mapInstance,'id', layerId);
                     if (layer == null) {
                         throw new ReferenceError('Layer not found - id: "' + layerId + '".');
                     }
                     //Only valid for some layers
                     var extent = layer.getExtent();
+                    if(extent == null) {
+                        // If not extent, ignore and do nothing.
+                        return;
+                    }
                     //var transformedExtent = extent.transform(new OpenLayers.Projection(mapInstance.getProjection()), layer.projection);
-                    mapInstance.zoomToExtent(extent);
+                    mapInstance.getView().fitExtent(extent,mapInstance.getSize());
                 },
                 /**
                  * Sets a new zoom level of on the map instance
@@ -280,7 +299,7 @@
                     if (typeof zoomLevel === 'object') {
                         throw new TypeError('Expected number');
                     }
-
+                    mapInstance.getView().setZoom(zoomLevel);
                 },
                 /**
                  * Changes base layer to specified layer ID
@@ -288,8 +307,21 @@
                  * @param layerId {string} - ID of the layer that is to be the new base layer
                  * */
                 setBaseLayer: function (mapInstance, layerId) {
-                    var layer = mapInstance.getLayersBy('id', layerId)[0];
-                    mapInstance.setBaseLayer(layer, false);
+                    var layers = mapInstance.getLayers();
+                    var layerDrawIndex;
+                    var i = 0;
+                    var found = false;
+                    layers.forEach(function (layer) {
+                        if(layer.get('id') === layerId && !found) {
+                            layerDrawIndex = i;
+                            found = true;
+                        }
+                        i++;
+                    });
+                    if(layerDrawIndex) {
+                        olv3LayerService.raiseLayerDrawOrder(mapInstance,layerId,layerDrawIndex);
+                    }
+
                 },
                 /**
                  * Updates the maps view to center on the lon/lat provided.
@@ -301,12 +333,12 @@
                  * */
                 setCenter: function (mapInstance, lat, lon, projection) {
 
-                    var extent = new OpenLayers.LonLat(lon, lat);
+                    var point = [lon,lat];
                     if (projection == null) {
-                        mapInstance.setCenter(extent);
+                        mapInstance.getView().setCenter(point);
                     } else {
-                        var transformedExtent = extent.transform(new OpenLayers.Projection(projection), new OpenLayers.Projection(mapInstance.getProjection()));
-                        mapInstance.setCenter(transformedExtent);
+                        var transformedExtent = ol.proj.transform(point,projection,mapInstance.getView().getProjection());
+                        mapInstance.getView().setCenter(transformedExtent);
                     }
                 },
                 setInitialPositionAndZoom: function (mapInstance, args) {
@@ -317,32 +349,18 @@
                     }
                 },
                 isBaseLayer: function (mapInstance, layerId) {
-                    var result = false;
-                    var currentLayer;
-                    var numOfLayers = mapInstance.getLayers().length;
-
-                    //Find current layer
-                    for (var i = 0; i < numOfLayers; i++) {
-                        if (mapInstance.getLayers()[i].id === layerId) {
-                            currentLayer = mapInstance.getLayers()[i];
-                            break;
+                    var layers = mapInstance.getLayers();
+                    var layerDrawIndex;
+                    var i = 0;
+                    var found = false;
+                    layers.forEach(function (layer) {
+                        if(layer.get('id') === layerId && !found) {
+                            layerDrawIndex = i;
+                            found = true;
                         }
-                    }
-                    if (currentLayer) {
-                        //To get around a bug in OpenLayers where ArcGISCacheLayer.isBaseLayer returning incorrect value
-                        //due to prototypal inheritance from XYZTileCache, we need to check if the layer we are dealing
-                        //with is an ArcGISCache layer. Work around is to check if 'ArcGISCache' is in the name of the
-                        //layerId. Check base layer options instead.
-                        //TODO this might be due to OpenLayers failing silently rather than a bug, needs checking/reviewing
-                        if (currentLayer.id.indexOf('ArcGISCache') !== -1) {
-                            result = currentLayer.options.isBaseLayer;
-                        } else {
-                            result = currentLayer.isBaseLayer;
-                        }
-                    } else {
-                        result = false;
-                    }
-                    return result;
+                        i++;
+                    });
+                    return layerDrawIndex === 0;
                 },
                 /**
                  * Updates the layer with the specified layerId with the provided opacity
@@ -396,15 +414,12 @@
                     if (y == null) {
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
-                    var result = mapInstance.getLonLatFromPixel({
-                        x: x,
-                        y: y
-                    });
+                    var result = mapInstance.getCoordinateFromPixel([x,y]);
 
                     if (projection) {
-                        result = result.transform(mapInstance.projection, projection);
-                    } else if (service.displayProjection && service.displayProjection !== mapInstance.projection) {
-                        result = result.transform(mapInstance.projection, service.displayProjection);
+                        result = result.transform(mapInstance.getView().getProjection(), projection);
+                    } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
+                        result = result.transform(mapInstance.getView().getProjection(), service.displayProjection);
                     }
                     return result;
                 },

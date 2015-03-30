@@ -38,7 +38,7 @@ var app = angular.module('gawebtoolkit.mapservices',
 //	visibility: olv2Layer.visibility,
 //	opacity: olv2Layer.opacity
 
-app.factory('GeoLayer', [function () {
+app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
 	"use strict";
 	var GeoLayer = function (id, name, type, visibility, opacity) {
 		this.id = id;
@@ -70,16 +70,19 @@ app.factory('GeoLayer', [function () {
     };
 
     GeoLayer.fromOpenLayersV3Layer = function(layer) {
-        // OpenLayers v2 does not store layer type for ArcGISCache layers
         var layerType =layer.geoLayerType;
         var opacity;
-        if(typeof layer.opacity === 'string') {
-            opacity = Number(layer.opacity);
+        if(typeof layer.get('opacity') === 'string') {
+            opacity = Number(layer.get('opacity'));
         } else {
-            opacity = layer.opacity;
+            opacity =layer.get('opacity');
         }
 
-        return new GeoLayer(layer.id,layer.name,layerType,layer.visible,opacity);
+        if(!layer.get('id')) {
+            layer.set('id', GAWTUtils.generateUuid());
+        }
+
+        return new GeoLayer(layer.get('id'),layer.get('name'),layerType,layer.get('visible'),opacity);
     };
 	//define prototypical methods
 	//GeoLayer.prototype.myFunction = function () //available on every instance.
