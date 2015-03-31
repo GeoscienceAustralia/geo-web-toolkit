@@ -175,6 +175,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 tileType: args.tileType,
                 projection: args.datumProjection,
                 transparent: args.transparent,
+                attribution: args.layerAttribution,
                 opacity: args.opacity
                 //centerPosition: args.centerPosition
             };
@@ -220,7 +221,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                         tileSize: args.tileSize(),
                         alwaysInRange: false,
                         displayInLayerSwitcher: false,
-                        opacity: args.opacity
+                        opacity: args.opacity,
+                        attribution: args.layerAttribution
                     }
                 };
 
