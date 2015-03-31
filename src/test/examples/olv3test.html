@@ -23,7 +23,8 @@
                   layers="World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second"
                   wrap-date-line="false"
                   visibility="true"
-                  max-zoom-level="13"
+                  max-zoom-level="7"
+                  min-zoom-level="3"
                   format="image/png"
                   is-base-layer="true">
     </ga-map-layer>
@@ -37,6 +38,10 @@
     <ga-feature geo-json-feature="testFeature"></ga-feature>
     </ga-feature-layer>
     <ga-map-control map-control-name="scaleline"></ga-map-control>
+    <ga-map-control map-control-name="zoomslider"></ga-map-control>
+    <ga-map-control map-control-name="attribution"></ga-map-control>
+    <ga-map-control map-control-name="mouseposition"></ga-map-control>
+    <ga-map-control map-control-name="overviewmap"></ga-map-control>
 </ga-map>
 <script>
     var app = angular.module('simpleMap',['gawebtoolkit.core']);

@@ -37,11 +37,9 @@
 
                     viewOptions.zoom = parseInt(args.zoomLevel);
                     viewOptions.extent = viewOptions.projection.getExtent();
-                    if(args.maxZoomLevel) {
-                        viewOptions.maxZoom = args.maxZoomLevel;
-                    }
                     var view = new ol.View(viewOptions);
                     view.geoMaxZoom = 28; //Default max zoom;
+                    view.geoMinZoom = 0; //Default min zoom;
                     config.target = args.mapElementId;
                     config.view = view;
                     config.controls = [];
@@ -66,18 +64,17 @@
                     return mapInstance.getView().getZoom();
                 },
                 addLayer: function (mapInstance, layer) {
-                    var layerMaxZoomLevel = layer.geoMaxZoom;
-
-                    if(layerMaxZoomLevel && layerMaxZoomLevel < mapInstance.getView().geoMaxZoom) {
+                    var layerMaxZoomLevel = layer.geoMaxZoom || mapInstance.getView().geoMaxZoom;
+                    var layerMinZoomLevel = layer.geoMinZoom || mapInstance.getView().geoMinZoom;
+                    if(layerMaxZoomLevel < mapInstance.getView().geoMaxZoom || layerMinZoomLevel > mapInstance.getView().geoMinZoom) {
                         var view = mapInstance.getView();
                         var options = {
-                            projections: view.getProjection().code_,
+                            projection: view.getProjection(),
                             center: view.getCenter(),
                             zoom: view.getZoom(),
                             maxZoom: layerMaxZoomLevel,
-                            minZoom:1
+                            minZoom:layerMinZoomLevel
                         };
-                        console.log(options);
                         var nView = new ol.View(options);
                         mapInstance.setView(nView);
                     }
@@ -160,7 +157,7 @@
                     return false;
                 },
                 //return geo-web-toolkit control dto
-                addControl: function (mapInstance, controlName, controlOptions, elementId, controlId) {
+                addControl: function (mapInstance, controlName, controlOptions, elementId, controlId, mapOptions) {
                     controlName = controlName.toLowerCase();
                     var resultControl = {};
                     var div;
@@ -171,7 +168,7 @@
                     if (controlName === 'mouseposition') {
                         controlOptions = controlOptions || {};
                     }
-                    var con = olv3MapControls.createControl(controlName, controlOptions, div);
+                    var con = olv3MapControls.createControl(controlName, controlOptions, div,mapOptions);
                     con.set('id',controlId || con.get('id') || GAWTUtils.generateUuid());
                     mapInstance.addControl(con);
                     resultControl.id = con.get('id');

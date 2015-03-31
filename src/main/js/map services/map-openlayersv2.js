@@ -138,7 +138,7 @@ app.service('olv2MapService', [
 				}
 				return control.active === true;
 			},
-			addControl: function (mapInstance, controlName, controlOptions, elementId, controlId) {
+			addControl: function (mapInstance, controlName, controlOptions, elementId, controlId, mapOptions) {
 				controlName = controlName.toLowerCase();
 				var resultControl = {};
 				var div;

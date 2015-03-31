@@ -45,6 +45,9 @@
                 if(args.maxZoomLevel) {
                     layer.geoMaxZoom = parseInt(args.maxZoomLevel);
                 }
+                if(args.minZoomLevel) {
+                    layer.geoMinZoom = parseInt(args.minZoomLevel);
+                }
 
                 return layer;
             },

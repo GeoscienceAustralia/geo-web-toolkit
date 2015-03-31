@@ -152,6 +152,17 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return deferredLayer.promise;
             };
 
+            self.getMapOptions = function () {
+                return  {
+                    mapElementId: $scope.mapElementId,
+                    datumProjection: $scope.datumProjection,
+                    displayProjection: $scope.displayProjection,
+                    centerPosition: $scope.centerPosition,
+                    zoomLevel: $scope.zoomLevel,
+                    initialExtent: $scope.initialExtent
+                };
+            };
+
             self.createLayer = function(layerArgs) {
                 var layerOptions = GALayerService.defaultLayerOptions(layerArgs,$scope.framework);
                 return GALayerService.createLayer(layerOptions,$scope.framework);
@@ -627,7 +638,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.addControl = function (controlName, controlOptions, elementId, controlId) {
-                return GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId, $scope.framework);
+                return GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId, self.getMapOptions(), $scope.framework);
             };
             /**
              * @ngdoc method
