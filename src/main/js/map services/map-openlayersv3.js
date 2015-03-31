@@ -67,17 +67,33 @@
                     var layerMaxZoomLevel = layer.geoMaxZoom || mapInstance.getView().geoMaxZoom;
                     var layerMinZoomLevel = layer.geoMinZoom || mapInstance.getView().geoMinZoom;
                     if(layerMaxZoomLevel < mapInstance.getView().geoMaxZoom || layerMinZoomLevel > mapInstance.getView().geoMinZoom) {
-                        var view = mapInstance.getView();
+                        var exiistingView = mapInstance.getView();
                         var options = {
-                            projection: view.getProjection(),
-                            center: view.getCenter(),
-                            zoom: view.getZoom(),
+                            projection: exiistingView.getProjection(),
+                            center: exiistingView.getCenter(),
+                            zoom: exiistingView.getZoom(),
                             maxZoom: layerMaxZoomLevel,
                             minZoom:layerMinZoomLevel
                         };
                         var nView = new ol.View(options);
                         mapInstance.setView(nView);
                     }
+
+                    if(layer.disableDefaultUI) {
+                        //TODO Google maps not supported by OLV3, need to handle vendor maps differently so toolkit can give
+                        //better feedback to developers about what isn't supported and possible alternatives.
+                        return;
+                        //var view = mapInstance.getView();
+                        //view.on('change:center', function() {
+                        //    var center = ol.proj.transform(view.getCenter(), view.getProjection(), 'EPSG:4326');
+                        //    layer.setCenter(new google.maps.LatLng(center[1], center[0]));
+                        //});
+                        //view.on('change:resolution', function() {
+                        //    layer.setZoom(view.getZoom());
+                        //});
+                        //return GeoLayer.fromOpenLayersV3Layer(layer)
+                    }
+
                     if (layer.then != null && typeof layer.then === 'function') {
                         layer.then(function (resultLayer) {
                             mapInstance.addLayer(resultLayer);
@@ -128,16 +144,15 @@
                     mapInstance.un(eventName,callback);
                 },
                 getCurrentMapExtent: function (mapInstance) {
-                    var ext = mapInstance.getView().getProjection().getExtent();
+                    var ext = mapInstance.getView().calculateExtent(mapInstance.getSize());
                     if (ext == null) {
                         return null;
                     }
-                    var trExt = ol.proj.transformExtent(ext,mapInstance.getView().getProjection().code_, service.displayProjection);
                     var result = [];
-                    var topLeft = [ trExt[0], trExt[3] ];
-                    var topRight = [ trExt[2], trExt[3] ];
-                    var bottomLeft = [ trExt[0], trExt[1] ];
-                    var bottomRight = [ trExt[2], trExt ];
+                    var topLeft = ol.proj.transform([ext[0],ext[3]],mapInstance.getView().getProjection(), service.displayProjection);
+                    var topRight = ol.proj.transform([ext[2], ext[3]],mapInstance.getView().getProjection(), service.displayProjection);
+                    var bottomLeft = ol.proj.transform([ ext[0], ext[1] ],mapInstance.getView().getProjection(), service.displayProjection);
+                    var bottomRight = ol.proj.transform([ ext[2], ext[1] ],mapInstance.getView().getProjection(), service.displayProjection);
                     result.push(topLeft);
                     result.push(topRight);
                     result.push(bottomLeft);
@@ -314,7 +329,23 @@
                  * @returns {Object} - OpenLayers.Bounds object
                  * */
                 createBounds: function (mapInstance, geoJsonCoordinateArray, projection) {
-                    return [geoJsonCoordinateArray[0][0],geoJsonCoordinateArray[0][1],geoJsonCoordinateArray[1][0],geoJsonCoordinateArray[1][1]];
+                    if(projection) {
+                        var view = mapInstance.getView();
+                        var topLeft = ol.proj.transform([geoJsonCoordinateArray[0][0],geoJsonCoordinateArray[0][1]], view.getProjection(), projection);
+                        var bottomRight = ol.proj.transform([geoJsonCoordinateArray[0][0],geoJsonCoordinateArray[0][1]], view.getProjection(), projection);
+                        return [
+                            topLeft[0],
+                            topLeft[1],
+                            bottomRight[0],
+                            bottomRight[1]
+                        ];
+                    }
+                    return [
+                        geoJsonCoordinateArray[0][0],
+                        geoJsonCoordinateArray[0][1],
+                        geoJsonCoordinateArray[1][0],
+                        geoJsonCoordinateArray[1][1]
+                    ];
                 },
                 /**
                  * Zooms to a specified extent
@@ -493,7 +524,7 @@
                     if (lat == null) {
                         throw new ReferenceError("'lat' value cannot be null or undefined");
                     }
-                    return mapInstance.getPixelFromLonLat(new OpenLayers.LonLat(lon, lat));
+                    return mapInstance.getPixelFromCoordinate([lon,lat]);
                 },
                 getPointFromEvent: function (e) {
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an

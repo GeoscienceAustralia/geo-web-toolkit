@@ -144,6 +144,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 					$scope.constructionInProgress = true;
 					layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
                     layerOptions.initialExtent = mapController.getInitialExtent();
+                    layerOptions.mapElementId = mapController.getMapElementId();
                     layerOptions.format = $scope.format;
 					$log.info(layerOptions.layerName + ' - constructing...');
 					if(layerOptions.layerType.length === 0) {

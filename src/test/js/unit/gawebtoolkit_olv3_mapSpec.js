@@ -181,14 +181,10 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "addControl" without an exception given valid input', function () {
-                var passed = false;
-
-                    $scope.mapController.addControl('OverviewMap');
-                    var controls = $scope.mapController.getMapInstance().getControls();
-                    expect(controls != null).toBe(true);
-                    expect(controls.length).toBe(2);
-                    expect(passed).toBe(true);
-
+                $scope.mapController.addControl('attribution');
+                var controls = $scope.mapController.getMapInstance().getControls();
+                expect(controls != null).toBe(true);
+                expect(controls.getLength()).toBe(2);
             });
             // TODO Can't test getLonLatFromPixel due to way OLV3 relies on the rendered frame.
             /*it('Should fire mapController function "getLonLatFromPixel" without an exception given valid input', function () {
@@ -605,18 +601,16 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "getCurrentMapExtent" without an exception given valid input', function () {
+                var map = $scope.mapController.getMapInstance();
+                //'mock' get size due to dependency on actually rendering map.
+                map.getSize = function() { return [500,500];};
                 var currentExtent = $scope.mapController.getCurrentMapExtent();
                 expect(currentExtent != null).toBe(true);
             });
             it('Should fire mapController function "filterFeatureLayer" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var layer = $scope.mapController.getLayers()[2];
-                    $scope.mapController.filterFeatureLayer(layer.id, 'test', 'NAME');
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var layer = $scope.mapController.getLayers()[2];
+                $scope.mapController.filterFeatureLayer(layer.id, 'test', 'NAME');
+                passed = true;
             });
             it('Should fire mapController function "getLayerFeatures" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[2];
@@ -753,6 +747,9 @@
             });
 
             it('Should return geoJson coordinate arrays for getCurrentMapExtent', function () {
+                var map = $scope.mapController.getMapInstance();
+                //'mock' get size due to dependency on actually rendering map.
+                map.getSize = function() { return [500,500];};
                 //Because an extent has 4 points
                 expect($scope.mapController.getCurrentMapExtent().length).toBe(4);
                 //Because geoJson stores coordinates as [lon,lat]
@@ -761,7 +758,10 @@
 
             it('Should have set the initial extent', function () {
                 //Exact map extents are not returns because of integer zoom levels and possible animation time.
-                expect($scope.mapController.getCurrentMapExtent()[0][0] > 110.0).toBe(true);
+                var map = $scope.mapController.getMapInstance();
+                //'mock' get size due to dependency on actually rendering map.
+                map.getSize = function() { return [500,500];};
+                expect($scope.mapController.getCurrentMapExtent()[0][0] > 100.0).toBe(true);
                 expect($scope.mapController.getCurrentMapExtent()[0][1] > -45.0).toBe(true);
                 expect($scope.mapController.getCurrentMapExtent()[1][0] < 160.0).toBe(true);
                 expect($scope.mapController.getCurrentMapExtent()[1][1] > -45.0).toBe(true);

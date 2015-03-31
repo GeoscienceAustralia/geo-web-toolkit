@@ -102,37 +102,25 @@
 
                 return layer;
             },
-            createGoogleMapsLayer: function (args) {
-                var googleLayerType;
-                switch (args.layerType) {
-                    case 'GoogleStreet':
-                        googleLayerType = google.maps.MapTypeId.STREET;
-                        break;
-                    case 'GoogleHybrid':
-                        googleLayerType = google.maps.MapTypeId.HYBRID;
-                        break;
-                    case 'GoogleSatellite':
-                        googleLayerType = google.maps.MapTypeId.SATELLITE;
-                        break;
-                    case 'GoogleTerrain':
-                        googleLayerType = google.maps.MapTypeId.TERRAIN;
-                        break;
-                }
-
-                var options = {
-                    wrapDateLine: args.wrapDateLine,
-                    transitionEffect: args.transitionEffect,
-                    visibility: args.visibility === true || args.visibility === 'true',
-                    isBaseLayer: args.isBaseLayer === true || args.isBaseLayer === 'true',
-                    tileSize: args.tileSize(args.tileType),
-                    sphericalMercator: args.sphericalMercator,
-                    centerPosition: args.centerPosition,
-                    attribution: args.layerAttribution,
-                    numZoomLevels: 20,
-                    type: googleLayerType,
-                    animationEnabled: true
+            _googleMapsTypes: function () {
+                return {
+                    'GoogleStreet' : google.maps.MapTypeId.ROADMAP,
+                    'GoogleHybrid' : google.maps.MapTypeId.HYBRID,
+                    'GoogleSatellite': google.maps.MapTypeId.SATELLITE,
+                    'GoogleTerrain': google.maps.MapTypeId.TERRAIN
                 };
-                return new OpenLayers.Layer.Google(args.layerName, options);
+            },
+            createGoogleMapsLayer: function (args) {
+                var gmap = new google.maps.Map(document.getElementById(args.mapElementId), {
+                    disableDefaultUI: true,
+                    keyboardShortcuts: false,
+                    draggable: false,
+                    disableDoubleClickZoom: true,
+                    scrollwheel: false,
+                    streetViewControl: false,
+                    mapTypeId: service._googleMapsTypes()[args.layerType]
+                });
+                return gmap;
             },
             clearFeatureLayer: function (mapInstance, layerId) {
 
@@ -420,6 +408,9 @@
                 return layer == null ? 0 : typeof layer.getSource().getFeatures === "undefined" ? 0 : layer.getSource().getFeatures().length;
             },
             filterFeatureLayer: function (mapInstance, layerId, filterValue) {
+                //TODO The value of this function needs to be considered.
+                // Varied implementations of filtering (server) makes it hard to wrap.
+                // Maybe this should be converted to client side only filtering?
                 throw new Error("NotImplementedError");
             },
             parseFeatureAttributes: function (featureAttributes) {
