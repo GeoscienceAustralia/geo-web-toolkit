@@ -3,6 +3,101 @@
     "use strict";
     var app = angular.module('gawebtoolkit.ui.components.deprecated',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
 
+    /**
+     * */
+    app.directive('gaDialogToggle', [ function () {
+        'use strict';
+        return {
+            restrict: "E",
+            templateUrl:'src/main/js/ui/components/deprecated/dialog-toggle.html',
+            transclude: true,
+            scope: {
+                gaDialogController: '=',
+                gaToggleClicked: '&'
+            },
+            link: function ($scope) {
+                $scope.toggleDialog = function () {
+                    var dialogOpen = !$scope.gaDialogController.isClosed();
+                    if (!dialogOpen) {
+                        $scope.gaDialogController.openDialog();
+                    } else {
+                        $scope.gaDialogController.closeDialog();
+                    }
+                    $scope.gaToggleClicked({
+                        dialogController: $scope.gaDialogController
+                    });
+                };
+            }
+        };
+    } ]);
+
+    /**
+     *
+     * */
+    app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GAWTUtils) {
+        return {
+            restrict: "AE",
+            templateUrl: 'src/main/js/ui/components/deprecated/static-dialog.html',
+            scope: {
+                controllerEmitEventName: '@',
+                dialogConfig: '=',
+                dialogWindowResize: '&',
+                dialogClosed: '&',
+                dialogOpened: '&'
+            },
+            controller: ['$scope', function ($scope) {
+                $(window).bind('resize', function () {
+                    if ($scope.dialogWindowResize != null) {
+                        $scope.dialogConfig = angular.extend($scope.dialogConfig, $scope.dialogWindowResize());
+                    }
+                    //Reinitialise dialog on window resize, resets position to correct relative location
+                    //Force last closed state
+                    $scope.dialogConfig.autoOpen = !$scope.isClosed;
+                    $('#' + $scope.dialogId).dialog($scope.dialogConfig);
+                });
+                //Initialise id element to use for cleaning up/closing the dialog
+                $scope.dialogId = GAWTUtils.generateUuid();
+                var self = this;
+                self.openDialog = function () {
+                    $('#' + $scope.dialogId).dialog('open');
+                    $scope.isClosed = false;
+                    $scope.dialogOpened();
+                };
+                self.closeDialog = function () {
+                    $('#' + $scope.dialogId).dialog('close');
+                    $scope.isClosed = true;
+                    $scope.dialogClosed();
+                };
+                self.isClosed = function () {
+                    return $scope.isClosed;
+                };
+                $scope.$emit($scope.controllerEmitEventName, self);
+            }],
+            link: function ($scope) {
+                $scope.$on('$destroy', function () {
+                    $('#' + $scope.dialogId).dialog('destroy').remove();
+                });
+
+                var dialogConfigWatch = $scope.$watch('dialogConfig', function (data) {
+                    if (data != null) {
+                        $scope.dialogReady = true;
+                        $('#' + $scope.dialogId).bind('dialogclose', function () {
+                            $scope.isClosed = true;
+                            $timeout(function () {
+                                $scope.$apply();
+                            });
+                            $scope.dialogClosed();
+                        });
+                        $scope.isClosed = !data.autoOpen;
+                        dialogConfigWatch();
+                    }
+                });
+
+            },
+            transclude: true
+        };
+    }]);
+
     /*
      * gaLayersDialog renders a list of layers that can be turned off and on
      *
@@ -22,7 +117,7 @@
     app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
         return {
             restrict: "E",
-            templateUrl: 'geo-web-toolkit/components/layers-dialog.html',
+            templateUrl: 'src/main/js/ui/components/deprecated/layers-dialog.html',
             scope: {
                 layersData: '=',
                 dialogConfig: '=',
@@ -97,7 +192,7 @@
         //Specific property names are dynamic and cannot be relied on.
         return {
             restrict: "EA",
-            templateUrl: 'geo-web-toolkit/components/search-wfs.html',
+            templateUrl: 'src/main/js/ui/components/deprecated/search-wfs.html',
             scope: {
                 resultTemplateUrl: '@',
                 mapController: '=',

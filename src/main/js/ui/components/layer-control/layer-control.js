@@ -89,7 +89,7 @@
         function (GAWTUtils) {
             return {
                 restrict: "E",
-                templateUrl: 'geo-web-toolkit/components/layer-control.html',
+                templateUrl: 'src/main/js/ui/components/layer-control/layer-control.html',
                 scope: {
                     layerData: '=',
                     mapController: '=',

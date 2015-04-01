@@ -98,7 +98,7 @@
     app.directive('gaBaseLayerSelector', ['$timeout', function ($timeout) {
         return {
             restrict: "E",
-            templateUrl: 'geo-web-toolkit/components/base-layer-selector.html',
+            templateUrl: 'src/main/js/ui/components/base-layer-selector/base-layer-selector.html',
             replace: true,
             scope: {
                 layersData: '=',

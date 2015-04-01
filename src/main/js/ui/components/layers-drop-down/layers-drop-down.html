@@ -1,7 +1,5 @@
-<script type="text/ng-template" src="geo-web-toolkit/components/layer-drop-down.html">
-    <div>
-        <select fix-ie-select ng-model="selectedModel" ng-change="selectLayer()"
-                 ng-options="dropDownLayer.id as dropDownLayer.name for dropDownLayer in layersData" >
+<div>
+    <select fix-ie-select ng-model="selectedModel" ng-change="selectLayer()"
+            ng-options="dropDownLayer.id as dropDownLayer.name for dropDownLayer in layersData">
     </select>
-    </div>
-</script>
+</div>

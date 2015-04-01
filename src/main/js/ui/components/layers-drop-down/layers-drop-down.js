@@ -23,7 +23,7 @@
 
         return {
             restrict: "E",
-            templateUrl: 'geo-web-toolkit/components/layer-drop-down.html',
+            templateUrl: 'src/main/js/ui/components/layers-drop-down/layers-drop-down.html',
             replace: false,
             scope: {
                 layersData: '=',

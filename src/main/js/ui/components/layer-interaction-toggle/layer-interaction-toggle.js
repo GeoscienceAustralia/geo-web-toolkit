@@ -126,7 +126,7 @@
         return {
             restrict: "E",
             replace: "true",
-            templateUrl: 'geo-web-toolkit/components/layer-interaction-toggle.html',
+            templateUrl: 'src/main/js/ui/components/layer-interaction-toggle/layer-interaction-toggle.html',
             transclude: true,
             scope: {
                 toggleIconSource: '@',

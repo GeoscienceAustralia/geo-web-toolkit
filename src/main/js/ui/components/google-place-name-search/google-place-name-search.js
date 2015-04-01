@@ -20,7 +20,7 @@
     app.directive('googlePlaceNameSearch', [function () {
         return {
             restrict: 'E',
-            templateUrl: 'geo-web-toolkit/components/google-place-name-search.html',
+            templateUrl: 'src/main/js/ui/components/google-place-name-search/google-place-name-search.html',
             scope: {
                 mapController: '=',
                 searchIconUrl: '@',

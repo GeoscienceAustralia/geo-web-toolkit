@@ -10,7 +10,7 @@
 
         return {
             restrict: "EA",
-            templateUrl: 'geo-web-toolkit/components/measure-toggle.html',
+            templateUrl: 'src/main/js/ui/components/measure-toggle/measure-toggle.html',
             scope: {
                 resolveStyle: '&',
                 toggleOnCallback: '&',

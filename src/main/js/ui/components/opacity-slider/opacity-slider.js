@@ -75,7 +75,7 @@
         //'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity"/>';
         return {
             restrict: "E",
-            templateUrl: 'geo-web-toolkit/components/opacity-slider.html',
+            templateUrl: 'src/main/js/ui/components/opacity-slider/opacity-slider.html',
             replace: true,
             scope: {
                 layerId: '@',

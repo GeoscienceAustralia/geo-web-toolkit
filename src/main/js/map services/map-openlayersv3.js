@@ -571,8 +571,8 @@
                     return selectCtrl;
                 },
                 removeFeature: function (mapInstance, layerName, feature) {
-                    var vectors = mapInstance.getLayersByName(layerName);
-                    vectors[0].removeFeatures(feature);
+                    var featureLayer = olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
+                    featureLayer.removeFeatures(feature);
                 },
                 drawFeature: function (mapInstance, args) {
                     var vectors = mapInstance.getLayersByName(args.layerName);
@@ -707,6 +707,34 @@
                     return features;
                 },
                 getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
+                    var vectorSource = new ol.source.ServerVector({
+                        format: new ol.format.WFS(),
+                        loader: function (extent, resolution, projection) {
+                            $.ajax({
+                                url: url
+                            }).done(loadFeatures);
+                        },
+                        strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+                           maxZoom: mapInstance.geoMaxZoom
+                        })),
+                        projection: mapInstance.getView().getProjection()
+                    });
+
+                    var loadFeatures = function(response) {
+                        vectorSource.addFeatures(vectorSource.readFeatures(response));
+                    };
+
+                    var vectorLayer = new ol.layer.Vector({
+                        source: vectorSource,
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: 'rbg(0,0,255,1.0)',
+                                width:5
+                            })
+                        })
+                    });
+
+
                     tolerance = tolerance || 0;
                     var deferred = $q.defer();
                     var originalPx = new OpenLayers.Pixel(point.x, point.y);
@@ -747,6 +775,7 @@
                                         }
                                     };
                                 }
+
                                 deferred.resolve(geoObject);
                             }
                         }

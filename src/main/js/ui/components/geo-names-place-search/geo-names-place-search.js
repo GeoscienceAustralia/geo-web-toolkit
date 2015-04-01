@@ -26,7 +26,7 @@
     app.directive('geoNamesPlaceSearch', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
         return {
             restrict: 'E',
-            templateUrl:'geo-web-toolkit/components/geo-names-place-search.html',
+            templateUrl:'src/main/js/ui/components/geo-names-place-search/geo-names-place-search.html',
             scope: {
                 mapController: '=',
                 searchIconUrl: '@',
