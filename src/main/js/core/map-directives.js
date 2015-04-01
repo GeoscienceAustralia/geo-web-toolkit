@@ -1698,7 +1698,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 }, function (layersWithErrors) {
                     processLayers(layersWithErrors);
                 });
-                scope.layersReady = true;
+                //scope.layersReady = true;
             });
 
             function processLayers(layers) {

@@ -184,56 +184,12 @@
                 return result;
             },
             createArcGISCacheLayer: function (args) {
-                //TODO incorporate default options to args via extend
-                var deferred = $q.defer();
-                var jsonp = new OpenLayers.Protocol.Script();
-                //Due to the way OpenLayers.Protocol.Script works with a adding a new script tag to the head
-                //of the page, we have to manually set a timeout here for 404 layers
-                var scriptTimeout = $timeout(function () {
-                    deferred.reject("LayerTimeout");
-                }, 10000);
-                jsonp.createRequest(args.layerUrl, {
-                    f: 'json',
-                    pretty: 'true'
-                }, function (data) {
-                    //cancel timeout
-                    $timeout.cancel(scriptTimeout);
-                    if(data.error != null && data.error.code != null) {
-                        deferred.reject('LayerError - ' + data.error.code);
-                        return;
-                    }
-                    var resultArgs = {
-                        layerName: args.layerName,
-                        layerUrl: args.layerUrl,
-                        options: {
-                            transitionEffect: args.transitionEffect,
-                            visibility: args.visibility === true || args.visibility === 'true',
-                            isBaseLayer: args.isBaseLayer === true || args.isBaseLayer === 'true',
-                            tileSize: args.tileSize(),
-                            alwaysInRange: false,
-                            displayInLayerSwitcher: false,
-                            opacity: args.opacity
-                        }
-                    };
-
-                    if (args.maxZoomLevel != null) {
-                        if (args.maxZoomLevel.length > 0) {
-                            resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel);
-                        }
-                    }
-                    //TODO server can respond with a 200 status code even with an error. Needs to be handled.
-                    if (data) {
-                        resultArgs.options.layerInfo = data;
-                        if (resultArgs.options.numZoomLevels == null) {
-                            resultArgs.options.numZoomLevels = data.tileInfo.lods.length + 1;
-                        }
-                    }
-
-                    var layerResult = new OpenLayers.Layer.ArcGISCache(resultArgs.layerName, resultArgs.layerUrl, resultArgs.options);
-                    deferred.resolve(layerResult);
+                return new ol.layer.Tile({
+                    source: new ol.source.TileArcGISRest({
+                        url: args.layerUrl
+                    }),
+                    opacity: args.opacity
                 });
-
-                return deferred.promise;
             },
             defaultLayerOptions: function (args, config) {
                 var layerOptions = angular.extend(config.defaultOptions, args);
@@ -295,8 +251,7 @@
                 return service.getLayerBy(mapInstance,'id',layerId);
             },
             getLayerBy: function (mapInstance, propertyName, propertyValue) {
-                //TODO MAJOR - This currently doesn't work in OLV3. Investigate options for identifying layers
-                // May have to generate ID ourselves and use layer.set('id',val);
+
                 var layer = null;
                 var foundResult = false;
                 mapInstance.getLayers().forEach(function (lyr) {
@@ -395,12 +350,14 @@
                 mapInstance.addInteraction(selectClick);
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                var layer = mapInstance.getLayersBy('id', layerId)[0];
-                layer.events.register(eventName, layer, callback);
+                $log.info(layerId);
+                var layer = service.getLayerBy(mapInstance,'id', layerId);
+                layer.getSource().on(eventName,callback);
             },
             unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                var layer = mapInstance.getLayersBy('id', layerId)[0];
-                layer.events.unregister(eventName,layer,callback);
+                $log.info(layerId);
+                var layer = service.getLayerBy(mapInstance,'id', layerId);
+                layer.getSource().un(eventName,callback);
             },
             //Should this be moved to a separate service as it is more of a helper?
             getMarkerCountForLayerName: function (mapInstance, layerName) {

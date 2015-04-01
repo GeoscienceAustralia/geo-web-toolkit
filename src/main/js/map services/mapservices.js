@@ -77,7 +77,7 @@ app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
         } else {
             opacity =layer.get('opacity');
         }
-
+        console.log(layer.get('visible'));
         if(!layer.get('id')) {
             layer.set('id', GAWTUtils.generateUuid());
         }

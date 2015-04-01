@@ -115,6 +115,8 @@
                             //Event to be cleaned up on map destruction
                             scope.$watch('layerData', function (newVal) {
                                 if(newVal != null) {
+                                    //Parse possible coerced value
+                                    scope.layerData.visibility = scope.layerData.visibility === true || scope.layerData.visibility === 'true';
                                     if(scope.mapController == null) {
                                         throw new Error("mapController is not available");
                                     }
@@ -138,6 +140,7 @@
                             };
                             scope.layerClicked = function () {
                                 scope.layerData.visibility = !scope.layerData.visibility;
+                                scope.mapController.setLayerVisibility(scope.layerData.id,scope.layerData.visibility);
                                 if (scope.layerData.visibility) {
                                     scope.onVisible({
                                         layerId: scope.layerData.id

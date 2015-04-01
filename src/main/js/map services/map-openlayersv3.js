@@ -44,7 +44,25 @@
                     config.view = view;
                     config.controls = [];
                     service.displayProjection = args.displayProjection;
-                    return new ol.Map(config);
+                    var map =  new ol.Map(config);
+
+                    //HACK TODO Move to a post create map register (not created yet)
+                    window.setTimeout(function () {
+                       if(args.initialExtent) {
+                           var extent = [
+                               args.initialExtent[0][0],
+                               args.initialExtent[0][1],
+                               args.initialExtent[1][0],
+                               args.initialExtent[1][1]
+                           ];
+
+                           var transformedCenter = ol.proj.transformExtent(extent,args.displayProjection,args.datumProjection);
+                           map.getView().fitExtent(transformedCenter,map.getSize());
+                       }
+                   },10);
+
+
+                    return map;
                 },
                 // http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
                 getParameterByName: function (name) {
@@ -273,6 +291,7 @@
                     angular.forEach(mapInstance.getLayers(), function (layer) {
                         layers.push(GeoLayer.fromOpenLayersV3Layer(layer));
                     });
+                    console.log(layers);
                     return layers;
                 },
                 _getLayersBy: function (mapInstance, propertyName, propertyValue) {
@@ -398,6 +417,8 @@
                     layers.forEach(function (layer) {
                         if(layer.get('id') === layerId && !found) {
                             layerDrawIndex = i;
+                            //Set visible true since we are going to change to it.
+                            layer.setVisible(true);
                             found = true;
                         }
                         i++;
@@ -456,6 +477,8 @@
                     if (typeof opacity === 'object') {
                         throw new TypeError("Expected number");
                     }
+                    var layer = olv3LayerService.getLayerBy(mapInstance,'id',layerId);
+                    layer.setOpacity(opacity);
                 },
                 /**
                  * Updates all layers as the map contains size has been changed.
