@@ -1,0 +1,14 @@
+<div class="mapContainer">
+    <div class="mapOuterContainer">
+        <div class="mapContainer" id="gamap1" ng-style="{backgroundColor:gaConfig.backgroundcolour}" style="position:fixed;width:54%;height:79%">
+
+        </div>
+    </div>
+    <div>
+        <ga-map-config
+                config-value="config"
+                template-path="../configmap.html"
+                pre-config="preConfigInit(config)">
+        </ga-map-config>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div>
+    <div >
+        <ga-map framework="olv3" map-element-id="gamap1" datum-projection="{{gaConfig.datumProjection}}"
+                display-projection="{{gaConfig.displayProjection}}"
+                center-position="{{gaConfig.centerPosition}}"
+                zoom-level="{{gaConfig.zoomLevel}}"
+                initial-extent="gaConfig.initialExtent">
+            <ga-map-layer ng-repeat="baseLayer in gaConfig.baseMaps"
+                          layer-name="{{baseLayer.name}}"
+                          layer-url="{{baseLayer.url}}"
+                          wrap-date-line="{{baseLayer.wrapDateLine}}"
+                          layer-type="{{baseLayer.mapType}}"
+                          layers="{{baseLayer.layers}}"
+                          is-base-layer="true"
+                          visibility="{{baseLayer.visibility}}"
+                          layer-attribution="{{baseLayer.attribution}}"
+                          refresh-layer="{{layer.refresh}}"
+                          max-zoom-level="{{baseLayer.maxZoomLevel}}"
+                          on-error="onBaseLayerError(message,layer)">
+            </ga-map-layer>
+
+            <ga-map-layer ng-repeat="layer in gaConfig.layerMaps"
+                          layer-name="{{layer.name}}"
+                          layer-url="{{layer.url}}"
+                          wrap-date-line="{{layer.wrapDateLine}}"
+                          layer-type="{{layer.mapType}}"
+                          layers="{{layer.layers}}"
+                          visibility="{{layer.visibility}}"
+                          opacity="{{layer.opacity}}"
+                          refresh-layer="{{layer.refresh}}"
+                          max-zoom-level="{{layer.maxZoomLevel}}"
+                          on-error="onLayerError(message,layer)">
+            </ga-map-layer>
+
+            <ga-map-layer ng-repeat="layer in gaConfig.searchTempLayers"
+                          layer-name="{{layer.name}}"
+                          layer-url="{{layer.url}}"
+                          wrap-date-line="{{layer.wrapDateLine}}"
+                          layer-type="{{layer.mapType}}"
+                          layers="{{layer.layers}}"
+                          visibility="{{layer.visibility}}"
+                          opacity="{{layer.opacity}}">
+            </ga-map-layer>
+
+            <ga-feature-layer ng-if="interrogateFeatures.length > 0" layer-name="interrogateResultLayer"
+                              visibility="'true'">
+                <ga-feature ng-repeat="feature in interrogateFeatures"
+                            geo-json-feature="feature">
+                </ga-feature>
+            </ga-feature-layer>
+
+            <ga-feature-layer ng-if="searchFeatures.length > 0" layer-name="SearchFeatureLayer"
+                              visibility="'true'"
+                              post-add-layer="resolveSearchTemplate(map,layer)"
+                              on-layer-destroy="cleanUpPopups(map)">
+                <ga-feature ng-repeat="feature in searchFeatures"
+                            geo-json-feature="feature"
+                            is-lon-lat-order-valid="feature.isLonLatOrderValid">
+                </ga-feature>
+            </ga-feature-layer>
+
+            <ga-map-marker ng_repeat="marker in currentGroup.markers"
+                           marker-icon="{{marker.icon}}"
+                           marker-long="{{marker.Long}}"
+                           marker-lat="{{marker.lat}}"
+                           marker-id="{{marker.id}}"
+                           marker-onClick="mapMarkerClicked(id)">
+            </ga-map-marker>
+
+            <ga-map-control map-control-name="scaleline"></ga-map-control>
+            <ga-map-control map-control-name="zoomslider"></ga-map-control>
+            <ga-map-control map-control-name="attribution"></ga-map-control>
+            <ga-map-control map-control-name="mouseposition"></ga-map-control>
+            <ga-map-control map-control-name="overviewmap"></ga-map-control>
+
+
+
+        </ga-map>
+    </div>
+</div>
