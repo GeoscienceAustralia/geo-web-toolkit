@@ -17,7 +17,7 @@ With that focus, **not all functionality** may be available from the geo-web-too
 ### Breaking changes
 
 1. `center-position` value has changed from `{ lon: '', lat:'' }` object to a coordinate array `[2]`, eg, `[110,-24]`
-2. Google map layers have been moved into their own directives rather than a `layer-type`.
+2. Google map layers have been moved into their own directives rather than a `layer-type`. // TODO
 
 For example, now they can be used as a `<ga-maps-google-layer></ga-maps-google-layer>` under a `<ga-map>`.
 This is to allow for more vendor maps to be added as stand alone components, in the future it is expected more will be added with their own directive requiring the `<ga-map>` parent.
