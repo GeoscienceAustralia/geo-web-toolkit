@@ -40,7 +40,7 @@ var app = angular.module('gawebtoolkit.core.layer-directives', [ 'gawebtoolkit.c
 <example module="simpleMap">
 <file name="index.html">
     <div id="map"></div>
-    <ga-map map-element-id="map" center-position='{"lat":"3868551","lon":"-10403008"}' zoom-level="3">
+    <ga-map map-element-id="map" center-position='[130, -25]' zoom-level="3">
         <ga-map-layer layer-name="baseLayer" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS"></ga-map-layer>
         
         <ga-map-layer layer-name="Topographic" layer-url="http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer" map-bg-color="#194584" is-base-layer="false" layer-type="WMS"></ga-map-layer>
@@ -114,11 +114,6 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				var layerOptions, layer;
 
 				var addLayerCallback = function () {
-//					if (layerOptions.isBaseLayer &&
-//						layerOptions.wrapDateLine &&
-//						layerOptions.visibility) {
-//						mapController.setInitialPositionAndZoom();
-//					}
 					$scope.layerReady = true;
 				};
 

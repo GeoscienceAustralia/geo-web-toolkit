@@ -79,30 +79,37 @@ var app = angular.module('gawebtoolkit.config', []);
          "datumProjection":"EPSG:102100",
          "displayProjection": "EPSG:4326",
          "backgroundcolour": "#21468b",
-         "centrePosition": {"lat":"3868551","lon":"-10403008"},
+         "centrePosition": [130, -25],
          "zoomLevel":3,
          "baseMaps": [
          {
-         "isBaseLayer":true,
-         "mapType":"WMS",
-         "visibility":true,
-         "name":"World Image",
-         "url":"http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer",
-         "mapBGColor":"194584",
-         "opacity":1.0,
-         "wrapDateLine":true,
-         }
+            "mapType": "WMS",
+            "visibility": true,
+            "name": "World Image",
+            "url": "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
+			"layers": "World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second",
+            "opacity": 1.0,
+            "wrapDateLine": true,
+			"maxZoomLevel" : 13,
+            "attribution": "Geoscience Australia <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a> and Natural Earth <a target='_blank' href='http://www.naturalearthdata.com/about/'>Terms of Use</a>"
+        }
          ],
          "layerMaps": [
          {
-         "isBaseLayer":false,
-         "mapType":"WMS",
-         "visibility":true,
-         "name":"Australian Topography",
-         "url":"http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer",
-         "mapBGColor":"194584",
-         "opacity":1.0
-         }
+            "mapType":"ArcGISCache",
+            "visibility":true,
+            "name":"Australian Topography",
+            "url":"http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer",
+			"metadataText": "The Australian Topographic map service is seamless national dataset coverage for the whole of Australia. The map portrays detailed graphic representation of features that appear on the Earth's surface. These features include cultural, hydrography and relief themes.",
+            "ogcLinks" : [
+			{"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B8239E8C0-2D4F-49C2-9A86-159566568965%7D"},
+			{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"},
+			{"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+			{"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer?f=lyr&v=9.3"}
+			],
+            "opacity":1.0,
+            "layerTimeout": 5000
+        }
          ],
          "controls": [
          "mouseposition",

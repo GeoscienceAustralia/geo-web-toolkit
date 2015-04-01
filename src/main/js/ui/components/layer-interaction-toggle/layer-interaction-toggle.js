@@ -39,7 +39,7 @@
      map-element-id="map"
      datum-projection='EPSG:102100'
      display-projection='EPSG:4326'
-     center-position='{"lat":"-3434403","lon":"14517578"}'
+     center-position='[130, -25]'
      zoom-level="4">
      <ga-map-layer
      layer-name="World Image"
