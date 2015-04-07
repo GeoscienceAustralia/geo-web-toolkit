@@ -184,12 +184,17 @@
                 return result;
             },
             createArcGISCacheLayer: function (args) {
-                return new ol.layer.Tile({
-                    source: new ol.source.TileArcGISRest({
-                        url: args.layerUrl
-                    }),
-                    opacity: args.opacity
-                });
+                var sourceOptions = {
+                    url: args.layerUrl + service.xyzTileCachePath,
+                    crossOrigin: '*/*'
+                };
+
+                var layerOptions = {
+                    opacity: args.opacity,
+                    source: new ol.source.XYZ(sourceOptions),
+                    visible: args.visibility === true || args.visibility === 'true'
+                };
+                return new ol.layer.Tile(layerOptions);
             },
             defaultLayerOptions: function (args, config) {
                 var layerOptions = angular.extend(config.defaultOptions, args);
