@@ -6,6 +6,8 @@
                 <button type="button" ng-click="populateTestData()" class="btn-danger">Populate test data</button>
                 <button type="button" ng-click="previewMap()" class="btn-primary">Preview</button>
                 <button type="button" ng-click="clearConfigOutput()">Clear config output</button>
+                <button type="button" ng-click="switchFramework()">Switch to OpenLayers version</button>
+                <button type="button" ng-show="config.frameworkVersion === 'olv3'" ng-click="switch3d()">Switch 2D/3D</button>
             </accordion-group>
             <accordion-group heading="Map details" is-open="accordions.mapDetailsIsOpen">
                 <!--<div class="form-group panel-body">-->

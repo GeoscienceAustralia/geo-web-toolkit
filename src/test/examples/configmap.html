@@ -1,11 +1,11 @@
 <div>
     <div >
-        <ga-map framework="olv3" map-element-id="gamap1" datum-projection="{{gaConfig.datumProjection}}"
-                display-projection="{{gaConfig.displayProjection}}"
-                center-position="{{gaConfig.centerPosition}}"
-                zoom-level="{{gaConfig.zoomLevel}}"
-                initial-extent="gaConfig.initialExtent">
-            <ga-map-layer ng-repeat="baseLayer in gaConfig.baseMaps"
+        <ga-map framework="{{config.frameworkVersion}}" map-element-id="gamap1" datum-projection="{{config.datumProjection}}"
+                display-projection="{{config.displayProjection}}"
+                center-position="{{config.centerPosition}}"
+                zoom-level="{{config.zoomLevel}}"
+                initial-extent="config.initialExtent">
+            <ga-map-layer ng-repeat="baseLayer in config.baseMaps"
                           layer-name="{{baseLayer.name}}"
                           layer-url="{{baseLayer.url}}"
                           wrap-date-line="{{baseLayer.wrapDateLine}}"
@@ -16,10 +16,11 @@
                           layer-attribution="{{baseLayer.attribution}}"
                           refresh-layer="{{layer.refresh}}"
                           max-zoom-level="{{baseLayer.maxZoomLevel}}"
+                          min-zoom-level="3"
                           on-error="onBaseLayerError(message,layer)">
             </ga-map-layer>
 
-            <ga-map-layer ng-repeat="layer in gaConfig.layerMaps"
+            <ga-map-layer ng-repeat="layer in config.layerMaps"
                           layer-name="{{layer.name}}"
                           layer-url="{{layer.url}}"
                           wrap-date-line="{{layer.wrapDateLine}}"
@@ -32,7 +33,7 @@
                           on-error="onLayerError(message,layer)">
             </ga-map-layer>
 
-            <ga-map-layer ng-repeat="layer in gaConfig.searchTempLayers"
+            <ga-map-layer ng-repeat="layer in config.searchTempLayers"
                           layer-name="{{layer.name}}"
                           layer-url="{{layer.url}}"
                           wrap-date-line="{{layer.wrapDateLine}}"
@@ -71,9 +72,6 @@
             <ga-map-control map-control-name="zoomslider"></ga-map-control>
             <ga-map-control map-control-name="attribution"></ga-map-control>
             <ga-map-control map-control-name="mouseposition"></ga-map-control>
-            <ga-map-control map-control-name="overviewmap"></ga-map-control>
-
-
 
         </ga-map>
     </div>
