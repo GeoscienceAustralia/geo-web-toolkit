@@ -413,23 +413,15 @@
                  * @param layerId {string} - ID of the layer that is to be the new base layer
                  * */
                 setBaseLayer: function (mapInstance, layerId) {
-                    var layers = mapInstance.getLayers();
-                    var layerDrawIndex;
-                    var i = 0;
-                    var found = false;
-                    layers.forEach(function (layer) {
-                        if(layer.get('id') === layerId && !found) {
-                            layerDrawIndex = i;
-                            //Set visible true since we are going to change to it.
-                            layer.setVisible(true);
-                            found = true;
-                        }
-                        i++;
-                    });
-                    if(layerDrawIndex) {
-                        olv3LayerService.raiseLayerDrawOrder(mapInstance,layerId,layerDrawIndex);
-                    }
+                    var layers = service._getLayersBy(mapInstance,'isBaseLayer',true);
 
+                    layers.forEach(function (layer) {
+                        if(layer.get('id') === layerId) {
+                            layer.setVisible(true);
+                        } else {
+                            layer.setVisible(false);
+                        }
+                    });
                 },
                 /**
                  * Updates the maps view to center on the lon/lat provided.

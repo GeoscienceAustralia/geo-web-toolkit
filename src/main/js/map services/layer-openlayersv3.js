@@ -98,7 +98,8 @@
                     service.postAddLayerCache[layer.id] = args.postAddLayer;
                 }*/
                 //Clean up any references to layers that no longer exist.
-
+                layer.set('name',args.layerName);
+                layer.set('isBaseLayer', args.isBaseLayer || false);
 
                 return layer;
             },
@@ -139,6 +140,7 @@
 
                 var result = new ol.layer.Tile(layerOptions);
                 result.set('name',args.layerName);
+                result.set('isBaseLayer', args.isBaseLayer || false);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
                 // More info at - https://github.com/openlayers/ol3/issues/2907
                 return result;
@@ -181,6 +183,7 @@
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
                 // More info at - https://github.com/openlayers/ol3/issues/2907
                 result.set('name',args.layerName);
+                result.set('isBaseLayer', args.isBaseLayer || false);
                 return result;
             },
             createArcGISCacheLayer: function (args) {
@@ -194,7 +197,10 @@
                     source: new ol.source.XYZ(sourceOptions),
                     visible: args.visibility === true || args.visibility === 'true'
                 };
-                return new ol.layer.Tile(layerOptions);
+                var result = new ol.layer.Tile(layerOptions);
+                result.set('name',args.layerName);
+                result.set('isBaseLayer', args.isBaseLayer || false);
+                return result;
             },
             defaultLayerOptions: function (args, config) {
                 var layerOptions = angular.extend(config.defaultOptions, args);
@@ -406,6 +412,7 @@
                 return features;
             },
             raiseLayerDrawOrder: function (mapInstance, layerId, delta) {
+
                 var layer = service.getLayerById(mapInstance, layerId);
                 var allLayers = mapInstance.getLayers();
                 var layerIndex;
@@ -416,9 +423,13 @@
                         break;
                     }
                 }
-                var updatedIndex = layerIndex - delta;
-                mapInstance.getLayers().removeAt(layerIndex);
-                mapInstance.getLayers().insertAt(updatedIndex,layer);
+                var updatedIndex = layerIndex + delta;
+                var layerAtUpdatedIndex = mapInstance.getLayers().getArray()[updatedIndex];
+                console.log(layerIndex);
+                console.log(updatedIndex);
+                mapInstance.getLayers().getArray()[updatedIndex] = layer;
+                mapInstance.getLayers().getArray()[layerIndex] = layerAtUpdatedIndex;
+                mapInstance.updateSize();
             },
             postAddLayerCache: {}
         };
