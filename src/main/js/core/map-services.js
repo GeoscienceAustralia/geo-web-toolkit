@@ -241,6 +241,26 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.addWfsClient(wfsClient);
             },
+            is3dSupported: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.is3dSupported(mapInstance);
+            },
+            is3d: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.is3d(mapInstance);
+            },
+            switchTo3dView: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.switchTo3dView(mapInstance);
+            },
+            switchTo2dView: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.switchTo2dView(mapInstance);
+            },
             searchWfs: function (mapInstance, clientId, query, attribute, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);

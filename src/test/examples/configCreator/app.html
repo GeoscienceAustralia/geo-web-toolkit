@@ -164,17 +164,8 @@
                 }
                 $scope.previewMap();
             };
-
             $scope.switch3d = function () {
-                $scope.is3d = $scope.is3d || false;
-                if($scope.is3d) {
-                    $scope.is3d = false;
-                    $scope.previewMap();
-                } else {
-                    $scope.is3d = true;
-                    var ol3d = new olcs.OLCesium({map: $scope.mapController.getMapInstance(), target: 'gamap1' }); // map is the ol.Map instance
-                    ol3d.setEnabled(true);
-                }
+                $scope.mapController.switch3d();
             };
             $scope.$watch('accordions.configOutputIsOpen', function () {
                 $scope.previewMap();

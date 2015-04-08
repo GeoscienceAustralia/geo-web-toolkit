@@ -1582,6 +1582,17 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 //                }
 //            };
 
+            self.switch3d = function () {
+                if(!GAMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
+                    return;
+                }
+                if(!GAMapService.is3d($scope.mapInstance,$scope.framework)) {
+                    GAMapService.switchTo3dView($scope.mapInstance,$scope.framework);
+                } else {
+                    GAMapService.switchTo2dView($scope.mapInstance,$scope.framework);
+                }
+            };
+
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
                 GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             };

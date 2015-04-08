@@ -1,4 +1,4 @@
-/* global angular, ol, $ */
+/* global angular, ol, olcs, $ */
 
 (function () {
     "use strict";
@@ -8,6 +8,9 @@
             'gawebtoolkit.mapservices.layer.openlayersv3',
             'gawebtoolkit.mapservices.controls.openlayersv3'
         ]);
+
+    var olCesiumInstance;
+    var USINGCESIUM_FLAG = 'isUsingCesium';
 
     app.service('olv3MapService', [
         'olv3LayerService',
@@ -870,6 +873,27 @@
                     return {
                         clientId: wfsClientId
                     };
+                },
+                is3dSupported: function (mapInstance) {
+                    //For OpenLayers 3 we are using ol3-cesium to handle syncing of layers.
+                    //If not included, return false as the ol3-cesium library is required.
+                    return window.olcs != null;
+                },
+                is3d: function (mapInstance) {
+                    return olCesiumInstance != null ? olCesiumInstance.getEnabled() : false;
+                },
+                switchTo3dView: function (mapInstance) {
+                    if(olCesiumInstance) {
+                        olCesiumInstance.setEnabled(true);
+                    } else {
+                        olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
+                        olCesiumInstance.setEnabled(true);
+                    }
+                },
+                switchTo2dView: function (mapInstance) {
+                    if(olCesiumInstance) {
+                        olCesiumInstance.setEnabled(false);
+                    }
                 },
                 searchWfs: function (mapInstance, clientId, query, attribute) {
                     var client = service.wfsClientCache[clientId];

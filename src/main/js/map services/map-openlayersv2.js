@@ -703,6 +703,19 @@ app.service('olv2MapService', [
 					clientId: wfsClientId
 				};
 			},
+			is3dSupported: function (mapInstance, version) {
+				//Always return false due to OpenLayers 2 having no support for 3D.
+				return false;
+			},
+			is3d: function (mapInstance, version) {
+				return false;
+			},
+			switchTo3dView: function (mapInstance, version) {
+				throw new Error("3D not supported in current map");
+			},
+			switchTo2dView: function (mapInstance, version) {
+				//No op as always 3D.
+			},
 			searchWfs: function (mapInstance, clientId, query, attribute) {
 				var client = service.wfsClientCache[clientId];
 				var deferred = $q.defer();

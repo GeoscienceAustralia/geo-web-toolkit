@@ -610,7 +610,6 @@
             it('Should fire mapController function "filterFeatureLayer" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[2];
                 $scope.mapController.filterFeatureLayer(layer.id, 'test', 'NAME');
-                passed = true;
             });
             it('Should fire mapController function "getLayerFeatures" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[2];
