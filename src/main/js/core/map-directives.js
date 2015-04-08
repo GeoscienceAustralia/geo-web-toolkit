@@ -1593,6 +1593,13 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 }
             };
 
+            self.is3d = function () {
+                if(!GAMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
+                    return false;
+                }
+                return GAMapService.is3d($scope.mapInstance,$scope.framework);
+            };
+
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
                 GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             };

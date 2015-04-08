@@ -10,6 +10,7 @@
             {name:'overviewmap', constructor: ol.control.OverviewMap},
             {name:'scaleline', constructor: ol.control.ScaleLine},
             {name:'zoomslider', constructor: ol.control.ZoomSlider},
+            {name:'panzoombar', constructor: ol.control.ZoomSlider},
             {name:'zoom', constructor: ol.control.Zoom},
             {name:'mouseposition', constructor: ol.control.MousePosition, resolveCustomParams: mousePositionDefaults},
             {name:'attribution', constructor: ol.control.Attribution}
