@@ -19,7 +19,8 @@
         'GeoLayer',
         '$q',
         '$log',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, $q, $log) {
+        '$timeout',
+        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, $q, $log, $timeout) {
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -44,6 +45,12 @@
                     view.geoMaxZoom = 28; //Default max zoom;
                     view.geoMinZoom = 0; //Default min zoom;
                     config.target = args.mapElementId;
+                    if (!ol.has.WEBGL) {
+                        config.renderer = 'canvas';
+                    } else {
+                        config.renderer = 'webgl';
+                    }
+
                     config.view = view;
                     config.controls = [];
                     service.displayProjection = args.displayProjection;
@@ -879,6 +886,11 @@
                         olCesiumInstance.setEnabled(true);
                     } else {
                         olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
+                        var scene = olCesiumInstance.getCesiumScene();
+                        $timeout(function () {
+                            scene.camera.zoomOut(400);
+                        });
+
                         olCesiumInstance.setEnabled(true);
                     }
                 },
