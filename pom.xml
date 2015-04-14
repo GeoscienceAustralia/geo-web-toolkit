@@ -1,12 +1,34 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
     <groupId>au.gov.ga</groupId>
 	<artifactId>geo-web-toolkit</artifactId>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>geo-web-toolkit</name>
+
+
+    <scm>
+        <url>http://rhe-neo-dev-repo.dev.lan/git/summary/geo-web-toolkit.git</url>
+        <connection>scm:git:http://rhe-neo-dev-repo.dev.lan/git/r/geo-web-toolkit.git</connection>
+    </scm>
+  <repositories>
+    <repository>
+      <id>ga-maven-int</id>
+      <name>Geoscience Internal Maven Repo</name>
+      <url>http://maven-int.ga.gov.au/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <url>http://maven-int.ga.gov.au/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>releases</id>
+      <url>http://maven-int.ga.gov.au/nexus/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -293,7 +315,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -316,7 +338,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -335,7 +357,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
