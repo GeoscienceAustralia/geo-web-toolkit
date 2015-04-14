@@ -904,18 +904,28 @@
                     function checkMapControls(mapInstance, targetId) {
                         var controls = mapInstance.getControls();
                         var mapElement = $('#' + targetId)[0];
-                        //controls.forEach(function (control) {
-                        //    if (control instanceof ol.control.MousePosition && mapElement) {
-                        //        mapElement.addEventListener('mousemove', function (e) {
-                        //            var position = {x: e.clientX - rect.left, y: e.clientY - rect.top};
-                        //            var updatedPosition = olCesiumInstance.getCamera().getPosition();
-                        //            var formatPos = control.getCoordinateFormat()(updatedPosition);
-                        //            $log.info(updatedPosition);
-                        //            $log.info(formatPos);
-                        //            $('.ol-mouse-position')[0].innerText = formatPos;
-                        //        });
-                        //    }
-                        //});
+                        controls.forEach(function (control) {
+                            if (control instanceof ol.control.MousePosition && mapElement) {
+                                var scene = olCesiumInstance.getCesiumScene();
+                                var ellipsoid = scene.globe.ellipsoid;
+
+                                // Mouse over the globe to see the cartographic position
+                                var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+                                handler.setInputAction(function(movement) {
+                                    var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+                                    if (cartesian) {
+                                        var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+                                        var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
+                                        var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+
+                                        var formatPos = control.getCoordinateFormat()([longitudeString,latitudeString]);
+                                        $log.info(formatPos);
+                                        //Update default ol v3 control element for mouse position.
+                                        $('.ol-mouse-position')[0].innerText = formatPos;
+                                    }
+                                }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+                            }
+                        });
 
                     }
                 },
