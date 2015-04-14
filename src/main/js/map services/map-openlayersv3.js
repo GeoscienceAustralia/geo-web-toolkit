@@ -34,9 +34,9 @@
                     //convert olv2 params to olv3.
                     var viewOptions = {};
                     viewOptions.projection = ol.proj.get(args.datumProjection);
-                    if(args.centerPosition) {
+                    if (args.centerPosition) {
                         var center = JSON.parse(args.centerPosition);
-                        viewOptions.center = ol.proj.transform([center[0],center[1]],args.displayProjection,args.datumProjection);
+                        viewOptions.center = ol.proj.transform([center[0], center[1]], args.displayProjection, args.datumProjection);
                     }
 
                     viewOptions.zoom = parseInt(args.zoomLevel);
@@ -54,23 +54,22 @@
                     config.view = view;
                     config.controls = [];
                     service.displayProjection = args.displayProjection;
-                    var map =  new ol.Map(config);
+                    var map = new ol.Map(config);
 
                     //HACK TODO Move to a post create map register (not created yet)
                     window.setTimeout(function () {
-                       if(args.initialExtent) {
-                           var extent = [
-                               args.initialExtent[0][0],
-                               args.initialExtent[0][1],
-                               args.initialExtent[1][0],
-                               args.initialExtent[1][1]
-                           ];
+                        if (args.initialExtent) {
+                            var extent = [
+                                args.initialExtent[0][0],
+                                args.initialExtent[0][1],
+                                args.initialExtent[1][0],
+                                args.initialExtent[1][1]
+                            ];
 
-                           var transformedCenter = ol.proj.transformExtent(extent,args.displayProjection,args.datumProjection);
-                           map.getView().fitExtent(transformedCenter,map.getSize());
-                       }
-                   },10);
-
+                            var transformedCenter = ol.proj.transformExtent(extent, args.displayProjection, args.datumProjection);
+                            map.getView().fitExtent(transformedCenter, map.getSize());
+                        }
+                    }, 10);
 
                     return map;
                 },
@@ -94,20 +93,20 @@
                 addLayer: function (mapInstance, layer) {
                     var layerMaxZoomLevel = layer.geoMaxZoom || mapInstance.getView().geoMaxZoom;
                     var layerMinZoomLevel = layer.geoMinZoom || mapInstance.getView().geoMinZoom;
-                    if(layerMaxZoomLevel < mapInstance.getView().geoMaxZoom || layerMinZoomLevel > mapInstance.getView().geoMinZoom) {
+                    if (layerMaxZoomLevel < mapInstance.getView().geoMaxZoom || layerMinZoomLevel > mapInstance.getView().geoMinZoom) {
                         var exiistingView = mapInstance.getView();
                         var options = {
                             projection: exiistingView.getProjection(),
                             center: exiistingView.getCenter(),
                             zoom: exiistingView.getZoom(),
                             maxZoom: layerMaxZoomLevel,
-                            minZoom:layerMinZoomLevel
+                            minZoom: layerMinZoomLevel
                         };
                         var nView = new ol.View(options);
                         mapInstance.setView(nView);
                     }
 
-                    if(layer.disableDefaultUI) {
+                    if (layer.disableDefaultUI) {
                         //TODO Google maps not supported by OLV3, need to handle vendor maps differently so toolkit can give
                         //better feedback to developers about what isn't supported and possible alternatives.
                         return;
@@ -149,31 +148,31 @@
                     $(mapInstance.getViewport()).on('mousemove', callback);
                 },
                 registerMapClick: function (mapInstance, callback) {
-                    if(callback != null) {
+                    if (callback != null) {
                         mapInstance.on('click', callback);
                     }
                 },
                 unRegisterMapClick: function (mapInstance, callback) {
-                    if(callback != null) {
+                    if (callback != null) {
                         mapInstance.un('click', callback);
                     }
                 },
                 //TODO unregister
                 registerMapMouseMoveEnd: function (mapInstance, callback) {
-                    $(mapInstance.getViewport()).on('mousemove',function(obj,e) {
+                    $(mapInstance.getViewport()).on('mousemove', function (obj, e) {
                         if (service.mousemoveTimeout !== undefined) {
                             window.clearTimeout(service.mousemoveTimeout);
                         }
                         service.mousemoveTimeout = window.setTimeout(function () {
-                            callback(obj,e);
+                            callback(obj, e);
                         }, 100);
                     });
                 },
                 registerMapEvent: function (mapInstance, eventName, callback) {
-                    mapInstance.on(eventName,callback);
+                    mapInstance.on(eventName, callback);
                 },
                 unRegisterMapEvent: function (mapInstance, eventName, callback) {
-                    mapInstance.un(eventName,callback);
+                    mapInstance.un(eventName, callback);
                 },
                 getCurrentMapExtent: function (mapInstance) {
                     var ext = mapInstance.getView().calculateExtent(mapInstance.getSize());
@@ -181,10 +180,10 @@
                         return null;
                     }
                     var result = [];
-                    var topLeft = ol.proj.transform([ext[0],ext[3]],mapInstance.getView().getProjection(), service.displayProjection);
-                    var topRight = ol.proj.transform([ext[2], ext[3]],mapInstance.getView().getProjection(), service.displayProjection);
-                    var bottomLeft = ol.proj.transform([ ext[0], ext[1] ],mapInstance.getView().getProjection(), service.displayProjection);
-                    var bottomRight = ol.proj.transform([ ext[2], ext[1] ],mapInstance.getView().getProjection(), service.displayProjection);
+                    var topLeft = ol.proj.transform([ext[0], ext[3]], mapInstance.getView().getProjection(), service.displayProjection);
+                    var topRight = ol.proj.transform([ext[2], ext[3]], mapInstance.getView().getProjection(), service.displayProjection);
+                    var bottomLeft = ol.proj.transform([ext[0], ext[1]], mapInstance.getView().getProjection(), service.displayProjection);
+                    var bottomRight = ol.proj.transform([ext[2], ext[1]], mapInstance.getView().getProjection(), service.displayProjection);
                     result.push(topLeft);
                     result.push(topRight);
                     result.push(bottomLeft);
@@ -197,7 +196,7 @@
                     var controls = mapInstance.getControls();
                     for (var i = 0; i < controls.getLength(); i++) {
                         var control = controls.item(i);
-                        if(control.get('id') === controlId) {
+                        if (control.get('id') === controlId) {
                             return true;
                         }
                     }
@@ -215,8 +214,8 @@
                     if (controlName === 'mouseposition') {
                         controlOptions = controlOptions || {};
                     }
-                    var con = olv3MapControls.createControl(controlName, controlOptions, div,mapOptions);
-                    con.set('id',controlId || con.get('id') || GAWTUtils.generateUuid());
+                    var con = olv3MapControls.createControl(controlName, controlOptions, div, mapOptions);
+                    con.set('id', controlId || con.get('id') || GAWTUtils.generateUuid());
                     mapInstance.addControl(con);
                     resultControl.id = con.get('id');
                     return resultControl;
@@ -250,9 +249,9 @@
                 },
                 //return void
                 activateControl: function (mapInstance, controlId) {
-                    var isActive = service.isControlActive(mapInstance,controlId);
+                    var isActive = service.isControlActive(mapInstance, controlId);
                     var cachedControl = service._getCachedControl(controlId);
-                    if(!isActive && cachedControl) {
+                    if (!isActive && cachedControl) {
                         mapInstance.addControl(cachedControl);
                         service._removeCachedControl(controlId);
                     }
@@ -261,7 +260,7 @@
                     service.cachedControls = service.cachedControls || [];
                     for (var i = 0; i < service.cachedControls.length; i++) {
                         var cachedControl = service.cachedControls[i];
-                        if(cachedControl.get('id') === controlId) {
+                        if (cachedControl.get('id') === controlId) {
                             return cachedControl;
                         }
                     }
@@ -271,7 +270,7 @@
                     service.cachedControls = service.cachedControls || [];
                     for (var i = 0; i < service.cachedControls.length; i++) {
                         var cachedControl = service.cachedControls[i];
-                        if(cachedControl.get('id') === controlId) {
+                        if (cachedControl.get('id') === controlId) {
                             service.cachedControls[i] = null;
                         }
                     }
@@ -279,10 +278,10 @@
                 },
                 //return void
                 deactivateControl: function (mapInstance, controlId) {
-                    var isActive = service.isControlActive(mapInstance,controlId);
+                    var isActive = service.isControlActive(mapInstance, controlId);
                     var cachedControl = service._getCachedControl(controlId);
-                    var currentControl = service.getControlById(mapInstance,controlId);
-                    if(isActive && !cachedControl) {
+                    var currentControl = service.getControlById(mapInstance, controlId);
+                    if (isActive && !cachedControl) {
                         service.cachedControls.push(currentControl);
                         mapInstance.removeControl(currentControl);
                     }
@@ -305,7 +304,6 @@
                     angular.forEach(mapInstance.getLayers(), function (layer) {
                         layers.push(GeoLayer.fromOpenLayersV3Layer(layer));
                     });
-                    console.log(layers);
                     return layers;
                 },
                 _getLayersBy: function (mapInstance, propertyName, propertyValue) {
@@ -313,7 +311,7 @@
                     var results = [];
                     layers.forEach(function (layer) {
                         var propVal = layer.get(propertyName);
-                        if(propVal && propVal.indexOf(propertyValue) !== -1) {
+                        if (propVal && propVal.indexOf(propertyValue) !== -1) {
                             results.push(layer);
                         }
                     });
@@ -324,7 +322,7 @@
                     if (typeof layerName !== 'string' && typeof layerName !== 'number') {
                         throw new TypeError('Expected number');
                     }
-                    return olv3LayerService.getLayersBy(mapInstance,'name',layerName);
+                    return olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                 },
                 /**
                  * Updated the layer visibility on the map instance via the provided layerId
@@ -333,10 +331,10 @@
                  * @param visibility {Boolean} - true or false indicating if the layer is to be visible or not
                  * */
                 setLayerVisibility: function (mapInstance, layerId, visibility) {
-                    if(typeof visibility !== 'string' && typeof visibility !== 'boolean') {
+                    if (typeof visibility !== 'string' && typeof visibility !== 'boolean') {
                         throw new TypeError('Invalid visibility value "' + visibility + '"');
                     }
-                    var layer = olv3LayerService.getLayerBy(mapInstance,'id', layerId);
+                    var layer = olv3LayerService.getLayerBy(mapInstance, 'id', layerId);
                     layer.setVisible(visibility);
                 },
                 /**
@@ -362,10 +360,10 @@
                  * @returns {Object} - OpenLayers.Bounds object
                  * */
                 createBounds: function (mapInstance, geoJsonCoordinateArray, projection) {
-                    if(projection) {
+                    if (projection) {
                         var view = mapInstance.getView();
-                        var topLeft = ol.proj.transform([geoJsonCoordinateArray[0][0],geoJsonCoordinateArray[0][1]], view.getProjection(), projection);
-                        var bottomRight = ol.proj.transform([geoJsonCoordinateArray[0][0],geoJsonCoordinateArray[0][1]], view.getProjection(), projection);
+                        var topLeft = ol.proj.transform([geoJsonCoordinateArray[0][0], geoJsonCoordinateArray[0][1]], view.getProjection(), projection);
+                        var bottomRight = ol.proj.transform([geoJsonCoordinateArray[0][0], geoJsonCoordinateArray[0][1]], view.getProjection(), projection);
                         return [
                             topLeft[0],
                             topLeft[1],
@@ -394,18 +392,18 @@
                 },
                 //TODO sensible errors when unsupported layerId is used.
                 zoomToLayer: function (mapInstance, layerId) {
-                    var layer = olv3LayerService.getLayerBy(mapInstance,'id', layerId);
+                    var layer = olv3LayerService.getLayerBy(mapInstance, 'id', layerId);
                     if (layer == null) {
                         throw new ReferenceError('Layer not found - id: "' + layerId + '".');
                     }
                     //Only valid for some layers
                     var extent = layer.getExtent();
-                    if(extent == null) {
+                    if (extent == null) {
                         // If not extent, ignore and do nothing.
                         return;
                     }
                     //var transformedExtent = extent.transform(new OpenLayers.Projection(mapInstance.getProjection()), layer.projection);
-                    mapInstance.getView().fitExtent(extent,mapInstance.getSize());
+                    mapInstance.getView().fitExtent(extent, mapInstance.getSize());
                 },
                 /**
                  * Sets a new zoom level of on the map instance
@@ -424,10 +422,10 @@
                  * @param layerId {string} - ID of the layer that is to be the new base layer
                  * */
                 setBaseLayer: function (mapInstance, layerId) {
-                    var layers = service._getLayersBy(mapInstance,'isBaseLayer',true);
+                    var layers = service._getLayersBy(mapInstance, 'isBaseLayer', true);
 
                     layers.forEach(function (layer) {
-                        if(layer.get('id') === layerId) {
+                        if (layer.get('id') === layerId) {
                             layer.setVisible(true);
                         } else {
                             layer.setVisible(false);
@@ -444,11 +442,11 @@
                  * */
                 setCenter: function (mapInstance, lat, lon, projection) {
 
-                    var point = [lon,lat];
+                    var point = [lon, lat];
                     if (projection == null) {
                         mapInstance.getView().setCenter(point);
                     } else {
-                        var transformedExtent = ol.proj.transform(point,projection,mapInstance.getView().getProjection());
+                        var transformedExtent = ol.proj.transform(point, projection, mapInstance.getView().getProjection());
                         mapInstance.getView().setCenter(transformedExtent);
                     }
                 },
@@ -465,7 +463,7 @@
                     var i = 0;
                     var found = false;
                     layers.forEach(function (layer) {
-                        if(layer.get('id') === layerId && !found) {
+                        if (layer.get('id') === layerId && !found) {
                             layerDrawIndex = i;
                             found = true;
                         }
@@ -483,7 +481,7 @@
                     if (typeof opacity === 'object') {
                         throw new TypeError("Expected number");
                     }
-                    var layer = olv3LayerService.getLayerBy(mapInstance,'id',layerId);
+                    var layer = olv3LayerService.getLayerBy(mapInstance, 'id', layerId);
                     layer.setOpacity(opacity);
                 },
                 /**
@@ -497,10 +495,10 @@
                     }
                 },
                 setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
-                    var markerLayer = olv3LayerService.getLayerBy(mapInstance,'name', markerGroupName);
+                    var markerLayer = olv3LayerService.getLayerBy(mapInstance, 'name', markerGroupName);
 
                     var iconFeature = new ol.Feature({
-                        geometry: new ol.geom.Point([coords.x,coords.y])
+                        geometry: new ol.geom.Point([coords.x, coords.y])
                     });
 
                     var iconStyle = new ol.style.Style({
@@ -523,7 +521,7 @@
                         markerLayer = new ol.layer.Vector({
                             source: source
                         });
-                        markerLayer.set('name',markerGroupName);
+                        markerLayer.set('name', markerGroupName);
                         mapInstance.addLayer(markerLayer);
                     }
                 },
@@ -537,15 +535,16 @@
                     if (y == null) {
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
-                    var result = mapInstance.getCoordinateFromPixel([x,y]);
+                    var result = mapInstance.getCoordinateFromPixel([x, y]);
 
                     if (projection) {
-                        result = ol.proj.transform(result,mapInstance.getView().getProjection(), projection);
+                        result = ol.proj.transform(result, mapInstance.getView().getProjection(), projection);
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
                         result = ol.proj.transform(result, mapInstance.getView().getProjection(), service.displayProjection);
                     }
                     return {
-
+                        lon: result[0],
+                        lat: result[1]
                     };
                 },
                 getPixelFromLonLat: function (mapInstance, lon, lat) {
@@ -555,7 +554,7 @@
                     if (lat == null) {
                         throw new ReferenceError("'lat' value cannot be null or undefined");
                     }
-                    return mapInstance.getPixelFromCoordinate([lon,lat]);
+                    return mapInstance.getPixelFromCoordinate([lon, lat]);
                 },
                 getPointFromEvent: function (e) {
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
@@ -746,12 +745,12 @@
                             }).done(loadFeatures);
                         },
                         strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-                           maxZoom: mapInstance.geoMaxZoom
+                            maxZoom: mapInstance.geoMaxZoom
                         })),
                         projection: mapInstance.getView().getProjection()
                     });
 
-                    var loadFeatures = function(response) {
+                    var loadFeatures = function (response) {
                         vectorSource.addFeatures(vectorSource.readFeatures(response));
                     };
 
@@ -760,11 +759,10 @@
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
                                 color: 'rbg(0,0,255,1.0)',
-                                width:5
+                                width: 5
                             })
                         })
                     });
-
 
                     tolerance = tolerance || 0;
                     var deferred = $q.defer();
@@ -888,14 +886,14 @@
                     return olCesiumInstance != null ? olCesiumInstance.getEnabled() : false;
                 },
                 switchTo3dView: function (mapInstance) {
-                    if(olCesiumInstance) {
+                    if (olCesiumInstance) {
                         olCesiumInstance.setEnabled(true);
                     } else {
                         olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
                         var scene = olCesiumInstance.getCesiumScene();
                         $timeout(function () {
                             scene.camera.zoomOut(400);
-                            checkMapControls(mapInstance,mapInstance.getTarget());
+                            checkMapControls(mapInstance, mapInstance.getTarget());
                         });
 
                         olCesiumInstance.setEnabled(true);
@@ -911,14 +909,14 @@
 
                                 // Mouse over the globe to see the cartographic position
                                 var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-                                handler.setInputAction(function(movement) {
+                                handler.setInputAction(function (movement) {
                                     var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                                     if (cartesian) {
                                         var cartographic = ellipsoid.cartesianToCartographic(cartesian);
                                         var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
                                         var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
 
-                                        var formatPos = control.getCoordinateFormat()([longitudeString,latitudeString]);
+                                        var formatPos = control.getCoordinateFormat()([longitudeString, latitudeString]);
                                         $log.info(formatPos);
                                         //Update default ol v3 control element for mouse position.
                                         $('.ol-mouse-position')[0].innerText = formatPos;
@@ -930,7 +928,7 @@
                     }
                 },
                 switchTo2dView: function (mapInstance) {
-                    if(olCesiumInstance) {
+                    if (olCesiumInstance) {
                         olCesiumInstance.setEnabled(false);
                     }
                 },
