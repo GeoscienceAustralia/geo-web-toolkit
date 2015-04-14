@@ -45,5 +45,5 @@ Then the Karma runner can be launched using the following (assuming you have ins
 
 `>> karma start src/test/js/config/karma.conf.js`
 
-Tests can be executed by using `grunt karma`/
+Tests can be executed by using `grunt karma`
 
