@@ -225,7 +225,7 @@
             it('Should fire mapController function "getPointFromEvent" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var point = $scope.mapController.getPointFromEvent({xy: {x: 50, y: 100}});
+                    var point = $scope.mapController.getPointFromEvent({coordinate: [50,100]});
                     expect(point != null).toBe(true);
                     expect(point.x).toBe(50);
                     expect(point.y).toBe(100);
@@ -727,7 +727,7 @@
             });
 
             it('Should fire mapController function "raiseLayerDrawOrder" without an exception given valid input', function () {
-                var layer = $scope.mapController.getLayers()[2];
+                var layer = $scope.mapController.getLayers()[1];
                 $scope.mapController.raiseLayerDrawOrder(layer.id, 1);
                 var otherLayer = $scope.mapController.getLayers()[0];
                 //result from first get layers is not the same as other layers due to\
