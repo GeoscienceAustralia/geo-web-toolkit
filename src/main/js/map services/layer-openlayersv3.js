@@ -132,6 +132,12 @@
                     crossOrigin: '*/*'
                 };
 
+                if(args.layerAttribution != null) {
+                    sourceOptions.attributions = [new ol.Attribution({
+                        html: args.layerAttribution
+                    })];
+                }
+
                 var layerOptions = {
                     opacity: args.opacity,
                     source: new ol.source.XYZ(sourceOptions),

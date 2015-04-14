@@ -149,10 +149,14 @@
                     $(mapInstance.getViewport()).on('mousemove', callback);
                 },
                 registerMapClick: function (mapInstance, callback) {
-                    mapInstance.on('click', callback);
+                    if(callback != null) {
+                        mapInstance.on('click', callback);
+                    }
                 },
                 unRegisterMapClick: function (mapInstance, callback) {
-                    mapInstance.un('click', callback);
+                    if(callback != null) {
+                        mapInstance.un('click', callback);
+                    }
                 },
                 //TODO unregister
                 registerMapMouseMoveEnd: function (mapInstance, callback) {
@@ -536,11 +540,13 @@
                     var result = mapInstance.getCoordinateFromPixel([x,y]);
 
                     if (projection) {
-                        result = result.transform(mapInstance.getView().getProjection(), projection);
+                        result = ol.proj.transform(result,mapInstance.getView().getProjection(), projection);
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
-                        result = result.transform(mapInstance.getView().getProjection(), service.displayProjection);
+                        result = ol.proj.transform(result, mapInstance.getView().getProjection(), service.displayProjection);
                     }
-                    return result;
+                    return {
+
+                    };
                 },
                 getPixelFromLonLat: function (mapInstance, lon, lat) {
                     if (lon == null) {
@@ -555,8 +561,8 @@
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
                     // incorrect value in regards to your screen pixels
                     return {
-                        x: e.xy.x,
-                        y: e.xy.y
+                        x: e.coordinate[0],
+                        y: e.coordinate[1]
                     };
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
@@ -889,9 +895,28 @@
                         var scene = olCesiumInstance.getCesiumScene();
                         $timeout(function () {
                             scene.camera.zoomOut(400);
+                            checkMapControls(mapInstance,mapInstance.getTarget());
                         });
 
                         olCesiumInstance.setEnabled(true);
+                    }
+
+                    function checkMapControls(mapInstance, targetId) {
+                        var controls = mapInstance.getControls();
+                        var mapElement = $('#' + targetId)[0];
+                        //controls.forEach(function (control) {
+                        //    if (control instanceof ol.control.MousePosition && mapElement) {
+                        //        mapElement.addEventListener('mousemove', function (e) {
+                        //            var position = {x: e.clientX - rect.left, y: e.clientY - rect.top};
+                        //            var updatedPosition = olCesiumInstance.getCamera().getPosition();
+                        //            var formatPos = control.getCoordinateFormat()(updatedPosition);
+                        //            $log.info(updatedPosition);
+                        //            $log.info(formatPos);
+                        //            $('.ol-mouse-position')[0].innerText = formatPos;
+                        //        });
+                        //    }
+                        //});
+
                     }
                 },
                 switchTo2dView: function (mapInstance) {
