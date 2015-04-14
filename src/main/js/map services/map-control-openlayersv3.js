@@ -37,7 +37,30 @@
                         return ol.coordinate.toStringXY(coord,dgts);
                     });
             };
-            result.coordinateFormat = controlOptions.coordinateFormat == null ? wgs84Default(4) : controlOptions.coordinateFormat(4);
+            var wrappedFormatOutput = function (formatFn) {
+                return (
+                    function(coord) {
+                        if(coord[0] > 180) {
+                            coord[0] = coord[0] - 360;
+                        }
+                        if(coord[0] < -180) {
+                            coord[0] = coord[0] + 360;
+                        }
+
+                        if(coord[1] > 90) {
+                            coord[1] = coord[1] - 180;
+                        }
+                        if(coord[1] < -90) {
+                            coord[1] = coord[1] + 180;
+                        }
+                        return formatFn({ lon : coord[0], lat: coord[1]});
+                    });
+            }
+            if(controlOptions.formatOutput != null) {
+                result.coordinateFormat = wrappedFormatOutput(controlOptions.formatOutput);
+            } else {
+                result.coordinateFormat = controlOptions.coordinateFormat == null ? wgs84Default(4) : controlOptions.coordinateFormat(4);
+            }
             result.projection = controlOptions.projection || mapOptions.displayProjection;
             return result;
         }

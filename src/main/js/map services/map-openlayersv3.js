@@ -1,4 +1,4 @@
-/* global angular, ol, olcs, $ */
+/* global angular, ol, olcs, $, Cesium */
 
 (function () {
     "use strict";
@@ -213,6 +213,11 @@
                     //Sensible default for mouse position
                     if (controlName === 'mouseposition') {
                         controlOptions = controlOptions || {};
+                    }
+
+                    //OLV3 changed name for 'maximized' option. Parse if present.
+                    if (controlName === 'overviewmap' && controlOptions != null && controlOptions.maximized != null) {
+                        controlOptions.collapsed = !controlOptions.maximized;
                     }
                     var con = olv3MapControls.createControl(controlName, controlOptions, div, mapOptions);
                     con.set('id', controlId || con.get('id') || GAWTUtils.generateUuid());
@@ -536,11 +541,10 @@
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
                     var result = mapInstance.getCoordinateFromPixel([x, y]);
-
                     if (projection) {
-                        result = ol.proj.transform(result, mapInstance.getView().getProjection(), projection);
+                        result = ol.proj.transform(result, projection, mapInstance.getView().getProjection());
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
-                        result = ol.proj.transform(result, mapInstance.getView().getProjection(), service.displayProjection);
+                        result = ol.proj.transform(result, service.displayProjection, mapInstance.getView().getProjection());
                     }
                     return {
                         lon: result[0],
@@ -892,45 +896,48 @@
                         olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
                         var scene = olCesiumInstance.getCesiumScene();
                         $timeout(function () {
-                            scene.camera.zoomOut(400);
-                            checkMapControls(mapInstance, mapInstance.getTarget());
+                            service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget(), true);
                         });
 
                         olCesiumInstance.setEnabled(true);
                     }
 
-                    function checkMapControls(mapInstance, targetId) {
-                        var controls = mapInstance.getControls();
-                        var mapElement = $('#' + targetId)[0];
-                        controls.forEach(function (control) {
-                            if (control instanceof ol.control.MousePosition && mapElement) {
-                                var scene = olCesiumInstance.getCesiumScene();
-                                var ellipsoid = scene.globe.ellipsoid;
-
-                                // Mouse over the globe to see the cartographic position
-                                var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-                                handler.setInputAction(function (movement) {
-                                    var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
-                                    if (cartesian) {
-                                        var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                                        var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
-                                        var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
-
-                                        var formatPos = control.getCoordinateFormat()([longitudeString, latitudeString]);
-                                        $log.info(formatPos);
-                                        //Update default ol v3 control element for mouse position.
-                                        $('.ol-mouse-position')[0].innerText = formatPos;
-                                    }
-                                }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                            }
-                        });
-
-                    }
                 },
                 switchTo2dView: function (mapInstance) {
                     if (olCesiumInstance) {
                         olCesiumInstance.setEnabled(false);
+                        service.syncMapControlsWithOl3Cesium(mapInstance,mapInstance.getTarget(),false);
                     }
+                },
+                syncMapControlsWithOl3Cesium: function (mapInstance, targetId, initialise) {
+                    var controls = mapInstance.getControls();
+                    var mapElement = $('#' + targetId)[0];
+                    controls.forEach(function (control) {
+                        if (control instanceof ol.control.MousePosition && mapElement && initialise) {
+                            var scene = olCesiumInstance.getCesiumScene();
+                            var ellipsoid = scene.globe.ellipsoid;
+
+                            // Mouse over the globe to see the cartographic position
+                            var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+                            handler.setInputAction(function (movement) {
+                                var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+                                if (cartesian) {
+                                    var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+                                    var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
+                                    var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
+
+                                    var formatPos = control.getCoordinateFormat()([longitudeString, latitudeString]);
+                                    //Update default ol v3 control element for mouse position.
+                                    $('.ol-mouse-position')[0].innerText = formatPos;
+                                }
+                            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+                        }
+
+                        if(control instanceof ol.control.ScaleLine) {
+                            //Force update scaleline so measurements don't get out of sync.
+                            mapInstance.render();
+                        }
+                    });
                 },
                 searchWfs: function (mapInstance, clientId, query, attribute) {
                     var client = service.wfsClientCache[clientId];
