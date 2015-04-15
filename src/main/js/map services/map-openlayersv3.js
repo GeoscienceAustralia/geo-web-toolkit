@@ -431,6 +431,7 @@
                     drawInteraction.on("drawend", function (e) {
                         mapInstance.un('pointerup', service.measurePointerUpEvent);
                         mapInstance.un('pointermove', service.measurePointerMoveEvent);
+                        mapInstance.un('pointermove', service.measurePointerDownEvent);
                         callback(e);
                         service.measureIsDrawEndComplete = true;
                     },service);
