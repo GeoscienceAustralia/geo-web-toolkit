@@ -293,11 +293,95 @@
                 },
                 //return void
                 registerControlEvent: function (mapInstance, controlId, eventName, callback) {
+                    //First check if control exists and then for previous OLV2 events, eg measure so we can handle them as ol.interactions
+                    var controls = mapInstance.getControls();
+                    var existingControl = null;
+                    controls.forEach(function (control) {
+                        if(control.get('id') === controlId) {
+                            existingControl = control;
+                        }
+                    });
 
+                    if(existingControl == null) {
+                        var source = new ol.source.Vector();
+
+                        var vector = new ol.layer.Vector({
+                            source: source,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(255, 255, 255, 0.2)'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#ffcc33',
+                                    width: 2
+                                }),
+                                image: new ol.style.Circle({
+                                    radius: 7,
+                                    fill: new ol.style.Fill({
+                                        color: '#ffcc33'
+                                    })
+                                })
+                            })
+                        });
+                        vector.set('id', GAWTUtils.generateUuid());
+
+                        var draw = new ol.interaction.Draw({
+                            source: source,
+                            type: /** @type {ol.geom.GeometryType} */ ("LineString")
+                        });
+                        if(eventName === 'measurepartial') {
+                            //Handle measure with custom implementation as OLV3 does not have a measure control
+                            draw.on("drawstart", function (e) {
+                                //Parse event params
+                                service.lastMeasureDrawFeature = e.feature;
+                            });
+
+                            mapInstance.on('pointermove', function (event) {
+                                if (event.dragging) {
+                                    return;
+                                }
+                                if(service.lastMeasureDrawFeature) {
+                                    event.feature = service.lastMeasureDrawFeature;
+                                    var measureEvent = service.getMeasureFromEvent(mapInstance, event);
+                                    service.lastMeasureDrawEvent = measureEvent;
+                                    callback(measureEvent);
+                                }
+                            });
+                            mapInstance.addLayer(vector);
+                            mapInstance.addInteraction(draw);
+                            //Persist for removal
+                            service.drawLineStringInteraction = draw;
+                            service.drawLineStringLayer = vector;
+                        }
+                        if(eventName === 'measure') {
+                            draw.on("drawend", function (e) {
+                                callback(service.lastMeasureDrawEvent);
+                            });
+                        }
+                    } else {
+                        existingControl.on(eventName,callback);
+                    }
                 },
                 //return void
                 unRegisterControlEvent: function (mapInstance, controlId, eventName, callback) {
+//First check if control exists and then for previous OLV2 events, eg measure so we can handle them as ol.interactions
+                    var controls = mapInstance.getControls();
+                    var existingControl = null;
+                    controls.forEach(function (control) {
+                        if(control.get('id') === controlId) {
+                            existingControl = control;
+                        }
+                    });
 
+                    if(existingControl == null) {
+                        if(eventName === 'measure') {
+                            //Handle measure with custom implementation as OLV3 does not have a measure control
+                            mapInstance.removeInteraction(service.drawLineStringInteraction);
+                            mapInstance.removeLayer(service.drawLineStringLayer);
+                        }
+                    } else {
+                        existingControl.un(eventName,callback);
+                    }
                 },
                 /**
                  * Gets the current list of layers in the map instance and returns as Layer type (geo-web-toolkit DTO)
@@ -501,9 +585,9 @@
                 },
                 setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
                     var markerLayer = olv3LayerService.getLayerBy(mapInstance, 'name', markerGroupName);
-
+                    var latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
                     var iconFeature = new ol.Feature({
-                        geometry: new ol.geom.Point([coords.x, coords.y])
+                        geometry: new ol.geom.Point(latLon)
                     });
 
                     var iconStyle = new ol.style.Style({
@@ -540,11 +624,12 @@
                     if (y == null) {
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
+
                     var result = mapInstance.getCoordinateFromPixel([x, y]);
                     if (projection) {
-                        result = ol.proj.transform(result, projection, mapInstance.getView().getProjection());
+                        result = ol.proj.transform(result,mapInstance.getView().getProjection() , projection);
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
-                        result = ol.proj.transform(result, service.displayProjection, mapInstance.getView().getProjection());
+                        result = ol.proj.transform(result,mapInstance.getView().getProjection(), service.displayProjection);
                     }
                     return {
                         lon: result[0],
@@ -564,11 +649,12 @@
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
                     // incorrect value in regards to your screen pixels
                     return {
-                        x: e.coordinate[0],
-                        y: e.coordinate[1]
+                        x: e.pixel[0],
+                        y: e.pixel[1]
                     };
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
+
                     var startPoint = new OpenLayers.Geometry.Point(points[0].lon, points[0].lat);
                     var endPoint = new OpenLayers.Geometry.Point(points[1].lon, points[1].lat);
 
@@ -989,17 +1075,13 @@
                     return deferred.promise;
                 },
                 getMeasureFromEvent: function (mapInstance, e) {
-                    var points;
-                    var format = new OpenLayers.Format.GeoJSON({
-                        externalProjection: service.displayProjection,
-                        internalProjection: mapInstance.projection
-                    });
-                    var geoJsonString = format.write(e.geometry);
-                    points = angular.fromJson(geoJsonString);
+                    var format = new ol.format.GeoJSON();
+                    var geoJson = format.writeFeature(e.feature);
+                    console.log(e);
                     return {
                         measurement: e.measure,
                         units: e.units,
-                        geoJson: points
+                        geoJson: angular.fromJson(geoJson)
                     };
                 },
                 wfsClientCache: {}

@@ -225,10 +225,10 @@
             it('Should fire mapController function "getPointFromEvent" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var point = $scope.mapController.getPointFromEvent({coordinate: [50,100]});
+                    var point = $scope.mapController.getPointFromEvent({pixel: [300,450]});
                     expect(point != null).toBe(true);
-                    expect(point.x).toBe(50);
-                    expect(point.y).toBe(100);
+                    expect(point.x).toBe(300);
+                    expect(point.y).toBe(450);
                     passed = true;
                 } catch (e) {
                 }
@@ -456,7 +456,7 @@
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    $scope.mapController.setMapMarker({x: 50, y: 50}, 'testgroupname', 'http://localhost:8080', {width: 50, height: 50});
+                    $scope.mapController.setMapMarker({x: 50, y: 50}, 'testgroupname', 'http://localhost:8080', {opacity: 0.5});
                     expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
                     passed = true;
                 } catch (e) {

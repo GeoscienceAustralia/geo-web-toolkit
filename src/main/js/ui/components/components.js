@@ -9,6 +9,7 @@
         'gawebtoolkit.ui.components.google-place-name-search',
         'gawebtoolkit.ui.components.geo-place-name-search',
         'gawebtoolkit.ui.components.layer-interaction-toggle',
-        'gawebtoolkit.ui.components.deprecated'
+        'gawebtoolkit.ui.components.deprecated',
+        'gawebtoolkit.ui.components.measure-toggle'
     ]);
 })();
