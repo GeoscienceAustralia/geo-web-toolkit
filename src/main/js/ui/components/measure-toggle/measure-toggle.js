@@ -66,7 +66,9 @@
                     $scope.toggleOffCallback();
                 };
                 $scope.handleToggle = function () {
-                    if ($scope.mapController.isControlActive($scope.mapControlId)) {
+                    // HACK control name passed in to enable compatibility across OLV2 and OLV3.
+                    // TODO convert control to layerInteractionToggle and maintain 'enabled' state locally.
+                    if ($scope.mapController.isControlActive($scope.mapControlId,"measureline")) {
                         $scope.deactivate();
                     } else {
                         $scope.activate();

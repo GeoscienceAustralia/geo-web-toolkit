@@ -76,10 +76,10 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.addControl(mapInstance, controlName, controlOptions, elementId, controlId, mapOptions);
             },
-            isControlActive: function (mapInstance, controlId, version) {
+            isControlActive: function (mapInstance, controlId,controlName, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.isControlActive(mapInstance, controlId);
+                return service.isControlActive(mapInstance, controlId, controlName);
             },
             activateControl: function (mapInstance, controlId, version) {
                 var useVersion = version || 'olv2';

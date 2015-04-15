@@ -47,8 +47,10 @@
                     config.target = args.mapElementId;
                     if (!ol.has.WEBGL) {
                         config.renderer = 'canvas';
+                    } if (window.olcs != null) {
+                        config.renderer = 'canvas';
                     } else {
-                        config.renderer = 'webgl';
+                        config.renderer = 'canvas';
                     }
 
                     config.view = view;
@@ -191,7 +193,11 @@
                     return result;
                 },
                 //return bool
-                isControlActive: function (mapInstance, controlId) {
+                isControlActive: function (mapInstance, controlId, controlName) {
+                    //Handle UI control compatibility.
+                    if(controlName === 'measureline') {
+                        return service.measureEventDrawInteraction != null;
+                    }
                     //TODO no active state in olv3
                     var controls = mapInstance.getControls();
                     for (var i = 0; i < controls.getLength(); i++) {
@@ -221,7 +227,16 @@
                     }
                     var con = olv3MapControls.createControl(controlName, controlOptions, div, mapOptions);
                     con.set('id', controlId || con.get('id') || GAWTUtils.generateUuid());
-                    mapInstance.addControl(con);
+                    //Overview map can't be added after the map creation unless the map has performed a render.
+                    //HACK to wait for map before adding this control.
+                    if(controlName === 'overviewmap') {
+                        $timeout(function () {
+                            mapInstance.addControl(con);
+                        },1000);
+                    } else {
+                        mapInstance.addControl(con);
+                    }
+
                     resultControl.id = con.get('id');
                     return resultControl;
                 },
@@ -303,68 +318,126 @@
                     });
 
                     if(existingControl == null) {
-                        var source = new ol.source.Vector();
-
-                        var vector = new ol.layer.Vector({
-                            source: source,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: 'rgba(255, 255, 255, 0.2)'
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: '#ffcc33',
-                                    width: 2
-                                }),
-                                image: new ol.style.Circle({
-                                    radius: 7,
-                                    fill: new ol.style.Fill({
-                                        color: '#ffcc33'
-                                    })
-                                })
-                            })
-                        });
-                        vector.set('id', GAWTUtils.generateUuid());
-
-                        var draw = new ol.interaction.Draw({
-                            source: source,
-                            type: /** @type {ol.geom.GeometryType} */ ("LineString")
-                        });
                         if(eventName === 'measurepartial') {
-                            //Handle measure with custom implementation as OLV3 does not have a measure control
-                            draw.on("drawstart", function (e) {
-                                //Parse event params
-                                service.lastMeasureDrawFeature = e.feature;
-                            });
-
-                            mapInstance.on('pointermove', function (event) {
-                                if (event.dragging) {
-                                    return;
-                                }
-                                if(service.lastMeasureDrawFeature) {
-                                    event.feature = service.lastMeasureDrawFeature;
-                                    var measureEvent = service.getMeasureFromEvent(mapInstance, event);
-                                    service.lastMeasureDrawEvent = measureEvent;
-                                    callback(measureEvent);
-                                }
-                            });
-                            mapInstance.addLayer(vector);
-                            mapInstance.addInteraction(draw);
-                            //Persist for removal
-                            service.drawLineStringInteraction = draw;
-                            service.drawLineStringLayer = vector;
+                            service.initMeasureEventLayer(mapInstance);
+                            service.handleMeasurePartial(mapInstance,service.measureEventVectorLayer,service.measureEventDrawInteraction,callback);
                         }
                         if(eventName === 'measure') {
-                            draw.on("drawend", function (e) {
-                                callback(service.lastMeasureDrawEvent);
-                            });
+                            service.initMeasureEventLayer(mapInstance);
+                            service.handleMeasure(mapInstance,service.measureEventVectorLayer,service.measureEventDrawInteraction,callback);
                         }
+
                     } else {
                         existingControl.on(eventName,callback);
                     }
                 },
+                initMeasureEventLayer: function(mapInstance) {
+                    var addLayerAndInteraction = false;
+                    if(!service.measureEventVectorLayer) {
+                        addLayerAndInteraction = true;
+                    }
+                    service.measureEventSource = service.measureEventSource || new ol.source.Vector();
+
+                    service.measureEventVectorLayer = service.measureEventVectorLayer || new ol.layer.Vector({
+                        source: service.measureEventSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255, 255, 255, 0.2)'
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#ffcc33',
+                                width: 2
+                            }),
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({
+                                    color: '#ffcc33'
+                                })
+                            })
+                        })
+                    });
+
+                    service.measureEventVectorLayer.set('id', GAWTUtils.generateUuid());
+
+                    service.measureEventDrawInteraction = service.measureEventDrawInteraction || new ol.interaction.Draw({
+                        source: service.measureEventSource,
+                        type: "LineString",
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255, 255, 255, 0.2)'
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: 'rgba(0, 0, 0, 0.5)',
+                                lineDash: [10, 10],
+                                width: 2
+                            }),
+                            image: new ol.style.Circle({
+                                radius: 5,
+                                stroke: new ol.style.Stroke({
+                                    color: 'rgba(0, 0, 0, 0.7)'
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(255, 255, 255, 0.2)'
+                                })
+                            })
+                        })
+                    });
+
+                    if(addLayerAndInteraction) {
+                        mapInstance.addLayer(service.measureEventVectorLayer);
+                        mapInstance.addInteraction(service.measureEventDrawInteraction);
+                    }
+
+                },
+                handleMeasurePartial: function (mapInstance,vectorLayer,drawInteraction, callback) {
+                    drawInteraction.on("drawstart", function (e) {
+                        var isDragging = false;
+                        var sketchFeature = e.feature;
+                        service.measurePointerMoveEvent = function (event) {
+                            isDragging = !!event.dragging;
+                        };
+                        service.measureSingleClickTimeout = null;
+                        service.measurePointerUpEvent = function (event) {
+                            if(service.measureSingleClickTimeout) {
+                                $timeout.cancel(service.measureSingleClickTimeout);
+                            }
+                            if(!isDragging) {
+                                service.measureSingleClickTimeout = $timeout(function () {
+                                    if(!service.measureIsDrawEndComplete) {
+                                        event.feature = sketchFeature;
+                                        callback(event);
+                                    } else {
+                                        service.measureIsDrawEndComplete = false;
+                                    }
+                                },10);
+                            }
+                        };
+
+                        service.measurePointerDownEvent = function (event) {
+                            var doubleClickCheck = new Date(new Date() + 250);
+                            if(!isDragging && service.measureSingleClickTimeout != null && doubleClickCheck < service.measureSingleClickTimeout) {
+                                service.measureIsDoubleClick = true;
+                            }
+                            service.measureSingleClickTimeout = new Date();
+                        };
+                        mapInstance.on('pointerup', service.measurePointerUpEvent);
+                        mapInstance.on('pointermove', service.measurePointerMoveEvent);
+                        mapInstance.on('pointerdown', service.measurePointerDownEvent);
+                        callback(e);
+                    }, service);
+                },
+                handleMeasure: function (mapInstance, vectorLayer, drawInteraction,callback) {
+                    service.measureIsDrawEndComplete = false;
+                    drawInteraction.on("drawend", function (e) {
+                        mapInstance.un('pointerup', service.measurePointerUpEvent);
+                        mapInstance.un('pointermove', service.measurePointerMoveEvent);
+                        callback(e);
+                        service.measureIsDrawEndComplete = true;
+                    },service);
+                },
                 //return void
                 unRegisterControlEvent: function (mapInstance, controlId, eventName, callback) {
-//First check if control exists and then for previous OLV2 events, eg measure so we can handle them as ol.interactions
+                    //First check if control exists and then for previous OLV2 events, eg measure so we can handle them as ol.interactions
                     var controls = mapInstance.getControls();
                     var existingControl = null;
                     controls.forEach(function (control) {
@@ -374,10 +447,21 @@
                     });
 
                     if(existingControl == null) {
-                        if(eventName === 'measure') {
+                        if(eventName === 'measure' && service.measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            mapInstance.removeInteraction(service.drawLineStringInteraction);
-                            mapInstance.removeLayer(service.drawLineStringLayer);
+                            mapInstance.removeInteraction(service.measureEventDrawInteraction);
+                            mapInstance.removeLayer(service.measureEventVectorLayer);
+                            service.measureEventVectorLayer = null;
+                            service.measureEventDrawInteraction = null;
+                            service.measureEventSource = null;
+                        }
+                        if(eventName === 'measure' && service.measureEventDrawInteraction) {
+                            //Handle measure with custom implementation as OLV3 does not have a measure control
+                            mapInstance.removeInteraction(service.measureEventDrawInteraction);
+                            mapInstance.removeLayer(service.measureEventVectorLayer);
+                            service.measureEventVectorLayer = null;
+                            service.measureEventDrawInteraction = null;
+                            service.measureEventSource = null;
                         }
                     } else {
                         existingControl.un(eventName,callback);
@@ -1075,13 +1159,23 @@
                     return deferred.promise;
                 },
                 getMeasureFromEvent: function (mapInstance, e) {
-                    var format = new ol.format.GeoJSON();
-                    var geoJson = format.writeFeature(e.feature);
-                    console.log(e);
+                    if(e.feature == null) {
+                        throw new Error("Feature cannot be null in Measure event");
+                    }
+                    var geomLength = e.feature.getGeometry().getLength();
+                    var feature = e.feature.clone();
+                    var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection);
+                    var featureGeoJson = null;
+                    if(geom != null) {
+                        var format = new ol.format.GeoJSON();
+                        var geoJson = format.writeFeature(feature);
+                        geomLength = geom.getLength();
+                        featureGeoJson = angular.fromJson(geoJson);
+                    }
                     return {
-                        measurement: e.measure,
-                        units: e.units,
-                        geoJson: angular.fromJson(geoJson)
+                        measurement: geomLength,
+                        units: 'm',
+                        geoJson: featureGeoJson.geometry
                     };
                 },
                 wfsClientCache: {}

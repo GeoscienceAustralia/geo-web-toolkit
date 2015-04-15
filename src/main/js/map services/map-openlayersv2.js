@@ -127,7 +127,7 @@ app.service('olv2MapService', [
 
 				return result;
 			},
-			isControlActive: function (mapInstance, controlId) {
+			isControlActive: function (mapInstance, controlId, controlName) {
 				var control;
 				for (var i = 0; mapInstance.controls.length; i++) {
 					var existingControl = mapInstance.controls[i];
