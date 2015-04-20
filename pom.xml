@@ -3,14 +3,14 @@
 
     <groupId>au.gov.ga</groupId>
 	<artifactId>geo-web-toolkit</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>geo-web-toolkit</name>
 
 
     <scm>
-        <url>http://rhe-neo-dev-repo.dev.lan/git/summary/geo-web-toolkit.git</url>
-        <connection>scm:git:http://rhe-neo-dev-repo.dev.lan/git/r/geo-web-toolkit.git</connection>
+        <url>https://github.com/GeoscienceAustralia/geo-web-toolkit.git</url>
+        <connection>scm:git:https://github.com/GeoscienceAustralia/geo-web-toolkit.git</connection>
     </scm>
   <repositories>
     <repository>
