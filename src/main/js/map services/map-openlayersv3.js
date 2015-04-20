@@ -386,7 +386,6 @@
                 },
                 handleMeasurePartial: function (mapInstance,vectorLayer,drawInteraction, callback) {
                     drawInteraction.on("drawstart", function (e) {
-                        console.log('drawstart');
                         var isDragging = false;
                         var sketchFeature = e.feature;
                         service.measurePointerMoveEvent = function (event) {
@@ -397,7 +396,6 @@
                             if(service.measureSingleClickTimeout) {
                                 $timeout.cancel(service.measureSingleClickTimeout);
                             }
-                            console.log('pointerup');
                             if(!isDragging) {
                                 service.measureSingleClickTimeout = $timeout(function () {
                                     if(!service.measureIsDrawEndComplete) {
