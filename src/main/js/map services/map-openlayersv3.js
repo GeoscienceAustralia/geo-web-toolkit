@@ -10,17 +10,17 @@
         ]);
 
     var olCesiumInstance;
-    var USINGCESIUM_FLAG = 'isUsingCesium';
 
     app.service('olv3MapService', [
         'olv3LayerService',
         'olv3MapControls',
         'GAWTUtils',
         'GeoLayer',
+        'ga.config',
         '$q',
         '$log',
         '$timeout',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, $q, $log, $timeout) {
+        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer,appConfig, $q, $log, $timeout) {
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -45,13 +45,8 @@
                     view.geoMaxZoom = 28; //Default max zoom;
                     view.geoMinZoom = 0; //Default min zoom;
                     config.target = args.mapElementId;
-                    if (!ol.has.WEBGL) {
-                        config.renderer = 'canvas';
-                    } if (window.olcs != null) {
-                        config.renderer = 'canvas';
-                    } else {
-                        config.renderer = 'canvas';
-                    }
+
+                    config.renderer = appConfig.olv3Options == null ? 'canvas' : (appConfig.olv3Options.renderer || 'canvas');
 
                     config.view = view;
                     config.controls = [];
@@ -1090,6 +1085,13 @@
                     } else {
                         olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
                         var scene = olCesiumInstance.getCesiumScene();
+                        if(appConfig.cesiumOptions != null && appConfig.cesiumOptions.includeCustomTerrainProvider) {
+                            var terrainProvider = new Cesium.CesiumTerrainProvider({
+                                url: appConfig.cesiumOptions.customTerrainProviderUrl
+                            });
+                            scene.terrainProvider = terrainProvider;
+                        }
+
                         $timeout(function () {
                             service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget(), true);
                         });

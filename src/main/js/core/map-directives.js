@@ -33,8 +33,8 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
-app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService', '$q','$log',
-	function ($timeout, $compile, GAMapService, GALayerService, $q, $log) {
+app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService','GADataService', '$q','$log',
+	function ($timeout, $compile, GAMapService, GALayerService,GADataService, $q, $log) {
     'use strict';
     return {
         restrict: "E",
@@ -1491,6 +1491,18 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 
             self.isControlActive = function (controlId, controlName) {
                 return GAMapService.isControlActive($scope.mapInstance, controlId,controlName, $scope.framework);
+            };
+
+            self.getLayersByWMSCapabilities = function(url) {
+                return GADataService.getLayersByWMSCapabilities(url, $scope.framework);
+            };
+
+            self.getWMSFeatures = function (url, layerNames, wmsVersion, queryProjection, point, contentType) {
+                return GADataService.getWMSFeatures($scope.mapInstance, url, layerNames, wmsVersion, queryProjection, point, contentType, $scope.framework);
+            };
+
+            self.getWMSFeaturesByLayerId = function (url, layerId, point) {
+                return GADataService.getWMSFeaturesByLayerId($scope.mapInstance,url, layerId, point,$scope.framework);
             };
 
             /**

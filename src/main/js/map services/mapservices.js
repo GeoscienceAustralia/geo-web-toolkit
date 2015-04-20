@@ -30,7 +30,9 @@ var app = angular.module('gawebtoolkit.mapservices',
 		'gawebtoolkit.mapservices.layer.openlayersv2',
         'gawebtoolkit.mapservices.map.openlayersv2',
         'gawebtoolkit.mapservices.layer.openlayersv3',
-        'gawebtoolkit.mapservices.map.openlayersv3'
+        'gawebtoolkit.mapservices.map.openlayersv3',
+        'gawebtoolkit.mapservices.data.openlayersv2',
+        'gawebtoolkit.mapservices.data.openlayersv3'
 	]);
 //id: olv2Layer.id,
 //	name: olv2Layer.name,
