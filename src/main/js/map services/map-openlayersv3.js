@@ -391,6 +391,7 @@
                 },
                 handleMeasurePartial: function (mapInstance,vectorLayer,drawInteraction, callback) {
                     drawInteraction.on("drawstart", function (e) {
+                        console.log('drawstart');
                         var isDragging = false;
                         var sketchFeature = e.feature;
                         service.measurePointerMoveEvent = function (event) {
@@ -401,6 +402,7 @@
                             if(service.measureSingleClickTimeout) {
                                 $timeout.cancel(service.measureSingleClickTimeout);
                             }
+                            console.log('pointerup');
                             if(!isDragging) {
                                 service.measureSingleClickTimeout = $timeout(function () {
                                     if(!service.measureIsDrawEndComplete) {
@@ -455,14 +457,20 @@
                             service.measureEventVectorLayer = null;
                             service.measureEventDrawInteraction = null;
                             service.measureEventSource = null;
+                            mapInstance.un('pointerup', service.measurePointerUpEvent);
+                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
+                            mapInstance.un('pointermove', service.measurePointerDownEvent);
                         }
-                        if(eventName === 'measure' && service.measureEventDrawInteraction) {
+                        if(eventName === 'measurepartial' && service.measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
                             mapInstance.removeInteraction(service.measureEventDrawInteraction);
                             mapInstance.removeLayer(service.measureEventVectorLayer);
                             service.measureEventVectorLayer = null;
                             service.measureEventDrawInteraction = null;
                             service.measureEventSource = null;
+                            mapInstance.un('pointerup', service.measurePointerUpEvent);
+                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
+                            mapInstance.un('pointermove', service.measurePointerDownEvent);
                         }
                     } else {
                         existingControl.un(eventName,callback);
@@ -677,9 +685,9 @@
 
                     var iconStyle = new ol.style.Style({
                         image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                            anchor: [0.5, 46],
+                            anchor: [0.5, 1.0],
                             anchorXUnits: 'fraction',
-                            anchorYUnits: 'pixels',
+                            anchorYUnits: 'fraction',
                             opacity: args.opacity || 1.0,
                             src: iconUrl
                         }))
@@ -739,24 +747,40 @@
                     };
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
+                    service.drawPolyLineLayerSource = service.drawPolyLineLayerSource || new ol.source.Vector();
 
-                    var startPoint = new OpenLayers.Geometry.Point(points[0].lon, points[0].lat);
-                    var endPoint = new OpenLayers.Geometry.Point(points[1].lon, points[1].lat);
+                    service.drawPolyLineLayer = service.drawPolyLineLayer || new ol.layer.Vector({
+                        source: service.drawPolyLineLayerSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255, 255, 255, 0.2)'
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#ffcc33',
+                                width: 2
+                            }),
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({
+                                    color: '#ffcc33'
+                                })
+                            })
+                        })
+                    });
+                    service.drawPolyLineLayer.set('name',layerName);
 
-                    // TODO get datum from config
+                    var startPoint = [points[0].lon, points[0].lat];
+                    var endPoint = [points[1].lon, points[1].lat];
+
+                    var geom = new ol.geom.LineString([startPoint,endPoint]);
                     var projection = datum || 'EPSG:4326';
-
-                    var vector = new OpenLayers.Layer.Vector(layerName);
-                    var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([endPoint, startPoint]).transform(new OpenLayers.Projection(
-                        projection), mapInstance.getProjection()));
-
-                    // Style the feature
-                    var featureStyle = OpenLayers.Util.applyDefaults(featureStyle, OpenLayers.Feature.Vector.style['default']);
-                    featureStyle.strokeWidth = 4;
-                    feature.style = featureStyle;
-
-                    vector.addFeatures([feature]);
-                    mapInstance.addLayer(vector);
+                    geom.transform(projection,mapInstance.getView().getProjection());
+                    var feature = new ol.Feature({
+                        geometry: geom,
+                        name: layerName
+                    });
+                    service.drawPolyLineLayerSource.addFeature(feature);
+                    mapInstance.addLayer(service.drawPolyLineLayer);
                 },
                 removeSelectedFeature: function (mapInstance, layerName) {
                     var vectors = mapInstance.getLayersByName(layerName);
@@ -1163,21 +1187,32 @@
                     if(e.feature == null) {
                         throw new Error("Feature cannot be null in Measure event");
                     }
-                    var geomLength = e.feature.getGeometry().getLength();
                     var feature = e.feature.clone();
                     var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection);
-                    var featureGeoJson = null;
-                    if(geom != null) {
-                        var format = new ol.format.GeoJSON();
-                        var geoJson = format.writeFeature(feature);
-                        geomLength = geom.getLength();
-                        featureGeoJson = angular.fromJson(geoJson);
+                    var format = new ol.format.GeoJSON();
+                    var geoJson = format.writeFeature(feature);
+                    var featureGeoJson = angular.fromJson(geoJson);
+                    var distance = service.getGeometryLength(mapInstance,geom);
+                    var units = 'm';
+                    if(distance > 1000) {
+                        units = 'km';
+                        distance = (distance / 1000);
                     }
                     return {
-                        measurement: geomLength,
-                        units: 'm',
+                        measurement: distance,
+                        units: units,
                         geoJson: featureGeoJson.geometry
                     };
+                },
+                getGeometryLength: function (mapInstance, geom) {
+                    var coordinates = geom.getCoordinates();
+                    var length = 0;
+                    var wgs84Sphere = new ol.Sphere(6378137);
+                    for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+                        length += wgs84Sphere.haversineDistance(coordinates[i], coordinates[i + 1]);
+                    }
+
+                    return length;
                 },
                 wfsClientCache: {}
             };
