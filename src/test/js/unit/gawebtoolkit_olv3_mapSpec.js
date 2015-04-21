@@ -454,14 +454,10 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    $scope.mapController.setMapMarker({x: 50, y: 50}, 'testgroupname', 'http://localhost:8080', {opacity: 0.5});
-                    expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                //Mock function that required rendered canvas.
+                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
+                $scope.mapController.setMapMarker({x: 250, y: 50}, 'testgroupname', 'http://localhost:8080', {opacity: 0.5});
+                expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
             });
             it('Should fire mapController function "removeLayerByName" without an exception given valid input', function () {
                 var passed = false;
@@ -705,15 +701,8 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "getMeasureFromEvent" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    //pass in valid openlayers equivalent, literal will do.
-                    var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
-                    expect(measure != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
+                expect(measure != null).toBe(true);
             });
             it('Should fire mapController function "removeFeatureFromLayer" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[2];

@@ -689,7 +689,7 @@
                     iconFeature.setStyle(iconStyle);
                     // Marker layer exists so get the layer and add the marker
                     if (markerLayer != null) {
-                        markerLayer.getSource().addMarker(iconFeature);
+                        markerLayer.getSource().addFeature(iconFeature);
                     } else { // Marker layer does not exist so we create the layer then add the marker
                         var source = new ol.source.Vector();
                         source.addFeature(iconFeature);
@@ -1184,8 +1184,14 @@
                     return deferred.promise;
                 },
                 getMeasureFromEvent: function (mapInstance, e) {
-                    if(e.feature == null) {
+                    if(e.feature == null && e.geometry == null) {
                         throw new Error("Feature cannot be null in Measure event");
+                    }
+                    if(e.geometry != null && e.geometry instanceof Array && e.geometry.length === 2) {
+                        e.feature = new ol.Feature(new ol.geom.Point(e.geometry));
+                    }
+                    if(e.geometry != null && e.geometry instanceof Array && e.geometry.length > 2) {
+                        e.feature = new ol.Feature(new ol.geom.LineString(e.geometry));
                     }
                     var feature = e.feature.clone();
                     var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection);
