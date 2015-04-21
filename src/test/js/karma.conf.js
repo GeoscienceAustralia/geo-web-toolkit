@@ -27,11 +27,20 @@ module.exports = function (config) {
             'bower_components/angular-ui/build/angular-ui.js',
             'bower_components/angular-ui-utils/ui-utils.js',
             'bower_components/OpenLayers/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
+            'bower_components/proj4/dist/proj4.js',
+            'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
+            'node_modules/openlayers/dist/ol-debug.js',
             'src/main/js/**/*.js',
             'src/test/js/**/*.js'],
 
         // list of files to exclude
-        exclude: [ 'src/test/js/karma*.js' ],
+        exclude: [
+            'src/test/js/karma*.js',
+            'src/main/js/config/*.js',
+            'src/main/js/core/*.js',
+            'src/main/js/map services/*.js',
+            'src/main/js/ui/*.js'
+        ],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -57,7 +66,7 @@ module.exports = function (config) {
 
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG,
 
         // enable / disable watching file and executing tests whenever any file changes
         autoWatch: true,

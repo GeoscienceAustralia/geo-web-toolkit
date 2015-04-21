@@ -43,6 +43,15 @@ app.value('ga.config', function () {
         layerType: 'WMS'
     };
     return {
-        defaultOptions: defaults
+        //Backwards compatibility
+        defaultOptions: defaults,
+        olv2Options: defaults,
+        cesiumOptions: {
+            includeCustomTerrainProvider: false,
+            customTerrainProviderUrl: null
+        },
+        olv3Options: {
+            renderer: 'canvas'
+        }
     };
 });

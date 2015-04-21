@@ -1,0 +1,183 @@
+<div style="height:100%">
+    <form role="form" style="width:40%;float:left">
+        <accordion>
+            <accordion-group heading="Config output" is-open="accordions.configOutputIsOpen">
+                <div><textarea ng-model="configPreview.val" style="width:100%;height:100px;margin-bottom: 35px;"/></div>
+                <button type="button" ng-click="populateTestData()" class="btn-danger">Populate test data</button>
+                <button type="button" ng-click="previewMap()" class="btn-primary">Preview</button>
+                <button type="button" ng-click="clearConfigOutput()">Clear config output</button>
+                <button type="button" ng-click="switchFramework()">Switch to OpenLayers version</button>
+                <button type="button" ng-show="config.frameworkVersion === 'olv3'" ng-click="switch3d()">Switch 2D/3D</button>
+            </accordion-group>
+            <accordion-group heading="Map details" is-open="accordions.mapDetailsIsOpen">
+                <!--<div class="form-group panel-body">-->
+                <label for="config_id">Config ID</label>
+                <input type="text" id="config_id" ng-model="config.id" ng-change="modelChanged()" class="form-control"/>
+
+                <label for="config_title">Title</label>
+                <input type="text" id="config_title" ng-model="config.title" ng-change="modelChanged()" class="form-control"/>
+
+                <label for="config_previewImageUrl">Preview Image Url</label>
+                <input type="text" id="config_previewImageUrl" ng-model="config.previewImageUrl" ng-change="modelChanged()" class="form-control"/>
+
+                <label for="config_previewDescription">Preview Description</label>
+                <input type="text" id="config_previewDescription" ng-model="config.previewDescription" ng-change="modelChanged()" class="form-control"/>
+
+                <label for="config_datumProjection">Map projection</label>
+                <select ng-model="config.datumProjection" id="config_datumProjection" class="form-control">
+                    <option>EPSG:102100</option>
+                    <option>EPSG:4326</option>
+                    <option>EPSG:900913</option>
+                    <option>CRS:84</option>
+                    <option>EPSG:3857</option>
+                    <option>EPSG:102113</option>
+                </select>
+
+                <label for="config_displayProjection">Display projection</label>
+                <select ng-model="config.displayProjection" id="config_displayProjection" class="form-control">
+                    <option>EPSG:102100</option>
+                    <option>EPSG:4326</option>
+                    <option>EPSG:900913</option>
+                    <option>CRS:84</option>
+                    <option>EPSG:3857</option>
+                    <option>EPSG:102113</option>
+                </select>
+
+                <!--         <label for="config_centerPositionLat">Top left latitude</label>
+                            <input type="text" id="config_centerPositionLat" ng-model="config.initialExtent[0][0]" class="form-control"/>
+
+                            <label for="config_centerPositionLong">Top left logitude</label>
+                            <input type="text" id="config_centerPositionLong" ng-model="config.initialExtent[1][0]" class="form-control"/>
+
+                            <label for="config_centerPositionLat">Bottom right latitude</label>
+                            <input type="text" id="config_centerPositionLat" ng-model="config.initialExtent[0][1]" class="form-control"/>
+
+                            <label for="config_centerPositionLong">Bottom right logitude</label>
+                            <input type="text" id="config_centerPositionLong" ng-model="config.initialExtent[1][1]" class="form-control"/> -->
+
+                <label for="config_zoomLevel">Zoom level</label>
+                <input type="text" id="config_zoomLevel" ng-model="config.zoomLevel" class="form-control"/>
+
+                <div class="form-group control-group">
+                    <input type="checkbox" id="config_requiresTermsAndConditions" ng-model="config.requiresTermsAndConditions"/>
+                    <label for="config_requiresTermsAndConditions">Requires terms and conditions</label>
+                </div>
+                <label for="config_headerTitle">Header Title</label>
+                <input type="text" id="config_headerTitle" ng-model="config.headerConfig.title" class="form-control"/>
+
+                <div class="form-group control-group">
+                    <input type="checkbox" id="config_aboutConfig" ng-model="config.aboutConfig.enabled"/>
+                    <label for="config_aboutConfig">Include About page</label>
+                </div>
+                <label for="config_aboutBodyUrl">About body URL</label>
+                <input type="text" id="config_aboutBodyUrl" ng-model="config.aboutConfig.bodyUrl" class="form-control"/>
+
+                <div class="form-group control-group">
+                    <input type="checkbox" id="config_layerConfig" ng-model="config.layersConfig.enabled"/>
+                    <label for="config_layerConfig">Include Layers picker</label>
+                </div>
+                <div class="form-group control-group" ng-click="hideToolbarItem()">
+                    <input type="checkbox" id="config_baseLayersConfig" ng-model="config.baseLayersConfig.enabled"/>
+                    <label for="config_baseLayersConfig">Include base layer picker</label>
+                </div>
+                <div class="form-group control-group">
+                    <input type="checkbox" id="config_legendConfig" ng-model="config.legendConfig.enabled"/>
+                    <label for="config_legendConfig">Include legend panel</label>
+                </div>
+                <div class="form-group control-group">
+                    <input type="checkbox" id="config_toolsConfig" ng-model="config.toolsConfig.enabled"/>
+                    <label for="config_toolsConfig">Include tools</label>
+                </div>
+                <!--</div>-->
+            </accordion-group>
+            <accordion-group heading="Add base layer" is-open="accordions.baseLayersIsOpen">
+                <div class="form-group panel-body">
+                    <label for="config_previewDescription">Map type</label>
+                    <select ng-model="baseLayerConfig.mapType" class="form-control">
+                        <option value="-1">-- Select base layer --</option>
+                        <option ng-repeat="baseLayer in commonBaseLayers" value="{{$index}}" ng-bind="baseLayer.name"></option>
+                        <option value="XYZTileCache">Custom XYZ Tile Cache</option>
+                        <option value="WMS">Custom WMS</option>
+                        <option value="WFS">Custom WFS</option>
+                    </select>
+                    <div ng-show="showCustomBaseLayerOptions()">
+                        <div class="form-group control-group">
+                            <input type="checkbox" id="config_baseLayerVisibility" ng-model="baseLayerConfig.visibility"/>
+                            <label for="config_baseLayerVisibility">Default base layer</label>
+                        </div>
+
+                        <label for="config_baseLayer_name">Base layer name</label>
+                        <input type="text" id="config_baseLayer_name" ng-model="baseLayerConfig.name" class="form-control"/>
+                        <div ng-show="baseLayerConfig.mapType.indexOf('Google') !== 0">
+                            <label for="config_baseLayer_url">URL</label>
+                            <input type="text" id="config_baseLayer_url" ng-model="baseLayerConfig.url" class="form-control" />
+                        </div>
+
+                        <div ng-show="baseLayerConfig.mapType.indexOf('Google') !== 0">
+                            <label for="config_baseLayer_attribution">Attribution</label>
+                            <input type="text" id="config_baseLayer_attribution" ng-model="baseLayerConfig.attribution"
+                                   class="form-control"/>
+                        </div>
+
+                        <div class="form-group control-group">
+                            <input type="checkbox" id="config_baseLayerWrapDateLine" ng-model="baseLayerConfig.wrapDateLine"/>
+                            <label for="config_baseLayerWrapDateLine">Wrap date line</label>
+                        </div>
+                    </div>
+                    <div class="form-group control-group" style="margin-top: 15px">
+                        <button type="button" class="btn btn-primary" ng-click="addBaseLayer()" ng-disabled="!baseLayerConfig || baseLayerConfig.mapType == -1 || baseLayerConfig.mapType == null">Add base layer</button>
+                    </div>
+                </div>
+                <h3>Added base layers</h3>
+                <div ng-repeat="baseLayer in config.baseMaps">
+                    <button type="button" ng-click="removeBaseLayer($index)">X</button>
+                    <span ng-bind="baseLayer.name"></span>
+                </div>
+            </accordion-group>
+            <accordion-group heading="Add map layer" is-open="accordions.mapLayersIsOpen">
+                <div class="form-group panel-body">
+                    <label for="config_previewDescription">Map type</label>
+                    <select ng-model="layerMap.mapType" class="form-control">
+                        <option>XYZTileCache</option>
+                        <option>ArcGISCache</option>
+                        <option>WMS</option>
+                    </select>
+
+                    <div class="form-group control-group">
+                        <input type="checkbox" id="config_layerMapVisibility" ng-model="layerMap.visibility"/>
+                        <label for="config_layerMapVisibility">Default layer map visibility</label>
+                    </div>
+                    <label for="config_layerMap_name">Layer name</label>
+                    <input type="text" id="config_layerMap_name" ng-model="layerMap.name" class="form-control"/>
+
+                    <label for="config_layerMap_url">URL</label>
+                    <input type="text" id="config_layerMap_url" ng-model="layerMap.url" class="form-control" />
+
+                    <label for="config_layerMap_layers">Layers</label>
+                    <input type="text" id="config_layerMap_layers" ng-model="layerMap.layers" class="form-control"/>
+
+                    <label for="config_layerMap_opacity">Opacity default</label>
+                    <input type="text" id="config_layerMap_opacity" ng-model="layerMap.opacity" class="form-control"/>
+
+                    <button type="button" ng-click="addLayerMap()">Add layer map</button>
+                </div>
+                <h3>Added map layers</h3>
+                <div ng-repeat="layer in config.layerMaps">
+                    <button type="button" ng-click="removeLayerMap($index)">X</button>
+                    <a href="" ng-click="copyLayerToTemplate($index)" ng-bind="layer.name"></a>
+                </div>
+            </accordion-group>
+        </accordion>
+    </form>
+    <div style="width:56%;margin-left: 3%; float:right;height:100%">
+        <div style="height:100%" ng-if="configPreviewReady" ng-include="'mapPreview.html'"></div>
+        <div style="height:100%" ng-if="!configPreviewReady">
+            <div ng-show="refreshing">
+                <h3>Loading...</h3>
+            </div>
+            <div ng-show="!refreshing">
+                <h3>No config loaded</h3>
+            </div>
+        </div>
+    </div>
+</div>

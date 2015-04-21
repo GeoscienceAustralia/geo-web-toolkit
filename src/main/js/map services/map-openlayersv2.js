@@ -127,7 +127,7 @@ app.service('olv2MapService', [
 
 				return result;
 			},
-			isControlActive: function (mapInstance, controlId) {
+			isControlActive: function (mapInstance, controlId, controlName) {
 				var control;
 				for (var i = 0; mapInstance.controls.length; i++) {
 					var existingControl = mapInstance.controls[i];
@@ -138,7 +138,7 @@ app.service('olv2MapService', [
 				}
 				return control.active === true;
 			},
-			addControl: function (mapInstance, controlName, controlOptions, elementId, controlId) {
+			addControl: function (mapInstance, controlName, controlOptions, elementId, controlId, mapOptions) {
 				controlName = controlName.toLowerCase();
 				var resultControl = {};
 				var div;
@@ -342,7 +342,11 @@ app.service('olv2MapService', [
                     mapInstance.zoomToExtent(bounds, true);
 				} else if (args.centerPosition) {
 					var position = JSON.parse(args.centerPosition);
-					mapInstance.setCenter(new OpenLayers.LonLat(position.lon, position.lat), args.zoomLevel);
+                    var centerPos = new OpenLayers.LonLat(position[0], position[1]);
+                    var srcProjection = new OpenLayers.Projection(service.displayProjection);
+                    var destProjection = new OpenLayers.Projection(mapInstance.getProjection());
+                    var transformedCenter = centerPos.transform(srcProjection,destProjection);
+					mapInstance.setCenter(transformedCenter, args.zoomLevel);
 
 				} else {
 					//No options passed, zoom to max
@@ -587,7 +591,6 @@ app.service('olv2MapService', [
 	            return features;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
-				console.log('getFeatureInfo');
                 tolerance = tolerance || 0;
 				var deferred = $q.defer();
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
@@ -699,6 +702,19 @@ app.service('olv2MapService', [
 				return {
 					clientId: wfsClientId
 				};
+			},
+			is3dSupported: function (mapInstance, version) {
+				//Always return false due to OpenLayers 2 having no support for 3D.
+				return false;
+			},
+			is3d: function (mapInstance, version) {
+				return false;
+			},
+			switchTo3dView: function (mapInstance, version) {
+				throw new Error("3D not supported in current map");
+			},
+			switchTo2dView: function (mapInstance, version) {
+				//No op as always 3D.
 			},
 			searchWfs: function (mapInstance, clientId, query, attribute) {
 				var client = service.wfsClientCache[clientId];

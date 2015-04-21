@@ -11,22 +11,9 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
  * gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/gawebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.
  * @param {string|@} layerName - A name allocated to the layer for future reference
  * @param {string|@} url - A string value that defines the URL from which the content of the layer will be loaded
- * @param {number|@=} serverType - The type of the data that is being load on the layer. For this directive it will always "WFS"
- * @param {number|@=} wfsFeatureList - a string of comma separated features supported by WFS server
- * @param {string|@} wfsFilterValue - TBA
- * @param {string|@} wfsVersion -  TBA 
- * @param {string|@} wfsFeaturePrefix -  TBA 
- * @param {string|@} wfsFeatureType -  TBA
- * @param {string|@} wfsFeatureNs -  TBA
- * @param {string|@} wfsFeatureAttributes -  TBA
- * @param {string|@} wfsGeometryName -  TBA
- * @param {string|@} onFeatureClick -  TBA
- * @param {string|@} onFeaturesLoaded -  TBA
- * @param {string|@} updateResultsEventName -  TBA
- * @param {string|@} postAddLayer -  TBA
- * @param {string|@} isLonLatOrderValid -  TBA
- * @param {string|@} inputFormat -  TBA
+ * @param {function|@} postAddLayer -  Function callback fired after the layer is added
  * @param {string|@} controllerEmitEventName -  An string value that will be allocated to this layer as controller. This controller can be called in JS codes in order to control the layer programatically
+ * @param {string|@} onLayerDestroy - Function callback fired on the destruction of a layer
  *  * Following functions are supported by this controller:
  * <ul>
      <li>hide</li>
@@ -49,7 +36,7 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     <file name="index.html">
         <div id="map"></div>
         <div ng-controller="featureExampleController">
-            <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='{"lat":"-3434403","lon":"14517578"}' zoom-level="4">
+            <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
                 <ga-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
                 </ga-map-layer>
                 <ga-feature-layer layer-name="My local geoJson features">
@@ -1020,21 +1007,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
             scope: {
                 url: '@',
                 layerName: '@',
-                serverType: '@',
-                wfsFeatureList: '@', // comma separated features
-                wfsFilterValue: '@',
-                wfsVersion: '@',
-                wfsFeaturePrefix: '@',
-                wfsFeatureType: '@',
-                wfsFeatureNs: '@',
-                wfsFeatureAttributes: '@',
-                wfsGeometryName: '@',
                 visibility: '@',
+                projection: '@',
                 controllerEmitEventName: '@',
                 postAddLayer: '&',
-                onLayerDestroy: '&',
-                isLonLatOrderValid: '@',
-                inputFormat: '@'
+                onLayerDestroy: '&'
             },
             controller: ['$scope',function ($scope) {
                 $scope.layerControllerIsReady = false;
@@ -1123,11 +1100,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 $scope.mapAPI = {};
                 $scope.mapAPI.mapController = mapController;
 
-                var layerOptions = GALayerService.defaultLayerOptions(attrs);
-                layerOptions.datumProjection = mapController.getProjection();
+                var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                 layerOptions.postAddLayer = $scope.postAddLayer;
 
-                var layer = GALayerService.createFeatureLayer(layerOptions);
+                var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
                 //mapController.waitingForAsyncLayer();
                 //Async layer add
                 mapController.addLayer(layer).then(function (layerDto) {
@@ -1151,14 +1128,6 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     });
 
                     //mapController.removeLayerById($scope.layerDto.id);
-                });
-
-                attrs.$observe('wfsFilterValue', function (newVal) {
-                    if (newVal) {
-                        $timeout(function () {
-                            mapController.filterFeatureLayer($scope.layerDto.id, newVal, $scope.wfsFeatureAttributes);
-                        });
-                    }
                 });
 
                 attrs.$observe('visibility', function (newVal) {
@@ -1191,7 +1160,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
         <div ng-controller="featureExampleController">
             <button ng-click="changefeatures()" class="btn">Remove some feature layers</button>
             <div id="map"></div>
-            <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='{"lat":"-3434403","lon":"14517578"}' zoom-level="4">
+            <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
                 <ga-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
                 </ga-map-layer>
                 <ga-feature-layer layer-name="My local geoJson features">

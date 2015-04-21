@@ -76,12 +76,15 @@ app.directive('gaMapControl', [ function () {
 			controlEnabled: '@'
 		},
 		link: function (scope, element, attrs, mapController) {
-			if (!scope.mapControlName) {
-				return;
-			}
+            if (!scope.mapControlName) {
+                return;
+            }
             //Allow developers to manipulate options before loaded
             var modifiedControlOptions = scope.preOptionsLoaded({options: scope.controlOptions});
             scope.controlOptions = modifiedControlOptions === undefined ? scope.controlOptions : modifiedControlOptions;
+
+            //scope.controlOptions = scope.controlOptions || {};
+            //scope.controlOptions.mapOptions = mapController.getMapOptions();
 
 			scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
 			if(attrs.controlEnabled != null) {

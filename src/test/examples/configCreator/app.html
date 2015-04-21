@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html ng-app="kitchenSink">
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js"></script>
+    <link rel="stylesheet" href="ol3/css/ol.css" type="text/css">
+    <script src="../../../../node_modules/openlayers/dist/ol.js"></script>
+    <script src="Cesium/Cesium.js"></script>
+    <script src="ol3cesium.js"></script>
+    <script src="http://dev.openlayers.org/OpenLayers.js"></script>
+    <script src="../../../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../../../../bower_components/jquery-ui/jquery-ui.js"></script>
+
+    <script src="../../../../bower_components/angular/angular.js"></script>
+    <script src="../../../../bower_components/angular-route/angular-route.js"></script>
+    <script src="../../../../bower_components/angular-ui/build/angular-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script>
+    <script src="../../../main/js/geo-web-toolkit-min.js"></script>
+    <script src="http://epsg.io/21781-1753.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../../../../bower_components/jquery-ui/themes/ui-lightness/jquery-ui.css"/>
+    <link rel="stylesheet" href="../../../../bower_components/OpenLayers/theme/default/style.css"/>
+    <link rel="stylesheet" href="../../../../bower_components/angular-ui/build/angular-ui.css"/>
+    <link rel="stylesheet" href="../../../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <style>
+        /* Map layout */
+        .mapContainer {
+            height: 100%;
+            background-color: transparent;
+            -ms-content-zooming: none;
+        }
+
+        .mapOuterContainer {
+            width: 100%;
+            height: 100%;
+            -moz-touch-action: none;
+            -ms-touch-action: none;
+            touch-action: none;
+        }
+        /* /Map layout */
+    </style>
+    <script src="http://maps.google.com/maps/api/js?sensor=false&.js&libraries=places"></script>
+    <title>OpenLayers 3 Example Map</title>
+</head>
+<body ng-controller="mainController">
+<h1 id="test111" ng-bind="frameworkName"></h1>
+<!-- Main view port -->
+<div id="main" ng-view>
+
+</div>
+<script>
+    (function () {
+        "use strict";
+        var app = angular.module('kitchenSink',
+                [
+                    'ngRoute', //angular
+                    'ui.bootstrap', //bootstrap
+                    'ui.utils', //angular-UI
+                    'gawebtoolkit.core',
+                    'gawebtoolkit.config',
+                    'gawebtoolkit.ui'
+                        ]);
+
+        app.config([ '$routeProvider',
+            function ($routeProvider) {
+                $routeProvider.when('/', {
+                    templateUrl: 'configCreator.html',
+                    controller: 'configCreatorController'
+                });
+
+            }]);
+        /* Geo-map-toolkit defaults for implementation
+         * These values are used as defaults for creation of layers and maps within this GAMaps
+         * */
+        app.value('ga.config', function () {
+            //TODO These values are all OLV2 specific and these values should come from consuming application
+            //to merge with defaults written for a specific implementation (like OLV2) in map services.
+            var defaults = {
+                standardTileSize: 256,
+                largeTileSize: 1024,
+                veryLargeTileSize: 2048,
+                minMapWidth: 900,
+                minMapHeight: 600,
+                panIncrement: 30,
+                smallPanIncrement: 5,
+                transitionEffect: 'resize',
+                zoomMethod: null,
+                visibility: true,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                sphericalMercator: true,
+                opacity: 1.0,
+                layerAttribution: '',
+                displayInLayerSwitcher: true,
+                projection: 'EPSG:102100',
+                transparent: true,
+                format: 'image/png',
+//        resolutions: [156543.03390625, 78271.516953125, 39135.7584765625,
+//            19567.87923828125, 9783.939619140625, 4891.9698095703125,
+//            2445.9849047851562, 1222.9924523925781, 611.4962261962891,
+//            305.74811309814453, 152.87405654907226, 76.43702827453613],
+//        zoomOffset: 11,
+                tileSize: function (tileType) {
+                    var result;
+                    if (tileType) {
+                        if (tileType === 'large') {
+                            result = new OpenLayers.Size(defaults.largeTileSize, defaults.largeTileSize);
+                        } else if (tileType === 'vlarge') {
+                            result = new OpenLayers.Size(defaults.veryLargeTileSize, defaults.veryLargeTileSize);
+                        }
+                    } else {
+                        result = new OpenLayers.Size(defaults.standardTileSize, defaults.standardTileSize);
+                    }
+                    return result;
+                },
+                layerType: 'WMS'
+            };
+            return {
+                defaultOptions: defaults
+            };
+        });
+
+        app.controller('mainController', ['$scope', function ($scope) {
+
+        }]);
+
+        app.controller('homeController', ['$scope',function ($scope) {
+
+        }]);
+
+        app.controller('configCreatorController', ['$scope', '$log', '$timeout', '$http', function ($scope, $log, $timeout, $http) {
+            "use strict";
+            $scope.config = {};
+            $scope.config.datumProjection = "EPSG:3857";
+            $scope.config.displayProjection = "EPSG:4326";
+            $scope.config.baseMaps = [];
+            $scope.config.layerMaps = [];
+            $scope.baseLayerConfig = {};
+            $scope.layerMap = {};
+            $scope.config.frameworkVersion = 'olv2';
+            $scope.versionNumber = 2;
+            $scope.configPreviewReady = false;
+            $scope.configPreview = {};
+            $scope.configPreview.val = '';
+            $scope.accordions = {
+                configOutputIsOpen: true,
+                mapDetailsIsOpen: false,
+                baseLayersIsOpen: false,
+                mapLayersIsOpen: false
+            };
+            $scope.$on("mapControllerReady", function (event, args) {
+                $scope.mapController = args;
+            });
+            $scope.switchFramework = function () {
+                $scope.config.frameworkVersion = $scope.config.frameworkVersion || 'olv2';
+                $scope.versionNumber = $scope.versionNumber  || 2;
+                if($scope.config.frameworkVersion === 'olv2') {
+                    $scope.config.frameworkVersion = 'olv3';
+                    $scope.versionNumber = 3;
+                } else {
+                    $scope.config.frameworkVersion = 'olv2';
+                    $scope.versionNumber = 2;
+                    $scope.is3d = false;
+                }
+                $scope.previewMap();
+            };
+            $scope.switch3d = function () {
+                $scope.mapController.switch3d();
+            };
+            $scope.$watch('accordions.configOutputIsOpen', function () {
+                $scope.previewMap();
+            });
+            $scope.$watch('accordions.mapDetailsIsOpen', function () {
+                $scope.previewMap();
+            });
+            $scope.$watch('accordions.baseLayersIsOpen', function () {
+                $scope.previewMap();
+            });
+            $scope.$watch('accordions.mapLayersIsOpen', function () {
+                $scope.previewMap();
+            });
+            $http.get('resources/js/configCreator/commonBaseLayers.json').success(function (response) {
+                $scope.commonBaseLayers = response.baseLayers;
+            });
+            $scope.modelChanged = function () {
+                if ($scope.config) {
+                    $scope.configPreview.val = angular.toJson($scope.config);
+                }
+            };
+            $scope.$watch('configPreview.val', function () {
+                if ($scope.configPreview.val) {
+                    if ($scope.configPreview.val !== angular.toJson($scope.config)) {
+                        $scope.config = angular.fromJson($scope.configPreview.val);
+                    }
+                }
+            });
+
+            $scope.hasMinimumConfigValues = function () {
+                return $scope.config.baseMaps != null && $scope.config.baseMaps.length > 0;
+            };
+
+            $scope.addBaseLayer = function () {
+                var previousCount = $scope.config.baseMaps ? $scope.config.baseMaps.length : 0;
+                $log.info($scope.baseLayerConfig);
+                if($scope.isPreconfiguredBaseLayer($scope.baseLayerConfig)) {
+                    $scope.config.baseMaps.push(angular.copy($scope.commonBaseLayers[$scope.baseLayerConfig.mapType]));
+                } else {
+                    $scope.config.baseMaps.push(angular.copy($scope.baseLayerConfig));
+                }
+                $scope.modelChanged();
+                if(previousCount === 0) {
+                    $scope.previewMap();
+                }
+            };
+
+            $scope.isPreconfiguredBaseLayer = function () {
+                return $scope.baseLayerConfig && $scope.baseLayerConfig.mapType && !window.isNaN($scope.baseLayerConfig.mapType);
+            };
+
+            $scope.showCustomBaseLayerOptions = function () {
+                if(!$scope.baseLayerConfig || !$scope.baseLayerConfig.mapType) {
+                    return false;
+                }
+                return window.isNaN($scope.baseLayerConfig.mapType);
+            };
+
+            $scope.addLayerMap = function () {
+                $scope.config.layerMaps.push($scope.layerMap);
+                $scope.modelChanged();
+
+            };
+
+            $scope.removeBaseLayer = function (index) {
+                $scope.config.baseMaps.splice(index, 1);
+                $scope.modelChanged();
+            };
+
+            $scope.removeLayerMap = function (index) {
+                $scope.config.layerMaps.splice(index, 1);
+                $scope.modelChanged();
+            };
+
+            $scope.copyLayerToTemplate = function (index) {
+                $scope.layerMap = angular.copy($scope.config.layerMaps[index]);
+            };
+            $scope.refreshing = false;
+            $scope.previewMap = function () {
+                if(!$scope.configPreview.val) {
+                    return;
+                }
+                if($scope.refreshing) {
+                    return;
+                }
+
+                if(!$scope.hasMinimumConfigValues()) {
+                    return;
+                }
+                $scope.refreshing = true;
+                $scope.configPreviewReady = false;
+                $timeout(function () {
+                    $scope.configPreviewReady = true;
+                    $scope.refreshing = false;
+                }, 500);
+                $log.info($scope.config);
+            };
+
+            $scope.clearConfigOutput = function () {
+                $scope.configPreview = {};
+            };
+
+            // TODO: target toolBarContainer element by name without guessing it's position.
+            $scope.hideToolbarItem = function () {
+                var baseLayerToggle = $("div[class='toolBarContainer']").find('button')[1];
+                console.log(baseLayerToggle);
+                if ($(baseLayerToggle).hasClass('hide')){
+                    $(baseLayerToggle).removeClass('hide');
+                }else{
+                    $(baseLayerToggle).addClass('hide');
+                }
+            };
+
+            $scope.populateTestData = function () {
+                $scope.config = {
+                    "title": "Tool testing",
+                    "id": "tooltest-1",
+                    "previewImageUrl": "content/minerals/geomorphology/mapPreview.png",
+                    "previewDescription": "AMSIS is a web based interactive mapping and decision support system that improves access to integrated government and non-government information in the Australian Marine Jurisdiction.",
+                    "datumProjection": "EPSG:3857",
+                    "displayProjection": "EPSG:4326",
+                    "initialExtent": [
+                        [30, 10],
+                        [180, -70]
+                    ],
+                    "zoomLevel": 0,
+                    "requiresTermsAndConditions": true,
+                    "termsAndConditionsText": "TERMS TEXT REQUIRED",
+                    "cookieExpirationInDays": 7,
+                    "headerConfig": {
+                        "title": "AMSIS -Dev"
+                    },
+                    "aboutConfig": {
+                        "enabled": true,
+                        "bodyUrl": "content/sandpit/dummy/about.html"
+                    },
+                    "layersConfig": {
+                        "enabled": true
+                    },
+                    "baseLayersConfig": {
+                        "enabled": true
+                    },
+                    "legendConfig": {
+                        "enabled": true,
+                        "legendUrl": "content/amsis/sasla1973/legend.html"
+                    },
+                    "toolsConfig": {
+                        "enabled": true,
+                        "timeout": 5000,
+                        "tools": [
+                            {
+                                "id" : "info",
+                                "toolPanelUrl" : "resources/partial/infoPanel.html",
+                                "toolToggleUrl": "resources/partial/infoToggle.html",
+                                "config": {
+                                    "titleText": "Download Dataset",
+                                    "panelHeading": "Download Dataset",
+                                    "infoList": [
+                                        { "id" : "Seas and Submerged Lands Act 1973 - Australian Maritime Boundaries 2014 - Geodatabase", "url" : "http://www.ga.gov.au/metadata-gateway/metadata/record/gcat_043dbb8c-66d9-6897-e054-00144fdd4fa6/Seas+and+Submerged+Lands+Act+1973+-+Australian+Maritime+Boundaries+2014+-+Geodatabase" }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "addLayer",
+                                "toolPanelUrl": "resources/partial/addLayerPanel.html",
+                                "toolToggleUrl": "resources/partial/addLayerToggle.html",
+                                "config": {
+                                    "titleText": "Add layers"
+                                }
+                            },
+                            {
+                                "id": "dynamicLayer",
+                                "toolPanelUrl": "resources/partial/layerExplorerPanel.html",
+                                "toolToggleUrl": "resources/partial/layerExplorerToggle.html",
+                                "config": {
+                                    "titleText": "Add dynamic layers",
+                                    "symbol": "<img src=\"resources/img/Layers.png\"/>"
+                                }
+                            },
+                            {
+                                "id": "export",
+                                "toolPanelUrl" : "resources/partial/exportPanel.html",
+                                "toolToggleUrl": "resources/partial/exportToggle.html",
+                                "config": {
+                                    "titleText": "Print PDF",
+                                    "panelHeading": "Print PDF",
+                                    "url": "/gisgp/rest/services/topography/Print_Service/GPServer/PrintPoint/",
+                                    "templatesList": ["Landscape_A4", "Portrait_A4", "Landscape_A3", "Portrait_A3"],
+                                    "markerUrl": "content/marker/marker-print.png",
+                                    "markerWidth": "55",
+                                    "markerHeight": "40"
+                                }
+                            },
+                            {
+                                "id": "draw",
+                                "toolPanelUrl" : "resources/partial/drawPanel.html",
+                                "toolToggleUrl": "resources/partial/drawToggle.html"
+                            },
+                            {
+                                "id": "clientMeasure",
+                                "toolPanelUrl": "resources/partial/measurePanel.html",
+                                "toolToggleUrl": "resources/partial/measureToggle.html"
+                            },
+                            {
+                                "id": "distanceBoundary",
+                                "toolPanelUrl": "resources/partial/boundaryToolPanel.html",
+                                "toolToggleUrl": "resources/partial/boundaryToolToggle.html",
+                                "config": {
+                                    "markerUrl": "content/marker/marker-distance.png",
+                                    "markerWidth": "55",
+                                    "markerHeight": "40",
+                                    "boundaries" : [
+                                        {
+                                            "id": "Australian Coastline",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToAustralianCoast/"
+                                        },
+                                        {
+                                            "id": "Coastal Waters",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToCoastalWatersLimit/"
+                                        },
+                                        {
+                                            "id": "Territorial Sea",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToTerritorialSeaZoneLimit/"
+                                        },
+                                        {
+                                            "id": "Contiguous Zone",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToContiguousZoneLimit/"
+                                        },
+                                        {
+                                            "id": "Exclusive Economic Zone",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToExclusiveEconomicZoneLimit/"
+                                        },
+                                        {
+                                            "id": "Exclusive Economic Zone as Amended by the Perth Treaty 1997",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToExclusiveEconomicZoneAmendedPerthLimit/"
+                                        },
+                                        {
+                                            "id": "Continental Shelf",
+                                            "url": "/gisgp/rest/services/marine_coastal/AMSIS_DistanceTo_Service/GPServer/DistanceToContinentalShelf/"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "identifyTool",
+                                "toolPanelUrl": "resources/partial/interrogateDataPanel.html",
+                                "toolToggleUrl": "resources/partial/interrogateDataToggle.html",
+                                "config": {
+                                    "titleText": "Identify Features",
+                                    "panelHeading": "Identify Features",
+                                    "symbol": "<img src=\"content/marker/identify.png\"/>",
+                                    "propertiesOfInterest": ["NAME","OBJNAM","CATLIM","CATBDY","NOBJNM","NATION","STATES","VERTJN","SORHCS","PHCS","LEGSOU","FRLI_REF","DATE","LEVEL_ADMIN","IP_OWNER","LICENCE","DISCLAIMER","COMMENT"],
+                                    "propertiesAlias": ["Name","Object Name","Catlim","Catbdy","Nobjnm","Nation","States","Vertjn","Sorhcs","Phcs","Legsou","Frli Ref","Date","Level Admin","Ip Owner","Licence","Disclaimer","Comment"],
+                                    "primaryPropertyName": "CATLIM",
+                                    "showEmptyFeatures": true,
+                                    "requiresGeometry": true,
+                                    "markerUrl": "content/marker/marker-identify.png",
+                                    "markerWidth": "55",
+                                    "markerHeight": "40"
+                                }
+                            },
+                            {
+                                "id": "legalInterest",
+                                "toolPanelUrl": "resources/partial/interrogateDataPanel.html",
+                                "toolToggleUrl": "resources/partial/interrogateDataToggle.html",
+                                "config": {
+                                    "titleText": "Interrogate legal interests",
+                                    "panelHeading": "Interrogate legal interests",
+                                    "symbol": "<img src=\"resources/img/legal.png\"/>",
+                                    "propertiesOfInterest": ["NAME","OBJNAM","CATLIM","CATBDY","NOBJNM","NATION","STATES","VERTJN","SORHCS","PHCS","LEGSOU","FRLI_REF","DATE","LEVEL_ADMIN","IP_OWNER","LICENCE","DISCLAIMER","COMMENT"],
+                                    "propertiesAlias": ["Name","Object Name","Catlim","Catbdy","Nobjnm","Nation","States","Vertjn","Sorhcs","Phcs","Legsou","Frli Ref","Date","Level Admin","Ip Owner","Licence","Disclaimer","Comment"],
+                                    "primaryPropertyName": "NAME",
+                                    "showEmptyFeatures": true,
+                                    "requiresGeometry": true,
+                                    "markerUrl": "content/marker/marker-legal.png",
+                                    "markerWidth": "55",
+                                    "markerHeight": "40",
+                                    "endpoints": [
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Contiguous_Zone_Seas_and_Submerged_Lands_Limits_of_Contiguous_Zone_Proclamation_1999_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Contiguous_Zone_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Contiguous_Zone_Seas_and_Submerged_Lands_Limits_of_Contiguous_Zone_Proclamation_1999_AMB2014_Area",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Contiguous_Zone_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_CW_Act_1980_Coastal_Waters_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Coastal_Waters_State_and_Northern_Territory_Powers_Act_1980_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_CW_Act_1980_Coastal_Waters_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_CW_Act_1980_Coastal_Waters_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Coastal_Waters_State_and_Northern_Territory_Powers_Act_1980_AMB2014_Area",
+                                            "featurePrefix": "legislation_CWTH_CW_Act_1980_Coastal_Waters_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Territorial_Sea_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Territorial_Sea_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_7_09_11_1990_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Territorial_Sea_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Territorial_Sea_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Territorial_Sea_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_7_09_11_1990_AMB2014_Area",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Territorial_Sea_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Continental_Shelf_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Continental_Shelf_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Continental_Shelf_AMB2014_Area",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Continental_Shelf_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Exclusive_Economic_Zone_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Exclusive_Economic_Zone_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Area",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Exclusive_Economic_Zone_As_Amended_by_the_Perth_Treaty_1997_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Exclusive_Economic_Zone_As_Amended_by_the_Perth_Treaty_1997_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Area",
+                                            "featurePrefix": "legislation_CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Scheduled_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Points",
+                                            "featurePrefix": "legislation_CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        },
+                                        {
+                                            "url": "/gis/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer/WFSServer",
+                                            "featureType": "Scheduled_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Limit",
+                                            "featurePrefix": "legislation_CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014",
+                                            "geometryName": "Shape",
+                                            "queryType": "WFS"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "baseMaps": [
+                        {
+                            "mapType": "XYZTileCache",
+                            "visibility": true,
+                            "name": "World Image",
+                            "url": "http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer",
+                            "mapBGColor": "194584",
+                            "opacity": 1.0,
+                            "wrapDateLine": true,
+                            "maxZoomLevel" : 12,
+                            "attribution": "World <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a> and <a target='_blank' href='http://www.naturalearthdata.com/'>Natural Earth</a>"
+                        },
+                        {
+                            "mapType": "GoogleStreet",
+                            "visibility": false,
+                            "name": "Google Street",
+                            "opacity": 1.0,
+                            "wrapDateLine": true,
+                            "maxZoomLevel" : 12,
+                            "attribution":  "Geoscience Australia <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a> and Google Maps"
+                        },
+                        {
+                            "mapType": "XYZTileCache",
+                            "visibility": false,
+                            "name": "World Political Boundaries",
+                            "url": "http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer",
+                            "mapBGColor": "2356b9",
+                            "opacity": 1.0,
+                            "wrapDateLine": true,
+                            "maxZoomLevel" : 12,
+                            "attribution": "Political <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a> and <a target='_blank' href='http://www.naturalearthdata.com/'>Natural Earth</a>"
+                        }
+                    ],
+                    "layerMaps": [
+                        {
+                            "id":"topography",
+                            "mapType":"ArcGISCache",
+                            "visibility":false,
+                            "name":"Australian Topography",
+                            "url":"http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer",
+                            "opacity":1.0,
+                            "layerTimeout": 5000,
+                            "metadataText": "The Australian Topographic map service is seamless national dataset coverage for the whole of Australia. The map portrays detailed graphic representation of features that appear on the Earth's surface. These features include cultural, hydrography and relief themes.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B86C897AA-BD75-44E3-9628-73560C3184D4%7D"}],
+                            "queryFeatures" : false
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": false,
+                            "name": "Continental Shelf AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WMSServer",
+                            "layers": "Continental_Shelf_AMB2014_Area,Continental_Shelf_AMB2014_Limit",
+                            "metadataText": "Line depicting the limit of the continental shelf made under the Seas and Submerged Lands (Limits of Continental Shelf) Proclamation 2012",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B93C50EEF-B0F6-43F9-A415-2D0052234AEF%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Continental_Shelf_AMB2014_Area,Continental_Shelf_AMB2014_Limit"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "name": "Exclusive Economic Zone as Amended by the Perth Treaty 1997 AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer/WMSServer",
+                            "layers": "Exclusive_Economic_Zone_As_Amended_by_the_Perth_Treaty_1997_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Area,Exclusive_Economic_Zone_As_Amended_by_the_Perth_Treaty_1997_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Limit",
+                            "metadataText": "Line and polygon depicting the Australian EEZ as modified by the application of the Treaty between the Government of Australia and the Government of the Republic of Indonesia establishing an Exclusive Economic Zone Boundary and Certain Seabed Boundaries (Perth, 14 march 1997) [1997] ATNIF 9 - (not yet in force). NOTE: This is the standard depiction of the Australian EEZ.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B93C61A4B-F83E-4A42-842A-5C4DC99D87A0%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_Amended_by_Perth_Treaty_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Exclusive_Economic_Zone_As_Amended_by_the_Perth_Treaty_1997_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Area,Exclusive_Economic_Zone_As_Amended_by_the_Perth_Treaty_1997_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Limit"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": false,
+                            "name": "Exclusive Economic Zone as Proclaimed 1973 AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer/WMSServer",
+                            "layers": "Exclusive_Economic_Zone_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Area,Exclusive_Economic_Zone_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Limit",
+                            "metadataText": "Lines and polygons depicting the outer limit and extent of the Austraian EEZ as proclaimed by the Seas and Submerged Lands Act 1973 - Proclamation under section 10B (26/07/1994). NOTE: Although this proclamation reamins in force, for many matters the limit modified by the action of the Treaty between the Government of Australia and the Government of the Republic of Indonesia establishing an Exclusive Economic Zone Boundary and Certain Seabed Boundaries (Perth, 14 march 1997) [1997] ATNIF 9 - (not yet in force) applies.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B5CA54826-0ACC-446C-9D2E-4306571234AE%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Exclusive_Economic_Zone_As_Proclaimed_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Exclusive_Economic_Zone_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Limit,Exclusive_Economic_Zone_Seas_and_Submerged_Lands_Act_1973_Proclamation_under_section_10B_26_07_1994_AMB2014_Area"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "name": "Contiguous Zone AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer/WMSServer",
+                            "layers": "Contiguous_Zone_Seas_and_Submerged_Lands_Limits_of_Contiguous_Zone_Proclamation_1999_AMB2014_Area,Contiguous_Zone_Seas_and_Submerged_Lands_Limits_of_Contiguous_Zone_Proclamation_1999_AMB2014_Limit",
+                            "metadataText": "Lines and polygons depicting the limit and extent of the Contiguous Zone. Seas and Submerged Lands (Limits of Contiguous Zone) Proclamation 1999. ",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B4F376E79-99A5-4A02-8E67-CC433EA6A6EB%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Contiguous_Zone_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Contiguous_Zone_Seas_and_Submerged_Lands_Limits_of_Contiguous_Zone_Proclamation_1999_AMB2014_Area,Contiguous_Zone_Seas_and_Submerged_Lands_Limits_of_Contiguous_Zone_Proclamation_1999_AMB2014_Limit"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "name": "Continental Shelf AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WMSServer",
+                            "layers": "Continental_Shelf_AMB2014_Area,Continental_Shelf_AMB2014_Limit",
+                            "metadataText": "Line depicting the limit of the continental shelf made under the Seas and Submerged Lands (Limits of Continental Shelf) Proclamation 2012.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B93C50EEF-B0F6-43F9-A415-2D0052234AEF%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Continental_Shelf_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Continental_Shelf_AMB2014_Area,Continental_Shelf_AMB2014_Limit"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "name": "Straight Baselines AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Straight_Baselines_AMB2014/MapServer/WMSServer",
+                            "layers": "Baselines_Straight_Seas_and_Submerged_Lands_Territorial_Sea_Baseline_Proclamation_2006_AMB2014_Limit",
+                            "metadataText": "Straight Baseline defined under the Seas and Submerged Lands (Territorial Sea Baseline) Proclamation 2006.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Straight_Baselines_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Straight_Baselines_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Straight_Baselines_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7B8111844D-5185-4AFA-9532-EF5C0B075F92%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Straight_Baselines_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Baselines_Straight_Seas_and_Submerged_Lands_Territorial_Sea_Baseline_Proclamation_2006_AMB2014_Limit"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "name": "Normal Baselines AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Normal_Baselines_AMB2014/MapServer/WMSServer",
+                            "layers": "Baselines_Normal_Seas_and_Submerged_Lands_Territorial_Sea_Baseline_Proclamation_2006_AMB2014_Limit",
+                            "metadataText": "Normal Baseline defined under the Seas and Submerged Lands (Territorial Sea Baseline) Proclamation 2006.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Normal_Baselines_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_SSLA_1973_Normal_Baselines_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_SSLA_1973_Normal_Baselines_AMB2014/MapServer?f=lyr&v=9.3"},
+                                {"description": "Service Metadata","url": "http://www.ga.gov.au/geoportal/catalog/search/resource/details.page?uuid=%7BEC7C6D5F-D794-4774-8A97-9BE98EC1373D%7D"}],
+                            "opacity": 0.3,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/CWTH_SSLA_1973_Normal_Baselines_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Baselines_Normal_Seas_and_Submerged_Lands_Territorial_Sea_Baseline_Proclamation_2006_AMB2014_Limit"
+                        }
+                    ],
+                    "groupedLayers": [
+                        {
+                            "groupId": "specialGroup",
+                            "layerMaps": [
+                                {
+                                    "id": "foo1",
+                                    "groupId": "specialGroup",
+                                    "mapType": "WMS",
+                                    "visibility": true,
+                                    "name": "Exclusive - Landsat",
+                                    "url": "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
+                                    "layers": "Australian Landsat",
+                                    "opacity": 1.0,
+                                    "tileType": "large"
+                                },
+                                {
+                                    "id": "foo2",
+                                    "groupId": "specialGroup",
+                                    "mapType": "WMS",
+                                    "visibility": false,
+                                    "name": "Exclusive - Geomorphic Seabed",
+                                    "url": "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
+                                    "layers": "Geomorphic_Features",
+                                    "opacity": 1.0
+                                },
+                                {
+                                    "id": "foo3",
+                                    "groupId": "specialGroup",
+                                    "mapType": "WMS",
+                                    "visibility": false,
+                                    "name": "Exclusive - Topographic",
+                                    "url": "http://www.ga.gov.au/gis/services/topography/Australian_Topography_NoAntiAliasing/MapServer/WMSServer",
+                                    "layers": "Framework Boundaries,Framework Boundaries SS,Roads SS,Roads MS,Roads,State Names on Boundaries,State Names Anno MS,State Names Anno SS,Populated Places,Populated Places MS,Populated Places SS,Cities",
+                                    "tileType": "large",
+                                    "attribution": "Geoscience Australia Topography <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a>",
+                                    "opacity": 1.0
+                                }
+                            ]
+                        }
+                    ],
+                    "addLayerMaps": [
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "queryFeatures" : true,
+                            "name": "Offshore Areas of the States AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_OPGGSA_2006_Offshore_Areas_of_the_States_AMB2014/MapServer/WMSServer",
+                            "layers": "Offshore_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Area,Offshore_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Limit",
+                            "metadataText": "This dataset is a digital realisation of the Offshore Areas of the States and Territories as defined under Section 8 of the Offshore Petroleum and Greenhouse Gas Storage Act 2006. The dataset is comprised of points, lines and polylines, and is densified to ensure the geometry will remain correct regardless of projection.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_OPGGSA_2006_Offshore_Areas_of_the_States_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_OPGGSA_2006_Offshore_Areas_of_the_States_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_OPGGSA_2006_Offshore_Areas_of_the_States_AMB2014/MapServer?f=lyr&v=9.3"}],
+                            "opacity": 0.5,
+                            "queryUrl": "/gis/services/legislation/CWTH_OPGGSA_2006_Offshore_Areas_of_the_States_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Offshore_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Area,Offshore_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Limit"
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "queryFeatures" : true,
+                            "name": "Scheduled Areas AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer/WMSServer",
+                            "layers": "Scheduled_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Limit,Scheduled_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Points",
+                            "metadataText": "This dataset is a digital realisation of the Scheduled Areas of the States and Territories as defined under Section 8 and Schedule 1 of the Offshore Petroleum and Greenhouse Gas Storage Act 2006. The dataset is comprised of points, lines and polylines, and is densified to ensure the geometry will remain correct regardless of projection.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer?f=lyr&v=9.3"}],
+                            "opacity": 1.0,
+                            "queryUrl": "/gis/services/legislation/CWTH_OPGGSA_2006_Scheduled_Areas_AMB2014/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "Scheduled_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Limit,Scheduled_Areas_under_the_Offshore_Petroleum_and_Greenhouse_Gas_Storage_Act_AMB2014_Points"
+                        },
+                        {
+                            "mapType": "ArcGISCache",
+                            "visibility": true,
+                            "queryFeatures" : true,
+                            "name": "Australian Petroleum Blocks AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/rest/services/legislation/CWTH_OPGGSA_2006_Petroleum_Blocks_AMB2014_WM/MapServer",
+                            "metadataText": "This dataset is a digital realisation of the Blocks as defined under Section 33 (3) of the Offshore Petroleum and Greenhouse Gas Storage Act 2006. The blocks are created using a 5 minute by 5 minute graticular section that has been trimmed to the extent of the Offshore Area (defined in the same Act). The dataset is comprised of both points and polygons, and is densified to ensure the geometry will remain correct regardless of projection.",
+                            "queryUrl": "http://www.ga.gov.au/gis/services/legislation/CWTH_OPGGSA_2006_Petroleum_Blocks_AMB2014_WM/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "OPGGSA_Points,OPGGSA_Blocks",
+                            "opacity": 1.0
+                        },
+                        {
+                            "mapType": "WMS",
+                            "visibility": true,
+                            "name": "Treaties of Australia AMB 2014",
+                            "url": "http://www.ga.gov.au/gis/services/legislation/Treaty_Australia_Complete/MapServer/WMSServer",
+                            "layers": "East_Timor_Certain_Maritime_Arrangements_in_the_Timors_Sea_Treaty_AMB2014_Points,East_Timor_Certain_Maritime_Arrangements_in_the_Timors_Sea_Treaty_AMB2014_Limit,East_Timor_Joint_Petroleum_Development_Area_AMB2014_Points,East_Timor_Joint_Petroleum_Development_Area_AMB2014_Limit,East_Timor_Unitisation_Agreement_AMB2014_Points,East_Timor_Unitisation_Agreement_AMB2014_Limit,France_Heard_and_McDonald_Islands_AMB2014_Points,France_Heard_and_McDonald_Islands_AMB2014_Limit,France_New_Caledonia_AMB2014_Points,France_New_Caledonia_AMB2014_Limit,Indonesia_1971_Seabed_Treaty_AMB2014_Points,Indonesia_1971_Seabed_Treaty_AMB2014_Limit,Indonesia_1972_Seabed_Treaty_AMB2014_Points,Indonesia_1972_Seabed_Treaty_AMB2014_Limit,Indonesia_Perth_Treaty_1997_Exclusive_Economic_Zone_AMB2014_Points,Indonesia_Perth_Treaty_1997_Exclusive_Economic_Zone_AMB2014_Line,Indonesia_Perth_Treaty_1997_Seabed_AMB2014_Points,Indonesia_Perth_Treaty_1997_Seabed_AMB2014_Limit,Indonesia_Memorandum_of_Understanding_AMB2014_Points,Indonesia_Memorandum_of_Understanding_AMB2014_Limit,Indonesia_Perth_Treaty_1997_Area_of_Overlapping_Jurisdiction_Area,Indonesia_Provisional_Fisheries_Surveillance_and_Enforcement_Line_AMB2014_Points,Indonesia_Provisional_Fisheries_Surveillance_and_Enforcement_Line_AMB2014_Limit,New_Zealand_Lord_Howe_Island_and_Norfolk_Island_AMB2014_Points,New_Zealand_Lord_Howe_Island_and_Norfolk_Island_AMB2014_Limit,New_Zealand_Macquarie_Island_and_Auckland_and_Campbell_Islands_AMB2014_Points,New_Zealand_Macquarie_Island_and_Auckland_and_Campbell_Islands_AMB2014_Limit,Papua_New_Guinea_Fisheries_Jurisdiction_Line_AMB2014_Points,Papua_New_Guinea_Fisheries_Jurisdiction_Line_AMB2014_Limit,Papua_New_Guinea_Seabed_AMB2014_Points,Papua_New_Guinea_Seabed_AMB2014_Limit,Papua_New_Guinea_Territorial_Sea_AMB2014_Points,Papua_New_Guinea_Territorial_Sea_AMB2014_Limit,Papua_New_Guinea_Torres_Strait_Protected_Zone_AMB2014_Points,Papua_New_Guinea_Torres_Strait_Protected_Zone_AMB2014_Limit,Solomon_Islands_AMB2014_Points,Solomon_Islands_AMB2014_Limit",
+                            "metadataText": "Treaty between the Government of Australia and the Government of the Republic of Indonesia establishing an Exclusive Economic Zone Boundary and Certain Seabed Boundaries (Perth, 14 march 1997) [1997] ATNIF 9 - Area of overlapping jurisdiction over which Australia exercises sovereign rights over the seabed and Indonesia soveregn rights over the water column. Services created from the original treaty documents and densified using the line geometry defined in the treaty (geodesic or loxodrome) with a vertex placed at least every 0.5 nautical miles. This will ensure the geometry of the lines is preserved regardless of projection utilised by a Geographic Information System. Where the original datum of the treaty is not specified as GDA94, all defined points have been transformation by Geoscience Australia’s National Geospatial Reference Systems Section to GDA94.",
+                            "ogcLinks" : [{"description": "REST","url": "http://www.ga.gov.au/gis/rest/services/legislation/Treaty_Australia_Complete/MapServer"},
+                                {"description": "WMS Capabilities","url": "http://www.ga.gov.au/gis/services/legislation/Treaty_Australia_Complete/MapServer/WMSServer?request=GetCapabilities&service=WMS"},
+                                {"description": "ArcMap Layerfile","url": "http:/www.ga.gov.au/gis/services/legislation/Treaty_Australia_Complete/MapServer?f=lyr&v=9.3"}],
+                            "opacity": 0.5,
+                            "queryFeatures" : true,
+                            "queryUrl": "/gis/services/legislation/Treaty_Australia_Complete/MapServer/WMSServer",
+                            "queryUrlType":"WMS",
+                            "queryVersion": "1.1.1",
+                            "queryLayers": "East_Timor_Certain_Maritime_Arrangements_in_the_Timors_Sea_Treaty_AMB2014_Points,East_Timor_Certain_Maritime_Arrangements_in_the_Timors_Sea_Treaty_AMB2014_Limit,East_Timor_Joint_Petroleum_Development_Area_AMB2014_Points,East_Timor_Joint_Petroleum_Development_Area_AMB2014_Limit,East_Timor_Unitisation_Agreement_AMB2014_Points,East_Timor_Unitisation_Agreement_AMB2014_Limit,France_Heard_and_McDonald_Islands_AMB2014_Points,France_Heard_and_McDonald_Islands_AMB2014_Limit,France_New_Caledonia_AMB2014_Points,France_New_Caledonia_AMB2014_Limit,Indonesia_1971_Seabed_Treaty_AMB2014_Points,Indonesia_1971_Seabed_Treaty_AMB2014_Limit,Indonesia_1972_Seabed_Treaty_AMB2014_Points,Indonesia_1972_Seabed_Treaty_AMB2014_Limit,Indonesia_Perth_Treaty_1997_Exclusive_Economic_Zone_AMB2014_Points,Indonesia_Perth_Treaty_1997_Exclusive_Economic_Zone_AMB2014_Line,Indonesia_Perth_Treaty_1997_Seabed_AMB2014_Points,Indonesia_Perth_Treaty_1997_Seabed_AMB2014_Limit,Indonesia_Memorandum_of_Understanding_AMB2014_Points,Indonesia_Memorandum_of_Understanding_AMB2014_Limit,Indonesia_Perth_Treaty_1997_Area_of_Overlapping_Jurisdiction_Area,Indonesia_Provisional_Fisheries_Surveillance_and_Enforcement_Line_AMB2014_Points,Indonesia_Provisional_Fisheries_Surveillance_and_Enforcement_Line_AMB2014_Limit,New_Zealand_Lord_Howe_Island_and_Norfolk_Island_AMB2014_Points,New_Zealand_Lord_Howe_Island_and_Norfolk_Island_AMB2014_Limit,New_Zealand_Macquarie_Island_and_Auckland_and_Campbell_Islands_AMB2014_Points,New_Zealand_Macquarie_Island_and_Auckland_and_Campbell_Islands_AMB2014_Limit,Papua_New_Guinea_Fisheries_Jurisdiction_Line_AMB2014_Points,Papua_New_Guinea_Fisheries_Jurisdiction_Line_AMB2014_Limit,Papua_New_Guinea_Seabed_AMB2014_Points,Papua_New_Guinea_Seabed_AMB2014_Limit,Papua_New_Guinea_Territorial_Sea_AMB2014_Points,Papua_New_Guinea_Territorial_Sea_AMB2014_Limit,Papua_New_Guinea_Torres_Strait_Protected_Zone_AMB2014_Points,Papua_New_Guinea_Torres_Strait_Protected_Zone_AMB2014_Limit,Solomon_Islands_AMB2014_Points,Solomon_Islands_AMB2014_Limit"
+                        }
+                    ]
+                };
+                $scope.modelChanged();
+            };
+
+
+        }]);
+    })();
+</script>
+</body>

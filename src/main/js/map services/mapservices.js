@@ -28,7 +28,11 @@ var $ = $ || {};
 var app = angular.module('gawebtoolkit.mapservices',
 	[
 		'gawebtoolkit.mapservices.layer.openlayersv2',
-		'gawebtoolkit.mapservices.map.openlayersv2'
+        'gawebtoolkit.mapservices.map.openlayersv2',
+        'gawebtoolkit.mapservices.layer.openlayersv3',
+        'gawebtoolkit.mapservices.map.openlayersv3',
+        'gawebtoolkit.mapservices.data.openlayersv2',
+        'gawebtoolkit.mapservices.data.openlayersv3'
 	]);
 //id: olv2Layer.id,
 //	name: olv2Layer.name,
@@ -36,7 +40,7 @@ var app = angular.module('gawebtoolkit.mapservices',
 //	visibility: olv2Layer.visibility,
 //	opacity: olv2Layer.opacity
 
-app.factory('GeoLayer', [function () {
+app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
 	"use strict";
 	var GeoLayer = function (id, name, type, visibility, opacity) {
 		this.id = id;
@@ -65,6 +69,23 @@ app.factory('GeoLayer', [function () {
         }
         
         return new GeoLayer(layer.id,layer.name,layerType,layer.visibility,opacity);
+    };
+
+    GeoLayer.fromOpenLayersV3Layer = function(layer) {
+        var layerType =layer.geoLayerType;
+        var opacity;
+        if(typeof layer.get('opacity') === 'string') {
+            opacity = Number(layer.get('opacity'));
+        } else {
+            opacity =layer.get('opacity');
+        }
+        console.log(layer.get('visible'));
+        if(!layer.get('id')) {
+            layer.set('id', GAWTUtils.generateUuid());
+        }
+
+
+        return new GeoLayer(layer.get('id'),layer.get('name'),layerType,layer.get('visible'),opacity);
     };
 	//define prototypical methods
 	//GeoLayer.prototype.myFunction = function () //available on every instance.

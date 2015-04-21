@@ -251,7 +251,10 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             return layerOptions;
         },
 		cleanupLayer: function (mapInstance, layerId) {
-			var layer = mapInstance.getLayersBy('id',layerId)[0];
+            if(mapInstance.layers == null || mapInstance.layers.length === 0) {
+                return;
+            }
+            var layer = service.getLayerById(mapInstance, layerId);
 			if(layer != null) {
 				mapInstance.removeLayer(layer);
 			}
@@ -286,17 +289,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             if (!latlong) {
                 return null;
             }
-            var coords, centerPosition;
-            coords = latlong.split(',');
-            centerPosition = {
-                lat: "",
-                lon: ""
-            };
-
-            centerPosition.lat = coords[0];
-            centerPosition.lon = coords[1];
-
-            return centerPosition;
+            return angular.fromJson(latlong);
         },
         //Should this be labeled as an internal method?
         getLayerById: function (mapInstance, layerId) {

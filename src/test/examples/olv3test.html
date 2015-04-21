@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html ng-app="simpleMap">
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js"></script>
+    <script src="../../../node_modules/openlayers/dist/ol-debug.js"></script>
+    <script src="http://dev.openlayers.org/OpenLayers.js"></script>
+    <script src="../../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../../../bower_components/angular/angular.js"></script>
+    <script src="../../main/js/geo-web-toolkit-min.js"></script>
+    <script src="http://epsg.io/21781-1753.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../../../node_modules/openlayers/dist/ol-debug.css"/>
+    <script src="http://maps.google.com/maps/api/js?sensor=false&.js&libraries=places"></script>
+    <title>OpenLayers 3 Example Map</title>
+</head>
+<body ng-controller="mainController">
+<h1 id="test111" ng-bind="frameworkName"></h1>
+<div id="map" style="width:100%;height:500px;"></div>
+<!-- Investigate bug limiting fullscreen size. WIDTH and HEIGHT values seem to be using size of window. -->
+<ga-map ng-if="frameworkType != null" map-element-id="map" framework="{{frameworkType}}" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]">
+    <ga-map-layer layer-name="test1"
+                  layer-type="WMS"
+                  layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"
+                  layers="World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second"
+                  wrap-date-line="false"
+                  visibility="true"
+                  max-zoom-level="12"
+                  min-zoom-level="3"
+                  format="image/png"
+                  layer-attribution="This is a test¿"
+                  is-base-layer="true">
+    </ga-map-layer>
+    <ga-map-layer layer-name="test2"
+                  layer-type="WMS"
+                  wrap-date-line="true"
+                  layer-attribution="This is a test?"
+                  layer-url="http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer"
+                  layers="Populated_Places_1,Populated_Places_2,Populated_Places_3,Populated_Places_4,Populated_Places_5,Populated_Places_6,Populated_Places_7,Populated_Places_8">
+    </ga-map-layer>
+    <ga-feature-layer layer-name="feature layer1">
+    <ga-feature geo-json-feature="testFeature"></ga-feature>
+    </ga-feature-layer>
+    <ga-map-control map-control-name="scaleline"></ga-map-control>
+    <ga-map-control map-control-name="zoomslider"></ga-map-control>
+    <ga-map-control map-control-name="attribution"></ga-map-control>
+    <ga-map-control map-control-name="mouseposition"></ga-map-control>
+    <ga-map-control map-control-name="overviewmap"></ga-map-control>
+</ga-map>
+<script>
+    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+
+    app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
+        $scope.testFeature = {
+            "type": "Feature",
+            "crs": {
+                "type": "name",
+                "properties": {
+                    "name": "EPSG:4326"
+                }
+            },
+            "properties": {
+                "name": "Testing name",
+                "anotherProp": "Another value"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [ 117.359, -25.284 ]
+            }
+        };
+        $scope.$on('mapControllerReady', function (mapController) {
+            console.log(mapController);
+            $scope.mapController = mapController;
+        });
+        $scope.frameworkType = 'olv2';
+        $scope.frameworkName = 'OpenLayers 2';
+        $('#test111').on('click', function () {
+            $scope.$apply(function () {
+                $scope.frameworkTypeOldVal = angular.copy($scope.frameworkType);
+                $scope.frameworkType = null;
+                $timeout(function () {
+                    $scope.frameworkType = $scope.frameworkTypeOldVal == 'olv2' ? 'olv3' : 'olv2';
+                    $scope.frameworkName = $scope.frameworkTypeOldVal == 'olv2' ? 'OpenLayers 3' : 'OpenLayers 2';
+                },10)
+            });
+        });
+    }]);
+
+</script>
+
+
+<!--<div id="map1" style="width:100%;height:500px;"></div>
+<script>
+    // Transparent Proj4js support: ol.proj.get() creates and returns a projection
+    // known to Proj4js if it is unknown to OpenLayers, and registers functions to
+    // transform between all registered projections.
+    // EPSG:21781 is known to Proj4js because its definition was loaded in the html.
+    // Note that we are getting the projection object here to set the extent. If
+    // you do not need this, you do not have to use ol.proj.get(); simply use the
+    // string code in the view projection below and the transforms will be
+    // registered transparently.
+    proj4.defs("EPSG:102113","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
+    proj4.defs("EPSG:102100","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
+
+    var projection = ol.proj.get('EPSG:102100');
+    // The extent is used to determine zoom level 0. Recommended values for a
+    // projection's validity extent can be found at http://epsg.io/.
+    //projection.setExtent([485869.5728, 76443.1884, 837076.5648, 299941.7864]);
+
+    //var extent = [-9000000, -9000000, 900000000, 350000000];
+    var layers = [
+        new ol.layer.Image({
+            //extent: extent,
+            source: new ol.source.ImageWMS({
+                url: 'http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer',
+                crossOrigin: 'anonymous',
+                attributions: [new ol.Attribution({
+                    html: '&copy; ' +
+                    '<a href="http://www.geo.admin.ch/internet/geoportal/' +
+                    'en/home.html">' +
+                    'Pixelmap 1:1000000 / geo.admin.ch</a>'
+                })],
+                params: {
+                    'LAYERS': 'World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second',
+                    'FORMAT': 'image/jpeg'
+                },
+                serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver')
+            })
+        }),
+        new ol.layer.Image({
+            //extent: extent,
+            source: new ol.source.ImageWMS({
+                url: 'http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer',
+                crossOrigin: 'anonymous',
+                attributions: [new ol.Attribution({
+                    html: '&copy; ' +
+                    '<a href="http://www.geo.admin.ch/internet/geoportal/' +
+                    'en/home.html">' +
+                    'National parks / geo.admin.ch</a>'
+                })],
+                params: {'LAYERS': 'Populated_Places_1,Populated_Places_2,Populated_Places_3,Populated_Places_4,Populated_Places_5,Populated_Places_6,Populated_Places_7,Populated_Places_8'},
+                serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver')
+            })
+        })
+    ];
+
+    var map = new ol.Map({
+        target: 'map1',
+        view: new ol.View({
+            projection: projection,
+            center: ol.proj.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:102100'),
+            //extent: extent,
+            zoom: 2
+        }),
+        controls: []
+    });
+    map.addLayer(layers[0]);
+    map.addLayer(layers[1])
+    map.addControl(new ol.control.ScaleLine());
+
+</script>-->
+
+</body>
+</html>
