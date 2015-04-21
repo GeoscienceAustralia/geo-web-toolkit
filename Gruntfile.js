@@ -25,10 +25,10 @@ module.exports = function (grunt) {
 		},
         uglify: {
             options: {
-                mangle: false,
+                mangle: true,
                 sourceMap: true,
                 sourceMapName: 'src/main/js/geo-web-toolkit-min.js.map',
-                beautify: true
+                beautify: false
             },
             my_target: {
                 files: {
