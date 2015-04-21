@@ -3,7 +3,7 @@
     "use strict";
 
     describe(
-        'OpenLayers v2.1.13 "ga-map-layer" implementation tests',
+        'OpenLayers v3 "ga-map-layer" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, mapControllerListener, layerController1, layerController2, layerController3;
 
