@@ -84,6 +84,7 @@ app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
             layer.set('id', GAWTUtils.generateUuid());
         }
 
+
         return new GeoLayer(layer.get('id'),layer.get('name'),layerType,layer.get('visible'),opacity);
     };
 	//define prototypical methods
