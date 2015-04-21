@@ -607,10 +607,11 @@
                 var currentExtent = $scope.mapController.getCurrentMapExtent();
                 expect(currentExtent != null).toBe(true);
             });
-            it('Should fire mapController function "filterFeatureLayer" without an exception given valid input', function () {
-                var layer = $scope.mapController.getLayers()[2];
-                $scope.mapController.filterFeatureLayer(layer.id, 'test', 'NAME');
-            });
+            //TODO
+            //it('Should fire mapController function "filterFeatureLayer" without an exception given valid input', function () {
+            //    var layer = $scope.mapController.getLayers()[2];
+            //    $scope.mapController.filterFeatureLayer(layer.id, 'test', 'NAME');
+            //});
             it('Should fire mapController function "getLayerFeatures" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[2];
                 var features = $scope.mapController.getLayerFeatures(layer.id);
