@@ -30,16 +30,19 @@ module.exports = function (config) {
             'bower_components/proj4/dist/proj4.js',
             'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
             'node_modules/openlayers/dist/ol-debug.js',
-            'src/main/js/**/*.js',
+            'src/main/js/map services/*.js',
+            'src/main/js/config/*.js',
+            'src/main/js/core/core.js',
+            'src/main/js/core/*.js',
+            'src/main/js/ui/components/**/*.js',
+            'src/main/js/toolkit-templates.js',
+            'src/main/js/ui/components/components.js',
+            'src/main/js/ui/ui-directives.js',
             'src/test/js/**/*.js'],
 
         // list of files to exclude
         exclude: [
-            'src/test/js/karma*.js',
-            'src/main/js/config/*.js',
-            'src/main/js/core/*.js',
-            'src/main/js/map services/*.js',
-            'src/main/js/ui/*.js'
+            'src/test/js/karma*.js'
         ],
 
         // preprocess matching files before serving them to the browser

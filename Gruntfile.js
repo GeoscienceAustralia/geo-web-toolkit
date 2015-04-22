@@ -45,7 +45,7 @@ module.exports = function (grunt) {
         ngtemplates:  {
             'gawebtoolkit.ui.templates': {
                 src:      'src/main/js/ui/**/*.html',
-                dest: 'src/main/js/temp-templates.js',
+                dest: 'src/main/js/toolkit-templates.js',
                 options: {
                     standalone:true
                 }
@@ -56,7 +56,7 @@ module.exports = function (grunt) {
                 separator: '\r\n\r\n'
             },
             dist: {
-                src: ['src/main/js/geo-web-toolkit-min.js', 'src/main/js/temp-templates.js'],
+                src: ['src/main/js/geo-web-toolkit-min.js', 'src/main/js/toolkit-templates.js'],
                 dest: 'src/main/js/geo-web-toolkit-min.js'
             }
         },
