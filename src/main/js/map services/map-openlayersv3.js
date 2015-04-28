@@ -1078,10 +1078,11 @@
                     return olCesiumInstance != null ? olCesiumInstance.getEnabled() : false;
                 },
                 switchTo3dView: function (mapInstance) {
-                    if(mapInstance.getView().getProjection().getCode() !== 'ESPG:4326' &&
-                        mapInstance.getView().getProjection().getCode() !== 'ESPG:3857') {
-                        throw new Error("Map projection not supported. Use EPSG:3857 or EPSG:4326 as the datum-projection to use 3D.");
-                    }
+                    //Below validation, regardless of value of getCode() or code_ returns true to BOTH. Needs more investigation.
+                    //if(mapInstance.getView().getProjection().getCode() !== 'ESPG:4326' &&
+                    //    mapInstance.getView().getProjection().getCode() !== 'ESPG:3857') {
+                    //    throw new Error("Map projection not supported. Use EPSG:3857 or EPSG:4326 as the datum-projection to use 3D.");
+                    //}
                     if (olCesiumInstance) {
                         olCesiumInstance.setEnabled(true);
                     } else {

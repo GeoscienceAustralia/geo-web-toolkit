@@ -100,14 +100,10 @@
                 expect(layer.get('name')).toBe("Foo");
             });
             it('Should fail to switch to 3D due to projection 102100 not being supported', function () {
-                var passed = false;
-                try{
-                    expect($scope.mapController.getMapInstance.getView().getProjection().getCode()).toBe('EPSG:102100');
-                    $scope.mapController.switch3d();
-                } catch (e) {
-                    passed = true;
-                }
-                expect(passed).toBe(true);
+                expect($scope.mapController.getMapInstance().getView().getProjection().getCode()).toBe('EPSG:102100');
+                expect($scope.mapController.is3d()).toBe(false);
+                $scope.mapController.switch3d();
+                expect($scope.mapController.is3d()).toBe(false);
             });
             it('Should be able to call switch3d when map has valid projection', function () {
                 var passed = true;
