@@ -10,6 +10,9 @@
                 element,
                 mapControllerListener;
 
+            var mapWith3DSupportedProj;
+
+
             // Load the myApp module, which contains the directive
             beforeEach(module('testApp'));
 
@@ -76,6 +79,7 @@
                     '</ga-feature-layer>' +
                     '<ga-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></ga-map-control> ' +
                     '</ga-map> ';
+                mapWith3DSupportedProj = ele.replace('EPSG:102100','EPSG:3857');
                 element = angular
                     .element(ele);
                 $compile(element)($scope);
@@ -94,6 +98,31 @@
                 var layer = $scope.mapController.createLayer(args);
                 expect(layer != null).toBe(true);
                 expect(layer.get('name')).toBe("Foo");
+            });
+            it('Should fail to switch to 3D due to projection 102100 not being supported', function () {
+                var passed = false;
+                try{
+                    expect($scope.mapController.getMapInstance.getView().getProjection().getCode()).toBe('EPSG:102100');
+                    $scope.mapController.switch3d();
+                } catch (e) {
+                    passed = true;
+                }
+                expect(passed).toBe(true);
+            });
+            it('Should be able to call switch3d when map has valid projection', function () {
+                var passed = true;
+                try {
+                    element = angular
+                        .element(mapWith3DSupportedProj);
+                    $compile(element)($scope);
+                    $scope.$digest();
+                    $timeout.flush();
+                    $scope.$digest();
+                    $scope.mapController.switch3d();
+                } catch(error) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
             });
             it('Should fire mapController function "addLayer" without an exception given valid value', function () {
                 //Adds a layer, create with test args and then pass to add as addLayer method expects implementation of a layer
