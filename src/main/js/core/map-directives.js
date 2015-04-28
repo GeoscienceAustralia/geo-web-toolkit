@@ -135,7 +135,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 					}
 				}else {
 					if ($scope.layersReady) {
-						$log.info(layer);
+						//$log.info(layer);
 						var layerDto = GAMapService.addLayer($scope.mapInstance, layer, $scope.framework);
                         deferredLayer.resolve(layerDto);
                         orderLayers();
@@ -1737,7 +1737,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 for (var i = 0; i < layers.length; i++) {
                     var layer = layers[i];
                     if(typeof layer === 'string') {
-                        $log.info(layer);
+                        //$log.info(layer);
                         scope.layerDtoPromises[i].reject(layer);
                     } else {
                         var layerDto = GAMapService.addLayer(scope.mapInstance, layer, scope.framework);

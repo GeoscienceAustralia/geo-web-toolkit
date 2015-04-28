@@ -175,7 +175,7 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				});
                 attrs.$observe('opacity', function () {
                     if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
-                        $log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
+                        //$log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
                         mapController.setOpacity($scope.layerDto.id, $scope.opacity);
                     }
                 });

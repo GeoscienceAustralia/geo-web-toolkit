@@ -177,14 +177,14 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                     };
                     //If it fails, to a get call using the provided path (if exists)
                     if (configPath != null && configPath.length > 0) {
-                        $log.info('config http request starting');
-                        $log.info(configPath);
+                        //$log.info('config http request starting');
+                        //$log.info(configPath);
                         $http({
                             method: 'GET',
                             url: configPath
                         }).success(processSuccessResponse).error(processErrorResponse);
                     }
-                    $log.info($scope.configLocal);
+                    //$log.info($scope.configLocal);
                     if($scope.configLocal) {
                         $timeout(function () {
 

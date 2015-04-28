@@ -367,12 +367,12 @@
                 mapInstance.addInteraction(selectClick);
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                $log.info(layerId);
+                //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance,'id', layerId);
                 layer.getSource().on(eventName,callback);
             },
             unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                $log.info(layerId);
+                //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance,'id', layerId);
                 layer.getSource().un(eventName,callback);
             },
@@ -431,8 +431,6 @@
                 }
                 var updatedIndex = layerIndex + delta;
                 var layerAtUpdatedIndex = mapInstance.getLayers().getArray()[updatedIndex];
-                console.log(layerIndex);
-                console.log(updatedIndex);
                 mapInstance.getLayers().getArray()[updatedIndex] = layer;
                 mapInstance.getLayers().getArray()[layerIndex] = layerAtUpdatedIndex;
                 mapInstance.updateSize();
