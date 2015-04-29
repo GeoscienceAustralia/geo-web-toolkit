@@ -19,6 +19,7 @@ app.value('ga.config', function () {
         isBaseLayer: false,
         wrapDateLine: true,
         sphericalMercator: true,
+        bingLayerType: 'Road',
         opacity: 1.0,
         layerAttribution: '',
         displayInLayerSwitcher: true,

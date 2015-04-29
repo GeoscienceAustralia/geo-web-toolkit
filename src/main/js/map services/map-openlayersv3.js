@@ -10,6 +10,7 @@
         ]);
 
     var olCesiumInstance;
+    var cesiumMousePositionHandler;
 
     app.service('olv3MapService', [
         'olv3LayerService',
@@ -33,6 +34,14 @@
                     //.controls = [];
                     //convert olv2 params to olv3.
                     var viewOptions = {};
+                    if(args.datumProjection == null) {
+                        $log.warn('Datum projection has not been provided. Defaulting to EPSG:3857');
+                        args.datumProjection = 'EPSG:3857';
+                    }
+                    if(args.displayProjection == null) {
+                        $log.warn('Display projection has not been provided. Defaulting to EPSG:4326');
+                        args.displayProjection = 'EPSG:4326';
+                    }
                     viewOptions.projection = ol.proj.get(args.datumProjection);
                     if (args.centerPosition) {
                         var center = JSON.parse(args.centerPosition);
@@ -1096,7 +1105,7 @@
                         }
 
                         $timeout(function () {
-                            service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget(), true);
+                            service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget());
                         });
 
                         olCesiumInstance.setEnabled(true);
@@ -1106,14 +1115,14 @@
                 switchTo2dView: function (mapInstance) {
                     if (olCesiumInstance) {
                         olCesiumInstance.setEnabled(false);
-                        service.syncMapControlsWithOl3Cesium(mapInstance,mapInstance.getTarget(),false);
+                        service.syncMapControlsWithOl3(mapInstance,mapInstance.getTarget());
                     }
                 },
-                syncMapControlsWithOl3Cesium: function (mapInstance, targetId, initialise) {
+                syncMapControlsWithOl3Cesium: function (mapInstance, targetId) {
                     var controls = mapInstance.getControls();
                     var mapElement = $('#' + targetId)[0];
                     controls.forEach(function (control) {
-                        if (control instanceof ol.control.MousePosition && mapElement && initialise) {
+                        if (control instanceof ol.control.MousePosition && mapElement) {
                             var scene = olCesiumInstance.getCesiumScene();
                             var ellipsoid = scene.globe.ellipsoid;
 
@@ -1126,11 +1135,11 @@
                                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
                                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
 
-                                    var formatPos = control.getCoordinateFormat()([longitudeString, latitudeString]);
                                     //Update default ol v3 control element for mouse position.
-                                    $('.ol-mouse-position')[0].innerText = formatPos;
+                                    $('.ol-mouse-position')[0].innerText = control.getCoordinateFormat()([longitudeString, latitudeString]);
                                 }
                             }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+                            cesiumMousePositionHandler = handler;
                         }
 
                         if(control instanceof ol.control.ScaleLine) {
@@ -1138,6 +1147,9 @@
                             mapInstance.render();
                         }
                     });
+                },
+                syncMapControlsWithOl3: function (mapInstance, targetId) {
+
                 },
                 searchWfs: function (mapInstance, clientId, query, attribute) {
                     var client = service.wfsClientCache[clientId];

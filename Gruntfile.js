@@ -36,6 +36,7 @@ module.exports = function (grunt) {
                         [
                             'src/main/js/config/*.js',
                             'src/main/js/core/*.js',
+                            'src/main/js/vendor/*.js',
                             'src/main/js/map services/*.js',
                             'src/main/js/ui/**/*.js'
                         ]

@@ -34,10 +34,12 @@ module.exports = function (config) {
             'src/main/js/config/*.js',
             'src/main/js/core/core.js',
             'src/main/js/core/*.js',
+            'src/main/js/vendor/*.js',
             'src/main/js/ui/components/**/*.js',
             'src/main/js/toolkit-templates.js',
             'src/main/js/ui/components/components.js',
             'src/main/js/ui/ui-directives.js',
+            'http://maps.google.com/maps/api/js?sensor=false&.js&libraries=places',
             'src/test/js/**/*.js'],
 
         // list of files to exclude

@@ -33,6 +33,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 case 'GoogleHybrid':
                 case 'GoogleSatellite':
                 case 'GoogleTerrain':
+                    //Deprecated
                     layer = service.createGoogleMapsLayer(args);
                     break;
                 default:
@@ -45,6 +46,73 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             }
 			layer.geoLayerType = args.layerType;
             return layer;
+        },
+        createGoogleLayer: function (args) {
+            if(args.layerType == null) {
+                throw new Error("'layerType' not specified for creating a Google Maps layer. Please specify a valid layer type, eg 'hybrid");
+            }
+            var googleLayerType;
+            switch(args.layerType.toLocaleLowerCase()) {
+                case 'hybrid':
+                    googleLayerType = google.maps.MapTypeId.HYBRID;
+                    break;
+                case 'satellite':
+                    googleLayerType = google.maps.MapTypeId.SATELLITE;
+                    break;
+                case 'street':
+                    googleLayerType = google.maps.MapTypeId.STREET;
+                    break;
+                case 'terrain':
+                    googleLayerType = google.maps.MapTypeId.TERRAIN;
+                    break;
+                default:
+                    googleLayerType = google.maps.MapTypeId.HYBRID;
+                    break;
+            }
+
+            var options = {
+                visibility: args.visibility === true || args.visibility === 'true',
+                type: googleLayerType
+            };
+            return new OpenLayers.Layer.Google(args.layerType, options);
+        },
+        createBingLayer: function (args) {
+            var bingLayerType;
+            var bingLayerName = args.layerName;
+            switch(args.layerType.toLocaleLowerCase()) {
+                case 'aerial':
+                    bingLayerType = 'Aerial';
+                    bingLayerName = bingLayerName || 'Bing Aerial';
+                    break;
+                case 'aerialwithlabels':
+                    bingLayerType = 'AerialWithLabels';
+                    bingLayerName = bingLayerName || 'Bing Aerial With Labels';
+                    break;
+                case 'birdseye':
+                    bingLayerType = 'Birdseye';
+                    bingLayerName = bingLayerName || 'Bing Birdseye';
+                    break;
+                case 'birdseyewithlabels':
+                    bingLayerType = 'BirdseyeWithLabels';
+                    bingLayerName = bingLayerName || 'Bing Birdseye With Labels';
+                    break;
+                case 'road':
+                    bingLayerType = 'Road';
+                    bingLayerName = bingLayerName || 'Bing Roads';
+                    break;
+                default:
+                    bingLayerType = 'Road';
+                    bingLayerName = bingLayerName || 'Bing Roads';
+                    break;
+            }
+            return new OpenLayers.Layer.Bing({
+                key: args.bingApiKey,
+                type: bingLayerType,
+                name: bingLayerName
+            });
+        },
+        createOsmLayer: function (args) {
+
         },
         createFeatureLayer: function (args) {
             // Truthy coercion with visibility causes issues possible bug in open layers,

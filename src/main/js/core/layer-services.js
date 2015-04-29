@@ -18,6 +18,21 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             var service = mapLayerServiceLocator.getImplementation(useVersion);
             return service.createFeatureLayer(args);
         },
+        createGoogleLayer: function (args, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            return service.createGoogleLayer(args);
+        },
+        createBingLayer: function (args, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            return service.createBingLayer(args);
+        },
+        createOsmLayer: function (args, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            return service.createOsmLayer(args);
+        },
         removeLayerByName: function (mapInstance, layerName,version) {
             var useVersion = version || 'olv2';
             var service = mapLayerServiceLocator.getImplementation(useVersion);

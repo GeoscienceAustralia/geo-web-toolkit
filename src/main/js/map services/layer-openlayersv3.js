@@ -31,8 +31,7 @@
                     case 'GoogleHybrid':
                     case 'GoogleSatellite':
                     case 'GoogleTerrain':
-                        layer = service.createGoogleMapsLayer(args);
-                        break;
+                        throw new Error("Google map layers are not supported with OpenLayers 3. To use a Google maps layer, consider falling back to framework 'olv2'.");
                     default:
                         throw new Error(
                             "Invalid layerType used to create layer of name " +
@@ -103,25 +102,50 @@
 
                 return layer;
             },
-            _googleMapsTypes: function () {
-                return {
-                    'GoogleStreet' : google.maps.MapTypeId.ROADMAP,
-                    'GoogleHybrid' : google.maps.MapTypeId.HYBRID,
-                    'GoogleSatellite': google.maps.MapTypeId.SATELLITE,
-                    'GoogleTerrain': google.maps.MapTypeId.TERRAIN
-                };
+            createGoogleLayer: function (args) {
+                throw new Error("Google map layers are not supported with OpenLayers 3. To use a Google maps layer, consider falling back to framework 'olv2'.");
             },
-            createGoogleMapsLayer: function (args) {
-                var gmap = new google.maps.Map(document.getElementById(args.mapElementId), {
-                    disableDefaultUI: true,
-                    keyboardShortcuts: false,
-                    draggable: false,
-                    disableDoubleClickZoom: true,
-                    scrollwheel: false,
-                    streetViewControl: false,
-                    mapTypeId: service._googleMapsTypes()[args.layerType]
+            createBingLayer: function (args) {
+                var bingLayerType;
+                var bingLayerName = args.layerName;
+                switch(args.layerType.toLocaleLowerCase()) {
+                    case 'aerial':
+                        bingLayerType = 'Aerial';
+                        bingLayerName = bingLayerName || 'Bing Aerial';
+                        break;
+                    case 'aerialwithlabels':
+                        bingLayerType = 'AerialWithLabels';
+                        bingLayerName = bingLayerName || 'Bing Aerial With Labels';
+                        break;
+                    case 'birdseye':
+                        bingLayerType = 'Birdseye';
+                        bingLayerName = bingLayerName || 'Bing Birdseye';
+                        break;
+                        break;
+                    case 'birdseyewithlabels':
+                        bingLayerType = 'BirdseyeWithLabels';
+                        bingLayerName = bingLayerName || 'Bing Birdseye With Labels';
+                        break;
+                    case 'road':
+                        bingLayerType = 'Road';
+                        bingLayerName = bingLayerName || 'Bing Roads';
+                        break;
+                    default:
+                        bingLayerType = 'Road';
+                        break;
+                }
+                var layer = new ol.layer.Tile({
+                    source: new ol.source.BingMaps({
+                        key: args.bingApiKey,
+                        imagerySet: bingLayerType
+                    })
                 });
-                return gmap;
+
+                layer.set('name',bingLayerName);
+                return layer;
+            },
+            createOsmLayer: function (args) {
+
             },
             clearFeatureLayer: function (mapInstance, layerId) {
 
