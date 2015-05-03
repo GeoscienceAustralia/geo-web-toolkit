@@ -75,5 +75,59 @@
                 expect(passed).toBe(true);
                 expect($scope.mapController.getMapInstance().layers).toBe(undefined);
             });
+            it('Empty Bing layer, without provided API key and OpenLayers v2 should digest and fail with friendly error message.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer></ga-bing-layer>' +
+                    '</ga-map> ';
+                var passed = false;
+                try {
+                    element = angular
+                        .element(emptyGooglelayer);
+                    $compile(element)($scope);
+                    $scope.$digest();
+                    $timeout.flush();
+                } catch (error) {
+                    passed = true;
+                    expect(error.message.indexOf('Missing Bing Maps API key')).toBe(0);
+                }
+                expect(passed).toBe(true);
+            });
+            it('Empty Bing layer with OpenLayers v2 should digest and create the layer successfully', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer bing-api-key="12345"></ga-bing-layer>' +
+                    '</ga-map> ';
+                var passed = true;
+                try {
+                    element = angular
+                        .element(emptyGooglelayer);
+                    $compile(element)($scope);
+                    $scope.$digest();
+                    $timeout.flush();
+                } catch (error) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+            });
+            it('Empty Bing layer with OpenLayers v3 should digest and create the layer successfully', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer bing-api-key="12345"></ga-bing-layer>' +
+                    '</ga-map> ';
+                var passed = true;
+                try {
+                    element = angular
+                        .element(emptyGooglelayer);
+                    $compile(element)($scope);
+                    $scope.$digest();
+                    $timeout.flush();
+                } catch (error) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+            });
         });
 })();
