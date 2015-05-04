@@ -101,7 +101,7 @@
 
                     attrs.$observe('visibility', function () {
                         if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
-                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
+                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true" || $scope.visibility === true);
                         }
                     });
                     //attrs.$observe('opacity', function () {

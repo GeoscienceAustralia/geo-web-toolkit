@@ -147,5 +147,60 @@
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
             });
+
+            it('Open Street Maps layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-osm-layer visibility="{{vis}}"></ga-osm-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(false);
+                $scope.vis = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(true);
+            });
+
+            it('Google layer with OpenLayers v2 should digest and set layer visibility correctly.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-google-layer visibility="{{vis}}"></ga-google-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var layer = $scope.mapController.getLayers()[0];
+                //Inconsistency found in OLV2 with Google maps (might be intentional), even if the visibility is initialised as false, it is visible.
+                //Force Visibility false to show visibility is updated via attribute observe.
+                $scope.mapController.setLayerVisibility(layer.id, false);
+                expect($scope.mapController.getMapInstance().layers[0].visibility).toBe(false);
+                $scope.vis = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().layers[0].visibility).toBe(true);
+            });
+
+            it('Bing layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer bing-api-key="abcd1234" visibility="{{vis}}"></ga-bing-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(false);
+                $scope.vis = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(true);
+            });
         });
 })();
