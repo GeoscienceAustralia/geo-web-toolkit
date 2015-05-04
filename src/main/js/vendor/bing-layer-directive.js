@@ -112,6 +112,12 @@
                         }
                     });
 
+                    attrs.$observe('layerType', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            $scope.initialiseLayer();
+                        }
+                    });
+
                     $scope.initCount = 0;
                     function reconstructLayer() {
                         $log.info('reconstructing layer...');
@@ -130,7 +136,10 @@
                             layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                            if(layerOptions.bingApiKey == null) {
+                                throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the ga-bing-layer attribute 'bing-api-key'");
+                            }
+                            layer = GALayerService.createBingLayer(layerOptions,$scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;

@@ -104,6 +104,12 @@
                             mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true" || $scope.visibility === true);
                         }
                     });
+
+                    attrs.$observe('layerType', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            $scope.initialiseLayer();
+                        }
+                    });
                     //attrs.$observe('opacity', function () {
                     //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
                     //        //$log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
@@ -129,7 +135,7 @@
                             layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                            layer = GALayerService.createGoogleLayer(layerOptions,$scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;
