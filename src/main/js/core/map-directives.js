@@ -1477,9 +1477,13 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             self.removeFeature = function (layerName, feature) {
                 return GAMapService.removeFeature($scope.mapInstance, layerName, feature, $scope.framework);
             };
-            
-            self.drawFeature = function (args) {
-                return GAMapService.drawFeature($scope.mapInstance, args, $scope.framework);
+
+            self.startDrawingOnLayer = function (layerName, args) {
+                return GAMapService.startDrawingOnLayer($scope.mapInstance,layerName, args,$scope.framework);
+            };
+
+            self.stopDrawing = function () {
+                return GAMapService.stopDrawing($scope.mapInstance,$scope.framework);
             };
             
             self.drawLabel = function (args) {

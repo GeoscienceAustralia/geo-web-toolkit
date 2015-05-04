@@ -206,6 +206,16 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawFeature(mapInstance, args);
             },
+            startDrawingOnLayer: function (mapInstance,layerName, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.startDrawingOnLayer(mapInstance,layerName,args);
+            },
+            stopDrawing: function (mapInstance,version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.stopDrawing(mapInstance);
+            },
             drawLabel: function (mapInstance, args, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);

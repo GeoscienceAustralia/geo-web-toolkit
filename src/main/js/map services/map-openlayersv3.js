@@ -504,7 +504,7 @@
                 //Returns array of geo-web-toolkit layer DTO by name using olv3 getLayerByName?
                 getLayersByName: function (mapInstance, layerName) {
                     if (typeof layerName !== 'string' && typeof layerName !== 'number') {
-                        throw new TypeError('Expected number');
+                        throw new TypeError('Expected string or number');
                     }
                     return olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                 },
@@ -785,19 +785,26 @@
                     mapInstance.addLayer(service.drawPolyLineLayer);
                 },
                 removeSelectedFeature: function (mapInstance, layerName) {
-                    var vectors = mapInstance.getLayersByName(layerName);
+                    var layer = mapInstance.getLayersByName(layerName)[0];
 
-                    // Function is called when a feature is selected
-                    function onFeatureSelect(feature) {
-                        vectors[0].removeFeatures(feature);
-                    }
-
-                    // Create the select control
-                    var selectCtrl = new OpenLayers.Control.SelectFeature(vectors[0], {
-                        onSelect: onFeatureSelect
+                    var select = new ol.interaction.Select();
+                    select.on('select', function (e) {
+                        var source = layer.getSource();
+                        if(source.removeFeature instanceof Function) {
+                            if(e.selected instanceof Array) {
+                                for (var i = 0; i < e.selected.length; i++) {
+                                    var feature = e.selected[i];
+                                    source.removeFeature(feature);
+                                }
+                            } else {
+                                source.removeFeature(e.selected);
+                            }
+                        } else {
+                            throw new Error("No valid layer found with name - " + layerName + " - to remove selected features.");
+                        }
                     });
 
-                    mapInstance.addControl(selectCtrl);
+                    mapInstance.addInteraction(select);
 
                     return selectCtrl;
                 },
@@ -805,72 +812,65 @@
                     var featureLayer = olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                     featureLayer.removeFeatures(feature);
                 },
-                drawFeature: function (mapInstance, args) {
-                    var vectors = mapInstance.getLayersByName(args.layerName);
+                startDrawingOnLayer: function (mapInstance, layerName, args) {
+                    var interactionType;
+                    //Drawing interaction types are case sensitive and represent GeometryType in OpenLayers 3
+                    switch (args.featureType.toLowerCase()) {
+                        case 'point':
+                            interactionType = 'Point';
+                            break;
+                        case 'linestring':
+                            interactionType = 'LineString';
+                            break;
+                        case 'polygon':
+                            interactionType = 'Polygon';
+                            break;
+                        case 'circle':
+                            interactionType = 'Circle';
+                    }
+                    var vectors = olv3LayerService.getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-
+                    var source = new ol.source.GeoJSON();
                     // Create the layer if it doesn't exist
                     if (vectors.length > 0) {
                         vector = vectors[0];
                     } else {
-                        vector = new OpenLayers.Layer.Vector(args.layerName);
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: args.color,
+                                    radius: args.radius
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: args.color,
+                                    width: args.radius,
+                                    opacity: args.opacity
+                                }),
+                                image: new ol.style.Circle({
+                                    radius: args.radius,
+                                    fill: new ol.style.Fill({
+                                        color: args.color
+                                    })
+                                })
+                            })
+                        });
+
+                        vector.set('name',args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
-                    var control;
-                    // Create a new control with the appropriate style
-                    if (args.featureType.toLowerCase() === 'point') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-                        vector.style = {
-                            fillColor: args.color,
-                            fillOpacity: args.opacity,
-                            pointRadius: args.radius,
-                            strokeColor: args.color,
-                            strokeOpacity: args.opacity
-                        };
-                        mapInstance.addControl(control);
-
-                        return control;
+                    var draw = new ol.interaction.Draw({
+                        source: source,
+                        type: /** @type {ol.geom.GeometryType} */ (interactionType)
+                    });
+                    service.featureDrawingInteraction = draw;
+                    mapInstance.addInteraction(draw);
+                },
+                stopDrawing: function (mapInstance) {
+                    if(service.featureDrawingInteraction) {
+                        mapInstance.removeInteraction(service.featureDrawingInteraction);
                     }
-                    if (args.featureType.toLowerCase() === 'line') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-                        vector.style = {strokeColor: args.color, strokeOpacity: args.opacity};
-                        mapInstance.addControl(control);
-
-                        return control;
-                    }
-                    if (args.featureType.toLowerCase() === 'box') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
-                            handlerOptions: {
-                                sides: 4,
-                                irregular: true
-                            }
-                        });
-                        vector.style = {
-                            fillColor: args.color,
-                            fillOpacity: args.opacity,
-                            strokeColor: args.color,
-                            strokeOpacity: args.opacity
-                        };
-                        mapInstance.addControl(control);
-
-                        return control;
-                    }
-
-                    if (args.featureType.toLowerCase() === 'polygon') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
-                        vector.style = {
-                            fillColor: args.color,
-                            fillOpacity: args.opacity,
-                            strokeColor: args.color,
-                            strokeOpacity: args.opacity
-                        };
-
-                        mapInstance.addControl(control);
-
-                        return control;
-                    }
-
                 },
                 drawLabel: function (mapInstance, args) {
                     var vectors = mapInstance.getLayersByName(args.layerName);

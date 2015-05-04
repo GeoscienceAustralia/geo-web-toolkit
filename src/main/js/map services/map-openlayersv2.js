@@ -504,8 +504,8 @@ app.service('olv2MapService', [
 				var vectors = mapInstance.getLayersByName(layerName);
 				vectors[0].removeFeatures(feature);
 			},
-			drawFeature: function (mapInstance, args) {
-	            var vectors = mapInstance.getLayersByName(args.layerName);
+			startDrawingOnLayer: function (mapInstance,layerName, args) {
+	            var vectors = mapInstance.getLayersByName(layerName || args.layerName);
 				var vector;
 
 				// Create the layer if it doesn't exist
@@ -538,8 +538,12 @@ app.service('olv2MapService', [
 				}
 
 				mapInstance.addControl(control);
-
-				return control;
+				service.drawingControl = control;
+				//return control;
+			},
+			stopDrawing: function (mapInstance) {
+				service.drawingControl.deactivate();
+				mapInstance.removeControl(service.drawingControl);
 			},
 			drawLabel: function (mapInstance, args) {
 				var vectors = mapInstance.getLayersByName(args.layerName);

@@ -121,7 +121,6 @@
                         bingLayerType = 'Birdseye';
                         bingLayerName = bingLayerName || 'Bing Birdseye';
                         break;
-                        break;
                     case 'birdseyewithlabels':
                         bingLayerType = 'BirdseyeWithLabels';
                         bingLayerName = bingLayerName || 'Bing Birdseye With Labels';
