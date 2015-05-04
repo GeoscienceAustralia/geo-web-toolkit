@@ -67,10 +67,11 @@
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
                     layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
-                    layerOptions.layerType = layerOptions.bingLayerType || layerOptions.layerType;
+                    layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType;
                     if(!validateBingLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Bing layer type - ' + layerOptions.layerType +
                         ' used. Defaulting to "Road". Specify default Bing layer type in "ga.config" - bingLayerType');
+                        layerOptions.layerType = 'Road';
                     }
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
@@ -79,12 +80,6 @@
                     var constructLayer = function () {
                         $scope.constructionInProgress = true;
                         layerOptions.mapElementId = mapController.getMapElementId();
-
-                        if(layerOptions.layerType.length === 0) {
-                            //Default map
-                            $log.warn('Bing layer type not specified. Defaulting to Road');
-                            layerOptions.layerType = 'Road';
-                        }
 
                         $log.info('Bing ' + layerOptions.layerType + ' - constructing...');
 

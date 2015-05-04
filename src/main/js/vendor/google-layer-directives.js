@@ -26,6 +26,16 @@
      */
     app.directive('gaGoogleLayer', ['$timeout', '$compile', 'GALayerService', '$log',
         function ($timeout, $compile, GALayerService, $log) {
+            var validGoogleLayerTypes = ['street','hybrid','satellite','terrain'];
+            var validateGoogleLayerType = function (layerType) {
+                for (var i = 0; i < validGoogleLayerTypes.length; i++) {
+                    var validType = validGoogleLayerTypes[i];
+                    if(validType === layerType.toLowerCase()) {
+                        return true;
+                    }
+                }
+                return false;
+            };
             return {
                 restrict: "E",
                 require: "^gaMap",
@@ -52,17 +62,19 @@
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
                     layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                    layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType;
+                    if(!validateGoogleLayerType(layerOptions.layerType)) {
+                        $log.warn('Invalid Google layer type - ' + layerOptions.layerType +
+                            ' used. Defaulting to "Hybrid". Specify default Google layer type in "ga.config" - googleLayerType');
+                        layerOptions.layerType = 'Hybrid';
+                    }
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
                     };
 
                     var constructLayer = function () {
                         $scope.constructionInProgress = true;
-                        if(layerOptions.layerType.length === 0) {
-                            //Default map
-                            $log.warn('Google layer type not specified. Defaulting to Hybrid');
-                            $scope.layerType = 'Hybrid';
-                        }
+
                         layerOptions.mapElementId = mapController.getMapElementId();
                         $log.info('Google ' + $scope.layerType + ' - constructing...');
 
