@@ -10,6 +10,7 @@
      * ## Overview ##
      * gaGoogleLayer directive is used to create a Google map.
      * @param {string|@} layerType - Required. Specified Google maps layer type. Eg, Hybrid.
+     * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope
      * @restrict E
      * @example
@@ -98,11 +99,11 @@
                         });
                     };
 
-                    //attrs.$observe('visibility', function () {
-                    //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
-                    //        mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
-                    //    }
-                    //});
+                    attrs.$observe('visibility', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
+                        }
+                    });
                     //attrs.$observe('opacity', function () {
                     //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
                     //        //$log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
