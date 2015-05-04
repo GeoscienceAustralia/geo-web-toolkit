@@ -52,7 +52,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'point',
+                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'point',
                     color: '#000000',
                     opacity: 1.0,
                     radius: 6});
@@ -75,12 +75,13 @@
                     color: '#000000',
                     opacity: 1.0,
                     radius: 6});
+                expect($scope.mapController.getMapInstance().controls.length).toBe(2);
                 $scope.mapController.stopDrawing();
                 //Still one control. Default is navigation control.
                 expect($scope.mapController.getMapInstance().controls.length).toBe(1);
             });
 
-            it('Start drawing creates active control for OpenLayers 3', function () {
+            it('Start drawing creates interaction for OpenLayers 3', function () {
                 var elementHtml = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
                     '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
@@ -91,12 +92,35 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 //9 default interactions added there for 10 interactions for openlayers 3. Default interactions are navigation related for different input.
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+            });
+
+            it('Start drawing creates interaction for OpenLayers 3', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map>';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                //Supply name layer, will create if it doesn't exist. If layer already exists, it must be a layer that supports features.
+                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'Point',
+                    color: "#000000",
+                    opacity: 1.0,
+                    radius: 6});
+                //9 default interactions added there for 10 interactions for openlayers 3. Default interactions are navigation related for different input.
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+                $scope.mapController.stopDrawing();
+                //Still one control. Default is navigation control.
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
         });
 })();

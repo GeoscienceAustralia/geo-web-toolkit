@@ -521,7 +521,7 @@ app.service('olv2MapService', [
 				if (args.featureType.toLowerCase() == 'point') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
 					vector.style = {fillColor: args.color, fillOpacity : args.opacity, pointRadius : args.radius, strokeColor: args.color, strokeOpacity : args.opacity};
-				} else if (args.featureType.toLowerCase() == 'line') {
+				} else if (args.featureType.toLowerCase() == 'line' || args.featureType.toLowerCase() == 'linestring') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
 					vector.style = {strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'box') {
@@ -539,11 +539,14 @@ app.service('olv2MapService', [
 
 				mapInstance.addControl(control);
 				service.drawingControl = control;
+				control.activate();
 				//return control;
 			},
 			stopDrawing: function (mapInstance) {
-				service.drawingControl.deactivate();
-				mapInstance.removeControl(service.drawingControl);
+				if(service.drawingControl) {
+					service.drawingControl.deactivate();
+					mapInstance.removeControl(service.drawingControl);
+				}
 			},
 			drawLabel: function (mapInstance, args) {
 				var vectors = mapInstance.getLayersByName(args.layerName);

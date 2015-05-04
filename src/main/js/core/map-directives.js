@@ -13,8 +13,8 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
  * @param {string|@} displayProjection - A value representing the Display Projection, eg 'EPSG:4326'
  * @param {string|@=} centerPosition - A comma separated value representing lon/lat of the initial center position.
  * @param {number|@=} zoomLevel - An initial zoom value for the map to start at.
- * @param {string|@} framework - Optional. Default 'olv2'. Specifies which underlying mapping framework to use.
  * @param {geoJsonCoordinates|==} initialExtent - An initial extent is the form of a geoJson array of coordinates.
+ * @param {string|@} framework - Optional. Default 'olv2'. Specifies which underlying mapping framework to use.
  *
  * @method addLayer - Adds a layer programmatically
  *

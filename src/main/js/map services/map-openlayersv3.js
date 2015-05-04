@@ -806,7 +806,7 @@
 
                     mapInstance.addInteraction(select);
 
-                    return selectCtrl;
+                    return select;
                 },
                 removeFeature: function (mapInstance, layerName, feature) {
                     var featureLayer = olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
