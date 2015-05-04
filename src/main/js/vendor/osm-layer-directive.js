@@ -10,6 +10,7 @@
      * @description
      * ## Overview ##
      * gaGoogleLayer directive is used to create an Open Street Maps layer.
+     * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
      * @scope
      * @restrict E
      * @example
@@ -30,6 +31,7 @@
                 restrict: "E",
                 require: "^gaMap",
                 scope: {
+                    wrapDateLine: '@',
                     visibility: '@',
                     controllerEmitEventName: '@'
                 },

@@ -12,6 +12,7 @@
      * gaGoogleLayer directive is used to create a Bing map.
      * @param {string|@} layerType - Required. Specified Bing maps layer type. Eg, Road.
      * @param {string|@} bingApiKey - Required. Your own Bing maps API key.
+     * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
      * @scope
      * @restrict E
      * @example
@@ -44,6 +45,7 @@
                 scope: {
                     layerType: '@',
                     visibility: '@',
+                    wrapDateLine: '@',
                     bingApiKey: '@',
                     controllerEmitEventName: '@'
                 },

@@ -105,14 +105,18 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     bingLayerName = bingLayerName || 'Bing Roads';
                     break;
             }
-            return new OpenLayers.Layer.Bing({
+            var result = new OpenLayers.Layer.Bing({
                 key: args.bingApiKey,
                 type: bingLayerType,
                 name: bingLayerName
             });
+            result.wrapDateLine = args.wrapDateLine || false;
+            return result;
         },
         createOsmLayer: function (args) {
-            return new OpenLayers.Layer.OSM("OpenCycleMap");
+            var result = new OpenLayers.Layer.OSM(args.layerName || "OpenCycleMap");
+            result.wrapDateLine = args.wrapDateLine || false;
+            return result;
         },
         createFeatureLayer: function (args) {
             // Truthy coercion with visibility causes issues possible bug in open layers,
