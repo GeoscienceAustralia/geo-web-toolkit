@@ -108,7 +108,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             var result = new OpenLayers.Layer.Bing({
                 key: args.bingApiKey,
                 type: bingLayerType,
-                name: bingLayerName
+                name: bingLayerName,
+                visibility: args.visibility === true || args.visibility === 'true'
             });
             result.wrapDateLine = args.wrapDateLine || false;
             return result;
@@ -116,6 +117,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         createOsmLayer: function (args) {
             var result = new OpenLayers.Layer.OSM(args.layerName || "OpenCycleMap");
             result.wrapDateLine = args.wrapDateLine || false;
+            result.visibility = args.visibility === true || args.visibility === 'true';
             return result;
         },
         createFeatureLayer: function (args) {

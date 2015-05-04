@@ -147,5 +147,162 @@
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
             });
+
+            it('Open Street Maps layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-osm-layer visibility="{{vis}}"></ga-osm-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(false);
+                $scope.vis = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(true);
+            });
+
+            it('Google layer with OpenLayers v2 should digest and set layer visibility correctly.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-google-layer visibility="{{vis}}"></ga-google-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var layer = $scope.mapController.getLayers()[0];
+                //Inconsistency found in OLV2 with Google maps (might be intentional), even if the visibility is initialised as false, it is visible.
+                //Force Visibility false to show visibility is updated via attribute observe.
+                $scope.mapController.setLayerVisibility(layer.id, false);
+                expect($scope.mapController.getMapInstance().layers[0].visibility).toBe(false);
+                $scope.vis = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().layers[0].visibility).toBe(true);
+            });
+
+            it('Bing layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer bing-api-key="abcd1234" visibility="{{vis}}"></ga-bing-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(false);
+                $scope.vis = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(true);
+            });
+
+            it('Should reconstruct Open Street Maps layer if used with an ng-if', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-osm-layer ng-if="updateLayer" visibility="{{vis}}"></ga-osm-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                $scope.updateLayer = true;
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+                $scope.updateLayer = false;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(0);
+                $scope.updateLayer = true;
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+            });
+
+            it('Should observe layer-type for changes and reconstruct layer as required for Google vendor layer', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-google-layer layer-type="{{layerType}}" visibility="{{vis}}"></ga-google-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                $scope.layerType = 'Hybrid';
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+                var layerId1 = $scope.mapController.getMapInstance().layers[0].id;
+                $scope.layerType = 'Satellite';
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+                var layerId2 = $scope.mapController.getMapInstance().layers[0].id;
+                $scope.layerType = 'Hybrid';
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+                var layerId3 = $scope.mapController.getMapInstance().layers[0].id;
+                //Show that layers are being reconstructed when layer-type is changed.
+                expect(layerId1 !== layerId2).toBe(true);
+                expect(layerId2 !== layerId3).toBe(true);
+            });
+
+            it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 2', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer bing-api-key="abcd1235" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                $scope.layerType = 'Hybrid';
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+                var layerId1 = $scope.mapController.getMapInstance().layers[0].id;
+                $scope.layerType = 'Satellite';
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+                var layerId2 = $scope.mapController.getMapInstance().layers[0].id;
+                $scope.layerType = 'Hybrid';
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+                var layerId3 = $scope.mapController.getMapInstance().layers[0].id;
+                //Show that layers are being reconstructed when layer-type is changed.
+                expect(layerId1 !== layerId2).toBe(true);
+                expect(layerId2 !== layerId3).toBe(true);
+            });
+
+            it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 3', function () {
+                var emptyBingLayerHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-bing-layer bing-api-key="abcd1235" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
+                    '</ga-map> ';
+                $scope.vis = false;
+                $scope.layerType = 'Hybrid';
+                element = angular
+                    .element(emptyBingLayerHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+                var layerId1 = $scope.mapController.getLayers()[0].id;
+                $scope.layerType = 'Satellite';
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+                var layerId2 = $scope.mapController.getLayers()[0].id;
+                $scope.layerType = 'Hybrid';
+                $scope.$digest();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+                var layerId3 = $scope.mapController.getLayers()[0].id;
+                //Show that layers are being reconstructed when layer-type is changed.
+                expect(layerId1 !== layerId2).toBe(true);
+                expect(layerId2 !== layerId3).toBe(true);
+            });
         });
 })();

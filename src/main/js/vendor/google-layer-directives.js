@@ -10,6 +10,7 @@
      * ## Overview ##
      * gaGoogleLayer directive is used to create a Google map.
      * @param {string|@} layerType - Required. Specified Google maps layer type. Eg, Hybrid.
+     * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope
      * @restrict E
      * @example
@@ -26,6 +27,16 @@
      */
     app.directive('gaGoogleLayer', ['$timeout', '$compile', 'GALayerService', '$log',
         function ($timeout, $compile, GALayerService, $log) {
+            var validGoogleLayerTypes = ['street','hybrid','satellite','terrain'];
+            var validateGoogleLayerType = function (layerType) {
+                for (var i = 0; i < validGoogleLayerTypes.length; i++) {
+                    var validType = validGoogleLayerTypes[i];
+                    if(validType === layerType.toLowerCase()) {
+                        return true;
+                    }
+                }
+                return false;
+            };
             return {
                 restrict: "E",
                 require: "^gaMap",
@@ -52,17 +63,19 @@
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
                     layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                    layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType;
+                    if(!validateGoogleLayerType(layerOptions.layerType)) {
+                        $log.warn('Invalid Google layer type - ' + layerOptions.layerType +
+                            ' used. Defaulting to "Hybrid". Specify default Google layer type in "ga.config" - googleLayerType');
+                        layerOptions.layerType = 'Hybrid';
+                    }
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
                     };
 
                     var constructLayer = function () {
                         $scope.constructionInProgress = true;
-                        if(layerOptions.layerType.length === 0) {
-                            //Default map
-                            $log.warn('Google layer type not specified. Defaulting to Hybrid');
-                            $scope.layerType = 'Hybrid';
-                        }
+
                         layerOptions.mapElementId = mapController.getMapElementId();
                         $log.info('Google ' + $scope.layerType + ' - constructing...');
 
@@ -86,11 +99,17 @@
                         });
                     };
 
-                    //attrs.$observe('visibility', function () {
-                    //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
-                    //        mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
-                    //    }
-                    //});
+                    attrs.$observe('visibility', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true" || $scope.visibility === true);
+                        }
+                    });
+
+                    attrs.$observe('layerType', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            $scope.initialiseLayer();
+                        }
+                    });
                     //attrs.$observe('opacity', function () {
                     //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
                     //        //$log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
@@ -116,7 +135,7 @@
                             layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                            layer = GALayerService.createGoogleLayer(layerOptions,$scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;

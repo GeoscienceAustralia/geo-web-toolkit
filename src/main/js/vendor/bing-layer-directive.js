@@ -13,6 +13,7 @@
      * @param {string|@} layerType - Required. Specified Bing maps layer type. Eg, Road.
      * @param {string|@} bingApiKey - Required. Your own Bing maps API key.
      * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
+     * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope
      * @restrict E
      * @example
@@ -67,10 +68,11 @@
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
                     layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
-                    layerOptions.layerType = layerOptions.bingLayerType || layerOptions.layerType;
+                    layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType;
                     if(!validateBingLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Bing layer type - ' + layerOptions.layerType +
                         ' used. Defaulting to "Road". Specify default Bing layer type in "ga.config" - bingLayerType');
+                        layerOptions.layerType = 'Road';
                     }
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
@@ -79,12 +81,6 @@
                     var constructLayer = function () {
                         $scope.constructionInProgress = true;
                         layerOptions.mapElementId = mapController.getMapElementId();
-
-                        if(layerOptions.layerType.length === 0) {
-                            //Default map
-                            $log.warn('Bing layer type not specified. Defaulting to Road');
-                            layerOptions.layerType = 'Road';
-                        }
 
                         $log.info('Bing ' + layerOptions.layerType + ' - constructing...');
 
@@ -110,6 +106,18 @@
                         });
                     };
 
+                    attrs.$observe('visibility', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
+                        }
+                    });
+
+                    attrs.$observe('layerType', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            $scope.initialiseLayer();
+                        }
+                    });
+
                     $scope.initCount = 0;
                     function reconstructLayer() {
                         $log.info('reconstructing layer...');
@@ -128,7 +136,10 @@
                             layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                            if(layerOptions.bingApiKey == null) {
+                                throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the ga-bing-layer attribute 'bing-api-key'");
+                            }
+                            layer = GALayerService.createBingLayer(layerOptions,$scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;
