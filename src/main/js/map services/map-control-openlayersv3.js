@@ -55,7 +55,7 @@
                         }
                         return formatFn({ lon : coord[0], lat: coord[1]});
                     });
-            }
+            };
             if(controlOptions.formatOutput != null) {
                 result.coordinateFormat = wrappedFormatOutput(controlOptions.formatOutput);
             } else {
@@ -107,4 +107,13 @@
         };
         return service;
     }]);
+
+    ol.control.ZoomSlider.prototype.getPositionForResolution_ = function(res) {
+        try {
+            var fn = this.getMap().getView().getValueForResolutionFunction();
+            return 1 - fn(res);
+        } catch (error) {
+
+        }
+    };
 })();
