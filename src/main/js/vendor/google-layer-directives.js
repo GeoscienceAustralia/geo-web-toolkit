@@ -10,6 +10,7 @@
      * ## Overview ##
      * gaGoogleLayer directive is used to create a Google map.
      * @param {string|@} layerType - Required. Specified Google maps layer type. Eg, Hybrid.
+     * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope
      * @restrict E
      * @example
@@ -98,11 +99,17 @@
                         });
                     };
 
-                    //attrs.$observe('visibility', function () {
-                    //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
-                    //        mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
-                    //    }
-                    //});
+                    attrs.$observe('visibility', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true" || $scope.visibility === true);
+                        }
+                    });
+
+                    attrs.$observe('layerType', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            $scope.initialiseLayer();
+                        }
+                    });
                     //attrs.$observe('opacity', function () {
                     //    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
                     //        //$log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
@@ -128,7 +135,7 @@
                             layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                            layer = GALayerService.createGoogleLayer(layerOptions,$scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;

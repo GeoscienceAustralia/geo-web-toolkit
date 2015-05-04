@@ -11,6 +11,7 @@
      * ## Overview ##
      * gaGoogleLayer directive is used to create an Open Street Maps layer.
      * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
+     * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope
      * @restrict E
      * @example
@@ -81,6 +82,12 @@
                             $scope.constructionInProgress = false;
                         });
                     };
+
+                    attrs.$observe('visibility', function () {
+                        if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                            mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
+                        }
+                    });
 
                     $scope.initCount = 0;
                     function reconstructLayer() {

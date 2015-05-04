@@ -142,12 +142,15 @@
                 });
 
                 layer.set('name',bingLayerName);
+                layer.setVisible(args.visibility === true || args.visibility === 'true');
                 return layer;
             },
             createOsmLayer: function (args) {
-                return new ol.layer.Tile({
+                var layer =  new ol.layer.Tile({
                     source: new ol.source.OSM()
                 });
+                layer.setVisible(args.visibility === true || args.visibility === 'true');
+                return layer;
             },
             clearFeatureLayer: function (mapInstance, layerId) {
 
