@@ -112,7 +112,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             });
         },
         createOsmLayer: function (args) {
-
+            return new OpenLayers.Layer.OSM("OpenCycleMap");
         },
         createFeatureLayer: function (args) {
             // Truthy coercion with visibility causes issues possible bug in open layers,

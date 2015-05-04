@@ -116,17 +116,35 @@
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
                     '<ga-bing-layer bing-api-key="12345"></ga-bing-layer>' +
                     '</ga-map> ';
-                var passed = true;
-                try {
-                    element = angular
-                        .element(emptyGooglelayer);
-                    $compile(element)($scope);
-                    $scope.$digest();
-                    $timeout.flush();
-                } catch (error) {
-                    passed = false;
-                }
-                expect(passed).toBe(true);
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
+            });
+            it('Open Street Maps layer with OpenLayers v2 should digest and create the layer successfully', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-osm-layer></ga-osm-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
+            });
+            it('Open Street Maps layer with OpenLayers v3 should digest and create the layer successfully', function () {
+                var emptyGooglelayer = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-osm-layer></ga-osm-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
             });
         });

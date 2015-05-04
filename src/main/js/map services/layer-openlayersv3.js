@@ -145,7 +145,9 @@
                 return layer;
             },
             createOsmLayer: function (args) {
-
+                return new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                });
             },
             clearFeatureLayer: function (mapInstance, layerId) {
 
