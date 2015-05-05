@@ -221,10 +221,10 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawLabel(mapInstance,layerName, args);
             },
-            drawLabelWithPoint: function (mapInstance, args, version) {
+            drawLabelWithPoint: function (mapInstance, layerName, args, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.drawLabelWithPoint(mapInstance, args);
+                return service.drawLabelWithPoint(mapInstance,layerName, args);
             },
             createWfsClient: function (url, featureType, featurePrefix, wfsVersion, geometryName, datumProjection, isLonLatOrderValid, version) {
                 var useVersion = version || 'olv2';

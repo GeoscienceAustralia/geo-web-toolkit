@@ -579,14 +579,14 @@ app.service('olv2MapService', [
 				var geoJsonFeature = geoJsonWriter.write(pointFeature);
 	            return angular.fromJson(geoJsonFeature);
 			},
-			drawLabelWithPoint: function (mapInstance, args) {
-				var vectors = mapInstance.getLayersByName(args.layerName);
+			drawLabelWithPoint: function (mapInstance, layerName, args) {
+				var vectors = mapInstance.getLayersByName(layerName || args.layerName);
 				var vector;
 
 				if (vectors.length > 0) {
 					vector = vectors[0];
 				} else {
-					vector = new OpenLayers.Layer.Vector(args.layerName);
+					vector = new OpenLayers.Layer.Vector(layerName || args.layerName);
 					mapInstance.addLayer(vector);
 				}
 
@@ -600,13 +600,21 @@ app.service('olv2MapService', [
 	            var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
 
 	            // Add the text to the style of the layer
-	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelYOffset : args.labelYOffset, labelSelect: true,
-	            		fillColor : args.pointColor, strokeColor : args.pointColor, fillOpacity : args.pointOpacity, strokeOpacity : args.pointOpacity};
+	            vector.style = {
+					label: args.text,
+					fontColor : args.fontColor || args.color,
+					fontSize: args.fontSize,
+					align : args.align,
+					labelYOffset : args.labelYOffset,
+					labelSelect: true,
+					fillColor : args.pointColor || args.color,
+					strokeColor : args.pointColor || args.color,
+					fillOpacity : args.pointOpacity || args.opacity,
+					strokeOpacity : args.pointOpacity || args.opacity};
 	            vector.addFeatures([pointFeature, circleFeature]);
-	            
-	            var features = [pointFeature, circleFeature];
-	            
-	            return features;
+				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
+				var geoJsonFeature = geoJsonWriter.write([pointFeature,circleFeature]);
+				return angular.fromJson(geoJsonFeature);
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                 tolerance = tolerance || 0;

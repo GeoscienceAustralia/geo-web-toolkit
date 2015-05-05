@@ -1490,8 +1490,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GAMapService.drawLabel($scope.mapInstance, layerName, args, $scope.framework);
             };   
             
-            self.drawLabelWithPoint = function (args) {
-                return GAMapService.drawLabelWithPoint($scope.mapInstance, args, $scope.framework);
+            self.drawLabelWithPoint = function (layerName, args) {
+                return GAMapService.drawLabelWithPoint($scope.mapInstance, layerName, args, $scope.framework);
             };           
 
             self.isControlActive = function (controlId, controlName) {
