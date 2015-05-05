@@ -293,7 +293,7 @@
             it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 3', function () {
                 var emptyBingLayerHtml = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1234" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
                     '</ga-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
