@@ -551,13 +551,13 @@ app.service('olv2MapService', [
 					mapInstance.removeControl(service.drawingControl);
 				}
 			},
-			drawLabel: function (mapInstance, args) {
-				var vectors = mapInstance.getLayersByName(args.layerName);
+			drawLabel: function (mapInstance, layerName, args) {
+				var vectors = mapInstance.getLayersByName(layerName || args.layerName);
 				var vector;
 				if (vectors.length > 0) {
 					vector = vectors[0];
 				} else {
-					vector = new OpenLayers.Layer.Vector(args.layerName);
+					vector = new OpenLayers.Layer.Vector(layerName || args.layerName);
 					mapInstance.addLayer(vector);
 				}
 
@@ -566,10 +566,18 @@ app.service('olv2MapService', [
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
 
 	            // Add the text to the style of the layer
-	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelSelect: true};
+	            vector.style = {
+					label: args.text,
+					fontColor : args.fontColor || args.color,
+					fontSize: args.fontSize,
+					align : args.align,
+					labelSelect: true
+				};
 
 	            vector.addFeatures([pointFeature]);
-	            return pointFeature;
+				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
+				var geoJsonFeature = geoJsonWriter.write(pointFeature);
+	            return angular.fromJson(geoJsonFeature);
 			},
 			drawLabelWithPoint: function (mapInstance, args) {
 				var vectors = mapInstance.getLayersByName(args.layerName);

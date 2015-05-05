@@ -122,5 +122,30 @@
                 //Still one control. Default is navigation control.
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
+
+            it('Should create a new layer to draw label and return GeoJSON feature', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var geoJsonFeature = $scope.mapController.drawLabel('My layer that doesnt exist', {
+                    text: 'my label text',
+                    fontSize: '14px',
+                    lon: 110,
+                    lat: -55,
+                    fontColor: '#000000',
+                    align: 'cm',
+                    projection: 'EPSG:4326'
+                });
+                expect($scope.mapController.getMapInstance().layers.length).toBe(2);
+                expect(geoJsonFeature.type).toBe('Feature');
+                expect(geoJsonFeature.geometry.type).toBe('Point');
+            });
         });
 })();

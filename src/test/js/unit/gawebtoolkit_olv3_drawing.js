@@ -108,5 +108,6 @@
                 $scope.mapController.stopDrawing();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
+
         });
 })();

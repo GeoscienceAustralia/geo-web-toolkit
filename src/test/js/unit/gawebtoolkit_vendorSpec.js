@@ -11,31 +11,16 @@
                 mapControllerListener,
                 server;
 
-            var bingFakeResponse = '_callback_OpenLayers_Layer_Bing_15({"authenticationResultCode":"ValidCredentials","brandLogoUri":' +
-                '"http:\/\/dev.virtualearth' +
-                '.net\/Branding\/logo_powered_by.png","copyright":"Copyright © 2015 Microsoft and its suppliers. ' +
-                'All rights reserved. This API cannot be accessed and the content ' +
-                'and any results may not be used, reproduced or transmitted in any manner without express written permission from Microsoft Corporation.",' +
-                '"resourceSets":[{"estimatedTotal":1,"resources":[{"__type":"ImageryMetadata:http:\/\/schemas.microsoft.com\/search\/local\/ws\/rest\/v1",' +
-                '"imageHeight":256,' +
-                '"imageUrl":"http:\/\/ecn.{subdomain}.tiles.virtualearth.net\/tiles\/r{quadkey}.jpeg?g=3467&mkt={culture}&shading=hill",' +
-                '"imageUrlSubdomains":["t0","t1","t2","t3"]' +
-                ',"imageWidth":256,"imageryProviders":[{"attribution":"© 2015 Nokia","coverageAreas":[{"bbox":[-90,-180,90,180],' +
-                '"zoomMax":9,"zoomMin":1},{"bbox":[14,-180,90,-50],' +
-                '"zoomMax":21,"zoomMin":10},{"bbox":[27,-32,40,-13],"zoomMax":21,"zoomMin":10},{"bbox":[35,-11,72,20],' +
-                '"zoomMax":21,"zoomMin":10},{"bbox":[21,20,72,32],' +
-                '"zoomMax":21,"zoomMin":10},{"bbox":[21.92,113.14,22.79,114.52],"zoomMax":21,"zoomMin":10},' +
-                '{"bbox":[21.73,119.7,25.65,122.39],"zoomMax":21,"zoomMin":10},' +
-                '{"bbox":[0,98.7,8,120.17],"zoomMax":21,"zoomMin":10},{"bbox":[0.86,103.2,1.92,104.45],"zoomMax":21,"zoomMin":10}]},{"attribution":"© AND","coverageAreas":' +
-                '[{"bbox":[-90,-180,90,180],"zoomMax":21,"zoomMin":10}]},{"attribution":"© 2015 MapData Sciences Pty Ltd, PSMA","coverageAreas":' +
-                '[{"bbox":[-45,111,-9,156],"zoomMax":21,"zoomMin":5},' +
-                '{"bbox":[-49.7,164.42,-30.82,180],"zoomMax":21,"zoomMin":5}]},{"attribution":"© 2015 Zenrin","coverageAreas":' +
-                '[{"bbox":[23.5,122.5,46.65,151.66],"zoomMax":21,"zoomMin":4}]},{"attribution":"© 2015 Intermap","coverageAreas":' +
-                '[{"bbox":[49,-11,60,2],"zoomMax":21,"zoomMin":1}]},{"attribution":"© 2015 Microsoft Corporation","coverageAreas":' +
-                '[{"bbox":[-90,-180,90,180],"zoomMax":21,"zoomMin":1}]}],"vintageEnd":null,"vintageStart":null,"zoomMax":21,"zoomMin":1}]}],' +
-                '"statusCode":200,"statusDescription":"OK","traceId":"816e97f993be4a949a53937228cc947a|HK20240353|02.00.152.3000|"})';
 
-            var bingRequestUrl = 'http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Road?key=abcd1234&jsonp=_callback_OpenLayers_Layer_Bing_15&include=ImageryProviders';
+            //Unable to mock the JSONP request/response used by OpenLayers 2, could use real api key here, but not yet.
+            OpenLayers.Layer.Bing.processMetadata = function(metadata) {
+                this.metadata = metadata;
+                this.initLayer();
+                var script = document.getElementById(this._callbackId);
+                script.parentNode.removeChild(script);
+                window[this._callbackId] = undefined; // cannot delete from window in IE
+                delete this._callbackId;
+            };
 
             var mapWith3DSupportedProj;
 
@@ -74,15 +59,8 @@
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
-                server = sinon.fakeServer.create();
-                server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
-                        bingFakeResponse
-                    ]);
-
                 $scope.$digest();
                 $timeout.flush();
-                server.restore();
                 expect($scope.mapController.getMapInstance().layers.length).toBe(1);
             });
             it('Empty Google layer with OpenLayers v3 should digest and fail due to no support for Google Maps in OpenLayers 3', function () {
@@ -113,15 +91,9 @@
                     element = angular
                         .element(emptyGooglelayer);
                     $compile(element)($scope);
-                    server = sinon.fakeServer.create();
-                    server.respondWith('GET', bingRequestUrl,
-                        [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
-                            bingFakeResponse
-                        ]);
 
                     $scope.$digest();
                     $timeout.flush();
-                    server.restore();
                 } catch (error) {
                     passed = true;
                     expect(error.message.indexOf('Missing Bing Maps API key')).toBe(0);
@@ -131,22 +103,16 @@
             it('Empty Bing layer with OpenLayers v2 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1234"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></ga-bing-layer>' +
                     '</ga-map> ';
                 var passed = true;
                 try {
                     element = angular
                         .element(emptyGooglelayer);
                     $compile(element)($scope);
-                    server = sinon.fakeServer.create();
-                    server.respondWith('GET', bingRequestUrl,
-                        [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
-                            bingFakeResponse
-                        ]);
 
                     $scope.$digest();
                     $timeout.flush();
-                    server.restore();
                 } catch (error) {
                     passed = false;
                 }
@@ -156,20 +122,14 @@
             it('Empty Bing layer with OpenLayers v3 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1234"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></ga-bing-layer>' +
                     '</ga-map> ';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
-                server = sinon.fakeServer.create();
-                server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
-                        bingFakeResponse
-                    ]);
 
                 $scope.$digest();
                 $timeout.flush();
-                server.restore();
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
             });
             it('Open Street Maps layer with OpenLayers v2 should digest and create the layer successfully', function () {
@@ -238,17 +198,12 @@
             it('Bing layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1234" visibility="{{vis}}"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" visibility="{{vis}}"></ga-bing-layer>' +
                     '</ga-map> ';
                 $scope.vis = false;
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
-                server = sinon.fakeServer.create();
-                server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
-                        bingFakeResponse
-                    ]);
 
                 $scope.$digest();
                 $timeout.flush();
@@ -256,7 +211,6 @@
                 expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(false);
                 $scope.vis = true;
                 $scope.$digest();
-                server.restore();
                 expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(true);
             });
 
@@ -311,19 +265,13 @@
             it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 2', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1234" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
                     '</ga-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
-                server = sinon.fakeServer.create();
-                server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
-                        bingFakeResponse
-                    ]);
-
                 $scope.$digest();
                 $timeout.flush();
 
@@ -335,7 +283,6 @@
                 var layerId2 = $scope.mapController.getMapInstance().layers[0].id;
                 $scope.layerType = 'Hybrid';
                 $scope.$digest();
-                server.restore();
                 expect($scope.mapController.getMapInstance().layers.length).toBe(1);
                 var layerId3 = $scope.mapController.getMapInstance().layers[0].id;
                 //Show that layers are being reconstructed when layer-type is changed.
