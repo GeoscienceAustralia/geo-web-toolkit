@@ -883,25 +883,38 @@
                     if (vectors.length > 0) {
                         vector = vectors[0];
                     } else {
-                        vector = new OpenLayers.Layer.Vector(args.layerName);
+                        vector = new ol.layer.Vector();
+                        vector.set('name',args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
                     // Create a point to display the text
-                    var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
-                    var pointFeature = new OpenLayers.Feature.Vector(point);
+
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],args.projection, mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedPosition);
+                    var pointFeature = new ol.Feature({
+                        geometry: point
+                    });
+
+                    var textStyle = new ol.style.Text({
+                        textAlign: args.align,
+                        textBaseline: args.baseline,
+                        font: args.font,
+                        text: args.text,
+                        fill: new ol.style.Fill({color: args.fillColor || args.color}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
+                        offsetX: args.offsetX,
+                        offsetY: args.offsetY,
+                        rotation: args.rotation
+                    });
 
                     // Add the text to the style of the layer
-                    vector.style = {
-                        label: args.text,
-                        fontColor: args.fontColor,
-                        fontSize: args.fontSize,
-                        align: args.align,
-                        labelSelect: true
-                    };
+                    vector.setStyle(textStyle);
+                    var format = ol.format.GeoJSON();
 
-                    vector.addFeatures([pointFeature]);
-                    return pointFeature;
+                    vector.addFeature(pointFeature);
+                    //Always return geoJson
+                    return format.writeFeature(pointFeature);
                 },
                 drawLabelWithPoint: function (mapInstance, args) {
                     var vectors = mapInstance.getLayersByName(args.layerName);
