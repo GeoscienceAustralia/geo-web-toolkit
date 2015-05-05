@@ -515,15 +515,21 @@ app.service('olv2MapService', [
 	            	vector = new OpenLayers.Layer.Vector(args.layerName);
 					mapInstance.addLayer(vector);
 	            }
+				vector.style =
+				{
+					fillColor: args.fillColor || args.color,
+					fillOpacity : args.fillOpacity || args.opacity,
+					pointRadius : args.pointRadius || args.radius,
+					strokeColor: args.strokeColor || args.color,
+					strokeOpacity : args.strokeOpacity || args.opacity
+				};
 
 				var control;
 				// Create a new control with the appropriate style
 				if (args.featureType.toLowerCase() == 'point') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, pointRadius : args.radius, strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if (args.featureType.toLowerCase() == 'line' || args.featureType.toLowerCase() == 'linestring') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-					vector.style = {strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'box') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
 	                    handlerOptions: {
@@ -531,16 +537,13 @@ app.service('olv2MapService', [
 	                        irregular: true
 	                    }
 	                });
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'polygon') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};
 				}
 
 				mapInstance.addControl(control);
 				service.drawingControl = control;
 				control.activate();
-				//return control;
 			},
 			stopDrawing: function (mapInstance) {
 				if(service.drawingControl) {

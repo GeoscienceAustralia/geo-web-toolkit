@@ -52,12 +52,39 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('My drawing layer',{ featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 //9 default interactions added there for 10 interactions for openlayers 3. Default interactions are navigation related for different input.
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+            });
+
+            it('Should fail to start drawing due to specifying an invalid layer to draw on.', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var passed = false;
+                try {
+                    $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                        color: "#000000",
+                        opacity: 1.0,
+                        radius: 6});
+                } catch(error) {
+                    passed = true;
+                    expect(error.message.indexOf('Simple map layer name') > -1).toBe(true);
+                }
+                expect(passed).toBe(true);
+
+                //9 default interactions, no interaction added due to error thrown.
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
 
             it('Stop drawing removes interaction for OpenLayers 3', function () {
@@ -71,7 +98,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('My drawing layer',{ featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});

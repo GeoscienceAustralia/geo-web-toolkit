@@ -25,11 +25,9 @@
         ng-model="selectedItem"></select>
 <script>
     var app = angular.module('simpleMap',['gawebtoolkit.core']);
-
-    app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
+    app.controller('mainController', ['$scope', function ($scope) {
         $scope.drawTypes = ['None', 'Point','LineString'];
         $scope.update = function () {
-            console.log($scope.selectedItem);
             if($scope.selectedItem === 'None') {
                 $scope.mapController.stopDrawing();
             } else {
@@ -37,18 +35,17 @@
                 $scope.start();
             }
         };
-        $scope.drawingMode = 'Start Drawing';
         $scope.$on('mapControllerReady', function (event, mapController) {
             $scope.mapController = mapController;
         });
         $scope.start = function () {
-            $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: $scope.selectedItem,
+            $scope.mapController.startDrawingOnLayer('My feature layer',{
+                featureType: $scope.selectedItem,
                 color: "#000000",
                 opacity: 1.0,
                 radius: 6});
         }
     }]);
-
 </script>
 </body>
 </html>

@@ -828,32 +828,37 @@
                         case 'circle':
                             interactionType = 'Circle';
                     }
-                    var vectors = olv3LayerService.getLayersBy(mapInstance, 'name', layerName || args.layerName);
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.GeoJSON();
+                    var style = new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: args.fillColor || args.color,
+                            radius: args.fillRadius || args.radius
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: args.strokeColor || args.color,
+                            width: args.strokeRadius || args.radius,
+                            opacity: args.strokeOpacity || args.opacity
+                        }),
+                        image: new ol.style.Circle({
+                            radius: args.circleRadius || args.radius,
+                            fill: new ol.style.Fill({
+                                color: args.circleColor || args.color
+                            })
+                        })
+                    });
                     // Create the layer if it doesn't exist
                     if (vectors.length > 0) {
                         vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: args.color,
-                                    radius: args.radius
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: args.color,
-                                    width: args.radius,
-                                    opacity: args.opacity
-                                }),
-                                image: new ol.style.Circle({
-                                    radius: args.radius,
-                                    fill: new ol.style.Fill({
-                                        color: args.color
-                                    })
-                                })
-                            })
+                            style: style
                         });
 
                         vector.set('name',args.layerName);
