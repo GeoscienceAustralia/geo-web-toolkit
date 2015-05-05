@@ -109,5 +109,61 @@
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
 
+
+            it('Should create a new layer to draw label and return GeoJSON feature', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var geoJsonFeature = $scope.mapController.drawLabel('My layer that doesnt exist', {
+                    text: 'my label text',
+                    fontSize: '14px',
+                    lon: 110,
+                    lat: -55,
+                    fontColor: '#000000',
+                    radius: 6,
+                    color: '#000000',
+                    align: 'cm',
+                    projection: 'EPSG:4326'
+                });
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(2);
+                expect(geoJsonFeature.type).toBe('Feature');
+                expect(geoJsonFeature.geometry.type).toBe('Point');
+            });
+
+            it('Should create a new layer to draw label with circle and return GeoJSON feature collection', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var geoJsonFeature = $scope.mapController.drawLabelWithPoint('My layer that doesnt exist', {
+                    text: 'my label text',
+                    fontSize: '14px',
+                    lon: 110,
+                    lat: -55,
+                    fontColor: '#000000',
+                    color: '#000000',
+                    align: 'cm',
+                    radius: 5,
+                    projection: 'EPSG:4326'
+                });
+                expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(2);
+                expect(geoJsonFeature.type).toBe('FeatureCollection');
+                expect(geoJsonFeature.features.length).toBe(2);
+                expect(geoJsonFeature.features[0].geometry.type).toBe('Point');
+            });
+
         });
 })();

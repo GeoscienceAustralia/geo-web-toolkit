@@ -877,25 +877,10 @@
                         mapInstance.removeInteraction(service.featureDrawingInteraction);
                     }
                 },
-                drawLabel: function (mapInstance, args) {
-                    var vectors = mapInstance.getLayersByName(args.layerName);
+                drawLabel: function (mapInstance, layerName, args) {
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    if (vectors.length > 0) {
-                        vector = vectors[0];
-                    } else {
-                        vector = new ol.layer.Vector();
-                        vector.set('name',args.layerName);
-                        mapInstance.addLayer(vector);
-                    }
-
-                    // Create a point to display the text
-
-                    var updatedPosition = ol.proj.transform([args.lon, args.lat],args.projection, mapInstance.getView().getProjection());
-                    var point = new ol.geom.Point(updatedPosition);
-                    var pointFeature = new ol.Feature({
-                        geometry: point
-                    });
-
+                    var source = new ol.source.GeoJSON();
                     var textStyle = new ol.style.Text({
                         textAlign: args.align,
                         textBaseline: args.baseline,
@@ -908,52 +893,122 @@
                         rotation: args.rotation
                     });
 
-                    // Add the text to the style of the layer
-                    vector.setStyle(textStyle);
-                    var format = ol.format.GeoJSON();
-
-                    vector.addFeature(pointFeature);
-                    //Always return geoJson
-                    return format.writeFeature(pointFeature);
-                },
-                drawLabelWithPoint: function (mapInstance, args) {
-                    var vectors = mapInstance.getLayersByName(args.layerName);
-                    var vector;
-
+                    var style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: args.circleRadius || args.radius,
+                            fill: new ol.style.Fill({
+                                color: args.fillColor || args.color
+                            }),
+                            stroke: new ol.style.Stroke(
+                                {
+                                    color: args.strokeColor || args.color,
+                                    width: args.strokeRadius || args.radius
+                                })
+                        }),
+                        text: textStyle
+                    });
                     if (vectors.length > 0) {
                         vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
                     } else {
-                        vector = new OpenLayers.Layer.Vector(args.layerName);
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
+                        });
+
+                        vector.set('name',args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
-                    // Create a point to display the text
-                    var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
-                    var pointFeature = new OpenLayers.Feature.Vector(point);
-
-                    // Create a circle to display the point
-                    var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(point, args.pointRadius, 40, 0);
-                    var circlePoint = new OpenLayers.Geometry.Collection([circle, point]);
-                    var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],args.projection, mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedPosition);
+                    var pointFeature = new ol.Feature({
+                        geometry: point
+                    });
 
                     // Add the text to the style of the layer
-                    vector.style = {
-                        label: args.text,
-                        fontColor: args.fontColor,
-                        fontSize: args.fontSize,
-                        align: args.align,
-                        labelYOffset: args.labelYOffset,
-                        labelSelect: true,
-                        fillColor: args.pointColor,
-                        strokeColor: args.pointColor,
-                        fillOpacity: args.pointOpacity,
-                        strokeOpacity: args.pointOpacity
-                    };
-                    vector.addFeatures([pointFeature, circleFeature]);
+                    vector.setStyle(style);
+                    var format = new ol.format.GeoJSON();
+
+                    vector.getSource().addFeature(pointFeature);
+                    //Always return geoJson
+                    return angular.fromJson(format.writeFeature(pointFeature));
+                },
+                drawLabelWithPoint: function (mapInstance,layerName, args) {
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
+                    var vector;
+                    var source = new ol.source.GeoJSON();
+                    var textStyle = new ol.style.Text({
+                        textAlign: args.align,
+                        textBaseline: args.baseline,
+                        font: args.font,
+                        text: args.text,
+                        fill: new ol.style.Fill({color: args.fillColor || args.color}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
+                        offsetX: args.offsetX,
+                        offsetY: args.offsetY,
+                        rotation: args.rotation
+                    });
+
+                    var style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: args.circleRadius || args.radius,
+                            fill: new ol.style.Fill({
+                                color: args.fillColor || args.color
+                            }),
+                            stroke: new ol.style.Stroke(
+                                {
+                                    color: args.strokeColor || args.color,
+                                    width: args.strokeRadius || args.radius
+                                })
+                        }),
+                        text: textStyle
+                    });
+                    if (vectors.length > 0) {
+                        vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
+                    } else {
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
+                        });
+
+                        vector.set('name',args.layerName);
+                        mapInstance.addLayer(vector);
+                        vector.setStyle(style);
+                    }
+
+                    // Create a point to display the text
+                    var updatedLoc = ol.proj.transform([args.lon, args.lat], args.projection || service.displayProjection, mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedLoc);
+
+                    var pointFeature = new ol.Feature({
+                        geometry: point
+                    });
+
+                    // Create a circle to display the point
+                    var circle = new ol.geom.Polygon.circular(
+                        new ol.Sphere(6378137),
+                        updatedLoc,
+                        args.circleRadius || args.radius
+                    );
+
+                    var circleFeature = new ol.Feature({
+                        geometry: circle
+                    });
+
+                    vector.getSource().addFeatures([pointFeature, circleFeature]);
 
                     var features = [pointFeature, circleFeature];
-
-                    return features;
+                    var format = new ol.format.GeoJSON();
+                    //Always return geoJson
+                    return angular.fromJson(format.writeFeatures([pointFeature, circleFeature]));
                 },
                 getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                     var vectorSource = new ol.source.ServerVector({
