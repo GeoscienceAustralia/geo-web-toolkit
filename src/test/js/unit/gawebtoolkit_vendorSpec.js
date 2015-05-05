@@ -76,7 +76,7 @@
                 $compile(element)($scope);
                 server = sinon.fakeServer.create();
                 server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/json"},
+                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
                         bingFakeResponse
                     ]);
 
@@ -115,7 +115,7 @@
                     $compile(element)($scope);
                     server = sinon.fakeServer.create();
                     server.respondWith('GET', bingRequestUrl,
-                        [200, {"Content-Type": "application/json"},
+                        [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
                             bingFakeResponse
                         ]);
 
@@ -140,7 +140,7 @@
                     $compile(element)($scope);
                     server = sinon.fakeServer.create();
                     server.respondWith('GET', bingRequestUrl,
-                        [200, {"Content-Type": "application/json"},
+                        [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
                             bingFakeResponse
                         ]);
 
@@ -163,7 +163,7 @@
                 $compile(element)($scope);
                 server = sinon.fakeServer.create();
                 server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/json"},
+                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
                         bingFakeResponse
                     ]);
 
@@ -246,7 +246,7 @@
                 $compile(element)($scope);
                 server = sinon.fakeServer.create();
                 server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/json"},
+                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
                         bingFakeResponse
                     ]);
 
@@ -320,7 +320,7 @@
                 $compile(element)($scope);
                 server = sinon.fakeServer.create();
                 server.respondWith('GET', bingRequestUrl,
-                    [200, {"Content-Type": "application/json"},
+                    [200, {"Content-Type": "application/x-javascript; charset=utf-8"},
                         bingFakeResponse
                     ]);
 
