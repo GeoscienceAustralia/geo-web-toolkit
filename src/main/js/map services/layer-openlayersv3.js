@@ -121,7 +121,6 @@
                         bingLayerType = 'Birdseye';
                         bingLayerName = bingLayerName || 'Bing Birdseye';
                         break;
-                        break;
                     case 'birdseyewithlabels':
                         bingLayerType = 'BirdseyeWithLabels';
                         bingLayerName = bingLayerName || 'Bing Birdseye With Labels';
@@ -337,10 +336,9 @@
             //Should this be labeled as an internal method?
             removeLayerByName: function (mapInstance, layerName) {
                 // If more than one layer has the same name then only the first will be destroyed
-                var layer = service.getLayerByName(mapInstance,layerName);
-
-                if (layer) {
-                    mapInstance.removeLayer(layer);
+                var layers = service._getLayersBy(mapInstance,'name', layerName);
+                if (layers.length > 0) {
+                    mapInstance.removeLayer(layers[0]);
                 }
             },
             //Should this be labeled as an internal method?

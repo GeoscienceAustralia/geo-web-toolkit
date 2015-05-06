@@ -504,7 +504,7 @@
                 //Returns array of geo-web-toolkit layer DTO by name using olv3 getLayerByName?
                 getLayersByName: function (mapInstance, layerName) {
                     if (typeof layerName !== 'string' && typeof layerName !== 'number') {
-                        throw new TypeError('Expected number');
+                        throw new TypeError('Expected string or number');
                     }
                     return olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                 },
@@ -785,157 +785,239 @@
                     mapInstance.addLayer(service.drawPolyLineLayer);
                 },
                 removeSelectedFeature: function (mapInstance, layerName) {
-                    var vectors = mapInstance.getLayersByName(layerName);
+                    var layer = mapInstance.getLayersByName(layerName)[0];
 
-                    // Function is called when a feature is selected
-                    function onFeatureSelect(feature) {
-                        vectors[0].removeFeatures(feature);
-                    }
-
-                    // Create the select control
-                    var selectCtrl = new OpenLayers.Control.SelectFeature(vectors[0], {
-                        onSelect: onFeatureSelect
+                    var select = new ol.interaction.Select();
+                    select.on('select', function (e) {
+                        var source = layer.getSource();
+                        if(source.removeFeature instanceof Function) {
+                            if(e.selected instanceof Array) {
+                                for (var i = 0; i < e.selected.length; i++) {
+                                    var feature = e.selected[i];
+                                    source.removeFeature(feature);
+                                }
+                            } else {
+                                source.removeFeature(e.selected);
+                            }
+                        } else {
+                            throw new Error("No valid layer found with name - " + layerName + " - to remove selected features.");
+                        }
                     });
 
-                    mapInstance.addControl(selectCtrl);
+                    mapInstance.addInteraction(select);
 
-                    return selectCtrl;
+                    return select;
                 },
                 removeFeature: function (mapInstance, layerName, feature) {
                     var featureLayer = olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                     featureLayer.removeFeatures(feature);
                 },
-                drawFeature: function (mapInstance, args) {
-                    var vectors = mapInstance.getLayersByName(args.layerName);
+                startDrawingOnLayer: function (mapInstance, layerName, args) {
+                    var interactionType;
+                    //Drawing interaction types are case sensitive and represent GeometryType in OpenLayers 3
+                    switch (args.featureType.toLowerCase()) {
+                        case 'point':
+                            interactionType = 'Point';
+                            break;
+                        case 'linestring':
+                            interactionType = 'LineString';
+                            break;
+                        case 'polygon':
+                            interactionType = 'Polygon';
+                            break;
+                        case 'circle':
+                            interactionType = 'Circle';
+                    }
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-
+                    var source = new ol.source.GeoJSON();
+                    var style = new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: args.fillColor || args.color,
+                            radius: args.fillRadius || args.radius
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: args.strokeColor || args.color,
+                            width: args.strokeRadius || args.radius,
+                            opacity: args.strokeOpacity || args.opacity
+                        }),
+                        image: new ol.style.Circle({
+                            radius: args.circleRadius || args.radius,
+                            fill: new ol.style.Fill({
+                                color: args.circleColor || args.color
+                            })
+                        })
+                    });
                     // Create the layer if it doesn't exist
                     if (vectors.length > 0) {
                         vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
                     } else {
-                        vector = new OpenLayers.Layer.Vector(args.layerName);
-                        mapInstance.addLayer(vector);
-                    }
-
-                    var control;
-                    // Create a new control with the appropriate style
-                    if (args.featureType.toLowerCase() === 'point') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-                        vector.style = {
-                            fillColor: args.color,
-                            fillOpacity: args.opacity,
-                            pointRadius: args.radius,
-                            strokeColor: args.color,
-                            strokeOpacity: args.opacity
-                        };
-                        mapInstance.addControl(control);
-
-                        return control;
-                    }
-                    if (args.featureType.toLowerCase() === 'line') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-                        vector.style = {strokeColor: args.color, strokeOpacity: args.opacity};
-                        mapInstance.addControl(control);
-
-                        return control;
-                    }
-                    if (args.featureType.toLowerCase() === 'box') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
-                            handlerOptions: {
-                                sides: 4,
-                                irregular: true
-                            }
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
                         });
-                        vector.style = {
-                            fillColor: args.color,
-                            fillOpacity: args.opacity,
-                            strokeColor: args.color,
-                            strokeOpacity: args.opacity
-                        };
-                        mapInstance.addControl(control);
 
-                        return control;
-                    }
-
-                    if (args.featureType.toLowerCase() === 'polygon') {
-                        control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
-                        vector.style = {
-                            fillColor: args.color,
-                            fillOpacity: args.opacity,
-                            strokeColor: args.color,
-                            strokeOpacity: args.opacity
-                        };
-
-                        mapInstance.addControl(control);
-
-                        return control;
-                    }
-
-                },
-                drawLabel: function (mapInstance, args) {
-                    var vectors = mapInstance.getLayersByName(args.layerName);
-                    var vector;
-                    if (vectors.length > 0) {
-                        vector = vectors[0];
-                    } else {
-                        vector = new OpenLayers.Layer.Vector(args.layerName);
+                        vector.set('name',args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
-                    // Create a point to display the text
-                    var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
-                    var pointFeature = new OpenLayers.Feature.Vector(point);
-
-                    // Add the text to the style of the layer
-                    vector.style = {
-                        label: args.text,
-                        fontColor: args.fontColor,
-                        fontSize: args.fontSize,
-                        align: args.align,
-                        labelSelect: true
-                    };
-
-                    vector.addFeatures([pointFeature]);
-                    return pointFeature;
+                    var draw = new ol.interaction.Draw({
+                        source: source,
+                        type: /** @type {ol.geom.GeometryType} */ (interactionType)
+                    });
+                    service.featureDrawingInteraction = draw;
+                    mapInstance.addInteraction(draw);
                 },
-                drawLabelWithPoint: function (mapInstance, args) {
-                    var vectors = mapInstance.getLayersByName(args.layerName);
+                stopDrawing: function (mapInstance) {
+                    if(service.featureDrawingInteraction) {
+                        mapInstance.removeInteraction(service.featureDrawingInteraction);
+                    }
+                },
+                drawLabel: function (mapInstance, layerName, args) {
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
+                    var source = new ol.source.GeoJSON();
+                    var alignText = args.align == 'cm' ? 'center' : args.align || args.textAlign;
+                    var textStyle = new ol.style.Text({
+                        textAlign: alignText,
+                        textBaseline: args.baseline,
+                        font: args.font,
+                        text: args.text,
+                        fill: new ol.style.Fill({color: args.fillColor || args.fontColor || args.color}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
+                        offsetX: args.offsetX,
+                        offsetY: args.offsetY,
+                        rotation: args.rotation
+                    });
 
+                    var style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: args.circleRadius || args.radius,
+                            fill: new ol.style.Fill({
+                                color: args.fillColor || args.color || '#000000'
+                            }),
+                            stroke: new ol.style.Stroke(
+                                {
+                                    color: args.strokeColor || args.color || '#000000',
+                                    width: args.strokeRadius || args.radius
+                                })
+                        }),
+                        text: textStyle
+                    });
                     if (vectors.length > 0) {
                         vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
                     } else {
-                        vector = new OpenLayers.Layer.Vector(args.layerName);
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
+                        });
+
+                        vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
-                    // Create a point to display the text
-                    var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
-                    var pointFeature = new OpenLayers.Feature.Vector(point);
-
-                    // Create a circle to display the point
-                    var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(point, args.pointRadius, 40, 0);
-                    var circlePoint = new OpenLayers.Geometry.Collection([circle, point]);
-                    var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
-
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],args.projection, mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedPosition);
+                    var pointFeature = new ol.Feature({
+                        geometry: point
+                    });
+                    vector.getSource().addFeature(pointFeature);
                     // Add the text to the style of the layer
-                    vector.style = {
-                        label: args.text,
-                        fontColor: args.fontColor,
-                        fontSize: args.fontSize,
-                        align: args.align,
-                        labelYOffset: args.labelYOffset,
-                        labelSelect: true,
-                        fillColor: args.pointColor,
-                        strokeColor: args.pointColor,
-                        fillOpacity: args.pointOpacity,
-                        strokeOpacity: args.pointOpacity
-                    };
-                    vector.addFeatures([pointFeature, circleFeature]);
+                    vector.setStyle(style);
+                    var format = new ol.format.GeoJSON();
 
-                    var features = [pointFeature, circleFeature];
 
-                    return features;
+                    //Always return geoJson
+                    return angular.fromJson(format.writeFeature(pointFeature));
+                },
+                drawLabelWithPoint: function (mapInstance,layerName, args) {
+
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
+                    var vector;
+                    var source = new ol.source.GeoJSON();
+                    var textStyle = new ol.style.Text({
+                        textAlign: args.align,
+                        textBaseline: args.baseline,
+                        font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
+                        text: args.text,
+                        fill: new ol.style.Fill({color: args.fillColor || args.color, width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width || 1}),
+                        offsetX: args.offsetX || 0,
+                        offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
+                        rotation: args.rotation
+                    });
+                    var fillColor;
+                    var fillColorHex = args.fillColor || args.color || '#000000';
+                    var fillOpacity = args.fillOpacity || args.opacity || 0.5;
+                    if(fillColorHex.indexOf('#') === 0) {
+                        fillColor = GAWTUtils.convertHexAndOpacityToRgbArray(fillColorHex,fillOpacity);
+                    } else {
+                        fillColor = args.fillColor || args.color;
+                    }
+
+                    var strokeColor;
+                    var strokeColorHex = args.fillColor || args.color || '#000000';
+                    var strokeOpacity = args.strokeOpacity || args.opacity || 1.0;
+                    if(strokeColorHex.indexOf('#') === 0) {
+                        strokeColor = GAWTUtils.convertHexAndOpacityToRgbArray(strokeColorHex,strokeOpacity);
+                    } else {
+                        strokeColor = args.strokeColor || args.color;
+                    }
+
+                    var style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: args.pointRadius || args.radius || '2',
+                            fill: new ol.style.Fill({
+                                color: fillColor
+                            }),
+                            stroke: new ol.style.Stroke(
+                                {
+                                    color: strokeColor,
+                                    width: args.strokeRadius || args.radius
+                                })
+                        }),
+                        text: textStyle
+                    });
+                    if (vectors.length > 0) {
+                        vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
+                    } else {
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
+                        });
+
+                        vector.set('name',layerName || args.layerName);
+                        mapInstance.addLayer(vector);
+                        vector.setStyle(style);
+                    }
+
+                    // Create a point to display the text
+                    var updatedLoc = ol.proj.transform([args.lon, args.lat], args.projection || service.displayProjection, mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedLoc);
+
+                    var pointFeature = new ol.Feature({
+                        geometry: point
+                    });
+
+
+                    vector.getSource().addFeatures([pointFeature]);
+
+                    var features = [pointFeature];
+                    var format = new ol.format.GeoJSON();
+                    //Always return geoJson
+                    return angular.fromJson(format.writeFeatures([pointFeature]));
                 },
                 getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                     var vectorSource = new ol.source.ServerVector({

@@ -504,8 +504,8 @@ app.service('olv2MapService', [
 				var vectors = mapInstance.getLayersByName(layerName);
 				vectors[0].removeFeatures(feature);
 			},
-			drawFeature: function (mapInstance, args) {
-	            var vectors = mapInstance.getLayersByName(args.layerName);
+			startDrawingOnLayer: function (mapInstance,layerName, args) {
+	            var vectors = mapInstance.getLayersByName(layerName || args.layerName);
 				var vector;
 
 				// Create the layer if it doesn't exist
@@ -515,15 +515,21 @@ app.service('olv2MapService', [
 	            	vector = new OpenLayers.Layer.Vector(args.layerName);
 					mapInstance.addLayer(vector);
 	            }
+				vector.style =
+				{
+					fillColor: args.fillColor || args.color,
+					fillOpacity : args.fillOpacity || args.opacity,
+					pointRadius : args.pointRadius || args.radius,
+					strokeColor: args.strokeColor || args.color,
+					strokeOpacity : args.strokeOpacity || args.opacity
+				};
 
 				var control;
 				// Create a new control with the appropriate style
 				if (args.featureType.toLowerCase() == 'point') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, pointRadius : args.radius, strokeColor: args.color, strokeOpacity : args.opacity};
-				} else if (args.featureType.toLowerCase() == 'line') {
+				} else if (args.featureType.toLowerCase() == 'line' || args.featureType.toLowerCase() == 'linestring') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-					vector.style = {strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'box') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
 	                    handlerOptions: {
@@ -531,23 +537,27 @@ app.service('olv2MapService', [
 	                        irregular: true
 	                    }
 	                });
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};
 				} else if  (args.featureType.toLowerCase() == 'polygon') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
-					vector.style = {fillColor: args.color, fillOpacity : args.opacity, strokeColor: args.color, strokeOpacity : args.opacity};
 				}
 
 				mapInstance.addControl(control);
-
-				return control;
+				service.drawingControl = control;
+				control.activate();
 			},
-			drawLabel: function (mapInstance, args) {
-				var vectors = mapInstance.getLayersByName(args.layerName);
+			stopDrawing: function (mapInstance) {
+				if(service.drawingControl) {
+					service.drawingControl.deactivate();
+					mapInstance.removeControl(service.drawingControl);
+				}
+			},
+			drawLabel: function (mapInstance, layerName, args) {
+				var vectors = mapInstance.getLayersByName(layerName || args.layerName);
 				var vector;
 				if (vectors.length > 0) {
 					vector = vectors[0];
 				} else {
-					vector = new OpenLayers.Layer.Vector(args.layerName);
+					vector = new OpenLayers.Layer.Vector(layerName || args.layerName);
 					mapInstance.addLayer(vector);
 				}
 
@@ -556,19 +566,30 @@ app.service('olv2MapService', [
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
 
 	            // Add the text to the style of the layer
-	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelSelect: true};
-
-	            vector.addFeatures([pointFeature]);
-	            return pointFeature;
+	            vector.style = {
+					label: args.text,
+					fontColor : args.fontColor || args.color,
+					fontSize: args.fontSize,
+					align : args.align,
+					labelSelect: true
+				};
+				vector.addFeatures([pointFeature]);
+				var featureId = GAWTUtils.generateUuid();
+				pointFeature.id = featureId;
+				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
+				var geoJsonFeature = geoJsonWriter.write(pointFeature);
+				var result = angular.fromJson(geoJsonFeature);
+				result.id = featureId;
+				return result;
 			},
-			drawLabelWithPoint: function (mapInstance, args) {
-				var vectors = mapInstance.getLayersByName(args.layerName);
+			drawLabelWithPoint: function (mapInstance, layerName, args) {
+				var vectors = mapInstance.getLayersByName(layerName || args.layerName);
 				var vector;
 
 				if (vectors.length > 0) {
 					vector = vectors[0];
 				} else {
-					vector = new OpenLayers.Layer.Vector(args.layerName);
+					vector = new OpenLayers.Layer.Vector(layerName || args.layerName);
 					mapInstance.addLayer(vector);
 				}
 
@@ -576,19 +597,27 @@ app.service('olv2MapService', [
 				var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
 
-	            // Create a circle to display the point
-	            var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(point, args.pointRadius, 40, 0);
-	            var circlePoint = new OpenLayers.Geometry.Collection([circle, point]);
-	            var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
-
+				var pointFeatureId = GAWTUtils.generateUuid();
+				pointFeature.id = pointFeatureId;
 	            // Add the text to the style of the layer
-	            vector.style = {label: args.text, fontColor : args.fontColor, fontSize: args.fontSize, align : args.align, labelYOffset : args.labelYOffset, labelSelect: true,
-	            		fillColor : args.pointColor, strokeColor : args.pointColor, fillOpacity : args.pointOpacity, strokeOpacity : args.pointOpacity};
-	            vector.addFeatures([pointFeature, circleFeature]);
-	            
-	            var features = [pointFeature, circleFeature];
-	            
-	            return features;
+	            vector.style = {
+					label: args.text,
+					pointRadius: args.pointRadius || '8',
+					fontColor : args.fontColor || args.color || '#000000',
+					fontSize: args.fontSize || '14px',
+					align : args.align || 'cm',
+					labelYOffset : args.labelYOffset || 15,
+					labelSelect: true,
+					fillColor : args.pointColor || args.color || '#000000',
+					strokeColor : args.pointColor || args.color || '#000000',
+					fillOpacity : args.pointOpacity || args.fillOpacity || 0.5,
+					strokeOpacity : args.pointOpacity || args.strokeOpacity || 1.0};
+	            vector.addFeatures([pointFeature]);
+				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
+				var geoJsonFeature = geoJsonWriter.write([pointFeature]);
+				var result = angular.fromJson(geoJsonFeature);
+				result.features[0].id = pointFeatureId;
+				return result;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                 tolerance = tolerance || 0;

@@ -13,8 +13,8 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
  * @param {string|@} displayProjection - A value representing the Display Projection, eg 'EPSG:4326'
  * @param {string|@=} centerPosition - A comma separated value representing lon/lat of the initial center position.
  * @param {number|@=} zoomLevel - An initial zoom value for the map to start at.
- * @param {string|@} framework - Optional. Default 'olv2'. Specifies which underlying mapping framework to use.
  * @param {geoJsonCoordinates|==} initialExtent - An initial extent is the form of a geoJson array of coordinates.
+ * @param {string|@} framework - Optional. Default 'olv2'. Specifies which underlying mapping framework to use.
  *
  * @method addLayer - Adds a layer programmatically
  *
@@ -1477,17 +1477,21 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             self.removeFeature = function (layerName, feature) {
                 return GAMapService.removeFeature($scope.mapInstance, layerName, feature, $scope.framework);
             };
-            
-            self.drawFeature = function (args) {
-                return GAMapService.drawFeature($scope.mapInstance, args, $scope.framework);
+
+            self.startDrawingOnLayer = function (layerName, args) {
+                return GAMapService.startDrawingOnLayer($scope.mapInstance,layerName, args,$scope.framework);
+            };
+
+            self.stopDrawing = function () {
+                return GAMapService.stopDrawing($scope.mapInstance,$scope.framework);
             };
             
-            self.drawLabel = function (args) {
-                return GAMapService.drawLabel($scope.mapInstance, args, $scope.framework);
+            self.drawLabel = function (layerName, args) {
+                return GAMapService.drawLabel($scope.mapInstance, layerName, args, $scope.framework);
             };   
             
-            self.drawLabelWithPoint = function (args) {
-                return GAMapService.drawLabelWithPoint($scope.mapInstance, args, $scope.framework);
+            self.drawLabelWithPoint = function (layerName, args) {
+                return GAMapService.drawLabelWithPoint($scope.mapInstance, layerName, args, $scope.framework);
             };           
 
             self.isControlActive = function (controlId, controlName) {

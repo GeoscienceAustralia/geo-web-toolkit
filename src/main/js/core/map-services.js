@@ -206,15 +206,25 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawFeature(mapInstance, args);
             },
-            drawLabel: function (mapInstance, args, version) {
+            startDrawingOnLayer: function (mapInstance,layerName, args, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.drawLabel(mapInstance, args);
+                return service.startDrawingOnLayer(mapInstance,layerName,args);
             },
-            drawLabelWithPoint: function (mapInstance, args, version) {
+            stopDrawing: function (mapInstance,version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.drawLabelWithPoint(mapInstance, args);
+                return service.stopDrawing(mapInstance);
+            },
+            drawLabel: function (mapInstance, layerName, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.drawLabel(mapInstance,layerName, args);
+            },
+            drawLabelWithPoint: function (mapInstance, layerName, args, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.drawLabelWithPoint(mapInstance,layerName, args);
             },
             createWfsClient: function (url, featureType, featurePrefix, wfsVersion, geometryName, datumProjection, isLonLatOrderValid, version) {
                 var useVersion = version || 'olv2';

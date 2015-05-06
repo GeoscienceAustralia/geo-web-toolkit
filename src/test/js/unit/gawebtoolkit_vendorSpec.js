@@ -8,7 +8,19 @@
                 $scope,
                 $timeout,
                 element,
-                mapControllerListener;
+                mapControllerListener,
+                server;
+
+
+            //Unable to mock the JSONP request/response used by OpenLayers 2, could use real api key here, but not yet.
+            OpenLayers.Layer.Bing.processMetadata = function(metadata) {
+                this.metadata = metadata;
+                this.initLayer();
+                var script = document.getElementById(this._callbackId);
+                script.parentNode.removeChild(script);
+                window[this._callbackId] = undefined; // cannot delete from window in IE
+                delete this._callbackId;
+            };
 
             var mapWith3DSupportedProj;
 
@@ -17,7 +29,7 @@
 
             // Store references to $rootScope and $compile
             // so they are available to all tests in this describe block
-            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_) {
+            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, $injector) {
                 // The injector unwraps the underscores (_) from around the parameter names when matching
                 $compile = _$compile_;
                 $timeout = _$timeout_;
@@ -37,24 +49,18 @@
                     "opacity": 1.0
                 };
 
-
             }));
+
             it('Empty Google layer with OpenLayers v2 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                        '<ga-google-layer></ga-google-layer>' +
+                    '<ga-google-layer></ga-google-layer>' +
                     '</ga-map> ';
-                var passed = true;
-                try {
-                    element = angular
-                        .element(emptyGooglelayer);
-                    $compile(element)($scope);
-                    $scope.$digest();
-                    $timeout.flush();
-                } catch (error) {
-                    passed = false;
-                }
-                expect(passed).toBe(true);
+                element = angular
+                    .element(emptyGooglelayer);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
                 expect($scope.mapController.getMapInstance().layers.length).toBe(1);
             });
             it('Empty Google layer with OpenLayers v3 should digest and fail due to no support for Google Maps in OpenLayers 3', function () {
@@ -85,6 +91,7 @@
                     element = angular
                         .element(emptyGooglelayer);
                     $compile(element)($scope);
+
                     $scope.$digest();
                     $timeout.flush();
                 } catch (error) {
@@ -96,13 +103,14 @@
             it('Empty Bing layer with OpenLayers v2 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="12345"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></ga-bing-layer>' +
                     '</ga-map> ';
                 var passed = true;
                 try {
                     element = angular
                         .element(emptyGooglelayer);
                     $compile(element)($scope);
+
                     $scope.$digest();
                     $timeout.flush();
                 } catch (error) {
@@ -114,11 +122,12 @@
             it('Empty Bing layer with OpenLayers v3 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="12345"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></ga-bing-layer>' +
                     '</ga-map> ';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
+
                 $scope.$digest();
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(1);
@@ -189,14 +198,16 @@
             it('Bing layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1234" visibility="{{vis}}"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" visibility="{{vis}}"></ga-bing-layer>' +
                     '</ga-map> ';
                 $scope.vis = false;
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
+
                 $scope.$digest();
                 $timeout.flush();
+
                 expect($scope.mapController.getMapInstance().getLayers().item(0).getVisible()).toBe(false);
                 $scope.vis = true;
                 $scope.$digest();
@@ -254,7 +265,7 @@
             it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 2', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1235" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
                     '</ga-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
@@ -263,6 +274,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
+
                 expect($scope.mapController.getMapInstance().layers.length).toBe(1);
                 var layerId1 = $scope.mapController.getMapInstance().layers[0].id;
                 $scope.layerType = 'Satellite';
@@ -281,7 +293,7 @@
             it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 3', function () {
                 var emptyBingLayerHtml = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="abcd1235" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
+                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
                     '</ga-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
