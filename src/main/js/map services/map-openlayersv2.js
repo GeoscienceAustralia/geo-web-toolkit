@@ -620,9 +620,8 @@ app.service('olv2MapService', [
 				return result;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, pointEvent, tolerance) {
-                tolerance = tolerance || 0;
+				tolerance = tolerance || 0;
 				var deferred = $q.defer();
-				var point = event instanceof MouseEvent ? pointEvent.xy : pointEvent;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-tolerance, tolerance);
 				var urPx = originalPx.add(tolerance, -tolerance);
