@@ -573,11 +573,14 @@ app.service('olv2MapService', [
 					align : args.align,
 					labelSelect: true
 				};
-
-	            vector.addFeatures([pointFeature]);
+				vector.addFeatures([pointFeature]);
+				var featureId = GAWTUtils.generateUuid();
+				pointFeature.id = featureId;
 				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
 				var geoJsonFeature = geoJsonWriter.write(pointFeature);
-	            return angular.fromJson(geoJsonFeature);
+				var result = angular.fromJson(geoJsonFeature);
+				result.id = featureId;
+				return result;
 			},
 			drawLabelWithPoint: function (mapInstance, layerName, args) {
 				var vectors = mapInstance.getLayersByName(layerName || args.layerName);
@@ -594,27 +597,27 @@ app.service('olv2MapService', [
 				var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
 
-	            // Create a circle to display the point
-	            var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(point, args.pointRadius, 40, 0);
-	            var circlePoint = new OpenLayers.Geometry.Collection([circle, point]);
-	            var circleFeature = new OpenLayers.Feature.Vector(circlePoint);
-
+				var pointFeatureId = GAWTUtils.generateUuid();
+				pointFeature.id = pointFeatureId;
 	            // Add the text to the style of the layer
 	            vector.style = {
 					label: args.text,
-					fontColor : args.fontColor || args.color,
-					fontSize: args.fontSize,
-					align : args.align,
-					labelYOffset : args.labelYOffset,
+					pointRadius: args.pointRadius || '8',
+					fontColor : args.fontColor || args.color || '#000000',
+					fontSize: args.fontSize || '14px',
+					align : args.align || 'cm',
+					labelYOffset : args.labelYOffset || 15,
 					labelSelect: true,
-					fillColor : args.pointColor || args.color,
-					strokeColor : args.pointColor || args.color,
-					fillOpacity : args.pointOpacity || args.opacity,
-					strokeOpacity : args.pointOpacity || args.opacity};
-	            vector.addFeatures([pointFeature, circleFeature]);
+					fillColor : args.pointColor || args.color || '#000000',
+					strokeColor : args.pointColor || args.color || '#000000',
+					fillOpacity : args.pointOpacity || args.fillOpacity || 0.5,
+					strokeOpacity : args.pointOpacity || args.strokeOpacity || 1.0};
+	            vector.addFeatures([pointFeature]);
 				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
-				var geoJsonFeature = geoJsonWriter.write([pointFeature,circleFeature]);
-				return angular.fromJson(geoJsonFeature);
+				var geoJsonFeature = geoJsonWriter.write([pointFeature]);
+				var result = angular.fromJson(geoJsonFeature);
+				result.features[0].id = pointFeatureId;
+				return result;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                 tolerance = tolerance || 0;

@@ -881,12 +881,13 @@
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.GeoJSON();
+                    var alignText = args.align == 'cm' ? 'center' : args.align || args.textAlign;
                     var textStyle = new ol.style.Text({
-                        textAlign: args.align,
+                        textAlign: alignText,
                         textBaseline: args.baseline,
                         font: args.font,
                         text: args.text,
-                        fill: new ol.style.Fill({color: args.fillColor || args.color}),
+                        fill: new ol.style.Fill({color: args.fillColor || args.fontColor || args.color}),
                         stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
                         offsetX: args.offsetX,
                         offsetY: args.offsetY,
@@ -897,11 +898,11 @@
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: args.fillColor || args.color
+                                color: args.fillColor || args.color || '#000000'
                             }),
                             stroke: new ol.style.Stroke(
                                 {
-                                    color: args.strokeColor || args.color,
+                                    color: args.strokeColor || args.color || '#000000',
                                     width: args.strokeRadius || args.radius
                                 })
                         }),
@@ -919,7 +920,7 @@
                             style: style
                         });
 
-                        vector.set('name',args.layerName);
+                        vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
@@ -928,40 +929,58 @@
                     var pointFeature = new ol.Feature({
                         geometry: point
                     });
-
+                    vector.getSource().addFeature(pointFeature);
                     // Add the text to the style of the layer
                     vector.setStyle(style);
                     var format = new ol.format.GeoJSON();
 
-                    vector.getSource().addFeature(pointFeature);
+
                     //Always return geoJson
                     return angular.fromJson(format.writeFeature(pointFeature));
                 },
                 drawLabelWithPoint: function (mapInstance,layerName, args) {
+
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.GeoJSON();
                     var textStyle = new ol.style.Text({
                         textAlign: args.align,
                         textBaseline: args.baseline,
-                        font: args.font,
+                        font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: args.fillColor || args.color}),
-                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
-                        offsetX: args.offsetX,
-                        offsetY: args.offsetY,
+                        fill: new ol.style.Fill({color: args.fillColor || args.color, width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width || 1}),
+                        offsetX: args.offsetX || 0,
+                        offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
                     });
+                    var fillColor;
+                    var fillColorHex = args.fillColor || args.color || '#000000';
+                    var fillOpacity = args.fillOpacity || args.opacity || 0.5;
+                    if(fillColorHex.indexOf('#') === 0) {
+                        fillColor = GAWTUtils.convertHexAndOpacityToRgbArray(fillColorHex,fillOpacity);
+                    } else {
+                        fillColor = args.fillColor || args.color;
+                    }
+
+                    var strokeColor;
+                    var strokeColorHex = args.fillColor || args.color || '#000000';
+                    var strokeOpacity = args.strokeOpacity || args.opacity || 1.0;
+                    if(strokeColorHex.indexOf('#') === 0) {
+                        strokeColor = GAWTUtils.convertHexAndOpacityToRgbArray(strokeColorHex,strokeOpacity);
+                    } else {
+                        strokeColor = args.strokeColor || args.color;
+                    }
 
                     var style = new ol.style.Style({
                         image: new ol.style.Circle({
-                            radius: args.circleRadius || args.radius,
+                            radius: args.pointRadius || args.radius || '2',
                             fill: new ol.style.Fill({
-                                color: args.fillColor || args.color
+                                color: fillColor
                             }),
                             stroke: new ol.style.Stroke(
                                 {
-                                    color: args.strokeColor || args.color,
+                                    color: strokeColor,
                                     width: args.strokeRadius || args.radius
                                 })
                         }),
@@ -979,7 +998,7 @@
                             style: style
                         });
 
-                        vector.set('name',args.layerName);
+                        vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                         vector.setStyle(style);
                     }
@@ -992,23 +1011,13 @@
                         geometry: point
                     });
 
-                    // Create a circle to display the point
-                    var circle = new ol.geom.Polygon.circular(
-                        new ol.Sphere(6378137),
-                        updatedLoc,
-                        args.circleRadius || args.radius
-                    );
 
-                    var circleFeature = new ol.Feature({
-                        geometry: circle
-                    });
+                    vector.getSource().addFeatures([pointFeature]);
 
-                    vector.getSource().addFeatures([pointFeature, circleFeature]);
-
-                    var features = [pointFeature, circleFeature];
+                    var features = [pointFeature];
                     var format = new ol.format.GeoJSON();
                     //Always return geoJson
-                    return angular.fromJson(format.writeFeatures([pointFeature, circleFeature]));
+                    return angular.fromJson(format.writeFeatures([pointFeature]));
                 },
                 getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
                     var vectorSource = new ol.source.ServerVector({

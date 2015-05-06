@@ -37,11 +37,15 @@
         var labelArgs = {
             text: '',
             fontSize: '14px',
+            font: 'Aerial',
             lon: 110,
             lat: -25,
+            weight: 'normal',
             fontColor: '#000000',
-            align: "cm", // unit for alignment
-            projection: 'EPSG:4326'
+            align: "center", // unit for alignment
+            projection: 'EPSG:4326',
+            pointRadius: 10,
+            labelYOffset: 25
         };
 
         $scope.updateLabel = function ()  {
@@ -49,7 +53,7 @@
                 $scope.mapController.removeLayerByName('Label layer');
             }
             labelArgs.text = $scope.labelText;
-            $scope.feature = $scope.mapController.drawLabel('Label layer', labelArgs);
+            $scope.feature = $scope.mapController.drawLabelWithPoint('Label layer', labelArgs);
         };
 
         $scope.$on('mapControllerReady', function (event, mapController) {

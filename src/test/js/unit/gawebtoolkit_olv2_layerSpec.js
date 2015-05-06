@@ -260,6 +260,14 @@
                 expect(olv2FirstLayer.visibility === true).toBe(true);
             });
 
+            it('Should be able to remove a layer by it\'s name.', function () {
+                var layersCount = $scope.mapController.getMapInstance().layers.length;
+                expect(layersCount).toBe(5);
+                $scope.mapController.removeLayerByName('Topographic');
+                layersCount = $scope.mapController.getMapInstance().layers.length;
+                expect(layersCount).toBe(4);
+            });
+
 //		it('Should be able to change opacity via layerController', function () {
 //			var olv2FirstLayer = $scope.mapController.getMapInstance().layers[2];
 //			expect(olv2FirstLayer.opacity === 1.0).toBe(true);

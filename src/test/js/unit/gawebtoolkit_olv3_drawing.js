@@ -157,11 +157,12 @@
                     color: '#000000',
                     align: 'cm',
                     radius: 5,
-                    projection: 'EPSG:4326'
+                    projection: 'EPSG:4326',
+                    fillOpacity: 0.5
                 });
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(2);
                 expect(geoJsonFeature.type).toBe('FeatureCollection');
-                expect(geoJsonFeature.features.length).toBe(2);
+                expect(geoJsonFeature.features.length).toBe(1);
                 expect(geoJsonFeature.features[0].geometry.type).toBe('Point');
             });
 

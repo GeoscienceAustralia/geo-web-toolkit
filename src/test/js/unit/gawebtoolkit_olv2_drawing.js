@@ -170,7 +170,7 @@
                 });
                 expect($scope.mapController.getMapInstance().layers.length).toBe(2);
                 expect(geoJsonFeature.type).toBe('FeatureCollection');
-                expect(geoJsonFeature.features.length).toBe(2);
+                expect(geoJsonFeature.features.length).toBe(1);
                 expect(geoJsonFeature.features[0].geometry.type).toBe('Point');
             });
         });
