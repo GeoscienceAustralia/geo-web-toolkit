@@ -11,11 +11,11 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
  * @param {string|@} mapElementId - The id of the element where the map is to be rendered
  * @param {string|@} datumProjection - A value representing the Datum Projection, eg 'EPSG:4326'
  * @param {string|@} displayProjection - A value representing the Display Projection, eg 'EPSG:4326'
- * @param {string|@=} centerPosition - A lon/lat value in the form of an array, eg [110,-55].
+ * @param {string|@=} centerPosition - A lat/lon value in the form of an array, eg [-55,110].
  * @param {number|@=} zoomLevel - An initial zoom value for the map to start at.
  * @param {geoJsonCoordinates|==} initialExtent - An initial extent is the form of a geoJson array of coordinates.
  * @param {string|@} framework - Optional. Default 'olv2'. Specifies which underlying mapping framework to use.
- *
+ * @param {bool|@} isStaticMap - Optional. Default to false. Creates the map without navigation/interaction controls.
  * @method addLayer - Adds a layer programmatically
  *
  * @scope
@@ -45,6 +45,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             displayProjection: '@',
             centerPosition: '@',
             zoomLevel: '@',
+            isStaticMap:'@',
 			initialExtent: '=',
             framework:'@'
         },
@@ -1687,7 +1688,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 displayProjection: $scope.displayProjection,
                 initialExtent: $scope.initialExtent,
                 centerPosition: $scope.centerPosition,
-                zoomLevel: $scope.zoomLevel
+                zoomLevel: $scope.zoomLevel,
+                isStaticMap: $scope.isStaticMap
             }, $scope.framework);
 
             /**
