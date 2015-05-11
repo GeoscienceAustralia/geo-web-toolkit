@@ -5,12 +5,11 @@
     var app = angular.module('gawebtoolkit.mapservices.data.openlayersv2', []);
 
     var olv2DataService = ['$q', '$http', function ($q, $http) {
-        function generateRequestParams(queryProjection, mapInstance, point, version, infoTextContentType) {
-            var projection = queryProjection;
+        function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {
+            var projection = mapInstance.projection;
             var bounds = mapInstance.getExtent();
-            bounds.transform(mapInstance.projection, queryProjection);
             var bbox = bounds.toBBOX();
-
+            var point = (event instanceof MouseEvent) ? pointEvent.xy : pointEvent;
             var halfHeight = mapInstance.getSize().h / 2;
             var halfWidth = mapInstance.getSize().w / 2;
             var centerPoint = new OpenLayers.Geometry.Point(halfWidth, halfHeight);
@@ -59,7 +58,6 @@
                     }
                 }
 
-                newBounds.transform(mapInstance.projection, queryProjection);
                 bbox = newBounds.toBBOX();
                 requestHeight = Math.floor(halfHeight);
                 requestWidth = Math.floor(halfWidth);
@@ -133,10 +131,10 @@
                 });
                 return deferred.promise;
             },
-            getWMSFeatures: function (mapInstance, url, layerNames, version, queryProjection, point, contentType) {
+            getWMSFeatures: function (mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || 'text/xml';
                 var deferred = $q.defer();
-                var params = generateRequestParams(queryProjection, mapInstance, point, version, infoTextContentType);
+                var params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
                 if (layerNames.length !== 0) {
                     params = OpenLayers.Util.extend({
                         layers: layerNames,

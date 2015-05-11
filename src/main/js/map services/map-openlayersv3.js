@@ -1049,8 +1049,8 @@
                     $log.warn('getFeatureInfo not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
                     var deferred = $q.defer();
-                    var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
-                    var originalPx = new OpenLayers.Pixel(point.x, point.y);
+                    var point = (pointEvent instanceof ol.MapBrowserPointerEvent) ? pointEvent.pixel : pointEvent;
+                    var originalPx = new OpenLayers.Pixel(point[0], point[1]);
                     var llPx = originalPx.add(-tolerance, tolerance);
                     var urPx = originalPx.add(tolerance, -tolerance);
                     var ll = mapInstance.getCoordinateFromPixel([llPx.x,llPx.y]);
@@ -1062,7 +1062,7 @@
                         },
                         url: url,
                         version: '1.1.0',
-                        srsName: mapInstance.projection,
+                        srsName: mapInstance.getView().getProjection().getCode(),
                         featureType: featureType,
                         featurePrefix: featurePrefix,
                         geometryName: geometryName,
