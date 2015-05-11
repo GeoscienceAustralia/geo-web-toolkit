@@ -1080,6 +1080,8 @@
                     }
                     $log.warn('getFeatureInfoFromLayer not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
+                    console.log(pointEvent);
+                    console.log(typeof pointEvent);
                     var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
                     var originalPx = new OpenLayers.Pixel(point.x, point.y);
                     var llPx = originalPx.add(-tolerance, tolerance);

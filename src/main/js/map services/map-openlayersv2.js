@@ -620,6 +620,7 @@ app.service('olv2MapService', [
 				return result;
 			},
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, pointEvent, tolerance) {
+				console.log('aksdajksdhq1111111');
 				tolerance = tolerance || 0;
 				var deferred = $q.defer();
 				var point = event instanceof MouseEvent ? pointEvent.xy : pointEvent;
