@@ -11,7 +11,7 @@
                 mapControllerListener;
 
             var mapWith3DSupportedProj;
-
+            var mapThatIsStatic;
 
             // Load the myApp module, which contains the directive
             beforeEach(module('testApp'));
@@ -80,6 +80,8 @@
                     '<ga-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></ga-map-control> ' +
                     '</ga-map> ';
                 mapWith3DSupportedProj = ele.replace('EPSG:102100','EPSG:3857');
+
+                mapThatIsStatic = ele.replace('map-element-id="map"','map-element-id="map" is-static-map="true"');
                 element = angular
                     .element(ele);
                 $compile(element)($scope);
@@ -210,6 +212,15 @@
                 var controls = $scope.mapController.getMapInstance().getControls();
                 expect(controls != null).toBe(true);
                 expect(controls.getLength()).toBe(2);
+            });
+
+            it('Should have no interactions listed when created as a static map.', function () {
+                element = angular
+                    .element(mapThatIsStatic);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(0);
             });
             // TODO Can't test getLonLatFromPixel due to way OLV3 relies on the rendered frame.
             /*it('Should fire mapController function "getLonLatFromPixel" without an exception given valid input', function () {
