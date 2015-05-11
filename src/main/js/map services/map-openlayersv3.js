@@ -703,7 +703,8 @@
                         var source = new ol.source.Vector();
                         source.addFeature(iconFeature);
                         markerLayer = new ol.layer.Vector({
-                            source: source
+                            source: source,
+                            format: new ol.format.GeoJSON()
                         });
                         markerLayer.set('name', markerGroupName);
                         mapInstance.addLayer(markerLayer);
@@ -830,7 +831,7 @@
                     }
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    var source = new ol.source.GeoJSON();
+                    var source = new ol.source.Vector();
                     var style = new ol.style.Style({
                         fill: new ol.style.Fill({
                             color: args.fillColor || args.color,
@@ -858,7 +859,8 @@
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',args.layerName);
@@ -880,7 +882,7 @@
                 drawLabel: function (mapInstance, layerName, args) {
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    var source = new ol.source.GeoJSON();
+                    var source = new ol.source.Vector();
                     var alignText = args.align === 'cm' ? 'center' : args.align || args.textAlign;
                     var textStyle = new ol.style.Text({
                         textAlign: alignText,
@@ -942,7 +944,7 @@
 
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    var source = new ol.source.GeoJSON();
+                    var source = new ol.source.Vector();
                     var textStyle = new ol.style.Text({
                         textAlign: args.align,
                         textBaseline: args.baseline,
@@ -995,7 +997,8 @@
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName || args.layerName);
@@ -1026,7 +1029,8 @@
                     $log.warn('getFeatureInfo not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
                     var deferred = $q.defer();
-                    var originalPx = new OpenLayers.Pixel(pointEvent.pixel.x, pointEvent.pixel.y);
+                    var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
+                    var originalPx = new OpenLayers.Pixel(point.x, point.y);
                     var llPx = originalPx.add(-tolerance, tolerance);
                     var urPx = originalPx.add(tolerance, -tolerance);
                     var ll = mapInstance.getCoordinateFromPixel([llPx.x,llPx.y]);
@@ -1070,12 +1074,13 @@
                     });
                     return deferred.promise;
                 },
-                getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point, tolerance) {
+                getFeatureInfoFromLayer: function (mapInstance, callback, layerId, pointEvent, tolerance) {
                     if(OpenLayers == null) {
                         throw new Error("NotImplemented");
                     }
                     $log.warn('getFeatureInfoFromLayer not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
+                    var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
                     var originalPx = new OpenLayers.Pixel(point.x, point.y);
                     var llPx = originalPx.add(-tolerance, tolerance);
                     var urPx = originalPx.add(tolerance, -tolerance);
@@ -1091,14 +1096,14 @@
                         throw new Error("Invalid layer id");
                     }
                     var typeName, featurePrefix;
-                    var param = layer.getSource().getParams().layers;
+                    var param = layer.getSource().getParams()["LAYERS"];
                     var parts = (OpenLayers.Util.isArray(param) ? param[0] : param).split(":");
                     if(parts.length > 1) {
                         featurePrefix = parts[0];
                     }
                     typeName = parts.pop();
                     var protocolOptions = {
-                        url: layer.get('url'),
+                        url: layer.getSource().getUrls()[0],
                         featureType: typeName,
                         featurePrefix: featurePrefix,
                         srsName: layer.projection && layer.projection.getCode() ||
@@ -1106,7 +1111,7 @@
                         version: "1.1.0"
                     };
                     var protocol = new OpenLayers.Protocol.WFS(OpenLayers.Util.applyDefaults(
-                        options, protocolOptions
+                        null, protocolOptions
                     ));
 
                     var filter = new OpenLayers.Filter.Spatial({

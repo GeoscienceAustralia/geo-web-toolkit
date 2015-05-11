@@ -57,10 +57,8 @@
                 //If args.url is not provided, give blank layer that supports features.
                 var layer;
 
-
-
                 if (args.url == null) {
-                    layer = new ol.layer.Vector({ source: new ol.source.Vector() });
+                    layer = new ol.layer.Vector({ source: new ol.source.Vector(), format: new ol.format.GeoJSON() });
                 } else {
                     service.postAddLayerCache = service.postAddLayerCache || [];
                     //TODO remove fixed style, should default out of config
@@ -86,9 +84,10 @@
                     });
 
                     layer = new ol.layer.Vector({
-                        source: new ol.source.GeoJSON({
-                            projection: args.datumProjection,
-                            url: args.url
+                        source: new ol.source.Vector({
+                            url: args.url,
+                            format: new ol.format.GeoJSON(),
+                            style: style
                         })
                     });
                 }

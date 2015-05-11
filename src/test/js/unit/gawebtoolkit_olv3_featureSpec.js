@@ -23,7 +23,7 @@
                     $scope.mapController = args;
                 });
                 element = angular
-                    .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    .element('<ga-map framework="olv3" map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                     '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
@@ -39,44 +39,34 @@
             }));
             //Tests
             it('Should be able to call "getFeatureInfo" with test data and not return errors.', function () {
+                //Mock function that required rendered canvas.
+                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
                 expect($scope.mapController !== null);
                 $timeout(function () {
-                    var passed = true;
-                    try {
-                        $scope.mapController.getFeatureInfo(
-                            'http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer',
-                            'testing',
-                            'test',
-                            'testGeoName',
-                            {x: 20,y:20}
-                        );
-                    }
-                    catch (ex) {
-                        passed = false;
-                    }
-                    expect(passed).toBe(true);
+                    $scope.mapController.getFeatureInfo(
+                        'http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer',
+                        'testing',
+                        'test',
+                        'testGeoName',
+                        {x: 20,y:20}
+                    );
+
                 });
                 $timeout.flush();
             });
             it('Should be able to call "getFeatureInfoFromLayer" with test data and not return errors.', function () {
                 expect($scope.mapController !== null);
-                //Mock function that required rendered canvas.
-                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
                 var layer = $scope.mapController.getLayersByName('Australian Landsat Mosaic')[0];
                 $timeout(function () {
-                    var passed = true;
-                    try {
-                        $scope.mapController.getFeatureInfoFromLayer(function () {
-                                //return feature //TODO currently no way to mock due to reliance on OL. Injected script tag into head with callback ref.
-                            },layer.id,
-                            {x: 20,y:20}
-                        );
-                    }
-                    catch (ex) {
-                        passed = false;
-                    }
+                    //Mock function that required rendered canvas.
+                    $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
+                    $scope.mapController.getFeatureInfoFromLayer(function () {
+
+                            //return feature //TODO currently no way to mock due to reliance on OL. Injected script tag into head with callback ref.
+                        },layer.id,
+                        {x: 20,y:20}
+                    );
                     expect(layer.name).toBe('Australian Landsat Mosaic');
-                    expect(passed).toBe(true);
                 });
                 $timeout.flush();
             });

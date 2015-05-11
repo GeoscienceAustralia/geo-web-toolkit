@@ -22,6 +22,6 @@
     "karma-phantomjs-launcher": "~0.1.2",
     "karma-sourcemap-loader": "^0.3.4",
     "phantomjs": "~1.9.8",
-    "openlayers": "~3.4.0"
+    "openlayers": "~3.5.0"
   }
 }

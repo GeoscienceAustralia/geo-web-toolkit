@@ -480,7 +480,9 @@
             });
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
                 //Mock function that required rendered canvas.
-                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
+                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) {
+                    return [12,34];
+                };
                 $scope.mapController.setMapMarker({x: 250, y: 50}, 'testgroupname', 'http://localhost:8080', {opacity: 0.5});
                 expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
             });
