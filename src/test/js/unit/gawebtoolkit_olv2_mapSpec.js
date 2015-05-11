@@ -11,6 +11,7 @@
                 mapControllerListener,
                 layerService;
 
+            var mapThatIsStatic;
             // Load the myApp module, which contains the directive
             beforeEach(module('testApp'));
 
@@ -54,9 +55,7 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-
-                element = angular
-                    .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
+                var ele = '<ga-map map-element-id="gamap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
                     'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
                     '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
@@ -72,7 +71,10 @@
                     '</ga-feature-layer>' +
                     '<ga-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></ga-map-control>' +
                     '<div id="gamap"></div>' +
-                    '</ga-map>');
+                    '</ga-map>';
+                element = angular
+                    .element(ele);
+                mapThatIsStatic = ele.replace('map-element-id="map"','map-element-id="map" is-static-map="true"');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -185,6 +187,9 @@
                 } catch (e) {
                 }
                 expect(passed).toBe(true);
+            });
+            it('Should have no controls listed when created as a static map.', function () {
+                expect($scope.mapController.getMapInstance().controls.length).toBe(1); //Overview map in html template
             });
             it('Should fire mapController function "getLonLatFromPixel" without an exception given valid input', function () {
                 var passed = false;

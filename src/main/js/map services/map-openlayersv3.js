@@ -58,7 +58,11 @@
                     config.renderer = appConfig.olv3Options == null ? 'canvas' : (appConfig.olv3Options.renderer || 'canvas');
 
                     config.view = view;
+                    if(args.isStaticMap) {
+                        config.interactions = [];
+                    }
                     config.controls = [];
+
                     service.displayProjection = args.displayProjection;
                     var map = new ol.Map(config);
 

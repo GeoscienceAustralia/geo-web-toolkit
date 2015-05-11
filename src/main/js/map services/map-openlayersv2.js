@@ -45,9 +45,11 @@ app.service('olv2MapService', [
 				config.numZoomLevels = mapConfig.defaultOptions.numZoomLevels;
 				config.displayProjection = args.displayProjection;
 
-				if (config.controls === undefined || config.controls === null) {
+				if ((!args.isStaticMap) && (config.controls === undefined || config.controls === null)) {
 					//TODO move defaults into angular config constant
 					config.controls = [ new OpenLayers.Control.Navigation() ];
+				} else {
+					config.controls = [];
 				}
 
 				return new OpenLayers.Map(args.mapElementId, config);
