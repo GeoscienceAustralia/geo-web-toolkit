@@ -754,27 +754,27 @@
                     };
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
-                    service.drawPolyLineLayerSource = service.drawPolyLineLayerSource || new ol.source.Vector();
-
-                    service.drawPolyLineLayer = service.drawPolyLineLayer || new ol.layer.Vector({
-                        source: service.drawPolyLineLayerSource,
-                        style: new ol.style.Style({
+                    if(!layerName) {
+                        layerName = GAWTUtils.generateUuid();
+                    }
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName);
+                    var vector;
+                    var source = new ol.source.Vector();
+                    var style = new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(255, 255, 255, 0.2)'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#ffcc33',
+                            width: 2
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 7,
                             fill: new ol.style.Fill({
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: '#ffcc33',
-                                width: 2
-                            }),
-                            image: new ol.style.Circle({
-                                radius: 7,
-                                fill: new ol.style.Fill({
-                                    color: '#ffcc33'
-                                })
+                                color: '#ffcc33'
                             })
                         })
                     });
-                    service.drawPolyLineLayer.set('name',layerName);
 
                     var startPoint = [points[0].lon, points[0].lat];
                     var endPoint = [points[1].lon, points[1].lat];
@@ -786,8 +786,24 @@
                         geometry: geom,
                         name: layerName
                     });
-                    service.drawPolyLineLayerSource.addFeature(feature);
-                    mapInstance.addLayer(service.drawPolyLineLayer);
+
+                    if (vectors.length > 0) {
+                        vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
+                    } else {
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
+                        });
+
+                        vector.set('name',layerName || args.layerName);
+                        mapInstance.addLayer(vector);
+                    }
+
+                    vector.getSource().addFeature(feature);
                 },
                 removeSelectedFeature: function (mapInstance, layerName) {
                     var layer = mapInstance.getLayersByName(layerName)[0];
@@ -1084,8 +1100,6 @@
                     }
                     $log.warn('getFeatureInfoFromLayer not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
-                    console.log(pointEvent);
-                    console.log(typeof pointEvent);
                     var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
                     var originalPx = new OpenLayers.Pixel(point.x, point.y);
                     var llPx = originalPx.add(-tolerance, tolerance);

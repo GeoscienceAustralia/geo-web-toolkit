@@ -540,21 +540,23 @@
             });
             it('Should fire mapController function "drawPolyLine" without an exception given valid input', function () {
                 //TODO OLV3 not supported
-                //var passed = false;
-                //try {
-                //    $scope.mapController.drawPolyLine([
-                //        {lon: 100, lat: 20},
-                //        {lon: 90, lat: 20}
-                //    ]);
-                //    $scope.mapController.drawPolyLine([
-                //        {lon: 100, lat: 20},
-                //        {lon: 90, lat: 20}
-                //    ], 'optionalLayerName');
-                //    passed = true;
-                //} catch (e) {
-                //}
-                //expect(passed).toBe(true);
-                expect(true).toBe(true);
+                $scope.mapController.drawPolyLine([
+                    {lon: 100, lat: 20},
+                    {lon: 90, lat: 20}
+                ]);
+                $scope.mapController.drawPolyLine([
+                    {lon: 100, lat: 20},
+                    {lon: 90, lat: 20}
+                ], 'optionalLayerName');
+                $scope.mapController.drawPolyLine([
+                    {lon: 50, lat: 20},
+                    {lon: 90, lat: 20}
+                ], 'optionalLayerName');
+
+                var layer = $scope.mapController.getLayersByName('optionalLayerName')[0];
+                expect(layer.name).toBe('optionalLayerName');
+                var olLayer = $scope.mapController.getMapInstance().getLayers().item(4);
+                expect(olLayer.getSource().getFeatures().length).toBe(2);
             });
             it('Should fire mapController function "registerFeatureSelected" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[0];
