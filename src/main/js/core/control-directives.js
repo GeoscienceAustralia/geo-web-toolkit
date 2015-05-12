@@ -10,6 +10,7 @@ var app = angular.module('gawebtoolkit.core.control-directives',
 		'gawebtoolkit.core.layer-services'
 	]);
 
+
 /**
  * @ngdoc directive
  * @name gawebtoolkit.core.control-directives:gaMapControl
