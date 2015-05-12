@@ -108,12 +108,15 @@
         return service;
     }]);
 
-    ol.control.ZoomSlider.prototype.getPositionForResolution_ = function(res) {
-        try {
-            var fn = this.getMap().getView().getValueForResolutionFunction();
-            return 1 - fn(res);
-        } catch (error) {
+    //If exists as v3 may not be included if apps are only using v2.
+    if(ol != null && ol.control != null && ol.control.ZoomSlider != null) {
+        ol.control.ZoomSlider.prototype.getPositionForResolution_ = function(res) {
+            try {
+                var fn = this.getMap().getView().getValueForResolutionFunction();
+                return 1 - fn(res);
+            } catch (error) {
 
-        }
-    };
+            }
+        };
+    }
 })();
