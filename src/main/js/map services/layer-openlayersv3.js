@@ -193,8 +193,8 @@
 
                 //default wrap
                 sourceOptions.wrapX = true;
-                if(args.wrapDateLine) {
-                    sourceOptions.wrapX = true;
+                if(args.wrapDateLine != null) {
+                    sourceOptions.wrapX = args.wrapDateLine === 'true' || args.wrapDateLine === true;
                 }
 
                 sourceOptions.serverType = ('mapserver');
@@ -210,7 +210,7 @@
                 var layerOptions = {};
 
                 layerOptions.source = wmsSource;
-                layerOptions.visible = args.visibility;
+                layerOptions.visible = args.visibility === 'true' || args.visibility === true;
                 layerOptions.opacity = args.opacity;
                 var result = new ol.layer.Tile(layerOptions);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.

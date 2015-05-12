@@ -123,10 +123,6 @@
                 $http.get(url + "?request=GetCapabilities").success(function (data, status, headers, config) {
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var allLayers = format.read(data).capability.layers;
-                    var olv2Layers = [];
-                    for (var i = 0; i < allLayers.length; i++) {
-                        olv2Layers.push(new OpenLayers.Layer.WMS(allLayers[i]['abstract'], url, {layers: allLayers[i].name})); //use ['abstract'] instead of .abstract, to satisfy YUI compressor's quirks
-                    }
                     deferred.resolve(allLayers);
                 });
                 return deferred.promise;
