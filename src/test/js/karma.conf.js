@@ -26,9 +26,8 @@ module.exports = function (config) {
             'bower_components/jquery-ui/jquery-ui.js',
             'bower_components/angular-ui/build/angular-ui.js',
             'bower_components/angular-ui-utils/ui-utils.js',
-            'bower_components/OpenLayers/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
+            'external/OpenLayers2/OpenLayers.js',
             'bower_components/proj4/dist/proj4.js',
-            'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js', //Due to file system problems on CI, this is still resolved via webjars
             'node_modules/openlayers/dist/ol-debug.js',
             'node_modules/sinon/pkg/sinon-1.14.1.js',
             'src/main/js/map services/*.js',
