@@ -23,7 +23,8 @@
     "docs-sources",
     "node",
     "target",
-    "migration.md"
+    "migration.md",
+    "pom.xml"
   ],
   "dependencies": {
     "jquery": "~2.1.1",
