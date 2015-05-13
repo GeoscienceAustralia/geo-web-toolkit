@@ -1,8 +1,14 @@
 {
   "name": "geo-web-toolkit",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "license": "https://github.com/GeoscienceAustralia/geo-web-toolkit/raw/master/LICENSE",
-  "keywords": ["maps","angular","openlayers","WMS","GIS"],
+  "keywords": [
+    "maps",
+    "angular",
+    "openlayers",
+    "WMS",
+    "GIS"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/GeoscienceAustralia/geo-web-toolkit.git"
@@ -13,7 +19,11 @@
     "bower_components",
     "test",
     "tests",
-    "src/test"
+    "src/test",
+    "docs-sources",
+    "node",
+    "target",
+    "migration.md"
   ],
   "dependencies": {
     "jquery": "~2.1.1",

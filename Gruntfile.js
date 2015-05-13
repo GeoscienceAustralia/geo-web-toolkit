@@ -13,7 +13,7 @@ module.exports = function (grunt) {
                                 'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
                                 'http://maps.google.com/maps/api/js?sensor=false&.js',
                                 'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js',
-                                'src/main/js/geo-web-toolkit-min.js'],
+                                'dist/geo-web-toolkit-min.js'],
                                 styles: ["http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css",
                                 "http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"],
 				html5Mode: false
@@ -27,12 +27,12 @@ module.exports = function (grunt) {
             options: {
                 mangle: true,
                 sourceMap: true,
-                sourceMapName: 'src/main/js/geo-web-toolkit-min.js.map',
+                sourceMapName: 'dist/geo-web-toolkit-min.js.map',
                 beautify: false
             },
             my_target: {
                 files: {
-                    'src/main/js/geo-web-toolkit-min.js':
+                    'dist/geo-web-toolkit-min.js':
                         [
                             'src/main/js/config/*.js',
                             'src/main/js/core/*.js',
@@ -57,8 +57,8 @@ module.exports = function (grunt) {
                 separator: '\r\n\r\n'
             },
             dist: {
-                src: ['src/main/js/geo-web-toolkit-min.js', 'src/main/js/toolkit-templates.js'],
-                dest: 'src/main/js/geo-web-toolkit-min.js'
+                src: ['dist/geo-web-toolkit-min.js', 'src/main/js/toolkit-templates.js'],
+                dest: 'dist/geo-web-toolkit-min.js'
             }
         },
         karma: {
@@ -69,6 +69,16 @@ module.exports = function (grunt) {
                 browsers: ['PhantomJS'],
                 logLevel: 'ERROR'
             }
+        },
+        bumpup: {
+            files: ['package.json','bower.json']
+        },
+        tagrelease: {
+            file: 'bower.json',
+            commit:  true,
+            message: 'Release %version%',
+            prefix:  'v',
+            annotate: false
         }
 	});
     grunt.loadNpmTasks('grunt-karma');
@@ -76,6 +86,19 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-bumpup');
+    grunt.loadNpmTasks('grunt-tagrelease');
+
 	grunt.registerTask('default',['uglify','ngdocs','ngtemplates','concat']);
     grunt.registerTask('test',['default','karma']);
+
+    grunt.registerTask('release', function (type) {
+        type = type ? type : 'patch';
+        grunt.task.run('uglify');         // Minify stuff
+        grunt.task.run('ngdocs');         // Build doco
+        grunt.task.run('ngtemplates');    // Build templates
+        grunt.task.run('concat');         // Concat templates with min
+        grunt.task.run('bumpup:' + type); // Bump up the package version
+        grunt.task.run('tagrelease');     // Commit & tag the changes from above
+    });
 };

@@ -1,6 +1,6 @@
 {
   "name": "geo-web-toolkit",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "dependencies": {
     "openlayers": "~3.5.0"
   },
@@ -23,6 +23,8 @@
     "karma-junit-reporter": "~0.2",
     "karma-phantomjs-launcher": "~0.1.2",
     "karma-sourcemap-loader": "^0.3.4",
-    "phantomjs": "~1.9.8"
+    "phantomjs": "~1.9.8",
+    "grunt-bumpup": "~0.6.2",
+    "grunt-tagrelease": "~0.3.3"
   }
 }
