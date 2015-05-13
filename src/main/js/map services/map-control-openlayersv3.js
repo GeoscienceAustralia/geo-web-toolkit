@@ -83,7 +83,13 @@
                 }
                 var supportedControl = service.resolveSupportedControl(name);
                 if(supportedControl == null || supportedControl.constructor == null) {
-                    throw new Error("Error in map control construction. Unsupported control or missing source for control constructor.");
+                    var message = "Error in map control construction for '" + name + "'. Unsupported control or missing source for control constructor.";
+                    message += "\r\nSupported controls names are: ";
+                    for (var i = 0; i < supportControls.length; i++) {
+                        var con = supportControls[i];
+                        message += "\r\n" + con.name;
+                    }
+                    throw new Error(message);
                 }
 
                 if(supportedControl.resolveCustomParams) {

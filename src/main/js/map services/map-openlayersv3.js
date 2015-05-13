@@ -235,6 +235,7 @@
                     }
                     var con = olv3MapControls.createControl(controlName, controlOptions, div, mapOptions);
                     con.set('id', controlId || con.get('id') || GAWTUtils.generateUuid());
+                    con.set('name', controlName || '');
                     //Overview map can't be added after the map creation unless the map has performed a render.
                     //HACK to wait for map before adding this control.
                     if(controlName === 'overviewmap') {
@@ -340,10 +341,11 @@
                     }
                 },
                 initMeasureEventLayer: function(mapInstance) {
-                    var addLayerAndInteraction = false;
-                    if(!service.measureEventVectorLayer) {
-                        addLayerAndInteraction = true;
+                    //Clear existing layer if exists
+                    if(service.measureEventVectorLayer) {
+                        mapInstance.removeLayer(service.measureEventVectorLayer);
                     }
+
                     service.measureEventSource = service.measureEventSource || new ol.source.Vector();
 
                     service.measureEventVectorLayer = service.measureEventVectorLayer || new ol.layer.Vector({
@@ -391,11 +393,8 @@
                         })
                     });
 
-                    if(addLayerAndInteraction) {
-                        mapInstance.addLayer(service.measureEventVectorLayer);
-                        mapInstance.addInteraction(service.measureEventDrawInteraction);
-                    }
-
+                    mapInstance.addLayer(service.measureEventVectorLayer);
+                    mapInstance.addInteraction(service.measureEventDrawInteraction);
                 },
                 handleMeasurePartial: function (mapInstance,vectorLayer,drawInteraction, callback) {
                     drawInteraction.on("drawstart", function (e) {
