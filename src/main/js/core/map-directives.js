@@ -1503,12 +1503,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GADataService.getLayersByWMSCapabilities(url, $scope.framework);
             };
 
-            self.getWMSFeatures = function (url, layerNames, wmsVersion, queryProjection, point, contentType) {
-                return GADataService.getWMSFeatures($scope.mapInstance, url, layerNames, wmsVersion, queryProjection, point, contentType, $scope.framework);
+            self.getWMSFeatures = function (url, layerNames, wmsVersion, pointEvent, contentType) {
+                return GADataService.getWMSFeatures($scope.mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, $scope.framework);
             };
 
-            self.getWMSFeaturesByLayerId = function (url, layerId, point) {
-                return GADataService.getWMSFeaturesByLayerId($scope.mapInstance,url, layerId, point,$scope.framework);
+            self.getWMSFeaturesByLayerId = function (url, layerId, pointEvent) {
+                return GADataService.getWMSFeaturesByLayerId($scope.mapInstance,url, layerId, pointEvent,$scope.framework);
             };
 
             /**

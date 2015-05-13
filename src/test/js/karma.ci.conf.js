@@ -23,13 +23,7 @@ module.exports = function (config) {
     function updateWebjarLocations(config) {
         "use strict";
         for (var i = 0; i < config.files.length; i++) {
-            //overriding file paths can be done here.
-            if (config.files[i].lastIndexOf('src/main/js/', 0) === 0) {
-                config.files[i] = 'target/classes/META-INF/resources/**/*min.js'; //Testing minified version
-            }
-            if (config.files[i].lastIndexOf('bower_components/OpenLayers/OpenLayers.js') === 0) {
-                config.files[i] = 'target/dependencies/META-INF/resources/webjars/openlayers/2.13.1/OpenLayers.js';
-            }
+
         }
     }
 };

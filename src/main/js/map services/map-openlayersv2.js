@@ -282,7 +282,7 @@ app.service('olv2MapService', [
 			zoomToLayer: function (mapInstance, layerId) {
 				var layer = mapInstance.getLayersBy('id', layerId)[0];
                 if(layer == null) {
-                    throw new ReferenceError('Layer not found - id: "' + layerId + '".')
+                    throw new ReferenceError('Layer not found - id: "' + layerId + '".');
                 }
 				//Only valid for some layers
 				var extent = layer.getExtent();
@@ -502,7 +502,7 @@ app.service('olv2MapService', [
 
 				return selectCtrl;
 			},
-			removeFeature: function (mapInstance, layerName, feature) {	
+			removeFeature: function (mapInstance, layerName, feature) {
 				var vectors = mapInstance.getLayersByName(layerName);
 				vectors[0].removeFeatures(feature);
 			},
@@ -528,18 +528,18 @@ app.service('olv2MapService', [
 
 				var control;
 				// Create a new control with the appropriate style
-				if (args.featureType.toLowerCase() == 'point') {
+				if (args.featureType.toLowerCase() === 'point') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-				} else if (args.featureType.toLowerCase() == 'line' || args.featureType.toLowerCase() == 'linestring') {
+				} else if (args.featureType.toLowerCase() === 'line' || args.featureType.toLowerCase() === 'linestring') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-				} else if  (args.featureType.toLowerCase() == 'box') {
+				} else if  (args.featureType.toLowerCase() === 'box') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
 	                    handlerOptions: {
 	                        sides: 4,
 	                        irregular: true
 	                    }
 	                });
-				} else if  (args.featureType.toLowerCase() == 'polygon') {
+				} else if  (args.featureType.toLowerCase() === 'polygon') {
 					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
 				}
 
@@ -621,9 +621,10 @@ app.service('olv2MapService', [
 				result.features[0].id = pointFeatureId;
 				return result;
 			},
-			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
-                tolerance = tolerance || 0;
+			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, pointEvent, tolerance) {
+				tolerance = tolerance || 0;
 				var deferred = $q.defer();
+				var point = event instanceof MouseEvent ? pointEvent.xy : pointEvent;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-tolerance, tolerance);
 				var urPx = originalPx.add(tolerance, -tolerance);
@@ -668,8 +669,9 @@ app.service('olv2MapService', [
 				});
 				return deferred.promise;
 			},
-			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point,tolerance) {
+			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, pointEvent,tolerance) {
                 tolerance = tolerance || 0;
+				var point = event instanceof MouseEvent ? pointEvent.xy : pointEvent;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-tolerance, tolerance);
 				var urPx = originalPx.add(tolerance, -tolerance);
@@ -752,12 +754,12 @@ app.service('olv2MapService', [
 				var deferred = $q.defer();
 
 				var callBackFn = function (response) {
-					if (response.priv.status != '200') {
+					if (response.priv.status !== '200' || response.priv.status === 200) {
 						deferred.resolve(null);
 						return;
 					}
 					for (var i = 0; i < response.features.length; i++) {
-						if (service.wfsClientCache[clientId].isLonLatOrderValid == false) {
+						if (service.wfsClientCache[clientId].isLonLatOrderValid === false) {
 							var invalidLat = response.features[i].geometry.x;
 							var invalidLon = response.features[i].geometry.y;
 

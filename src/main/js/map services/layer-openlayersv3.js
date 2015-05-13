@@ -57,10 +57,8 @@
                 //If args.url is not provided, give blank layer that supports features.
                 var layer;
 
-
-
                 if (args.url == null) {
-                    layer = new ol.layer.Vector({ source: new ol.source.Vector() });
+                    layer = new ol.layer.Vector({ source: new ol.source.Vector(), format: new ol.format.GeoJSON() });
                 } else {
                     service.postAddLayerCache = service.postAddLayerCache || [];
                     //TODO remove fixed style, should default out of config
@@ -86,9 +84,10 @@
                     });
 
                     layer = new ol.layer.Vector({
-                        source: new ol.source.GeoJSON({
-                            projection: args.datumProjection,
-                            url: args.url
+                        source: new ol.source.Vector({
+                            url: args.url,
+                            format: new ol.format.GeoJSON(),
+                            style: style
                         })
                     });
                 }
@@ -194,8 +193,8 @@
 
                 //default wrap
                 sourceOptions.wrapX = true;
-                if(args.wrapDateLine) {
-                    sourceOptions.wrapX = true;
+                if(args.wrapDateLine != null) {
+                    sourceOptions.wrapX = args.wrapDateLine === 'true' || args.wrapDateLine === true;
                 }
 
                 sourceOptions.serverType = ('mapserver');
@@ -211,7 +210,7 @@
                 var layerOptions = {};
 
                 layerOptions.source = wmsSource;
-                layerOptions.visible = args.visibility;
+                layerOptions.visible = args.visibility === 'true' || args.visibility === true;
                 layerOptions.opacity = args.opacity;
                 var result = new ol.layer.Tile(layerOptions);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
