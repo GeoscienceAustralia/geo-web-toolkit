@@ -44,7 +44,7 @@
   map-element-id="map"
   datum-projection='EPSG:102100'
   display-projection='EPSG:4326'
-  center-position='{"lat":"-3434403","lon":"14517578"}'
+  center-position='[130, -25]'
   zoom-level="4">
   <ga-map-layer
       layer-name="Overview World Screen"
@@ -52,9 +52,9 @@
       is-base-layer="true">
   </ga-map-layer>
   <ga-map-layer
-      layer-name="Earthquake hazard contours" 
+      layer-name="Earthquake hazard contours"
       layer-type="WMS"
-      layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+      layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
       is-base-layer="false"
       layers="hazardContours"
       background-color="#ffffff">

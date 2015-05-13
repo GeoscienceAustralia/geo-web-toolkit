@@ -24,8 +24,8 @@ structure expected is a minimum of:
    {<pre><code>   id: //unique id of the layer
    opacity: //value betweeb 0-100 representing the percentage of opacity of the layer
    visibility: //boolean representing if layer is visible
-   name: //friendly name of the layer</code></pre>
-   }</li>
+   name: //friendly name of the layer
+</code></pre>   }</li>
 </ul>
 </div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-mapcontroller">mapController[]</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><ul>
 <li>mapController object</li>
@@ -56,7 +56,7 @@ structure expected is a minimum of:
   map-element-id="map"
   datum-projection='EPSG:102100'
   display-projection='EPSG:4326'
-  center-position='{"lat":"-3434403","lon":"14517578"}'
+  center-position='[130, -25]'
   zoom-level="4">
   <ga-map-layer
       layer-name="Overview World Screen"
@@ -64,9 +64,9 @@ structure expected is a minimum of:
       is-base-layer="true">
   </ga-map-layer>
   <ga-map-layer
-      layer-name="Earthquake hazard contours" 
+      layer-name="Earthquake hazard contours"
       layer-type="WMS"
-      layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+      layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
       is-base-layer="false"
       layers="hazardContours"
       background-color="#ffffff">

@@ -14,7 +14,9 @@
        display-projection="{string|@}"
        [center-position="{string|@}"]
        [zoom-level="{number|@}"]
-       [initial-extent="{geoJsonCoordinates|=}"]&gt;
+       [initial-extent="{geoJsonCoordinates|=}"]
+       framework="{string|@}"
+       is-static-map="{bool|@}"&gt;
 &lt;/ga-map&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
@@ -30,13 +32,19 @@
 <li>A value representing the Display Projection, eg &#39;EPSG:4326&#39;</li>
 </ul>
 </div></td></tr><tr><td>centerPosition <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
-<li>A comma separated value representing lon/lat of the initial center position.</li>
+<li>A lat/lon value in the form of an array, eg [-55,110].</li>
 </ul>
 </div></td></tr><tr><td>zoomLevel <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
 <li>An initial zoom value for the map to start at.</li>
 </ul>
 </div></td></tr><tr><td>initialExtent <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-geojsoncoordinates">geoJsonCoordinates</a><a href="" class="label type-hint type-hint-object">=</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
 <li>An initial extent is the form of a geoJson array of coordinates.</li>
+</ul>
+</div></td></tr><tr><td>framework</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+<li>Optional. Default &#39;olv2&#39;. Specifies which underlying mapping framework to use.</li>
+</ul>
+</div></td></tr><tr><td>isStaticMap</td><td><a href="" class="label type-hint type-hint-bool">bool</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+<li>Optional. Default to false. Creates the map without navigation/interaction controls.</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <div class="member method"><h2 id="methods">Methods</h2>
@@ -63,7 +71,7 @@
 <div ng-controller="addOurControl">
 <a class="btn btn-primary" ng-click="addOurControl()">Add Control</a>
 <div id="addOurControl"></div>
-<ga-map map-element-id="addOurControl" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="addOurControl" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 </ga-map>
@@ -130,7 +138,7 @@ var dto = $scope.mapController.addLayer(layer);</pre></code></p>
 <div ng-controller="currentZoomLevel">
 <a class="btn btn-primary" ng-click="currentZoomLevel = mapController.currentZoomLevel()">Get the current zoom level : <span ng-model="currentZoomLevel" class="bg-primary">{{currentZoomLevel}}</span></a>
 <div id="currentZoomLevel"></div>
-<ga-map map-element-id="currentZoomLevel" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="currentZoomLevel" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 <ga-map-control map-control-name="mouseposition"></ga-map-control>
 </ga-map-layer>
@@ -178,7 +186,7 @@ $scope.mapController = args;
                         map-element-id="getDisplayProjection"
                         datum-projection='EPSG:102100'
                         display-projection='EPSG:4326'
-                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        center-position='[130, -25]'
                         zoom-level="4">
                         <ga-map-layer
                             layer-name="Overview World Screen"
@@ -250,7 +258,7 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div ng-controller="dumpLayers">
 <a class="btn btn-primary" ng-click="dumpLayers()">Dump layers object to console</a>
 <div id="dumpLayers"></div>
-<ga-map map-element-id="dumpLayers" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 </ga-map>
@@ -301,7 +309,7 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div ng-controller="dumpLayersByName">
 <a class="btn btn-primary" ng-click="dumpLayersByName()">Dump base layer's details object to console</a>
 <div id="dumpLayersByName"></div>
-<ga-map map-element-id="dumpLayersByName" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="dumpLayersByName" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 </ga-map>
@@ -364,7 +372,7 @@ console.log( $scope.mapController.getLayersByName("Simple map layer name") );
                     map-element-id="getLonLat"
                     datum-projection='EPSG:102100'
                     display-projection='EPSG:4326'
-                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    center-position='[130, -25]'
                     zoom-level="4">
                     <ga-map-layer
                         layer-name="Overview World Screen"
@@ -481,7 +489,7 @@ worked out from number of pixels from the left of the div containing the map</li
                         map-element-id="getMapProjection"
                         datum-projection='EPSG:102100'
                         display-projection='EPSG:4326'
-                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        center-position='[130, -25]'
                         zoom-level="4">
                         <ga-map-layer
                             layer-name="Overview World Screen"
@@ -560,7 +568,7 @@ isLayerBaseLayer = $scope.mapController(layerId);
 <a class="btn btn-primary" ng-click="chklayer1 = checklayer(0)">  Check base layer : {{chklayer1}}</a>
 <a class="btn btn-primary" ng-click="chklayer2 = checklayer(1)">  Check base layer : {{chklayer2}}</a>
 <div id="checkBaseLayer"></div>
-<ga-map map-element-id="checkBaseLayer" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="checkBaseLayer" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 <ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
@@ -622,7 +630,7 @@ Event details coming back will be implementation specific</p>
                         map-element-id="mouseMapClick"
                         datum-projection='EPSG:102100'
                         display-projection='EPSG:4326'
-                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        center-position='[130, -25]'
                     zoom-level="4">
                     <ga-map-layer
                         layer-name="Overview World Screen"
@@ -719,7 +727,7 @@ Event details coming back will be implementation specific</p>
                     map-element-id="mapMouseMove"
                     datum-projection='EPSG:102100'
                     display-projection='EPSG:4326'
-                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    center-position='[130, -25]'
                 zoom-level="4">
                 <ga-map-layer
                     layer-name="Overview World Screen"
@@ -809,7 +817,7 @@ var app = angular.module('mapMouseMove', ['gawebtoolkit.core']);
                         map-element-id="mapMouseMoveEnd"
                         datum-projection='EPSG:102100'
                         display-projection='EPSG:4326'
-                        center-position='{"lat":"-3434403","lon":"14517578"}'
+                        center-position='[130, -25]'
                         zoom-level="4">
                         <ga-map-layer
                             layer-name="Overview World Screen"
@@ -903,7 +911,7 @@ var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
                     map-element-id="setBaseLayer"
                     datum-projection='EPSG:102100'
                     display-projection='EPSG:4326'
-                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    center-position='[130, -25]'
                     zoom-level="4">
                     <ga-map-layer
                         layer-name="World Image"
@@ -1017,7 +1025,7 @@ angular.module("setCenterPosition",['gawebtoolkit.core'])
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
 $scope.setCenterPosition = function() {
-$scope.mapController.setCenter("-3034403", "15017578", "EPSG");
+$scope.mapController.setCenter(130, -25);
 $scope.mapController.zoomTo(4);
 }
 })
@@ -1046,7 +1054,7 @@ $scope.mapController.zoomTo(4);
 <div ng-controller="setVisibility">
 <input type="checkbox" ng-model="layerVisibility" ng-change="setVisibility()" /> Toggle base layer visibility on/off
 <div id="setVisibility"></div>
-<ga-map map-element-id="setVisibility" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="setVisibility" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 <ga-map-control map-control-name="mouseposition"></ga-map-control>
 </ga-map-layer>
@@ -1100,7 +1108,7 @@ $scope.mapController.setLayerVisibility($scope.mapController.getLayers()[0].id, 
 <div ng-controller="setOpacityController">
 <input placeholder="0-1" type="number" ng-model="opacityLevel" style="width: 50px; height: auto;" /><a class="btn btn-primary" ng-click="setOpacityLevel()">  Set top layer's opacity to {{opacityLevel}}</a>
 <div id="setOpacity"></div>
-<ga-map map-element-id="setOpacity" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="setOpacity" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 <ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
@@ -1161,7 +1169,7 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
                     map-element-id="unRegisterMouseMapClick"
                     datum-projection='EPSG:102100'
                     display-projection='EPSG:4326'
-                    center-position='{"lat":"-3434403","lon":"14517578"}'
+                    center-position='[130, -25]'
                     zoom-level="4">
                     <ga-map-layer
                         layer-name="Overview World Screen"
@@ -1258,7 +1266,7 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
 <div ng-controller="setZoomLevel">
 <input placeholder="0-19" type="number" ng-model="zoomLevel" style="width: 50px" /><a class="btn btn-primary" ng-click="setZoomLevel()">  Set zoom level to {{zoomLevel}}</a>
 <div id="setZoomLevel"></div>
-<ga-map map-element-id="setZoomLevel" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="setZoomLevel" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 </ga-map>
@@ -1308,7 +1316,7 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div ng-controller="zoomToLayer">
 <a class="btn btn-primary" ng-click="zoomToLayer()">Zoom to base layer extent</a>
 <div id="zoomToLayer"></div>
-<ga-map map-element-id="zoomToLayer" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="zoomToLayer" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 </ga-map-layer>
 </ga-map>
@@ -1352,7 +1360,7 @@ $scope.mapController.zoomToLayer( baseLayerId );
 <div ng-controller="zoomToMax">
 <a class="btn btn-primary" ng-click="mapController.zoomToMaxExtent()">Zoom to Max</a>
 <div id="zoomToMax"></div>
-<ga-map map-element-id="zoomToMax" center-position='{"lat":"-3034403","lon":"15017578"}' zoom-level="4">
+<ga-map map-element-id="zoomToMax" center-position='[130, -25]' zoom-level="4">
 <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
 <ga-map-control map-control-name="mouseposition"></ga-map-control>
 </ga-map-layer>

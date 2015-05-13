@@ -34,7 +34,7 @@ list.</p>
 <pre class="prettyprint linenums" ng-set-text="baseLayerSelector.html"></pre>
 <script type="text/ng-template" id="baseLayerSelector.html">
 <div ng-controller="ourMapController">
-    <ga-base-layer-selector 
+    <ga-base-layer-selector
        layers-data="baseLayers"
        controller-emit-event-name="ourDropDownEvent"
        map-controller="mapController">
@@ -44,7 +44,7 @@ list.</p>
        map-element-id="map"
        datum-projection='EPSG:102100'
        display-projection='EPSG:4326'
-       center-position='{"lat":"-3434403","lon":"14517578"}'
+       center-position='[130, -25]'
        zoom-level="4">
        <ga-map-layer
            layer-name="World Image"
@@ -55,9 +55,9 @@ list.</p>
            visibility="false">
        </ga-map-layer>
        <ga-map-layer
-           layer-name="World Political Boundaries" 
-           layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer" 
-           wrap-date-line="true" 
+           layer-name="World Political Boundaries"
+           layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer"
+           wrap-date-line="true"
            layer-type="XYZTileCache"
            is-base-layer="true"
            visibility="false">
@@ -68,9 +68,9 @@ list.</p>
            is-base-layer="true">
        </ga-map-layer>
        <ga-map-layer
-           layer-name="Earthquake hazard contours" 
+           layer-name="Earthquake hazard contours"
            layer-type="WMS"
-           layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
+           layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
            is-base-layer="false"
            layers="hazardContours"
            background-color="#ffffff">

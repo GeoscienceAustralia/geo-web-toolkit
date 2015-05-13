@@ -15,22 +15,9 @@
 <div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-feature-layer
        layer-name="{string|@}"
        url="{string|@}"
-       [server-type="{number|@}"]
-       [wfs-feature-list="{number|@}"]
-       wfs-filter-value="{string|@}"
-       wfs-version="{string|@}"
-       wfs-feature-prefix="{string|@}"
-       wfs-feature-type="{string|@}"
-       wfs-feature-ns="{string|@}"
-       wfs-feature-attributes="{string|@}"
-       wfs-geometry-name="{string|@}"
-       on-feature-click="{string|@}"
-       on-features-loaded="{string|@}"
-       update-results-event-name="{string|@}"
-       post-add-layer="{string|@}"
-       is-lon-lat-order-valid="{string|@}"
-       input-format="{string|@}"
+       post-add-layer="{function|@}"
        controller-emit-event-name="{string|@}"
+       on-layer-destroy="{string|@}"
        visibility="{string|@}"&gt;
 &lt;/ga-feature-layer&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
@@ -43,53 +30,14 @@
 </div></td></tr><tr><td>url</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
 <li>A string value that defines the URL from which the content of the layer will be loaded</li>
 </ul>
-</div></td></tr><tr><td>serverType <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>The type of the data that is being load on the layer. For this directive it will always &quot;WFS&quot;</li>
-</ul>
-</div></td></tr><tr><td>wfsFeatureList <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>a string of comma separated features supported by WFS server</li>
-</ul>
-</div></td></tr><tr><td>wfsFilterValue</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>wfsVersion</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>wfsFeaturePrefix</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>wfsFeatureType</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>wfsFeatureNs</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>wfsFeatureAttributes</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>wfsGeometryName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>onFeatureClick</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>onFeaturesLoaded</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>updateResultsEventName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>postAddLayer</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>isLonLatOrderValid</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
-</ul>
-</div></td></tr><tr><td>inputFormat</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>TBA</li>
+</div></td></tr><tr><td>postAddLayer</td><td><a href="" class="label type-hint type-hint-function">function</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
+<li>Function callback fired after the layer is added</li>
 </ul>
 </div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
 <li>An string value that will be allocated to this layer as controller. This controller can be called in JS codes in order to control the layer programatically</li>
+</ul>
+</div></td></tr><tr><td>onLayerDestroy</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
+<li>Function callback fired on the destruction of a layer</li>
 <li>Following functions are supported by this controller:<ul>
   <li>hide</li>
   <li>show</li>
@@ -114,7 +62,7 @@
 <script type="text/ng-template" id="index.html-3">
     <div id="map"></div>
     <div ng-controller="featureExampleController">
-        <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='{"lat":"-3434403","lon":"14517578"}' zoom-level="4">
+        <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
             <ga-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
             </ga-map-layer>
             <ga-feature-layer layer-name="My local geoJson features">

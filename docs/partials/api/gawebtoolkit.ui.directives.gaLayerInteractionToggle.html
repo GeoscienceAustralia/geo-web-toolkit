@@ -50,46 +50,46 @@
 <script type="text/ng-template" id="layerInteractionToggle.html">
 <div ng-controller="ourMapController">
         <div class="toolber">
-            <ga-layer-interaction-toggle 
-                toggle-icon-source="//np.ga.gov.au/gamaps/resources/img/Layers.png"
-                controller-emit-event-name="toggleInteractionEvent"
-                map-controller="mapController"
-                layer-interaction-id="layers[1].id"
-                on-layer-click-callback="clickCallback()"
-                class="toggleInteractionButton">Toggle Interaction of "{{layers[1].name}}" layer on/off
-            </ga-layer-interaction-toggle>
-            <ga-layer-control ng-show="toggleInteractionController.isToggleActive()" layer-data="layers[1]" map-controller="mapController" class="alert alert-info"></ga-layer-control>
-        </div>
-        <div class="alert alert-danger layerClicked">Layer Clicked</div>
-        <div id="map" style="width:90%;height:600px"></div>
-    <ga-map
-        map-element-id="map"
-        datum-projection='EPSG:102100'
-        display-projection='EPSG:4326'
-        center-position='{"lat":"-3434403","lon":"14517578"}'
-        zoom-level="4">
-        <ga-map-layer
-            layer-name="World Image"
-            layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
-            wrap-date-line="true"
-            layer-type="XYZTileCache"
-            is-base-layer="true"
-            visibility="false">
-        </ga-map-layer>
-        <ga-map-layer
-            layer-name="Earthquake hazard contours" 
-            layer-type="WMS"
-            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
-            is-base-layer="false"
-            layers="hazardContours"
-            background-color="#ffffff">
-        </ga-map-layer>
-        <ga-map-control map-control-name="mouseposition"></ga-map-control>
-        <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-        <ga-map-control map-control-name="Permalink"></ga-map-control>
-        <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-        <ga-map-control map-control-name="panzoombar"></ga-map-control>            
-    </ga-map>
+     <ga-layer-interaction-toggle
+     toggle-icon-source="//np.ga.gov.au/gamaps/resources/img/Layers.png"
+     controller-emit-event-name="toggleInteractionEvent"
+     map-controller="mapController"
+     layer-interaction-id="layers[1].id"
+     on-layer-click-callback="clickCallback()"
+     class="toggleInteractionButton">Toggle Interaction of "{{layers[1].name}}" layer on/off
+     </ga-layer-interaction-toggle>
+     <ga-layer-control ng-show="toggleInteractionController.isToggleActive()" layer-data="layers[1]" map-controller="mapController" class="alert alert-info"></ga-layer-control>
+     </div>
+     <div class="alert alert-danger layerClicked">Layer Clicked</div>
+     <div id="map" style="width:90%;height:600px"></div>
+     <ga-map
+     map-element-id="map"
+     datum-projection='EPSG:102100'
+     display-projection='EPSG:4326'
+     center-position='[130, -25]'
+     zoom-level="4">
+     <ga-map-layer
+     layer-name="World Image"
+     layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
+     wrap-date-line="true"
+     layer-type="XYZTileCache"
+     is-base-layer="true"
+     visibility="false">
+     </ga-map-layer>
+     <ga-map-layer
+     layer-name="Earthquake hazard contours"
+     layer-type="WMS"
+     layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
+     is-base-layer="false"
+     layers="hazardContours"
+     background-color="#ffffff">
+     </ga-map-layer>
+     <ga-map-control map-control-name="mouseposition"></ga-map-control>
+     <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+     <ga-map-control map-control-name="Permalink"></ga-map-control>
+     <ga-map-control map-control-name="ScaleLine"></ga-map-control>
+     <ga-map-control map-control-name="panzoombar"></ga-map-control>
+     </ga-map>
 
 </div>
 </script>
@@ -100,24 +100,24 @@
             #map {
                 background-color: #21468b
             }
-            .alert-info {
+     .alert-info {
                 float: left;
                 clear: both;
                 min-height: 80px;
                 width: 100%;
             }
-            .alert-danger {
+     .alert-danger {
                 position: absolute;
                 display: none;
                 z-index: 10000;
             }
-            .alert label {
+     .alert label {
                 margin-left: 10px;
             }
-            .toggleInteractionButton {
+     .toggleInteractionButton {
                 float: left;
             }
-            .toolber {
+     .toolber {
                 display: inline-block;
             }
 </style>
@@ -126,8 +126,8 @@
 <pre class="prettyprint linenums" ng-set-text="layerInteractionToggle.js"></pre>
 <script type="text/ng-template" id="layerInteractionToggle.js">
      var app = angular.module('layerInteractionToggle',
-        ['gawebtoolkit.core', 'gawebtoolkit.ui']);
-        app.controller("ourMapController",["$scope", function($scope) {
+     ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     app.controller("ourMapController",["$scope", function($scope) {
                 $scope.$on("mapControllerReady", function(event, args) {
                     $scope.mapController = args;
                     $scope.$on("layersReady", function() {
@@ -144,9 +144,9 @@
                     };
                 });
             }]);
-        
-        $(".alert-danger")
-                .css({
+
+     $(".alert-danger")
+     .css({
                     "margin-top": "10px",
                     "margin-left": ( ($("#map").width() - $(".alert-danger").width()) / 2 ) + "px"
         });
