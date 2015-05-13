@@ -1,0 +1,14 @@
+{
+  "name": "OpenLayers",
+  "_cacheHeaders": {
+    "ETag": "\"f8a659f978b5f144b834dfecefa3bae3\"",
+    "Last-Modified": "Fri, 15 Aug 2014 11:39:57 GMT",
+    "Content-Length": "11865320",
+    "Content-Type": "application/octet-stream",
+    "Content-Disposition": "attachment; filename=OpenLayers-2.13.zip"
+  },
+  "_release": "e-tag:f8a659f97",
+  "_source": "https://github.com/openlayers/openlayers/releases/download/release-2.13/OpenLayers-2.13.zip",
+  "_target": "*",
+  "_originalSource": "https://github.com/openlayers/openlayers/releases/download/release-2.13/OpenLayers-2.13.zip"
+}

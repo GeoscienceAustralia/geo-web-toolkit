@@ -491,7 +491,9 @@
             });
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
                 //Mock function that required rendered canvas.
-                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
+                $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) {
+                    return [12,34];
+                };
                 $scope.mapController.setMapMarker({x: 250, y: 50}, 'testgroupname', 'http://localhost:8080', {opacity: 0.5});
                 expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
             });
@@ -538,21 +540,23 @@
             });
             it('Should fire mapController function "drawPolyLine" without an exception given valid input', function () {
                 //TODO OLV3 not supported
-                //var passed = false;
-                //try {
-                //    $scope.mapController.drawPolyLine([
-                //        {lon: 100, lat: 20},
-                //        {lon: 90, lat: 20}
-                //    ]);
-                //    $scope.mapController.drawPolyLine([
-                //        {lon: 100, lat: 20},
-                //        {lon: 90, lat: 20}
-                //    ], 'optionalLayerName');
-                //    passed = true;
-                //} catch (e) {
-                //}
-                //expect(passed).toBe(true);
-                expect(true).toBe(true);
+                $scope.mapController.drawPolyLine([
+                    {lon: 100, lat: 20},
+                    {lon: 90, lat: 20}
+                ]);
+                $scope.mapController.drawPolyLine([
+                    {lon: 100, lat: 20},
+                    {lon: 90, lat: 20}
+                ], 'optionalLayerName');
+                $scope.mapController.drawPolyLine([
+                    {lon: 50, lat: 20},
+                    {lon: 90, lat: 20}
+                ], 'optionalLayerName');
+
+                var layer = $scope.mapController.getLayersByName('optionalLayerName')[0];
+                expect(layer.name).toBe('optionalLayerName');
+                var olLayer = $scope.mapController.getMapInstance().getLayers().item(4);
+                expect(olLayer.getSource().getFeatures().length).toBe(2);
             });
             it('Should fire mapController function "registerFeatureSelected" without an exception given valid input', function () {
                 var layer = $scope.mapController.getLayers()[0];
@@ -682,60 +686,61 @@
                 }
                 expect(passed).toBe(true);
             });
-            it('Should fire mapController function "createWfsClient" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var client = $scope.mapController.createWfsClient(
-                        'http://localhost:8080',
-                        'test',
-                        'test','1.1.0',
-                        'geoName',
-                        'EPSG:4326',
-                        true);
-                    expect(client != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "addWfsClient" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var client = $scope.mapController.createWfsClient(
-                        'http://localhost:8080',
-                        'test',
-                        'test','1.1.0',
-                        'geoName',
-                        'EPSG:4326',
-                        true);
-                    expect(client != null).toBe(true);
-                    var clientDto = $scope.mapController.addWfsClient(client);
-                    expect(clientDto != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "searchWfs" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var client = $scope.mapController.createWfsClient(
-                        'http://localhost:8080',
-                        'test',
-                        'test','1.1.0',
-                        'geoName',
-                        'EPSG:4326',
-                        true);
-                    expect(client != null).toBe(true);
-                    var clientDto = $scope.mapController.addWfsClient(client);
-                    expect(clientDto != null).toBe(true);
-                    var searchResult = $scope.mapController.searchWfs(clientDto.clientId,'testquery','NAME');
-                    expect(searchResult != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
+            //it('Should fire mapController function "createWfsClient" without an exception given valid input', function () {
+            //    var passed = false;
+            //    //TODO Currently OLV3 - throw new Error("NotImplemented");
+            //    try {
+            //        var client = $scope.mapController.createWfsClient(
+            //            'http://localhost:8080',
+            //            'test',
+            //            'test','1.1.0',
+            //            'geoName',
+            //            'EPSG:4326',
+            //            true);
+            //        expect(client != null).toBe(true);
+            //        passed = true;
+            //    } catch (e) {
+            //    }
+            //    expect(passed).toBe(true);
+            //});
+            //it('Should fire mapController function "addWfsClient" without an exception given valid input', function () {
+            //    var passed = false;
+            //    try {
+            //        var client = $scope.mapController.createWfsClient(
+            //            'http://localhost:8080',
+            //            'test',
+            //            'test','1.1.0',
+            //            'geoName',
+            //            'EPSG:4326',
+            //            true);
+            //        expect(client != null).toBe(true);
+            //        var clientDto = $scope.mapController.addWfsClient(client);
+            //        expect(clientDto != null).toBe(true);
+            //        passed = true;
+            //    } catch (e) {
+            //    }
+            //    expect(passed).toBe(true);
+            //});
+            //it('Should fire mapController function "searchWfs" without an exception given valid input', function () {
+            //    var passed = false;
+            //    try {
+            //        var client = $scope.mapController.createWfsClient(
+            //            'http://localhost:8080',
+            //            'test',
+            //            'test','1.1.0',
+            //            'geoName',
+            //            'EPSG:4326',
+            //            true);
+            //        expect(client != null).toBe(true);
+            //        var clientDto = $scope.mapController.addWfsClient(client);
+            //        expect(clientDto != null).toBe(true);
+            //        var searchResult = $scope.mapController.searchWfs(clientDto.clientId,'testquery','NAME');
+            //        expect(searchResult != null).toBe(true);
+            //        passed = true;
+            //    } catch (e) {
+            //    }
+            //    expect(passed).toBe(true);
+            //});
             it('Should fire mapController function "getMeasureFromEvent" without an exception given valid input', function () {
                 var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
                 expect(measure != null).toBe(true);

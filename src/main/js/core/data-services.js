@@ -14,10 +14,10 @@ app.service('GADataService', ['$log', 'ga.config', 'dataServiceLocator',
                 var service = dataServiceLocator.getImplementation(useVersion);
                 return service.getLayersByWMSCapabilities(url);
             },
-            getWMSFeatures: function (mapInstance, url, layerNames, wmsVersion, queryProjection, point, contentType, version) {
+            getWMSFeatures: function (mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, version) {
                 var useVersion = version || 'olv2';
                 var service = dataServiceLocator.getImplementation(useVersion);
-                return service.getWMSFeatures(mapInstance, url, layerNames, wmsVersion, queryProjection, point, contentType);
+                return service.getWMSFeatures(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
             },
             getWMSFeaturesByLayerId: function (mapInstance, url, layerId, point, version) {
                 var useVersion = version || 'olv2';

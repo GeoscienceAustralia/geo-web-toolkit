@@ -6,68 +6,65 @@
     var app = angular.module('gawebtoolkit.mapservices.data.openlayersv3', []);
 
     var olv2DataService = ['$q', '$http', function ($q, $http) {
-        function generateRequestParams(queryProjection, mapInstance, point, version, infoTextContentType) {
-            var projection = queryProjection;
-            var mapProjection = mapInstance.getView().getProjection();
-            var bounds = mapProjection.getExtent();
-            var transformedBounds = ol.proj.transformExtent(bounds, mapProjection, queryProjection);
-            var olv2Bounds = new OpenLayers.Bounds(transformedBounds[0],transformedBounds[1],transformedBounds[2],transformedBounds[3]);
+        function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {
+            var projection = mapInstance.getView().getProjection().getCode();
+            var bounds = mapInstance.getView().calculateExtent(mapInstance.getSize());
+            var olv2Bounds = new OpenLayers.Bounds(bounds[0],bounds[1],bounds[2],bounds[3]);
             var bbox = olv2Bounds.toBBOX();
-
+            var point = (pointEvent instanceof ol.MapBrowserPointerEvent) ? pointEvent.pixel : pointEvent;
             var halfHeight = mapInstance.getSize()[1] / 2;
             var halfWidth = mapInstance.getSize()[0] / 2;
+
             var centerPoint = [halfWidth, halfHeight];
 
             var requestWidth = mapInstance.getSize()[0];
             var requestHeight = mapInstance.getSize()[1];
+
             var finalPoint = {
-                x: point.x,
-                y: point.y
+                x: point[0],
+                y: point[1]
             };
             var newBounds;
             // Split the screen into a quadrant and re-calculate the bounding box, WMS has issues with screen width of greater than 2050
             if (mapInstance.getSize()[0] >= 2050) {
-                if (point.x > centerPoint.x) {
+                if (point[0] > centerPoint[0]) {
                     // right
-                    if (point.y > centerPoint.y) {
+                    if (point[1] > centerPoint[1]) {
                         // bottom
-                        var topLeft = mapInstance.getCoordinateFromPixel([centerPoint.x, centerPoint.y]);
+                        var topLeft = mapInstance.getCoordinateFromPixel([centerPoint[0], centerPoint[1]]);
                         var bottomRight = mapInstance.getCoordinateFromPixel([mapInstance.getSize()[0], mapInstance.getSize()[1]]);
                         newBounds = new OpenLayers.Bounds(topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]);
 
-                        finalPoint.x = point.x - halfWidth;
-                        finalPoint.y = point.y - halfHeight;
+                        finalPoint.x = point[0] - halfWidth;
+                        finalPoint.y = point[1] - halfHeight;
                     } else {
                         // top
-                        var topLeft = mapInstance.getCoordinateFromPixel([centerPoint.x, 0]);
+                        var topLeft = mapInstance.getCoordinateFromPixel([centerPoint[0], 0]);
                         var bottomRight = mapInstance.getCoordinateFromPixel([mapInstance.getSize()[0], mapInstance.getSize()[1]]);
                         newBounds = new OpenLayers.Bounds(topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]);
 
-                        finalPoint.x = point.x - halfWidth;
+                        finalPoint.x = point[0] - halfWidth;
                     }
                 } else {
                     // left
-                    if (point.y > centerPoint.y) {
+                    if (point[1] > centerPoint[1]) {
                         // bottom
-                        var topLeft = mapInstance.getCoordinateFromPixel([0, centerPoint.y]);
-                        var bottomRight = mapInstance.getCoordinateFromPixel([centerPoint.x, mapInstance.getSize()[1]]);
+                        var topLeft = mapInstance.getCoordinateFromPixel([0, centerPoint[1]]);
+                        var bottomRight = mapInstance.getCoordinateFromPixel([centerPoint[0], mapInstance.getSize()[1]]);
                         newBounds = new OpenLayers.Bounds(topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]);
 
-                        finalPoint.y = point.y - halfHeight;
+                        finalPoint.y = point[1] - halfHeight;
                     } else {
                         // top
                         var topLeft = mapInstance.getCoordinateFromPixel([0, 0]);
-                        var bottomRight = mapInstance.getCoordinateFromPixel([centerPoint.x, centerPoint.y]);
+                        var bottomRight = mapInstance.getCoordinateFromPixel([centerPoint[0], centerPoint[1]]);
                         newBounds = new OpenLayers.Bounds(topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]);
                     }
                 }
-
-                newBounds.transform(mapProjection.getCode(), queryProjection);
                 bbox = newBounds.toBBOX();
                 requestHeight = Math.floor(halfHeight);
                 requestWidth = Math.floor(halfWidth);
             }
-
             
             var params = OpenLayers.Util.extend({
                     service: "WMS",
@@ -130,18 +127,14 @@
                 $http.get(url + "?request=GetCapabilities").success(function (data, status, headers, config) {
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var allLayers = format.read(data).capability.layers;
-                    var olv2Layers = [];
-                    for (var i = 0; i < allLayers.length; i++) {
-                        olv2Layers.push(new OpenLayers.Layer.WMS(allLayers[i]['abstract'], url, {layers: allLayers[i].name})); //use ['abstract'] instead of .abstract, to satisfy YUI compressor's quirks
-                    }
                     deferred.resolve(allLayers);
                 });
                 return deferred.promise;
             },
-            getWMSFeatures: function (mapInstance, url, layerNames, version, queryProjection, point, contentType) {
+            getWMSFeatures: function (mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || 'text/xml';
                 var deferred = $q.defer();
-                var params = generateRequestParams(queryProjection, mapInstance, point, version, infoTextContentType);
+                var params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
                 if (layerNames.length !== 0) {
                     
                     params = OpenLayers.Util.extend({

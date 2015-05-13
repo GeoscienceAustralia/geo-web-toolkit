@@ -642,7 +642,7 @@
                     // If a permalink has been provided use th zoom level and current position provided,
                     // other wise use the defaults provided by the config
                     if (service.getParameterByName('zoom') !== '' && args.centerPosition != null) {
-
+                        throw new Error("NotImplemented");
                     }
                 },
                 isBaseLayer: function (mapInstance, layerId) {
@@ -707,7 +707,8 @@
                         var source = new ol.source.Vector();
                         source.addFeature(iconFeature);
                         markerLayer = new ol.layer.Vector({
-                            source: source
+                            source: source,
+                            format: new ol.format.GeoJSON()
                         });
                         markerLayer.set('name', markerGroupName);
                         mapInstance.addLayer(markerLayer);
@@ -753,27 +754,27 @@
                     };
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
-                    service.drawPolyLineLayerSource = service.drawPolyLineLayerSource || new ol.source.Vector();
-
-                    service.drawPolyLineLayer = service.drawPolyLineLayer || new ol.layer.Vector({
-                        source: service.drawPolyLineLayerSource,
-                        style: new ol.style.Style({
+                    if(!layerName) {
+                        layerName = GAWTUtils.generateUuid();
+                    }
+                    var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName);
+                    var vector;
+                    var source = new ol.source.Vector();
+                    var style = new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(255, 255, 255, 0.2)'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#ffcc33',
+                            width: 2
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 7,
                             fill: new ol.style.Fill({
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: '#ffcc33',
-                                width: 2
-                            }),
-                            image: new ol.style.Circle({
-                                radius: 7,
-                                fill: new ol.style.Fill({
-                                    color: '#ffcc33'
-                                })
+                                color: '#ffcc33'
                             })
                         })
                     });
-                    service.drawPolyLineLayer.set('name',layerName);
 
                     var startPoint = [points[0].lon, points[0].lat];
                     var endPoint = [points[1].lon, points[1].lat];
@@ -785,8 +786,24 @@
                         geometry: geom,
                         name: layerName
                     });
-                    service.drawPolyLineLayerSource.addFeature(feature);
-                    mapInstance.addLayer(service.drawPolyLineLayer);
+
+                    if (vectors.length > 0) {
+                        vector = vectors[0];
+                        if(!(vector.getSource().addFeature instanceof Function)) {
+                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                        }
+                        vector.setStyle(style);
+                    } else {
+                        vector = new ol.layer.Vector({
+                            source: source,
+                            style: style
+                        });
+
+                        vector.set('name',layerName || args.layerName);
+                        mapInstance.addLayer(vector);
+                    }
+
+                    vector.getSource().addFeature(feature);
                 },
                 removeSelectedFeature: function (mapInstance, layerName) {
                     var layer = mapInstance.getLayersByName(layerName)[0];
@@ -834,7 +851,7 @@
                     }
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    var source = new ol.source.GeoJSON();
+                    var source = new ol.source.Vector();
                     var style = new ol.style.Style({
                         fill: new ol.style.Fill({
                             color: args.fillColor || args.color,
@@ -862,7 +879,8 @@
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',args.layerName);
@@ -884,8 +902,8 @@
                 drawLabel: function (mapInstance, layerName, args) {
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    var source = new ol.source.GeoJSON();
-                    var alignText = args.align == 'cm' ? 'center' : args.align || args.textAlign;
+                    var source = new ol.source.Vector();
+                    var alignText = args.align === 'cm' ? 'center' : args.align || args.textAlign;
                     var textStyle = new ol.style.Text({
                         textAlign: alignText,
                         textBaseline: args.baseline,
@@ -946,7 +964,7 @@
 
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
-                    var source = new ol.source.GeoJSON();
+                    var source = new ol.source.Vector();
                     var textStyle = new ol.style.Text({
                         textAlign: args.align,
                         textBaseline: args.baseline,
@@ -999,7 +1017,8 @@
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName || args.layerName);
@@ -1023,49 +1042,27 @@
                     //Always return geoJson
                     return angular.fromJson(format.writeFeatures([pointFeature]));
                 },
-                getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance) {
-                    var vectorSource = new ol.source.ServerVector({
-                        format: new ol.format.WFS(),
-                        loader: function (extent, resolution, projection) {
-                            $.ajax({
-                                url: url
-                            }).done(loadFeatures);
-                        },
-                        strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-                            maxZoom: mapInstance.geoMaxZoom
-                        })),
-                        projection: mapInstance.getView().getProjection()
-                    });
-
-                    var loadFeatures = function (response) {
-                        vectorSource.addFeatures(vectorSource.readFeatures(response));
-                    };
-
-                    var vectorLayer = new ol.layer.Vector({
-                        source: vectorSource,
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: 'rbg(0,0,255,1.0)',
-                                width: 5
-                            })
-                        })
-                    });
-
+                getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, pointEvent, tolerance) {
+                    if(OpenLayers == null) {
+                        throw new Error("NotImplemented");
+                    }
+                    $log.warn('getFeatureInfo not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
                     var deferred = $q.defer();
-                    var originalPx = new OpenLayers.Pixel(point.x, point.y);
+                    var point = (pointEvent instanceof ol.MapBrowserPointerEvent) ? pointEvent.pixel : pointEvent;
+                    var originalPx = new OpenLayers.Pixel(point[0], point[1]);
                     var llPx = originalPx.add(-tolerance, tolerance);
                     var urPx = originalPx.add(tolerance, -tolerance);
-                    var ll = mapInstance.getLonLatFromPixel(llPx);
-                    var ur = mapInstance.getLonLatFromPixel(urPx);
-                    var bounds = new OpenLayers.Bounds(ll.lon, ll.lat, ur.lon, ur.lat);
+                    var ll = mapInstance.getCoordinateFromPixel([llPx.x,llPx.y]);
+                    var ur = mapInstance.getCoordinateFromPixel([urPx.x,urPx.y]);
+                    var bounds = new OpenLayers.Bounds(ll[0], ll[1], ur[0], ur[1]);
                     var protocol = new OpenLayers.Protocol.WFS({
                         formatOptions: {
                             outputFormat: 'text/xml'
                         },
                         url: url,
                         version: '1.1.0',
-                        srsName: mapInstance.projection,
+                        srsName: mapInstance.getView().getProjection().getCode(),
                         featureType: featureType,
                         featurePrefix: featurePrefix,
                         geometryName: geometryName,
@@ -1087,26 +1084,30 @@
                                     geoObject.features[j].crs = {
                                         "type": "name",
                                         "properties": {
-                                            "name": mapInstance.projection
+                                            "name": mapInstance.getView().getProjection().getCode()
                                         }
                                     };
                                 }
-
                                 deferred.resolve(geoObject);
                             }
                         }
                     });
                     return deferred.promise;
                 },
-                getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point, tolerance) {
+                getFeatureInfoFromLayer: function (mapInstance, callback, layerId, pointEvent, tolerance) {
+                    if(OpenLayers == null) {
+                        throw new Error("NotImplemented");
+                    }
+                    $log.warn('getFeatureInfoFromLayer not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
+                    var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
                     var originalPx = new OpenLayers.Pixel(point.x, point.y);
                     var llPx = originalPx.add(-tolerance, tolerance);
                     var urPx = originalPx.add(tolerance, -tolerance);
-                    var ll = mapInstance.getLonLatFromPixel(llPx);
-                    var ur = mapInstance.getLonLatFromPixel(urPx);
-                    var bounds = new OpenLayers.Bounds(ll.lon, ll.lat, ur.lon, ur.lat);
-                    var layers = mapInstance.getLayersBy('id', layerId);
+                    var ll = mapInstance.getCoordinateFromPixel([llPx.x,llPx.y]);
+                    var ur = mapInstance.getCoordinateFromPixel([urPx.x,urPx.y]);
+                    var bounds = new OpenLayers.Bounds(ll[0], ll[1], ur[0], ur[1]);
+                    var layers = olv3LayerService._getLayersBy(mapInstance, 'id', layerId);
                     var layer;
                     if (layers.length > 0) {
                         layer = layers[0];
@@ -1114,7 +1115,25 @@
                         //Throw error;
                         throw new Error("Invalid layer id");
                     }
-                    var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer);
+                    var typeName, featurePrefix;
+                    var param = layer.getSource().getParams()["LAYERS"];
+                    var parts = (OpenLayers.Util.isArray(param) ? param[0] : param).split(":");
+                    if(parts.length > 1) {
+                        featurePrefix = parts[0];
+                    }
+                    typeName = parts.pop();
+                    var protocolOptions = {
+                        url: layer.getSource().getUrls()[0],
+                        featureType: typeName,
+                        featurePrefix: featurePrefix,
+                        srsName: layer.projection && layer.projection.getCode() ||
+                        layer.map && layer.map.getProjectionObject().getCode(),
+                        version: "1.1.0"
+                    };
+                    var protocol = new OpenLayers.Protocol.WFS(OpenLayers.Util.applyDefaults(
+                        null, protocolOptions
+                    ));
+
                     var filter = new OpenLayers.Filter.Spatial({
                         type: OpenLayers.Filter.Spatial.BBOX,
                         value: bounds
@@ -1141,18 +1160,7 @@
                     });
                 },
                 createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
-                    var protocol = new OpenLayers.Protocol.WFS({
-                        url: url,
-                        featureType: featureType,
-                        featurePrefix: featurePrefix,
-                        version: version,
-                        geometryName: geometryName,
-                        srsName: datumProjection
-                    });
-
-                    protocol.isLonLatOrderValid = isLonLatOrderValid;
-
-                    return protocol;
+                    throw new Error("NotImplemented");
                 },
                 addWfsClient: function (wfsClient) {
                     service.wfsClientCache = service.wfsClientCache || [];
@@ -1238,53 +1246,7 @@
 
                 },
                 searchWfs: function (mapInstance, clientId, query, attribute) {
-                    var client = service.wfsClientCache[clientId];
-                    var deferred = $q.defer();
-
-                    var callBackFn = function (response) {
-                        if (response.priv.status != '200') {
-                            deferred.resolve(null);
-                            return;
-                        }
-                        for (var i = 0; i < response.features.length; i++) {
-                            if (service.wfsClientCache[clientId].isLonLatOrderValid == false) {
-                                var invalidLat = response.features[i].geometry.x;
-                                var invalidLon = response.features[i].geometry.y;
-
-                                response.features[i].geometry.x = invalidLon;
-                                response.features[i].geometry.y = invalidLat;
-                            }
-                        }
-
-                        var geoJSONFormat = new OpenLayers.Format.GeoJSON();
-                        var geoJson = geoJSONFormat.write(response.features);
-                        var geoObject = angular.fromJson(geoJson);
-
-                        for (var j = 0; j < geoObject.features.length; j++) {
-                            geoObject.features[j].crs = {
-                                "type": "name",
-                                "properties": {
-                                    "name": client.srsName
-                                }
-                            };
-                        }
-
-                        deferred.resolve(geoObject);
-                    };
-
-                    var filter = new OpenLayers.Filter.Comparison({
-                        type: OpenLayers.Filter.Comparison.LIKE,
-                        property: attribute,
-                        matchCase: false,
-                        value: query.toUpperCase() + '*'
-                    });
-
-                    client.read({
-                        filter: filter,
-                        callback: callBackFn
-                    });
-
-                    return deferred.promise;
+                    throw new Error("NotImplemented");
                 },
                 getMeasureFromEvent: function (mapInstance, e) {
                     if(e.feature == null && e.geometry == null) {

@@ -144,7 +144,7 @@
             it('Should change layer visibility based on observed value', function () {
                 var layer = $scope.mapController.getLayers()[3];
                 expect(layer.name).toBe("Australian Seabed Features");
-                expect(layer.visibility).toBe('true');
+                expect(layer.visibility).toBe(true);
                 $scope.mapConfig.layerMaps[1].visibility = false;
                 $scope.$digest();
                 layer = $scope.mapController.getLayers()[3];
