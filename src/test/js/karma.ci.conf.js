@@ -11,7 +11,7 @@ module.exports = function (config) {
     config.set({
         singleRun: true,
         autoWatch: false,
-        reporters: ['progress', 'junit'],
+        reporters: ['progress', 'junit','coverage', 'coveralls'],
         browsers: ['PhantomJS'],
         plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter', 'karma-coverage'],
         junitReporter: {

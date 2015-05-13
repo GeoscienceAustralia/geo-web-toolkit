@@ -25,6 +25,7 @@
     "karma-sourcemap-loader": "^0.3.4",
     "phantomjs": "~1.9.8",
     "grunt-bumpup": "~0.6.2",
-    "grunt-tagrelease": "~0.3.3"
+    "grunt-tagrelease": "~0.3.3",
+    "karma-coveralls": "~0.1.5"
   }
 }

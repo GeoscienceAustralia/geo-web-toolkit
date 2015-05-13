@@ -51,11 +51,11 @@ module.exports = function (config) {
             'src/main/js/**/*.js': [ 'coverage' ]
         },
         coverageReporter: {
-            type: 'html',
-            dir: 'target/coverage/'
+            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
+            dir: 'coverage/'
         },
 
-        reporters: [ 'progress', 'coverage' ],
+        reporters: [ 'progress', 'coverage','coveralls' ],
 
         htmlReporter: {
             outputDir: 'target/karma-reports'
