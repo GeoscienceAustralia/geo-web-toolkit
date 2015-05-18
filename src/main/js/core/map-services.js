@@ -191,10 +191,15 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawPolyLine(mapInstance, points, layerName);
             },
-            removeSelectedFeature: function (mapInstance, layerName, version) {
+            startRemoveSelectedFeature: function (mapInstance, layerName, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.removeSelectedFeature(mapInstance, layerName);
+                return service.startRemoveSelectedFeature(mapInstance, layerName);
+            },
+            stopRemoveSelectedFeature: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.stopRemoveSelectedFeature(mapInstance);
             },
             removeFeature: function (mapInstance, layerName, feature, version) {
                 var useVersion = version || 'olv2';

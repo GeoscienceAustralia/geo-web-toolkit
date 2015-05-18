@@ -22,6 +22,21 @@
         '$log',
         '$timeout',
         function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer,appConfig, $q, $log, $timeout) {
+
+            function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
+                var _geowebtoolkit = mapInstance.get('_geowebtoolkit') || {};
+                _geowebtoolkit[propertyName] = propertyValue;
+                mapInstance.set('_geowebtoolkit', _geowebtoolkit);
+            }
+            function getToolkitMapInstanceProperty(mapInstance, propertyName) {
+                var result = null;
+                if(mapInstance.get('_geowebtoolkit')) {
+                    var temp = mapInstance.get('_geowebtoolkit');
+                    result = temp[propertyName];
+                }
+                return result;
+            }
+
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -497,6 +512,7 @@
                     var layers = mapInstance.getLayers();
                     var results = [];
                     layers.forEach(function (layer) {
+
                         var propVal = layer.get(propertyName);
                         if (propVal && propVal.indexOf(propertyValue) !== -1) {
                             results.push(layer);
@@ -789,7 +805,7 @@
                     if (vectors.length > 0) {
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
-                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                            throw new Error("Layer name '" + layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
                         vector.setStyle(style);
                     } else {
@@ -798,41 +814,67 @@
                             style: style
                         });
 
-                        vector.set('name',layerName || args.layerName);
+                        vector.set('name',layerName);
                         mapInstance.addLayer(vector);
                     }
 
                     vector.getSource().addFeature(feature);
                 },
-                removeSelectedFeature: function (mapInstance, layerName) {
-                    var layer = mapInstance.getLayersByName(layerName)[0];
-
+                startRemoveSelectedFeature: function (mapInstance, layerName) {
+                    var layers = olv3LayerService._getLayersBy(mapInstance, 'name', layerName);
+                    if(!layers || layers.length === 0) {
+                        $log.warn('Layer "' + layerName + "' not found. Remove selected layer interaction not added.");
+                        return;
+                    }
+                    var layer = layers[0];
                     var select = new ol.interaction.Select();
                     select.on('select', function (e) {
                         var source = layer.getSource();
                         if(source.removeFeature instanceof Function) {
                             if(e.selected instanceof Array) {
                                 for (var i = 0; i < e.selected.length; i++) {
-                                    var feature = e.selected[i];
-                                    source.removeFeature(feature);
+                                    var selectedFeature = e.selected[i];
+                                    for (var j = 0; j < source.getFeatures().length; j++) {
+                                        var feature = source.getFeatures()[j];
+                                        if(feature.get('id') === selectedFeature.get('id')) {
+                                            source.removeFeature(feature);
+                                        }
+                                    }
                                 }
                             } else {
-                                source.removeFeature(e.selected);
+                                for (var j = 0; j < source.getFeatures().length; j++) {
+                                    var feature = source.getFeatures()[j];
+                                    if(feature.get('id') === e.selected.get('id')) {
+                                        source.removeFeature(feature);
+                                        break;
+                                    }
+                                }
                             }
                         } else {
                             throw new Error("No valid layer found with name - " + layerName + " - to remove selected features.");
                         }
+                        select.getFeatures().clear();
                     });
 
                     mapInstance.addInteraction(select);
-
-                    return select;
+                    updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl',select);
+                },
+                stopRemoveSelectedFeature: function(mapInstance) {
+                    var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, 'removeFeaturesControl');
+                    if(removeFeaturesControl) {
+                        mapInstance.removeInteraction(removeFeaturesControl);
+                        updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl', null);
+                    }
                 },
                 removeFeature: function (mapInstance, layerName, feature) {
                     var featureLayer = olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                     featureLayer.removeFeatures(feature);
                 },
                 startDrawingOnLayer: function (mapInstance, layerName, args) {
+                    var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, 'removeFeaturesControl');
+                    if(removeFeaturesControl) {
+                        mapInstance.removeInteraction(removeFeaturesControl);
+                    }
                     var interactionType;
                     //Drawing interaction types are case sensitive and represent GeometryType in OpenLayers 3
                     switch (args.featureType.toLowerCase()) {
@@ -875,6 +917,7 @@
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
                         vector.setStyle(style);
+                        source = vector.getSource();
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
@@ -882,13 +925,18 @@
                             format: new ol.format.GeoJSON()
                         });
 
-                        vector.set('name',args.layerName);
+                        vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
                     var draw = new ol.interaction.Draw({
                         source: source,
                         type: /** @type {ol.geom.GeometryType} */ (interactionType)
+                    });
+                    draw.on('drawend', function (e) {
+                        if(e.feature) {
+                            e.feature.set('id',GAWTUtils.generateUuid());
+                        }
                     });
                     service.featureDrawingInteraction = draw;
                     mapInstance.addInteraction(draw);

@@ -55,7 +55,7 @@ module.exports = function (config) {
             dir: 'coverage/'
         },
 
-        reporters: [ 'progress', 'coverage', 'coveralls'],
+        reporters: [ 'progress', 'coverage'],
 
         htmlReporter: {
             outputDir: 'target/karma-reports'
@@ -88,8 +88,7 @@ module.exports = function (config) {
             'karma-firefox-launcher',
             'karma-ie-launcher',
             'karma-html-reporter',
-            'karma-coverage',
-            'karma-coveralls']
+            'karma-coverage']
 
     });
 };

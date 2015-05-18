@@ -18,10 +18,17 @@ app.service('olv2MapService', [
 	'$log',
 	function (olv2LayerService, olv2MapControls, GAWTUtils,GeoLayer, $q, $log) {
 		'use strict';
-		//This service provides functionality to answer questions about OLV2 layers, provided all the state
-		//This service contains no state, and a mapInstance must be provided.
-		//It is simply a place for logic to answer simple questions around the OLV2 data structures
-
+		function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
+			mapInstance._geowebtoolkit = mapInstance._geowebtoolkit || {};
+			mapInstance._geowebtoolkit[propertyName] = propertyValue;
+		}
+		function getToolkitMapInstanceProperty(mapInstance, propertyName) {
+			var result = null;
+			if(mapInstance._geowebtoolkit != null) {
+				result = mapInstance._geowebtoolkit[propertyName];
+			}
+			return result;
+		}
 		var service = {
 			/**
 			 * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -485,22 +492,37 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
-			removeSelectedFeature: function (mapInstance, layerName) {
+			startRemoveSelectedFeature: function (mapInstance, layerName) {
 				var vectors = mapInstance.getLayersByName(layerName);
-
+				var vector;
+				if (vectors.length > 0) {
+					vector = vectors[0];
+				} else {
+					//Do nothing, no layer to remove features from
+					$log.warn('Layer not found ("' + layerName + '") when starting the selection to remove features.')
+					return;
+				}
 				// Function is called when a feature is selected
 				function onFeatureSelect(feature) {
-					vectors[0].removeFeatures(feature);
+					vector.removeFeatures(feature);
 	            }
 
 				// Create the select control
-				var selectCtrl = new OpenLayers.Control.SelectFeature(vectors[0], {
+				var selectCtrl = new OpenLayers.Control.SelectFeature(vector, {
 	                onSelect: onFeatureSelect
 	            });
 
 				mapInstance.addControl(selectCtrl);
-
-				return selectCtrl;
+				selectCtrl.activate();
+				updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl', selectCtrl);
+			},
+			stopRemoveSelectedFeature: function (mapInstance) {
+				var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl');
+				if(removeFeaturesControl != null) {
+					removeFeaturesControl.deactivate();
+					mapInstance.removeControl(removeFeaturesControl);
+					updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl',null);
+				}
 			},
 			removeFeature: function (mapInstance, layerName, feature) {
 				var vectors = mapInstance.getLayersByName(layerName);
@@ -514,7 +536,7 @@ app.service('olv2MapService', [
 	            if (vectors.length > 0) {
 	            	vector = vectors[0];
 	            } else {
-	            	vector = new OpenLayers.Layer.Vector(args.layerName);
+	            	vector = new OpenLayers.Layer.Vector(layerName || args.layerName);
 					mapInstance.addLayer(vector);
 	            }
 				vector.style =
@@ -544,6 +566,7 @@ app.service('olv2MapService', [
 				}
 
 				mapInstance.addControl(control);
+
 				service.drawingControl = control;
 				control.activate();
 			},
