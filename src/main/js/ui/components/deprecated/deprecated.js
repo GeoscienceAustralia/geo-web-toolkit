@@ -6,7 +6,6 @@
     /**
      * */
     app.directive('gaDialogToggle', [ function () {
-        'use strict';
         return {
             restrict: "E",
             templateUrl:'src/main/js/ui/components/deprecated/dialog-toggle.html',

@@ -6,7 +6,8 @@
     var app = angular.module('gawebtoolkit.mapservices.map.openlayersv3',
         [
             'gawebtoolkit.mapservices.layer.openlayersv3',
-            'gawebtoolkit.mapservices.controls.openlayersv3'
+            'gawebtoolkit.mapservices.controls.openlayersv3',
+            'gawebtoolkit.mapservices.map.ol3cesium'
         ]);
 
     var olCesiumInstance;
@@ -17,11 +18,12 @@
         'olv3MapControls',
         'GAWTUtils',
         'GeoLayer',
+        'ol3CesiumMapService',
         'ga.config',
         '$q',
         '$log',
         '$timeout',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer,appConfig, $q, $log, $timeout) {
+        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, ol3CesiumMapService, appConfig, $q, $log, $timeout) {
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -179,9 +181,17 @@
                     });
                 },
                 registerMapEvent: function (mapInstance, eventName, callback) {
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.registerMapEvent(mapInstance,eventName,callback);
+                        return;
+                    }
                     mapInstance.on(eventName, callback);
                 },
                 unRegisterMapEvent: function (mapInstance, eventName, callback) {
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.unRegisterMapEvent(mapInstance,eventName,callback);
+                        return;
+                    }
                     mapInstance.un(eventName, callback);
                 },
                 getCurrentMapExtent: function (mapInstance) {
