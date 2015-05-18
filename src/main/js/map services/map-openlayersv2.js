@@ -276,7 +276,8 @@ app.service('olv2MapService', [
 			 * mapController.zoomToExtent(bounds);
 			 * */
 			zoomToExtent: function (mapInstance, extent) {
-				mapInstance.zoomToExtent(extent, false);
+                var bounds = service.createBounds(mapInstance, extent, service.displayProjection);
+				mapInstance.zoomToExtent(bounds, false);
 			},
 			//TODO sensible errors when unsupported layerId is used.
 			zoomToLayer: function (mapInstance, layerId) {
