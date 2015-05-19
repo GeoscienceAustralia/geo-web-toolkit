@@ -5,6 +5,3 @@ language: java
 after_success:
 - chmod +x .travis/push-docs-to-gh-pages.sh
 - .travis/push-docs-to-gh-pages.sh
-env:
-  global:
-    secure: B+sWXwiifc0PEtkulxDL3CczglofMOQx2ldZozjxWgxhQmXX75A+pBlW3WwKmH5lvbnzOeObcfzkzptQrMU59G8DZL19ls6FbZv59fyyd39UpyGS5Jk7KbOP5WCNZvJnkvawgo+ZfFzbn8jxoAabX4etSyp3Lha09S1oREQMuQs=

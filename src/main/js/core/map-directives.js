@@ -1471,8 +1471,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GAMapService.drawPolyLine($scope.mapInstance, points, layerName, $scope.framework);
             };
             
-            self.removeSelectedFeature = function (layerName) {
-                return GAMapService.removeSelectedFeature($scope.mapInstance, layerName, $scope.framework);
+            self.startRemoveSelectedFeature = function (layerName) {
+                return GAMapService.startRemoveSelectedFeature($scope.mapInstance, layerName, $scope.framework);
+            };
+
+            self.stopRemoveSelectedFeature = function () {
+                return GAMapService.stopRemoveSelectedFeature($scope.mapInstance, $scope.framework);
             };
             
             self.removeFeature = function (layerName, feature) {
