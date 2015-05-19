@@ -25,22 +25,6 @@
 
             }));
 
-
-            //Tests
-            it('Sanity check. Should have one layer', function () {
-                var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-google-layer></ga-google-layer>' +
-                    '</ga-map> ';
-                element = angular
-                    .element(elementHtml);
-                $compile(element)($scope);
-                $scope.$digest();
-                $timeout.flush();
-                expect($scope.mapController.getMapInstance() != null).toBe(true);
-                expect($scope.mapController.getMapInstance().layers.length).toBe(1);
-            });
-
             it('Start drawing creates interaction for OpenLayers 3', function () {
                 var elementHtml = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
@@ -52,7 +36,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('My drawing layer',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
@@ -87,6 +71,43 @@
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
 
+            it('Should start drawing when specifying a valid layer to draw on.', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-feature-layer layer-name="Simple map layer name">' +
+                    '</ga-feature-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                    color: "#000000",
+                    opacity: 1.0,
+                    radius: 6});
+                $scope.mapController.stopDrawing('Simple map layer name');
+                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'LineString',
+                    color: "#000000",
+                    opacity: 1.0,
+                    radius: 6});
+                $scope.mapController.stopDrawing('Simple map layer name');
+                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Polygon',
+                    color: "#000000",
+                    opacity: 1.0,
+                    radius: 6});
+                //Forget to stopDrawing, existing interaction removed and replaced by default
+                //$scope.mapController.stopDrawing('Simple map layer name');
+                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Circle',
+                    color: "#000000",
+                    opacity: 1.0,
+                    radius: 6});
+                $scope.mapController.stopDrawing('Simple map layer name');
+
+                //9 default interactions, no interaction added due to error thrown.
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+            });
+
             it('Stop drawing removes interaction for OpenLayers 3', function () {
                 var elementHtml = '<div id="map"></div>' +
                     '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
@@ -108,7 +129,6 @@
                 $scope.mapController.stopDrawing();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
-
 
             it('Should create a new layer to draw label and return GeoJSON feature', function () {
                 var elementHtml = '<div id="map"></div>' +
@@ -166,5 +186,81 @@
                 expect(geoJsonFeature.features[0].geometry.type).toBe('Point');
             });
 
+            it('Should fire \'startRemoveSelectedFeature\' with invalid layer name and NOT create a vector layer with provided name', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var mapLayers = $scope.mapController.getMapInstance().getLayers();
+                var layerCount = mapLayers.getLength();
+                $scope.mapController.startRemoveSelectedFeature('My layer that doesnt exist');
+                expect(mapLayers.getLength()).toBe(layerCount);
+            });
+
+            it('Should fire \'stopRemoveSelectedFeature\' without a layer and do nothing.', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.startRemoveSelectedFeature('My layer that doesnt exist');
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.stopRemoveSelectedFeature();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+            });
+
+            it('Should fire \'stopRemoveSelectedFeature\' and deactivate interaction', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '<ga-feature-layer layer-name="My layer" />' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                var mapLayers = $scope.mapController.getMapInstance().getLayers();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.startRemoveSelectedFeature('My layer');
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+                expect($scope.mapController.getMapInstance().getInteractions().item(9).get('active')).toBe(true);
+                $scope.mapController.stopRemoveSelectedFeature();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+            });
+
+            it('Should fire \'stopRemoveSelectedFeature\' and deactivate interaction', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '<ga-feature-layer layer-name="My layer" />' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.startRemoveSelectedFeature('My layer');
+                $scope.mapController.getMapInstance().get('_geowebtoolkit').removeFeaturesControl.handleEvent(true);
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+                expect($scope.mapController.getMapInstance().getInteractions().item(9).get('active')).toBe(true);
+                $scope.mapController.stopRemoveSelectedFeature();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+            });
         });
 })();
