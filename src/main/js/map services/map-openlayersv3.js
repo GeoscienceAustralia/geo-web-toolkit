@@ -175,12 +175,22 @@
                     $(mapInstance.getViewport()).on('mousemove', callback);
                 },
                 registerMapClick: function (mapInstance, callback) {
-                    if (callback != null) {
+                    if (callback == null) {
+                        return;
+                    }
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.registerMapClick(olCesiumInstance,callback);
+                    } else {
                         mapInstance.on('click', callback);
                     }
                 },
                 unRegisterMapClick: function (mapInstance, callback) {
-                    if (callback != null) {
+                    if (callback == null) {
+                        return;
+                    }
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.registerMapClick(olCesiumInstance,callback);
+                    } else {
                         mapInstance.un('click', callback);
                     }
                 },
@@ -197,14 +207,14 @@
                 },
                 registerMapEvent: function (mapInstance, eventName, callback) {
                     if(service.is3d(mapInstance)) {
-                        ol3CesiumMapService.registerMapEvent(mapInstance,eventName,callback);
+                        ol3CesiumMapService.registerMapEvent(olCesiumInstance,eventName,callback);
                         return;
                     }
                     mapInstance.on(eventName, callback);
                 },
                 unRegisterMapEvent: function (mapInstance, eventName, callback) {
                     if(service.is3d(mapInstance)) {
-                        ol3CesiumMapService.unRegisterMapEvent(mapInstance,eventName,callback);
+                        ol3CesiumMapService.unRegisterMapEvent(olCesiumInstance,eventName,callback);
                         return;
                     }
                     mapInstance.un(eventName, callback);
@@ -708,7 +718,13 @@
                 },
                 setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
                     var markerLayer = olv3LayerService.getLayerBy(mapInstance, 'name', markerGroupName);
-                    var latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
+                    var latLon;
+                    if(service.is3d(mapInstance)) {
+                        var epsg4326 = ol3CesiumMapService.getCoordinateFromPixel(olCesiumInstance, coords);
+                        latLon = ol.proj.transform(epsg4326,'EPSG:4326',mapInstance.getView().getProjection().getCode());
+                    } else {
+                        latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
+                    }
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
@@ -749,8 +765,14 @@
                     if (y == null) {
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
+                    var result;
+                    if(service.is3d(mapInstance)) {
+                        var epsg4326 = ol3CesiumMapService.getCoordinateFromPixel(olCesiumInstance, {x: x, y: y});
+                        result = ol.proj.transform(epsg4326,'EPSG:4326',mapInstance.getView().getProjection().getCode());
+                    } else {
+                        result = mapInstance.getCoordinateFromPixel([x, y]);
+                    }
 
-                    var result = mapInstance.getCoordinateFromPixel([x, y]);
                     if (projection) {
                         result = ol.proj.transform(result,mapInstance.getView().getProjection() , projection);
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
@@ -768,11 +790,17 @@
                     if (lat == null) {
                         throw new ReferenceError("'lat' value cannot be null or undefined");
                     }
+                    if(service.is3d(mapInstance)) {
+
+                    }
                     return mapInstance.getPixelFromCoordinate([lon, lat]);
                 },
                 getPointFromEvent: function (e) {
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
                     // incorrect value in regards to your screen pixels
+                    if(e.position && e.position.x) {
+                        return e.position;
+                    }
                     return {
                         x: e.pixel[0],
                         y: e.pixel[1]
@@ -1124,6 +1152,9 @@
                     tolerance = tolerance || 0;
                     var deferred = $q.defer();
                     var point = (pointEvent instanceof ol.MapBrowserPointerEvent) ? pointEvent.pixel : pointEvent;
+                    if(point.position != null) {
+                        point = [point.position.x,point.position.y];
+                    }
                     var originalPx = new OpenLayers.Pixel(point[0], point[1]);
                     var llPx = originalPx.add(-tolerance, tolerance);
                     var urPx = originalPx.add(tolerance, -tolerance);
