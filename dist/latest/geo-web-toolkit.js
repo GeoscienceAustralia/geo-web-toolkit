@@ -4526,8 +4526,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GAMapService.drawPolyLine($scope.mapInstance, points, layerName, $scope.framework);
             };
             
-            self.removeSelectedFeature = function (layerName) {
-                return GAMapService.removeSelectedFeature($scope.mapInstance, layerName, $scope.framework);
+            self.startRemoveSelectedFeature = function (layerName) {
+                return GAMapService.startRemoveSelectedFeature($scope.mapInstance, layerName, $scope.framework);
+            };
+
+            self.stopRemoveSelectedFeature = function () {
+                return GAMapService.stopRemoveSelectedFeature($scope.mapInstance, $scope.framework);
             };
             
             self.removeFeature = function (layerName, feature) {
@@ -5081,10 +5085,15 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.drawPolyLine(mapInstance, points, layerName);
             },
-            removeSelectedFeature: function (mapInstance, layerName, version) {
+            startRemoveSelectedFeature: function (mapInstance, layerName, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.removeSelectedFeature(mapInstance, layerName);
+                return service.startRemoveSelectedFeature(mapInstance, layerName);
+            },
+            stopRemoveSelectedFeature: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.stopRemoveSelectedFeature(mapInstance);
             },
             removeFeature: function (mapInstance, layerName, feature, version) {
                 var useVersion = version || 'olv2';
@@ -6966,10 +6975,17 @@ app.service('olv2MapService', [
 	'$log',
 	function (olv2LayerService, olv2MapControls, GAWTUtils,GeoLayer, $q, $log) {
 		'use strict';
-		//This service provides functionality to answer questions about OLV2 layers, provided all the state
-		//This service contains no state, and a mapInstance must be provided.
-		//It is simply a place for logic to answer simple questions around the OLV2 data structures
-
+		function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
+			mapInstance._geowebtoolkit = mapInstance._geowebtoolkit || {};
+			mapInstance._geowebtoolkit[propertyName] = propertyValue;
+		}
+		function getToolkitMapInstanceProperty(mapInstance, propertyName) {
+			var result = null;
+			if(mapInstance._geowebtoolkit != null) {
+				result = mapInstance._geowebtoolkit[propertyName];
+			}
+			return result;
+		}
 		var service = {
 			/**
 			 * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -7434,22 +7450,37 @@ app.service('olv2MapService', [
 				vector.addFeatures([ feature ]);
 				mapInstance.addLayer(vector);
 			},
-			removeSelectedFeature: function (mapInstance, layerName) {
+			startRemoveSelectedFeature: function (mapInstance, layerName) {
 				var vectors = mapInstance.getLayersByName(layerName);
-
+				var vector;
+				if (vectors.length > 0) {
+					vector = vectors[0];
+				} else {
+					//Do nothing, no layer to remove features from
+					$log.warn('Layer not found ("' + layerName + '") when starting the selection to remove features.')
+					return;
+				}
 				// Function is called when a feature is selected
 				function onFeatureSelect(feature) {
-					vectors[0].removeFeatures(feature);
+					vector.removeFeatures(feature);
 	            }
 
 				// Create the select control
-				var selectCtrl = new OpenLayers.Control.SelectFeature(vectors[0], {
+				var selectCtrl = new OpenLayers.Control.SelectFeature(vector, {
 	                onSelect: onFeatureSelect
 	            });
 
 				mapInstance.addControl(selectCtrl);
-
-				return selectCtrl;
+				selectCtrl.activate();
+				updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl', selectCtrl);
+			},
+			stopRemoveSelectedFeature: function (mapInstance) {
+				var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl');
+				if(removeFeaturesControl != null) {
+					removeFeaturesControl.deactivate();
+					mapInstance.removeControl(removeFeaturesControl);
+					updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl',null);
+				}
 			},
 			removeFeature: function (mapInstance, layerName, feature) {
 				var vectors = mapInstance.getLayersByName(layerName);
@@ -7463,7 +7494,7 @@ app.service('olv2MapService', [
 	            if (vectors.length > 0) {
 	            	vector = vectors[0];
 	            } else {
-	            	vector = new OpenLayers.Layer.Vector(args.layerName);
+	            	vector = new OpenLayers.Layer.Vector(layerName || args.layerName);
 					mapInstance.addLayer(vector);
 	            }
 				vector.style =
@@ -7474,32 +7505,40 @@ app.service('olv2MapService', [
 					strokeColor: args.strokeColor || args.color,
 					strokeOpacity : args.strokeOpacity || args.opacity
 				};
+				var existingDrawControl = getToolkitMapInstanceProperty(mapInstance,'drawingControl');
+				if(!existingDrawControl) {
+					var control;
+					// Create a new control with the appropriate style
+					if (args.featureType.toLowerCase() === 'point') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
+					} else if (args.featureType.toLowerCase() === 'line' || args.featureType.toLowerCase() === 'linestring') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
+					} else if (args.featureType.toLowerCase() === 'box') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+							handlerOptions: {
+								sides: 4,
+								irregular: true
+							}
+						});
+					} else if (args.featureType.toLowerCase() === 'polygon') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
+					}
 
-				var control;
-				// Create a new control with the appropriate style
-				if (args.featureType.toLowerCase() === 'point') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-				} else if (args.featureType.toLowerCase() === 'line' || args.featureType.toLowerCase() === 'linestring') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-				} else if  (args.featureType.toLowerCase() === 'box') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
-	                    handlerOptions: {
-	                        sides: 4,
-	                        irregular: true
-	                    }
-	                });
-				} else if  (args.featureType.toLowerCase() === 'polygon') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
+					if (args.featureType.toLowerCase() === 'circle') {
+						throw new Error("'startDrawingOnLayer' failed due to feature type 'Circle' is not a valid feature type for OpenLayers 2.");
+					}
+					updateToolkitMapInstanceProperty(mapInstance,'drawingControl',control);
+					mapInstance.addControl(control);
+					control.activate();
 				}
 
-				mapInstance.addControl(control);
-				service.drawingControl = control;
-				control.activate();
 			},
 			stopDrawing: function (mapInstance) {
-				if(service.drawingControl) {
-					service.drawingControl.deactivate();
-					mapInstance.removeControl(service.drawingControl);
+				var existingDrawControl = getToolkitMapInstanceProperty(mapInstance,'drawingControl');
+				if(existingDrawControl) {
+					existingDrawControl.deactivate();
+					mapInstance.removeControl(existingDrawControl);
+					updateToolkitMapInstanceProperty(mapInstance,'drawingControl',null);
 				}
 			},
 			drawLabel: function (mapInstance, layerName, args) {
@@ -7805,6 +7844,21 @@ app.service('olv2MapService', [
         '$log',
         '$timeout',
         function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer,appConfig, $q, $log, $timeout) {
+
+            function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
+                var _geowebtoolkit = mapInstance.get('_geowebtoolkit') || {};
+                _geowebtoolkit[propertyName] = propertyValue;
+                mapInstance.set('_geowebtoolkit', _geowebtoolkit);
+            }
+            function getToolkitMapInstanceProperty(mapInstance, propertyName) {
+                var result = null;
+                if(mapInstance.get('_geowebtoolkit')) {
+                    var temp = mapInstance.get('_geowebtoolkit');
+                    result = temp[propertyName];
+                }
+                return result;
+            }
+
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -8280,6 +8334,7 @@ app.service('olv2MapService', [
                     var layers = mapInstance.getLayers();
                     var results = [];
                     layers.forEach(function (layer) {
+
                         var propVal = layer.get(propertyName);
                         if (propVal && propVal.indexOf(propertyValue) !== -1) {
                             results.push(layer);
@@ -8470,6 +8525,7 @@ app.service('olv2MapService', [
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
+                    iconFeature.setId(GAWTUtils.generateUuid());
 
                     var iconStyle = new ol.style.Style({
                         image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -8568,63 +8624,93 @@ app.service('olv2MapService', [
                         geometry: geom,
                         name: layerName
                     });
+                    feature.setId(GAWTUtils.generateUuid());
 
                     if (vectors.length > 0) {
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
-                            throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
+                            throw new Error("Layer name '" + layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
                         vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
-                        vector.set('name',layerName || args.layerName);
+                        vector.set('name',layerName);
                         mapInstance.addLayer(vector);
                     }
 
                     vector.getSource().addFeature(feature);
                 },
-                removeSelectedFeature: function (mapInstance, layerName) {
-                    var layer = mapInstance.getLayersByName(layerName)[0];
-
+                startRemoveSelectedFeature: function (mapInstance, layerName) {
+                    var layers = olv3LayerService._getLayersBy(mapInstance, 'name', layerName);
+                    if(!layers || layers.length === 0) {
+                        $log.warn('Layer "' + layerName + "' not found. Remove selected layer interaction not added.");
+                        return;
+                    }
+                    var layer = layers[0];
                     var select = new ol.interaction.Select();
                     select.on('select', function (e) {
                         var source = layer.getSource();
                         if(source.removeFeature instanceof Function) {
                             if(e.selected instanceof Array) {
-                                for (var i = 0; i < e.selected.length; i++) {
-                                    var feature = e.selected[i];
-                                    source.removeFeature(feature);
+                                for (var selectedIndex = 0; selectedIndex < e.selected.length; selectedIndex++) {
+                                    var selectedFeature = e.selected[selectedIndex];
+                                    for (var sourceIndex = 0; sourceIndex < source.getFeatures().length; sourceIndex++) {
+                                        var sourceFeature = source.getFeatures()[sourceIndex];
+                                        if(sourceFeature.get('id') === selectedFeature.get('id')) {
+                                            source.removeFeature(sourceFeature);
+                                        }
+                                    }
                                 }
                             } else {
-                                source.removeFeature(e.selected);
+                                for (var j = 0; j < source.getFeatures().length; j++) {
+                                    var feature = source.getFeatures()[j];
+                                    if(feature.get('id') === e.selected.get('id')) {
+                                        source.removeFeature(feature);
+                                        break;
+                                    }
+                                }
                             }
                         } else {
                             throw new Error("No valid layer found with name - " + layerName + " - to remove selected features.");
                         }
+                        select.getFeatures().clear();
                     });
 
                     mapInstance.addInteraction(select);
-
-                    return select;
+                    updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl',select);
+                },
+                stopRemoveSelectedFeature: function(mapInstance) {
+                    var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, 'removeFeaturesControl');
+                    if(removeFeaturesControl) {
+                        mapInstance.removeInteraction(removeFeaturesControl);
+                        updateToolkitMapInstanceProperty(mapInstance,'removeFeaturesControl', null);
+                    }
                 },
                 removeFeature: function (mapInstance, layerName, feature) {
                     var featureLayer = olv3LayerService.getLayersBy(mapInstance, 'name', layerName);
                     featureLayer.removeFeatures(feature);
                 },
                 startDrawingOnLayer: function (mapInstance, layerName, args) {
+                    var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, 'removeFeaturesControl');
+                    if(removeFeaturesControl) {
+                        mapInstance.removeInteraction(removeFeaturesControl);
+                    }
                     var interactionType;
                     //Drawing interaction types are case sensitive and represent GeometryType in OpenLayers 3
                     switch (args.featureType.toLowerCase()) {
                         case 'point':
                             interactionType = 'Point';
                             break;
+                        case 'line':
                         case 'linestring':
                             interactionType = 'LineString';
                             break;
+                        case 'box':
                         case 'polygon':
                             interactionType = 'Polygon';
                             break;
@@ -8651,34 +8737,46 @@ app.service('olv2MapService', [
                             })
                         })
                     });
-                    // Create the layer if it doesn't exist
+
                     if (vectors.length > 0) {
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
                         vector.setStyle(style);
+                        source = vector.getSource();
                     } else {
+                        // Create the layer if it doesn't exist
                         vector = new ol.layer.Vector({
                             source: source,
                             style: style,
                             format: new ol.format.GeoJSON()
                         });
 
-                        vector.set('name',args.layerName);
+                        vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
-
-                    var draw = new ol.interaction.Draw({
-                        source: source,
-                        type: /** @type {ol.geom.GeometryType} */ (interactionType)
-                    });
-                    service.featureDrawingInteraction = draw;
-                    mapInstance.addInteraction(draw);
+                    var existingDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction');
+                    if(!existingDrawInteraction) {
+                        var draw = new ol.interaction.Draw({
+                            source: source,
+                            type: /** @type {ol.geom.GeometryType} */ (interactionType),
+                            format: new ol.format.GeoJSON()
+                        });
+                        draw.on('drawend', function (e) {
+                            if(e.feature) {
+                                e.feature.set('id',GAWTUtils.generateUuid());
+                            }
+                        });
+                        updateToolkitMapInstanceProperty(mapInstance,'featureDrawingInteraction' ,draw);
+                        mapInstance.addInteraction(draw);
+                    }
                 },
                 stopDrawing: function (mapInstance) {
-                    if(service.featureDrawingInteraction) {
-                        mapInstance.removeInteraction(service.featureDrawingInteraction);
+                    var existingDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction');
+                    if(existingDrawInteraction) {
+                        mapInstance.removeInteraction(existingDrawInteraction);
+                        updateToolkitMapInstanceProperty(mapInstance,'featureDrawingInteraction', null);
                     }
                 },
                 drawLabel: function (mapInstance, layerName, args) {
@@ -8689,12 +8787,12 @@ app.service('olv2MapService', [
                     var textStyle = new ol.style.Text({
                         textAlign: alignText,
                         textBaseline: args.baseline,
-                        font: args.font,
+                        font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: args.fillColor || args.fontColor || args.color}),
-                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
-                        offsetX: args.offsetX,
-                        offsetY: args.offsetY,
+                        fill: new ol.style.Fill({color: args.fillColor || args.color, width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width || 1}),
+                        offsetX: args.offsetX || 0,
+                        offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
                     });
 
@@ -8717,25 +8815,33 @@ app.service('olv2MapService', [
                         if(!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
-                        vector.setStyle(style);
+                        //vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
-                    var updatedPosition = ol.proj.transform([args.lon, args.lat],args.projection, mapInstance.getView().getProjection());
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],
+                        (args.projection || service.displayProjection),
+                        mapInstance.getView().getProjection());
                     var point = new ol.geom.Point(updatedPosition);
                     var pointFeature = new ol.Feature({
                         geometry: point
                     });
+                    pointFeature.setId(GAWTUtils.generateUuid());
+                    pointFeature.setStyle(style);
+                    console.log(vector.getSource().getFeatures());
                     vector.getSource().addFeature(pointFeature);
+                    console.log(vector.getSource().getFeatures());
+
                     // Add the text to the style of the layer
-                    vector.setStyle(style);
+                    //vector.setStyle(style);
                     var format = new ol.format.GeoJSON();
 
 
@@ -8747,8 +8853,9 @@ app.service('olv2MapService', [
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.Vector();
+                    var alignText = args.align === 'cm' ? 'center' : args.align || args.textAlign;
                     var textStyle = new ol.style.Text({
-                        textAlign: args.align,
+                        textAlign: alignText,
                         textBaseline: args.baseline,
                         font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
@@ -8791,33 +8898,37 @@ app.service('olv2MapService', [
                         text: textStyle
                     });
                     if (vectors.length > 0) {
+                        console.log('existing draw layer');
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
-                        vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style,
                             format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
-                        vector.setStyle(style);
+                        //vector.setStyle(style);
                     }
 
                     // Create a point to display the text
-                    var updatedLoc = ol.proj.transform([args.lon, args.lat], args.projection || service.displayProjection, mapInstance.getView().getProjection());
-                    var point = new ol.geom.Point(updatedLoc);
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],
+                        (args.projection || service.displayProjection),
+                        mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedPosition);
 
                     var pointFeature = new ol.Feature({
                         geometry: point
                     });
-
-
-                    vector.getSource().addFeatures([pointFeature]);
+                    pointFeature.setId(GAWTUtils.generateUuid());
+                    pointFeature.setStyle(style);
+                    console.log('adding feature to source');
+                    console.log(vector.getSource().getFeatures());
+                    vector.getSource().addFeature(pointFeature);
+                    console.log(vector.getSource().getFeatures());
 
                     var features = [pointFeature];
                     var format = new ol.format.GeoJSON();
