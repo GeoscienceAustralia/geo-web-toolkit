@@ -1014,9 +1014,7 @@
                     });
                     pointFeature.setId(GAWTUtils.generateUuid());
                     pointFeature.setStyle(style);
-                    console.log(vector.getSource().getFeatures());
                     vector.getSource().addFeature(pointFeature);
-                    console.log(vector.getSource().getFeatures());
 
                     // Add the text to the style of the layer
                     //vector.setStyle(style);
@@ -1076,7 +1074,6 @@
                         text: textStyle
                     });
                     if (vectors.length > 0) {
-                        console.log('existing draw layer');
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
@@ -1103,10 +1100,7 @@
                     });
                     pointFeature.setId(GAWTUtils.generateUuid());
                     pointFeature.setStyle(style);
-                    console.log('adding feature to source');
-                    console.log(vector.getSource().getFeatures());
                     vector.getSource().addFeature(pointFeature);
-                    console.log(vector.getSource().getFeatures());
 
                     var features = [pointFeature];
                     var format = new ol.format.GeoJSON();
