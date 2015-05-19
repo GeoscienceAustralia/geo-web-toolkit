@@ -703,6 +703,7 @@
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
+                    iconFeature.setId(GAWTUtils.generateUuid());
 
                     var iconStyle = new ol.style.Style({
                         image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -801,6 +802,7 @@
                         geometry: geom,
                         name: layerName
                     });
+                    feature.setId(GAWTUtils.generateUuid());
 
                     if (vectors.length > 0) {
                         vector = vectors[0];
@@ -811,7 +813,8 @@
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName);
@@ -832,12 +835,12 @@
                         var source = layer.getSource();
                         if(source.removeFeature instanceof Function) {
                             if(e.selected instanceof Array) {
-                                for (var i = 0; i < e.selected.length; i++) {
-                                    var selectedFeature = e.selected[i];
-                                    for (var j = 0; j < source.getFeatures().length; j++) {
-                                        var feature = source.getFeatures()[j];
-                                        if(feature.get('id') === selectedFeature.get('id')) {
-                                            source.removeFeature(feature);
+                                for (var selectedIndex = 0; selectedIndex < e.selected.length; selectedIndex++) {
+                                    var selectedFeature = e.selected[selectedIndex];
+                                    for (var sourceIndex = 0; sourceIndex < source.getFeatures().length; sourceIndex++) {
+                                        var sourceFeature = source.getFeatures()[sourceIndex];
+                                        if(sourceFeature.get('id') === selectedFeature.get('id')) {
+                                            source.removeFeature(sourceFeature);
                                         }
                                     }
                                 }
@@ -881,9 +884,11 @@
                         case 'point':
                             interactionType = 'Point';
                             break;
+                        case 'line':
                         case 'linestring':
                             interactionType = 'LineString';
                             break;
+                        case 'box':
                         case 'polygon':
                             interactionType = 'Polygon';
                             break;
@@ -910,7 +915,7 @@
                             })
                         })
                     });
-                    // Create the layer if it doesn't exist
+
                     if (vectors.length > 0) {
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
@@ -919,6 +924,7 @@
                         vector.setStyle(style);
                         source = vector.getSource();
                     } else {
+                        // Create the layer if it doesn't exist
                         vector = new ol.layer.Vector({
                             source: source,
                             style: style,
@@ -928,22 +934,27 @@
                         vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
-
-                    var draw = new ol.interaction.Draw({
-                        source: source,
-                        type: /** @type {ol.geom.GeometryType} */ (interactionType)
-                    });
-                    draw.on('drawend', function (e) {
-                        if(e.feature) {
-                            e.feature.set('id',GAWTUtils.generateUuid());
-                        }
-                    });
-                    service.featureDrawingInteraction = draw;
-                    mapInstance.addInteraction(draw);
+                    var existingDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction');
+                    if(!existingDrawInteraction) {
+                        var draw = new ol.interaction.Draw({
+                            source: source,
+                            type: /** @type {ol.geom.GeometryType} */ (interactionType),
+                            format: new ol.format.GeoJSON()
+                        });
+                        draw.on('drawend', function (e) {
+                            if(e.feature) {
+                                e.feature.set('id',GAWTUtils.generateUuid());
+                            }
+                        });
+                        updateToolkitMapInstanceProperty(mapInstance,'featureDrawingInteraction' ,draw);
+                        mapInstance.addInteraction(draw);
+                    }
                 },
                 stopDrawing: function (mapInstance) {
-                    if(service.featureDrawingInteraction) {
-                        mapInstance.removeInteraction(service.featureDrawingInteraction);
+                    var existingDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction');
+                    if(existingDrawInteraction) {
+                        mapInstance.removeInteraction(existingDrawInteraction);
+                        updateToolkitMapInstanceProperty(mapInstance,'featureDrawingInteraction', null);
                     }
                 },
                 drawLabel: function (mapInstance, layerName, args) {
@@ -954,12 +965,12 @@
                     var textStyle = new ol.style.Text({
                         textAlign: alignText,
                         textBaseline: args.baseline,
-                        font: args.font,
+                        font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: args.fillColor || args.fontColor || args.color}),
-                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width}),
-                        offsetX: args.offsetX,
-                        offsetY: args.offsetY,
+                        fill: new ol.style.Fill({color: args.fillColor || args.color, width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width || 1}),
+                        offsetX: args.offsetX || 0,
+                        offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
                     });
 
@@ -982,25 +993,33 @@
                         if(!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
-                        vector.setStyle(style);
+                        //vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style
+                            style: style,
+                            format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
 
-                    var updatedPosition = ol.proj.transform([args.lon, args.lat],args.projection, mapInstance.getView().getProjection());
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],
+                        (args.projection || service.displayProjection),
+                        mapInstance.getView().getProjection());
                     var point = new ol.geom.Point(updatedPosition);
                     var pointFeature = new ol.Feature({
                         geometry: point
                     });
+                    pointFeature.setId(GAWTUtils.generateUuid());
+                    pointFeature.setStyle(style);
+                    console.log(vector.getSource().getFeatures());
                     vector.getSource().addFeature(pointFeature);
+                    console.log(vector.getSource().getFeatures());
+
                     // Add the text to the style of the layer
-                    vector.setStyle(style);
+                    //vector.setStyle(style);
                     var format = new ol.format.GeoJSON();
 
 
@@ -1012,8 +1031,9 @@
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.Vector();
+                    var alignText = args.align === 'cm' ? 'center' : args.align || args.textAlign;
                     var textStyle = new ol.style.Text({
-                        textAlign: args.align,
+                        textAlign: alignText,
                         textBaseline: args.baseline,
                         font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
@@ -1056,33 +1076,37 @@
                         text: textStyle
                     });
                     if (vectors.length > 0) {
+                        console.log('existing draw layer');
                         vector = vectors[0];
                         if(!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
-                        vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
-                            style: style,
                             format: new ol.format.GeoJSON()
                         });
 
                         vector.set('name',layerName || args.layerName);
                         mapInstance.addLayer(vector);
-                        vector.setStyle(style);
+                        //vector.setStyle(style);
                     }
 
                     // Create a point to display the text
-                    var updatedLoc = ol.proj.transform([args.lon, args.lat], args.projection || service.displayProjection, mapInstance.getView().getProjection());
-                    var point = new ol.geom.Point(updatedLoc);
+                    var updatedPosition = ol.proj.transform([args.lon, args.lat],
+                        (args.projection || service.displayProjection),
+                        mapInstance.getView().getProjection());
+                    var point = new ol.geom.Point(updatedPosition);
 
                     var pointFeature = new ol.Feature({
                         geometry: point
                     });
-
-
-                    vector.getSource().addFeatures([pointFeature]);
+                    pointFeature.setId(GAWTUtils.generateUuid());
+                    pointFeature.setStyle(style);
+                    console.log('adding feature to source');
+                    console.log(vector.getSource().getFeatures());
+                    vector.getSource().addFeature(pointFeature);
+                    console.log(vector.getSource().getFeatures());
 
                     var features = [pointFeature];
                     var format = new ol.format.GeoJSON();

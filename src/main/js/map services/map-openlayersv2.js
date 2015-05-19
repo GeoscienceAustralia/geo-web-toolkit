@@ -547,33 +547,40 @@ app.service('olv2MapService', [
 					strokeColor: args.strokeColor || args.color,
 					strokeOpacity : args.strokeOpacity || args.opacity
 				};
+				var existingDrawControl = getToolkitMapInstanceProperty(mapInstance,'drawingControl');
+				if(!existingDrawControl) {
+					var control;
+					// Create a new control with the appropriate style
+					if (args.featureType.toLowerCase() === 'point') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
+					} else if (args.featureType.toLowerCase() === 'line' || args.featureType.toLowerCase() === 'linestring') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
+					} else if (args.featureType.toLowerCase() === 'box') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+							handlerOptions: {
+								sides: 4,
+								irregular: true
+							}
+						});
+					} else if (args.featureType.toLowerCase() === 'polygon') {
+						control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
+					}
 
-				var control;
-				// Create a new control with the appropriate style
-				if (args.featureType.toLowerCase() === 'point') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Point);
-				} else if (args.featureType.toLowerCase() === 'line' || args.featureType.toLowerCase() === 'linestring') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path);
-				} else if  (args.featureType.toLowerCase() === 'box') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
-	                    handlerOptions: {
-	                        sides: 4,
-	                        irregular: true
-	                    }
-	                });
-				} else if  (args.featureType.toLowerCase() === 'polygon') {
-					control = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon);
+					if (args.featureType.toLowerCase() === 'circle') {
+						throw new Error("'startDrawingOnLayer' failed due to feature type 'Circle' is not a valid feature type for OpenLayers 2.");
+					}
+					updateToolkitMapInstanceProperty(mapInstance,'drawingControl',control);
+					mapInstance.addControl(control);
+					control.activate();
 				}
 
-				mapInstance.addControl(control);
-
-				service.drawingControl = control;
-				control.activate();
 			},
 			stopDrawing: function (mapInstance) {
-				if(service.drawingControl) {
-					service.drawingControl.deactivate();
-					mapInstance.removeControl(service.drawingControl);
+				var existingDrawControl = getToolkitMapInstanceProperty(mapInstance,'drawingControl');
+				if(existingDrawControl) {
+					existingDrawControl.deactivate();
+					mapInstance.removeControl(existingDrawControl);
+					updateToolkitMapInstanceProperty(mapInstance,'drawingControl',null);
 				}
 			},
 			drawLabel: function (mapInstance, layerName, args) {
