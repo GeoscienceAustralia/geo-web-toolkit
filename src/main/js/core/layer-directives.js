@@ -163,9 +163,6 @@ app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
                         $log.info('construction failed...');
                         $scope.constructionInProgress = false;
                     });
-//                    $timeout(function () {
-//                        mapController.asyncLayerLoaded();
-//                    });
 				};
 
 				attrs.$observe('visibility', function () {

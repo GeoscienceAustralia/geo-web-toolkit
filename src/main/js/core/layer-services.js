@@ -119,6 +119,11 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             var service = mapLayerServiceLocator.getImplementation(useVersion);
             return service.getLayerFeatures(mapInstance, layerId);
         },
+        clearFeatureLayer: function (mapInstance, layerId, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            service.clearFeatureLayer(mapInstance,layerId);
+        },
         removeFeatureFromLayer: function (mapInstance, layerId, featureId,version) {
             var useVersion = version || 'olv2';
             var service = mapLayerServiceLocator.getImplementation(useVersion);

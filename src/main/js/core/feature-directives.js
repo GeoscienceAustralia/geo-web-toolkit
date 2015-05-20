@@ -998,8 +998,8 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     </file>
 </example>
  */
-app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService',
-    function ($timeout, $compile, $q, GALayerService) {
+app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log',
+    function ($timeout, $compile, $q, GALayerService,$log) {
         'use strict';
         return {
             restrict: "E",
@@ -1010,6 +1010,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 visibility: '@',
                 projection: '@',
                 controllerEmitEventName: '@',
+                refreshLayer: '@',
                 postAddLayer: '&',
                 onLayerDestroy: '&'
             },
@@ -1089,6 +1090,13 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     return $scope.layerControllerIsReady;
                 };
 
+                self.clearFeatures = function () {
+                    GALayerService.clearFeatureLayer(
+                        $scope.mapAPI.mapController.getMapInstance(),
+                        $scope.layerDto.id,
+                        $scope.mapAPI.mapController.getFrameworkVersion());
+                };
+
                 if ($scope.controllerEmitEventName) {
                     $scope.$emit($scope.controllerEmitEventName, self);
                 }
@@ -1097,27 +1105,102 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
             }],
             transclude: false,
             link: function ($scope, element, attrs, mapController) {
+                attrs.$observe('refreshLayer', function (newVal, oldVal) {
+                    if(newVal !== oldVal) {
+                        $log.info('refresh for - ' + $scope.layerName);
+                        $scope.initialiseLayer();
+                    }
+                });
+
                 $scope.mapAPI = {};
                 $scope.mapAPI.mapController = mapController;
+                var layerOptions, layer;
 
-                var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
-                layerOptions.datumProjection = $scope.projection || mapController.getProjection();
-                layerOptions.postAddLayer = $scope.postAddLayer;
+                var addLayerCallback = function () {
+                    $scope.layerReady = true;
+                };
 
-                var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
-                //mapController.waitingForAsyncLayer();
-                //Async layer add
-                mapController.addLayer(layer).then(function (layerDto) {
-                    $scope.layerDto = layerDto;
-                    //mapController.asyncLayerLoaded();
-                    $scope.layerControllerIsReady = true;
-                    $q.all($scope.featurePromises).then(function (allFeatures) {
-                        for (var i = 0; i < allFeatures.length; i++) {
-                            var feature = allFeatures[i];
-                            mapController.addFeatureToLayer($scope.layerDto.id, feature);
-                        }
+                var constructLayer = function () {
+                    $scope.constructionInProgress = true;
+                    var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                    layerOptions.datumProjection = $scope.projection || mapController.getProjection();
+                    layerOptions.postAddLayer = $scope.postAddLayer;
+                    $log.info(layerOptions.layerName + ' - constructing...');
+                    var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+                    //mapController.waitingForAsyncLayer();
+                    //Async layer add
+                    mapController.addLayer(layer).then(function (layerDto) {
+                        $scope.layerDto = layerDto;
+                        //mapController.asyncLayerLoaded();
+                        $scope.layerControllerIsReady = true;
+                        $q.all($scope.featurePromises).then(function (allFeatures) {
+                            for (var i = 0; i < allFeatures.length; i++) {
+                                var feature = allFeatures[i];
+                                mapController.addFeatureToLayer($scope.layerDto.id, feature);
+                            }
+                        });
                     });
+                };
+
+                attrs.$observe('visibility', function () {
+                    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                        mapController.setLayerVisibility($scope.layerDto.id, $scope.visibility === "true");
+                    }
                 });
+                attrs.$observe('opacity', function () {
+                    if ($scope.layerReady && mapController && $scope.layerDto != null && $scope.layerDto.id) {
+                        //$log.info('layer - ' + $scope.layerDto.name + ' - opacity changed - ' + $scope.opacity);
+                        mapController.setOpacity($scope.layerDto.id, $scope.opacity);
+                    }
+                });
+
+                $scope.initCount = 0;
+                function reconstructLayer() {
+                    $log.info('reconstructing layer...');
+                    var allLAyers = mapController.getLayers();
+                    var layerIndex = null;
+
+                    for (var i = 0; i < allLAyers.length; i++) {
+                        if (allLAyers[i].id === $scope.layerDto.id) {
+                            layerIndex = i;
+                            break;
+                        }
+                    }
+                    if (layerIndex != null) {
+                        mapController.removeLayerById($scope.layerDto.id);
+                        $scope.layerDto = null;
+                        var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                        layerOptions.datumProjection = $scope.projection || mapController.getProjection();
+                        layerOptions.postAddLayer = $scope.postAddLayer;
+                        var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+                        //Async layer add
+                        mapController.addLayer(layer).then(function (layerDto) {
+                            $scope.layerDto = layerDto;
+                            addLayerCallback();
+                            if($scope.layerDto != null) {
+                                var delta = layerIndex - mapController.getLayers().length + 1;
+                                mapController.raiseLayerDrawOrder($scope.layerDto.id, delta);
+                            }
+                            $q.all($scope.featurePromises).then(function (allFeatures) {
+                                for (var i = 0; i < allFeatures.length; i++) {
+                                    var feature = allFeatures[i];
+                                    mapController.addFeatureToLayer($scope.layerDto.id, feature);
+                                }
+                            });
+                        });
+                    }
+                }
+
+                $scope.initialiseLayer = function () {
+                    $log.info('initialising layer...');
+                    if ($scope.layerDto != null) {
+                        reconstructLayer();
+                    } else if($scope.layerReady && $scope.constructionInProgress) {
+                        $log.info('...');
+                    } else {
+                        constructLayer();
+                    }
+                };
 
                 $scope.$on('$destroy', function () {
                     if ($scope.layerDto.id != null) {
@@ -1135,6 +1218,10 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                         mapController.setLayerVisibility($scope.layerDto.id, newVal);
                     }
                 });
+
+                if(attrs.refreshLayer == null) {
+                    $scope.initialiseLayer();
+                }
             }
         };
     } ]);
