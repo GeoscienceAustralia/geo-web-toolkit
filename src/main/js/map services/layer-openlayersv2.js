@@ -197,7 +197,8 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             return new OpenLayers.Layer.Google(args.layerName, options);
         },
         clearFeatureLayer: function (mapInstance, layerId) {
-
+            var layer = service.getLayerById(mapInstance, layerId);
+            layer.removeAllFeatures();
         },
         createXYZLayer: function (args) {
             //TODO incorporate default options to args via extend

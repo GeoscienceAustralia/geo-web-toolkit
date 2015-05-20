@@ -15,7 +15,7 @@
             if(point.position != null) {
                 point = [point.position.x,point.position.y];
             }
-            console.log(point);
+
             var halfHeight = mapInstance.getSize()[1] / 2;
             var halfWidth = mapInstance.getSize()[0] / 2;
 

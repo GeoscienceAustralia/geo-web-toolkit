@@ -744,6 +744,7 @@
                     // Marker layer exists so get the layer and add the marker
                     if (markerLayer != null) {
                         markerLayer.getSource().addFeature(iconFeature);
+                        //olv3LayerService.raiseLayerDrawOrder(mapInstance,markerLayer.get('id'),mapInstance.getLayers().getLength() - 1);
                     } else { // Marker layer does not exist so we create the layer then add the marker
                         var source = new ol.source.Vector();
                         source.addFeature(iconFeature);
@@ -1296,9 +1297,11 @@
                     } else {
                         olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
                         var scene = olCesiumInstance.getCesiumScene();
-                        if(appConfig.cesiumOptions != null && appConfig.cesiumOptions.includeCustomTerrainProvider) {
+                        var appSpecificConfig = appConfig();
+                        if(appSpecificConfig.cesiumOptions != null && appSpecificConfig.cesiumOptions.includeCustomTerrainProvider) {
+
                             var terrainProvider = new Cesium.CesiumTerrainProvider({
-                                url: appConfig.cesiumOptions.customTerrainProviderUrl
+                                url: appSpecificConfig.cesiumOptions.customTerrainProviderUrl
                             });
                             scene.terrainProvider = terrainProvider;
                         }
