@@ -361,6 +361,10 @@
                         mapInstance.removeLayer(service.measureEventVectorLayer);
                     }
 
+                    if(service.measureEventDrawInteraction) {
+                        mapInstance.removeInteraction(service.measureEventDrawInteraction);
+                    }
+
                     service.measureEventSource = service.measureEventSource || new ol.source.Vector();
 
                     service.measureEventVectorLayer = service.measureEventVectorLayer || new ol.layer.Vector({
