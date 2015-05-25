@@ -262,5 +262,69 @@
                 $scope.mapController.stopRemoveSelectedFeature();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
             });
+
+            it('Should register an interaction when registering a control event for "measurepartial"', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '<ga-feature-layer layer-name="My layer" />' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.registerControlEvent('dummycontrolid','measurepartial',function () {
+                    //measure event
+                });
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+
+            });
+
+            it('Should register an interaction when registering a control event for "measure"', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '<ga-feature-layer layer-name="My layer" />' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.registerControlEvent('dummycontrolid','measure',function () {
+                    //measure event
+                });
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+
+            });
+
+            it('Should remove any existing draw interactions and readd if events registered more than once for "measurepartial"/"measure".', function () {
+                var elementHtml = '<div id="map"></div>' +
+                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</ga-map-layer>' +
+                    '<ga-feature-layer layer-name="My layer" />' +
+                    '</ga-map> ';
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $timeout.flush();
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+                $scope.mapController.registerControlEvent('dummycontrolid','measurepartial',function () {
+                    //measure event
+                });
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+                $scope.mapController.registerControlEvent('dummycontrolid','measure',function () {
+                    //measure event
+                });
+                expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+
+            });
         });
 })();
