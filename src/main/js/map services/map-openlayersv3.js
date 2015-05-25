@@ -381,6 +381,10 @@
                         mapInstance.removeLayer(service.measureEventVectorLayer);
                     }
 
+                    if(service.measureEventDrawInteraction) {
+                        mapInstance.removeInteraction(service.measureEventDrawInteraction);
+                    }
+
                     service.measureEventSource = service.measureEventSource || new ol.source.Vector();
 
                     service.measureEventVectorLayer = service.measureEventVectorLayer || new ol.layer.Vector({
@@ -435,45 +439,58 @@
                     drawInteraction.on("drawstart", function (e) {
                         var isDragging = false;
                         var sketchFeature = e.feature;
-                        service.measurePointerMoveEvent = function (event) {
+                        updateToolkitMapInstanceProperty(mapInstance, 'measurePointerMoveEvent', function (event) {
                             isDragging = !!event.dragging;
-                        };
-                        service.measureSingleClickTimeout = null;
-                        service.measurePointerUpEvent = function (event) {
-                            if(service.measureSingleClickTimeout) {
-                                $timeout.cancel(service.measureSingleClickTimeout);
+                        });
+                        updateToolkitMapInstanceProperty(mapInstance, 'measureSingleClickTimeout', null);
+                        updateToolkitMapInstanceProperty(mapInstance, 'measurePointerUpEvent',function (event) {
+                            var measureTimeout = getToolkitMapInstanceProperty(mapInstance, 'measureSingleClickTimeout');
+                            if(measureTimeout) {
+                                $timeout.cancel(measureTimeout);
                             }
                             if(!isDragging) {
-                                service.measureSingleClickTimeout = $timeout(function () {
+                                updateToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeout',$timeout(function () {
                                     if(!service.measureIsDrawEndComplete) {
                                         event.feature = sketchFeature;
                                         callback(event);
                                     } else {
                                         service.measureIsDrawEndComplete = false;
                                     }
-                                },10);
+                                },10));
                             }
-                        };
-
-                        service.measurePointerDownEvent = function (event) {
+                        });
+                        updateToolkitMapInstanceProperty(mapInstance, 'measurePointerDownEvent',function (event) {
                             var doubleClickCheck = new Date(new Date() + 250);
-                            if(!isDragging && service.measureSingleClickTimeout != null && doubleClickCheck < service.measureSingleClickTimeout) {
+                            var measureTimeout = getToolkitMapInstanceProperty(mapInstance, 'measureSingleClickTimeout');
+                            if(!isDragging && measureTimeout != null && doubleClickCheck < measureTimeout) {
                                 service.measureIsDoubleClick = true;
                             }
-                            service.measureSingleClickTimeout = new Date();
-                        };
-                        mapInstance.on('pointerup', service.measurePointerUpEvent);
-                        mapInstance.on('pointermove', service.measurePointerMoveEvent);
-                        mapInstance.on('pointerdown', service.measurePointerDownEvent);
+                            updateToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeout',new Date());
+                        });
+                        var measurePointerUpEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerUpEvent');
+                        var measurePointerMoveEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerMoveEvent');
+                        var measurePointerDownEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerDownEvent');
+                        mapInstance.on('pointerup', measurePointerUpEvent);
+                        mapInstance.on('pointermove', measurePointerMoveEvent);
+                        mapInstance.on('pointerdown', measurePointerDownEvent);
                         callback(e);
-                    }, service);
+                    }, mapInstance);
                 },
                 handleMeasure: function (mapInstance, vectorLayer, drawInteraction,callback) {
                     service.measureIsDrawEndComplete = false;
                     drawInteraction.on("drawend", function (e) {
-                        mapInstance.un('pointerup', service.measurePointerUpEvent);
-                        mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                        mapInstance.un('pointermove', service.measurePointerDownEvent);
+                        var measurePointerUpEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerUpEvent');
+                        var measurePointerMoveEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerMoveEvent');
+                        var measurePointerDownEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerDownEvent');
+                        if(measurePointerUpEvent)
+                            mapInstance.un('pointerup', measurePointerUpEvent);
+
+                        if(measurePointerMoveEvent)
+                            mapInstance.un('pointermove', measurePointerMoveEvent);
+
+                        if(measurePointerDownEvent)
+                            mapInstance.un('pointerdown', measurePointerDownEvent);
+
                         callback(e);
                         service.measureIsDrawEndComplete = true;
                     },service);
@@ -488,18 +505,29 @@
                             existingControl = control;
                         }
                     });
-
                     if(existingControl == null) {
                         if(eventName === 'measure' && service.measureEventDrawInteraction) {
+
                             //Handle measure with custom implementation as OLV3 does not have a measure control
                             mapInstance.removeInteraction(service.measureEventDrawInteraction);
                             mapInstance.removeLayer(service.measureEventVectorLayer);
                             service.measureEventVectorLayer = null;
                             service.measureEventDrawInteraction = null;
                             service.measureEventSource = null;
-                            mapInstance.un('pointerup', service.measurePointerUpEvent);
-                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                            mapInstance.un('pointermove', service.measurePointerDownEvent);
+                            var pointerUpEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerUpEvent');
+                            var pointerMoveEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerMoveEvent');
+                            var pointerDownEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerDownEvent');
+                            if(pointerUpEvent) {
+                                mapInstance.un('pointerup', pointerUpEvent);
+                            }
+
+                            if(pointerMoveEvent) {
+                                mapInstance.un('pointermove', pointerMoveEvent);
+                            }
+
+                            if(pointerDownEvent) {
+                                mapInstance.un('pointerdown', pointerDownEvent);
+                            }
                         }
                         if(eventName === 'measurepartial' && service.measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
@@ -508,9 +536,19 @@
                             service.measureEventVectorLayer = null;
                             service.measureEventDrawInteraction = null;
                             service.measureEventSource = null;
-                            mapInstance.un('pointerup', service.measurePointerUpEvent);
-                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                            mapInstance.un('pointermove', service.measurePointerDownEvent);
+                            var measurePointerUpEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerUpEvent');
+                            var measurePointerMoveEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerMoveEvent');
+                            var measurePointerDownEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerDownEvent');
+                            if(measurePointerUpEvent) {
+                                mapInstance.un('pointerup', measurePointerUpEvent);
+                            }
+                            if(measurePointerMoveEvent) {
+                                mapInstance.un('pointermove', measurePointerMoveEvent);
+                            }
+
+                            if(measurePointerDownEvent) {
+                                mapInstance.un('pointerdown', measurePointerDownEvent);
+                            }
                         }
                     } else {
                         existingControl.un(eventName,callback);

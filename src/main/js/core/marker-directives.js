@@ -36,10 +36,7 @@ app.directive('gaMapMarker', [ function () {
                 });
             });
 
-            if (!scope.mapControlName) {
-                return;
-            }
-            mapController.addControl(scope.mapControlName, scope.controlOptions, element);
+
         }
     };
 } ]);

@@ -426,7 +426,7 @@ app.service('olv2MapService', [
 				marker.map = mapInstance;
 
 				// Marker layer exists so get the layer and add the marker
-				if (markerLayer != null && markerLayer.length > 0) {
+				if (markerLayer != null && markerLayer.length > 0 && markerLayer[0].addMarker instanceof OpenLayers.Layer.Markers) {
 					markerLayer[0].addMarker(marker);
 				} else { // Marker layer does not exist so we create the layer then add the marker
 					var markers = new OpenLayers.Layer.Markers(markerGroupName);
