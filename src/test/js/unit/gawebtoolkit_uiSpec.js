@@ -29,14 +29,14 @@ describe('gawebtoolkit ui component tests',
             element = angular
                 .element('<div>' +
                     '<ga-layer-control id="layerControl" map-controller="mapController" layer-data="testLayerData" on-visible="testOnVisible(layerId)"></ga-layer-control>' +
-                    '<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"'
-                    + 'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"'
-                    + 'wrap-date-line="true"'
-                    + 'zoom-to-max="true"'
-                    + 'map-bg-color="#194584"'
-                    + 'layer-type="WMS"'
-                    + 'is-base-layer="true"'
-                    + '></ga-map-layer></ga-map><div id="gamap"></div></div>');
+                    '<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
+                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                     'wrap-date-line="true"' +
+                     'zoom-to-max="true"' +
+                     'map-bg-color="#194584"' +
+                     'layer-type="WMS"' +
+                     'is-base-layer="true"' +
+                     '></ga-map-layer></ga-map><div id="gamap"></div></div>');
             $compile(element)(_$rootScope_);
             $scope.$digest();
             $timeout.flush();
@@ -45,7 +45,7 @@ describe('gawebtoolkit ui component tests',
 
 describe('gawebtoolkit wfs search unit tests', function () {
     'use strict';
-    var $compile, $scope, element, mapElement, inputElement, buttonElement;
+    var $compile, $scope, element, mapElement, inputElement, buttonElement,uiScope;
 
     // Load the myApp module, which contains the directive
     beforeEach(module('testApp'));
@@ -56,18 +56,19 @@ describe('gawebtoolkit wfs search unit tests', function () {
         // The injector unwraps the underscores (_) from around the parameter names when matching
         $compile = _$compile_;
         $scope = _$rootScope_;
-        mapElement = angular.element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326"></ga-map>');
+        uiScope = $scope.$new();
+        mapElement = angular.element('<ga-map framework="olv3" map-element-id="gamap"></ga-map>');
 
         element = angular
             .element('<ga-search-wfs' +
-                'primary-wfs-property="Name" ' + 'map-controller="mapController"'
-                + 'search-end-points="searchConfig.endPoints"'
-                + 'on-results-selected="onSearchResultsSelected(item)"'
-                + 'on-perform-search="onSearchResults(data)">'
-                + '</ga-search-wfs>');
+                'primary-wfs-property="Name" ' + 'map-controller="mapController"' +
+                 'search-end-points="searchConfig.endPoints"' +
+                 'on-results-selected="onSearchResultsSelected(item)"' +
+                 'on-perform-search="onSearchResults(data)">' +
+                 '</ga-search-wfs>');
 
         $scope.$on('mapControllerReady', function (event, args) {
-            $scope.mapController = args;
+            uiScope.mapController = args;
         });
 
         $scope.endPoints = [
@@ -119,12 +120,58 @@ describe('gawebtoolkit wfs search unit tests', function () {
         expect($scope.endPoints.length > 0).toBe(true);
     });
 
-    it('Validate first endpoint in the array', function () {
-        expect($scope.endPoints[0].url === "/gis/services/topography/Australian_Topography/MapServer/WFSServer?").toBe(true);
-        expect($scope.endPoints[0].featureType === "Populated_Places_6").toBe(true);
-        expect($scope.endPoints[0].featurePrefix === "topography_Australian_Topography").toBe(true);
-        expect($scope.endPoints[0].version === "1.1.0").toBe(true);
-        expect($scope.endPoints[0].geometryName === "Shape").toBe(true);
-        expect($scope.endPoints[0].datumProjection === "EPSG:4326").toBe(true);
+    it('Should create a control to toggle client side measure functionality', function () {
+        var el = angular
+            .element('<ga-measure-toggle map-controller="mapController"/>');
+        var uiCompiled = $compile(el)(uiScope);
+        uiScope.$digest();
+        var uiIsolatedScope = uiCompiled.isolateScope();
+
+        expect(uiIsolatedScope.handlePartialMeasure != null).toBe(true);
+    });
+
+    it('Should create draw interaction when UI control is activated.', function () {
+        var el = angular
+            .element('<ga-measure-toggle map-controller="mapController"/>');
+        var uiCompiled = $compile(el)(uiScope);
+        uiScope.$digest();
+        var uiIsolatedScope = uiCompiled.isolateScope();
+
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+        expect(uiIsolatedScope.activate != null).toBe(true);
+        uiIsolatedScope.activate();
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+
+    });
+
+    it('Should remove draw interaction when UI control is deactivated.', function () {
+        var el = angular
+            .element('<ga-measure-toggle map-controller="mapController"/>');
+        var uiCompiled = $compile(el)(uiScope);
+        uiScope.$digest();
+        var uiIsolatedScope = uiCompiled.isolateScope();
+
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+        expect(uiIsolatedScope.activate != null).toBe(true);
+        uiIsolatedScope.activate();
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+        uiIsolatedScope.deactivate();
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+
+    });
+
+    it('Should remove draw interaction when UI control is destroyed.', function () {
+        var el = angular
+            .element('<ga-measure-toggle map-controller="mapController"/>');
+        var uiCompiled = $compile(el)(uiScope);
+        uiScope.$digest();
+        var uiIsolatedScope = uiCompiled.isolateScope();
+
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
+        expect(uiIsolatedScope.activate != null).toBe(true);
+        uiIsolatedScope.activate();
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
+        uiIsolatedScope.$destroy();
+        expect(uiScope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
     });
 });

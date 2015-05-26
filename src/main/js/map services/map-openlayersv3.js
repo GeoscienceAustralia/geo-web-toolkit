@@ -482,14 +482,17 @@
                         var measurePointerUpEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerUpEvent');
                         var measurePointerMoveEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerMoveEvent');
                         var measurePointerDownEvent = getToolkitMapInstanceProperty(mapInstance, 'measurePointerDownEvent');
-                        if(measurePointerUpEvent)
+                        if(measurePointerUpEvent) {
                             mapInstance.un('pointerup', measurePointerUpEvent);
+                        }
 
-                        if(measurePointerMoveEvent)
+                        if(measurePointerMoveEvent) {
                             mapInstance.un('pointermove', measurePointerMoveEvent);
+                        }
 
-                        if(measurePointerDownEvent)
+                        if(measurePointerDownEvent) {
                             mapInstance.un('pointerdown', measurePointerDownEvent);
+                        }
 
                         callback(e);
                         service.measureIsDrawEndComplete = true;
@@ -830,7 +833,7 @@
                         throw new ReferenceError("'lat' value cannot be null or undefined");
                     }
                     if(service.is3d(mapInstance)) {
-
+                        //TODO reverse ray pick
                     }
                     return mapInstance.getPixelFromCoordinate([lon, lat]);
                 },
