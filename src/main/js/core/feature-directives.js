@@ -14,6 +14,7 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
  * @param {function|@} postAddLayer -  Function callback fired after the layer is added
  * @param {string|@} controllerEmitEventName -  An string value that will be allocated to this layer as controller. This controller can be called in JS codes in order to control the layer programatically
  * @param {string|@} onLayerDestroy - Function callback fired on the destruction of a layer
+ * @param {string|@} refreshLayer - Observed attribute that triggers a layer refresh
  *  * Following functions are supported by this controller:
  * <ul>
      <li>hide</li>

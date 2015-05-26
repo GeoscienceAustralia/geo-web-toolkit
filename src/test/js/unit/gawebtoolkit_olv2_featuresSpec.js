@@ -5,7 +5,7 @@
     describe(
         'gawebtoolkit ga-map controller interface tests',
         function() {
-            var $compile, $scope, $timeout, element, listener;
+            var $compile, $scope, $timeout, element, listener, layerAddedListener;
 
             // Load the myApp module, which contains the directive
             beforeEach(module('testApp'));
@@ -18,9 +18,13 @@
                 $timeout = _$timeout_;
                 $scope = _$rootScope_;
                 listener = jasmine.createSpy('listener');
+                layerAddedListener = jasmine.createSpy('layerAddedListener');
                 $scope.$on('mapControllerReady', function (event, args) {
                     listener(args);
                     $scope.mapController = args;
+                });
+                $scope.$on('layerAdded', function (event, args) {
+                    layerAddedListener(args);
                 });
                 element = angular
                     .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
@@ -32,6 +36,8 @@
                     'layer-type="WMS"' +
                     'is-base-layer="true"' +
                     '></ga-map-layer>' +
+                    '<ga-feature-layer layer-name="my feature layer" refresh-layer="{{refreshTest}}">' +
+                    '</ga-feature-layer>' +
                     '<div id="gamap"></div></ga-map>');
                 $compile(element)($scope);
                 $scope.$digest();
@@ -79,6 +85,13 @@
                     expect(passed).toBe(true);
                 });
                 $timeout.flush();
+            });
+
+            it('Should be reconstruct layer when refreshLayer value changes.', function () {
+                expect($scope.mapController !== null);
+                $scope.refreshTest = 0;
+                $scope.$digest();
+                expect(layerAddedListener).toHaveBeenCalled();
             });
         });
 })();
