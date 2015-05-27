@@ -782,6 +782,8 @@
                         pos = ol.proj.transform(pos, service.displayProjection, mapInstance.getView().getProjection());
                     }
                     var result = mapInstance.getPixelFromCoordinate(pos);
+                    //Due to olv3 rendering async, function getPixelFromCoordinate may return null and a force render is required.
+                    if(result == null) mapInstance.renderSync();result = mapInstance.getPixelFromCoordinate(pos);
                     return {
                         x: result[0],
                         y: result[1]
