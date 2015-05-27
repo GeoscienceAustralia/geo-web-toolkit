@@ -16,25 +16,28 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         createLayer: function (args) {
             var layer;
             //var options = service.defaultLayerOptions(args);
-            switch (args.layerType) {
-                case 'WMS':
+            switch (args.layerType.toLowerCase()) {
+                case 'wms':
                     layer = service.createWMSLayer(args);
                     break;
-                case 'XYZTileCache':
+                case 'xyztilecache':
                     layer = service.createXYZLayer(args);
                     break;
-                case 'ArcGISCache':
+                case 'arcgiscache':
                     layer = service.createArcGISCacheLayer(args);
                     break;
-                case 'Vector':
+                case 'vector':
                     layer = service.createFeatureLayer(args);
                     break;
-                case 'GoogleStreet':
-                case 'GoogleHybrid':
-                case 'GoogleSatellite':
-                case 'GoogleTerrain':
-                    //Deprecated
+                case 'googlestreet':
+                case 'googlehybrid':
+                case 'googlesatellite':
+                case 'googleterrain':
+                    //Deprecated - use vendor specific directives
                     layer = service.createGoogleMapsLayer(args);
+                    break;
+                case 'markerlayer':
+                    layer = service.createMarkerLayer(args);
                     break;
                 default:
                     throw new Error(
@@ -163,6 +166,9 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
 
 
             return layer;
+        },
+        createMarkerLayer: function (args) {
+            return new OpenLayers.Layer.Markers(args.layerName);
         },
         createGoogleMapsLayer: function (args) {
             var googleLayerType;
@@ -395,9 +401,11 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 mapInstance.removeLayer(layers[i]);
             }
         },
-        //Deprecated. Anything using this method needs to change.
-        //If external, to use removeLayerById
-        //If internal to olv2server, just use olv2 removeLayer method
+        /*
+        Deprecated. Anything using this method needs to change.
+        If external, to use removeLayerById
+        If internal to olv2service, just use olv2 removeLayer method
+        */
         removeLayer: function (mapInstance, layerInstance) {
             mapInstance.removeLayer(layerInstance);
         },
