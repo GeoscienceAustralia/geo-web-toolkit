@@ -64,7 +64,7 @@ NG_DOCS={
       "type": "directive",
       "moduleName": "gawebtoolkit.core",
       "shortDescription": "A wrapper for a native map marker",
-      "keywords": "api core directive gamap gawebtoolkit map marker marker-directives native wrapper"
+      "keywords": "allocated api core directive gamap gawebtoolkit height icon latitude layername longitude map marker marker-directives markerheight markericon markerlat markerlong markerwidth native set url width wrapper"
     },
     {
       "section": "api",

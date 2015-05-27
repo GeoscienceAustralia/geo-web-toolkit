@@ -169,7 +169,12 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
             setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl, args);
+                return service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl, args);
+            },
+            removeMapMarker: function(mapInstance,markerId,version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                service.removeMapMarker(mapInstance,markerId);
             },
             getLonLatFromPixel: function (mapInstance, x, y, projection, version) {
                 var useVersion = version || 'olv2';

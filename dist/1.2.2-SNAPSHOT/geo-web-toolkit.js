@@ -2884,6 +2884,11 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             var service = mapLayerServiceLocator.getImplementation(useVersion);
             return service.createOsmLayer(args);
         },
+        createMarkerLayer: function (args, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            return service.createMarkerLayer(args);
+        },
         removeLayerByName: function (mapInstance, layerName,version) {
             var useVersion = version || 'olv2';
             var service = mapLayerServiceLocator.getImplementation(useVersion);
@@ -3111,43 +3116,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             //$scope.waitingForNumberOfLayers = 0;
             $scope.initialPositionSet = false;
 
-            //var waiting = false;
-//            var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
-//                $log.info('layers remaining - ' + val);
-//                if (waiting && val === 0) {
-//					$scope.asyncLayersDeferred.resolve();
-//                    waitForLayersWatch();
-//                }
-//                if (val > 0) {
-//                    waiting = true;
-//                }
-//            });
             $scope.layerPromises = [];
             $scope.layerDtoPromises = [];
-            //TODO Auto fix layer orders to match DOM of ga-map.
-            function orderLayers() {
-                var domLayers = $('ga-map-layer,ga-feature-layer,ga-marker-layer');
-                var allLayers = self.getLayers();
-                var relativeLayerIndex = 0;
-                for (var i = 0; i < domLayers.length; i++) {
-                    var el = domLayers[i];
-
-                    var elementScope = $(el).isolateScope();
-                    var elementLayerId = elementScope.layerDto != null ? elementScope.layerDto.id : null;
-                    if(elementLayerId != null) {
-                        for (var j = 0; j < allLayers.length; j++) {
-                            var currentLayer = allLayers[j];
-                            if(currentLayer.id === elementLayerId) {
-                                if(relativeLayerIndex !== j) {
-                                    //raise/lower layer to correct order
-//                                    self.raiseLayerDrawOrder(currentLayer.id,relativeLayerIndex - j);
-                                }
-                            }
-                        }
-                        relativeLayerIndex++;
-                    }
-                }
-            }
             var self = this;
             /**
              * @ngdoc method
@@ -3182,7 +3152,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                             } else {
                                 var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer, $scope.framework);
                                 deferredLayer.resolve(layerDto);
-                                orderLayers();
+                                //Layers added late in the cycle take care of updating order of layers.
                                 $scope.$emit('layerAdded', layerDto);
                             }
 						});
@@ -3195,9 +3165,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 						//$log.info(layer);
 						var layerDto = GAMapService.addLayer($scope.mapInstance, layer, $scope.framework);
                         deferredLayer.resolve(layerDto);
-                        orderLayers();
 						$scope.$emit('layerAdded', layerDto);
 					} else {
+
 						$scope.layerPromises.push(deferredAll.promise);
                         $scope.layerDtoPromises.push(deferredLayer);
                         //Wait for digest
@@ -3205,6 +3175,41 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 					}
 				}
                 return deferredLayer.promise;
+            };
+
+            var initialMarkerLayers = [];
+            $scope.deferredMarkers = [];
+
+            self.addMarkerLayer = function(layer, groupName) {
+                  if(!groupName) {
+                      return self.addLayer(layer);
+                  } else {
+                      initialMarkerLayers.push(groupName);
+                      var foundExistingGroup = false;
+                      var markerLayer;
+                      for (var i = 0; i < initialMarkerLayers.length; i++) {
+                          markerLayer = initialMarkerLayers[i];
+                          if(markerLayer === groupName) {
+                              foundExistingGroup = true;
+                              break;
+                          }
+                      }
+
+                      if(!foundExistingGroup) {
+                          return self.addLayer(layer);
+                      } else {
+                          if (!$scope.layersReady) {
+                              var initDeferred = $q.defer();
+                              $scope.deferredMarkers.push(initDeferred);
+                              return initDeferred.promise;
+                          } else {
+                              var deferred = $q.defer();
+                              deferred.resolve();
+                              return deferred.promise;
+                          }
+
+                      }
+                  }
             };
 
             self.getMapOptions = function () {
@@ -4469,11 +4474,16 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param point {Point} - screen point to place the marker
              * @param markerGroupName {string} - group name associated with the new marker
              * @param iconUrl {string} - A url to the desired icon for the marker
-             *
+             * @param args {object} - Contains properties 'width' and 'height' for deinfining the size of a the marker
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
-                GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
+                return GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
             };
+
+            self.removeMapMarker = function(markerId) {
+                GAMapService.removeMapMarker($scope.mapInstance, markerId, $scope.framework);
+            };
+
             /**
              * Removes the first layer found that matches the name provided
              *
@@ -4811,6 +4821,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                         allLayerDtos.push(layerDto);
                     }
                 }
+                for (var deferredMarkerIndex = 0; deferredMarkerIndex < scope.deferredMarkers.length; deferredMarkerIndex++) {
+                    scope.deferredMarkers[deferredMarkerIndex].resolve();
+                }
                 /**
                  * Sends an instance of all map layers when they are all loaded to parent listeners
                  * @eventType emit
@@ -5063,7 +5076,12 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
             setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
-                service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl, args);
+                return service.setMapMarker(mapInstance, coords, markerGroupName, iconUrl, args);
+            },
+            removeMapMarker: function(mapInstance,markerId,version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                service.removeMapMarker(mapInstance,markerId);
             },
             getLonLatFromPixel: function (mapInstance, x, y, projection, version) {
                 var useVersion = version || 'olv2';
@@ -5190,51 +5208,111 @@ app.service('mapServiceLocator', ['$injector', function ($injector) {
         }
     };
 }]);
-var angular = angular || {};
+/* global angular */
+(function () {
+    "use strict";
+    var app = angular.module('gawebtoolkit.core.marker-directives',
+        [
+            'gawebtoolkit.core.map-directives',
+            'gawebtoolkit.core.map-services',
+            'gawebtoolkit.core.layer-services'
+        ]);
 
-var app = angular.module('gawebtoolkit.core.marker-directives',
-    [
-        'gawebtoolkit.core.map-directives',
-        'gawebtoolkit.core.map-services',
-        'gawebtoolkit.core.layer-services'
-    ]);
+    /**
+     * @ngdoc directive
+     * @name gawebtoolkit.core.marker-directives:gaMapMarker
+     * @param {string|@} markerIcon - Marker icon url
+     * @param {string|@} markerLat - Latitude for the marker
+     * @param {string|@} markerLong - Longitude for the marker
+     * @param {string|@} markerWidth - Width set for the marker icon
+     * @param {string|@} markerHeight - Height set for the marker icon
+     * @param {string|@} layerName - A name allocated to the marker
+     * @description
+     * A wrapper for a native map marker
+     * @scope
+     * @restrict E
+     * @require gaMap
+     * @example
+     */
+    app.directive('gaMapMarker', ['$log','$timeout','GALayerService', function ($log,$timeout,GALayerService) {
+        return {
+            restrict: "E",
+            require: "^gaMap",
+            scope: {
+                markerIcon: "@",
+                markerLong: "@",
+                markerLat: "@",
+                markerId: "@",
+                markerWidth: "@",
+                markerHeight: "@",
+                mapMarkerClicked: "&",
+                // Default is to create a layer per marker,
+                // but layer name can be provided to group all the markers on a single layer
+                layerName: "@"
+            },
+            link: function ($scope, element, attrs, mapController) {
+                $scope.framework = mapController.getFrameworkVersion();
+                attrs.$observe('markerIcon', function (newVal) {
 
-/**
- * @ngdoc directive
- * @name gawebtoolkit.core.marker-directives:gaMapMarker
- * @description
- * A wrapper for a native map marker
- * @scope
- * @restrict E
- * @require gaMap
- * @example
- */
-app.directive('gaMapMarker', [ function () {
-    'use strict';
-    return {
-        restrict: "E",
-        require: "^gaMap",
-        scope: {
-            markerIcon: "@",
-            markerLong: "@",
-            markerLat: "@",
-            markerId: "@",
-            mapMarkerClicked: "&"
-        },
-        link: function (scope, element, attrs, mapController) {
-            element.bind("click", function () {
-                scope.mapMarkerClicked({
-                    id: scope.markerId
                 });
-            });
 
-            if (!scope.mapControlName) {
-                return;
+                attrs.$observe('markerLong', function (newVal) {
+
+                });
+
+                attrs.$observe('markerLat', function (newVal) {
+
+                });
+
+                attrs.$observe('markerId', function (newVal) {
+
+                });
+
+                attrs.$observe('markerWidth', function (newVal) {
+
+                });
+                attrs.$observe('markerHeight', function (newVal) {
+
+                });
+
+
+                function createMapMarker() {
+                    var lat,lon,width,height, iconUrl;
+                    iconUrl = $scope.markerIcon;
+
+
+                    if(typeof $scope.markerLong === 'string') {
+                        lon = parseFloat($scope.markerLong);
+                    }
+
+                    if(typeof $scope.markerLat === 'string') {
+                        lat = parseFloat($scope.markerLat);
+                    }
+
+                    if(typeof $scope.markerWidth === 'string') {
+                        width = parseInt($scope.markerWidth);
+                    }
+
+                    if(typeof $scope.markerHeight === 'string') {
+                        height = parseInt($scope.markerHeight);
+                    }
+                    var layer = GALayerService.createLayer({layerType:'markerlayer',layerName: $scope.layerName },$scope.framework);
+                    mapController.addMarkerLayer(layer, $scope.layerName).then(function () {
+                        //Force digest to process initial async layers in correct order
+                        var position = mapController.getPixelFromLonLat(lon, lat);
+                        $scope.markerDto = mapController.setMapMarker(position,$scope.layerName,iconUrl,{width:width,height:height});
+
+                    });
+                }
+                createMapMarker();
+
+                $scope.$on('$destroy', function () {
+                    mapController.removeMapMarker($scope.markerDto.id);
+                });
             }
-            mapController.addControl(scope.mapControlName, scope.controlOptions, element);
-        }
-    };
-} ]);
+        };
+    }]);
+})();
 var angular = angular || {};
 var console = console || {};
 var $ = $ || {};
@@ -5254,17 +5332,17 @@ app.service('GAWTUtils', [ function() {
          });
       },
       convertHexToRgb: function (hexVal) {
-         function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
-         function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
-         function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
-         function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
+         function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16);}
+         function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16);}
+         function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16);}
+         function cutHex(h) {return (h.charAt(0)==="#") ? h.substring(1,7):h;}
          return [hexToR(hexVal),hexToG(hexVal),hexToB(hexVal)];
       },
       convertHexAndOpacityToRgbArray: function (hexVal, opacity) {
-         function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
-         function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
-         function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
-         function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
+         function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16);}
+         function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16);}
+         function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16);}
+         function cutHex(h) {return (h.charAt(0)==="#") ? h.substring(1,7):h;}
          return [hexToR(hexVal),hexToG(hexVal),hexToB(hexVal), opacity];
       }
 
@@ -5787,25 +5865,28 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         createLayer: function (args) {
             var layer;
             //var options = service.defaultLayerOptions(args);
-            switch (args.layerType) {
-                case 'WMS':
+            switch (args.layerType.toLowerCase()) {
+                case 'wms':
                     layer = service.createWMSLayer(args);
                     break;
-                case 'XYZTileCache':
+                case 'xyztilecache':
                     layer = service.createXYZLayer(args);
                     break;
-                case 'ArcGISCache':
+                case 'arcgiscache':
                     layer = service.createArcGISCacheLayer(args);
                     break;
-                case 'Vector':
+                case 'vector':
                     layer = service.createFeatureLayer(args);
                     break;
-                case 'GoogleStreet':
-                case 'GoogleHybrid':
-                case 'GoogleSatellite':
-                case 'GoogleTerrain':
-                    //Deprecated
+                case 'googlestreet':
+                case 'googlehybrid':
+                case 'googlesatellite':
+                case 'googleterrain':
+                    //Deprecated - use vendor specific directives
                     layer = service.createGoogleMapsLayer(args);
+                    break;
+                case 'markerlayer':
+                    layer = service.createMarkerLayer(args);
                     break;
                 default:
                     throw new Error(
@@ -5934,6 +6015,9 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
 
 
             return layer;
+        },
+        createMarkerLayer: function (args) {
+            return new OpenLayers.Layer.Markers(args.layerName);
         },
         createGoogleMapsLayer: function (args) {
             var googleLayerType;
@@ -6166,9 +6250,11 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 mapInstance.removeLayer(layers[i]);
             }
         },
-        //Deprecated. Anything using this method needs to change.
-        //If external, to use removeLayerById
-        //If internal to olv2server, just use olv2 removeLayer method
+        /*
+        Deprecated. Anything using this method needs to change.
+        If external, to use removeLayerById
+        If internal to olv2service, just use olv2 removeLayer method
+        */
         removeLayer: function (mapInstance, layerInstance) {
             mapInstance.removeLayer(layerInstance);
         },
@@ -6322,6 +6408,9 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     case 'Vector':
                         layer = service.createFeatureLayer(args);
                         break;
+                    case 'markerlayer':
+                        layer = service.createMarkerLayer(args);
+                        break;
                     case 'GoogleStreet':
                     case 'GoogleHybrid':
                     case 'GoogleSatellite':
@@ -6395,6 +6484,14 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 layer.set('isBaseLayer', args.isBaseLayer || false);
 
                 return layer;
+            },
+            createMarkerLayer: function (args) {
+                var result = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    format: new ol.format.GeoJSON()
+                });
+                result.set('name', args.layerName);
+                return result;
             },
             createGoogleLayer: function (args) {
                 throw new Error("Google map layers are not supported with OpenLayers 3. To use a Google maps layer, consider falling back to framework 'olv2'.");
@@ -7372,7 +7469,7 @@ app.service('olv2MapService', [
 				}
 			},
 			setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
-				var markerLayer = mapInstance.getLayersBy('name', markerGroupName);
+				var markersLayers = mapInstance.getLayersBy('name', markerGroupName);
 
 				var opx = mapInstance.getLonLatFromPixel(coords);
 
@@ -7381,15 +7478,32 @@ app.service('olv2MapService', [
 				var icon = new OpenLayers.Icon(iconUrl, size, offset);
 				var marker = new OpenLayers.Marker(opx, icon.clone());
 				marker.map = mapInstance;
-
+				var id = GAWTUtils.generateUuid();
+				marker.id = id;
 				// Marker layer exists so get the layer and add the marker
-				if (markerLayer != null && markerLayer.length > 0) {
-					markerLayer[0].addMarker(marker);
+				if (markersLayers != null && markersLayers.length > 0 && typeof markersLayers[0].addMarker === 'function') {
+					markersLayers[0].addMarker(marker);
 				} else { // Marker layer does not exist so we create the layer then add the marker
 					var markers = new OpenLayers.Layer.Markers(markerGroupName);
 
 					mapInstance.addLayer(markers);
 					markers.addMarker(marker);
+				}
+				return {id: id, groupName: markerGroupName};
+			},
+			removeMapMarker: function(mapInstance, markerId) {
+				for (var i = 0; i < mapInstance.layers.length; i++) {
+					var layer = mapInstance.layers[i];
+					if(layer.markers != null && layer.markers.length > 0) {
+						for (var j = 0; j < layer.markers.length; j++) {
+							var marker = layer.markers[j];
+							if(marker.id === markerId) {
+								layer.removeMarker(marker);
+								break;
+							}
+						}
+						break;
+					}
 				}
 			},
 			getLonLatFromPixel: function (mapInstance, x, y, projection) {
@@ -7421,7 +7535,11 @@ app.service('olv2MapService', [
 				if (lat == null) {
 					throw new ReferenceError("'lat' value cannot be null or undefined");
 				}
-				return mapInstance.getPixelFromLonLat(new OpenLayers.LonLat(lon, lat));
+				var pos = new OpenLayers.LonLat(lon, lat);
+				if (service.displayProjection && service.displayProjection !== mapInstance.projection) {
+					pos = pos.transform(service.displayProjection, mapInstance.projection);
+				}
+				return mapInstance.getPixelFromLonLat(pos);
 			},
 			getPointFromEvent: function (e) {
 				// Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
@@ -8529,7 +8647,8 @@ app.service('olv2MapService', [
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
-                    iconFeature.setId(GAWTUtils.generateUuid());
+                    var id = GAWTUtils.generateUuid();
+                    iconFeature.setId(id);
 
                     var iconStyle = new ol.style.Style({
                         image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -8554,6 +8673,23 @@ app.service('olv2MapService', [
                         });
                         markerLayer.set('name', markerGroupName);
                         mapInstance.addLayer(markerLayer);
+                    }
+                    return { id: id, groupName: markerGroupName};
+                },
+                removeMapMarker: function(mapInstance, markerId) {
+                    for (var i = 0; i < mapInstance.getLayers().getLength(); i++) {
+                        var layer = mapInstance.getLayers().item(i);
+                        var source = layer.getSource();
+                        if(typeof source.getFeatures === 'function' && source.getFeatures().length > 0) {
+                            for (var j = 0; j < source.getFeatures().length; j++) {
+                                var marker = source.getFeatures()[j];
+                                if(marker.getId() === markerId) {
+                                    source.removeFeature(marker);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                     }
                 },
                 getLonLatFromPixel: function (mapInstance, x, y, projection) {
@@ -8585,7 +8721,17 @@ app.service('olv2MapService', [
                     if (lat == null) {
                         throw new ReferenceError("'lat' value cannot be null or undefined");
                     }
-                    return mapInstance.getPixelFromCoordinate([lon, lat]);
+                    var pos = [lon, lat];
+                    if(service.displayProjection !== mapInstance.getView().getProjection().getCode()) {
+                        pos = ol.proj.transform(pos, service.displayProjection, mapInstance.getView().getProjection());
+                    }
+                    var result = mapInstance.getPixelFromCoordinate(pos);
+                    //Due to olv3 rendering async, function getPixelFromCoordinate may return null and a force render is required.
+                    if(result == null) mapInstance.renderSync();result = mapInstance.getPixelFromCoordinate(pos);
+                    return {
+                        x: result[0],
+                        y: result[1]
+                    };
                 },
                 getPointFromEvent: function (e) {
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
