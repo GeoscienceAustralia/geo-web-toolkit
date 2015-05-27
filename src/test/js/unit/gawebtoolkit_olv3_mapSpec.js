@@ -246,18 +246,25 @@
                 } catch (e) {
                 }
                 expect(passed).toBe(true);
-            });
+            });*/
             it('Should fire mapController function "getPixelFromLonLat" with an exception given invalid input', function () {
-                var passed = false;
+                var lonPassed = false;
+                var latPassed = false;
                 try {
-                    $scope.mapController.getPixelFromLonLat(null, null);
-                    passed = false;
-                } catch (e) {
-                    passed = true;
+                    $scope.mapController.getPixelFromLonLat(null, 123);
+                } catch(e) {
+                    lonPassed = true;
                 }
-                expect(passed).toBe(true);
+
+                try {
+                    $scope.mapController.getPixelFromLonLat(123, null);
+                } catch(e) {
+                    latPassed = true;
+                }
+
+                expect(lonPassed).toBe(true);
+                expect(latPassed).toBe(true);
             });
-             */
             it('Should fire mapController function "getPointFromEvent" without an exception given valid input', function () {
                 var passed = false;
                 try {

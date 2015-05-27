@@ -19,13 +19,14 @@
 
 <ga-map ng-if="frameworkType != null" framework="{{frameworkType}}" map-element-id="map" zoom-level="4" center-position="[130, -25]">
     <ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" wrap-date-line="'true'"></ga-bing-layer>
+
 </ga-map>
 <script>
     var app = angular.module('simpleMap',['gawebtoolkit.core']);
 
     app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
 
-        $scope.$on('mapControllerReady', function (mapController) {
+        $scope.$on('mapControllerReady', function (event, mapController) {
             $scope.mapController = mapController;
         });
         $scope.frameworkType = 'olv2';

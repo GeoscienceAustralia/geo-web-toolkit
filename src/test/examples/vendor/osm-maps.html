@@ -19,13 +19,19 @@
 <!-- Investigate bug limiting fullscreen size. WIDTH and HEIGHT values seem to be using size of window. -->
 <ga-map ng-if="frameworkType != null" framework="{{frameworkType}}" map-element-id="map" zoom-level="4" center-position="[130, -25]">
     <ga-osm-layer></ga-osm-layer>
+    <ga-map-marker layer-name="myMarkerLayer"
+                   marker-lat="-20"
+                   marker-long="130"
+                   marker-icon="http://localhost:8080/gamaps/content/marker/marker-legal.png"
+                   marker-height="50"
+                   marker-width="50" />
 </ga-map>
 <script>
     var app = angular.module('simpleMap',['gawebtoolkit.core']);
 
     app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
 
-        $scope.$on('mapControllerReady', function (mapController) {
+        $scope.$on('mapControllerReady', function (event,mapController) {
             $scope.mapController = mapController;
         });
         $scope.frameworkType = 'olv2';
