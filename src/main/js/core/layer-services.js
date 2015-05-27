@@ -33,6 +33,11 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             var service = mapLayerServiceLocator.getImplementation(useVersion);
             return service.createOsmLayer(args);
         },
+        createMarkerLayer: function (args, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            return service.createMarkerLayer(args);
+        },
         removeLayerByName: function (mapInstance, layerName,version) {
             var useVersion = version || 'olv2';
             var service = mapLayerServiceLocator.getImplementation(useVersion);

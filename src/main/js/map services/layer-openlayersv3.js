@@ -27,6 +27,9 @@
                     case 'Vector':
                         layer = service.createFeatureLayer(args);
                         break;
+                    case 'markerlayer':
+                        layer = service.createMarkerLayer(args);
+                        break;
                     case 'GoogleStreet':
                     case 'GoogleHybrid':
                     case 'GoogleSatellite':
@@ -100,6 +103,14 @@
                 layer.set('isBaseLayer', args.isBaseLayer || false);
 
                 return layer;
+            },
+            createMarkerLayer: function (args) {
+                var result = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    format: new ol.format.GeoJSON()
+                });
+                result.set('name', args.layerName);
+                return result;
             },
             createGoogleLayer: function (args) {
                 throw new Error("Google map layers are not supported with OpenLayers 3. To use a Google maps layer, consider falling back to framework 'olv2'.");

@@ -56,43 +56,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             //$scope.waitingForNumberOfLayers = 0;
             $scope.initialPositionSet = false;
 
-            //var waiting = false;
-//            var waitForLayersWatch = $scope.$watch('waitingForNumberOfLayers', function (val) {
-//                $log.info('layers remaining - ' + val);
-//                if (waiting && val === 0) {
-//					$scope.asyncLayersDeferred.resolve();
-//                    waitForLayersWatch();
-//                }
-//                if (val > 0) {
-//                    waiting = true;
-//                }
-//            });
             $scope.layerPromises = [];
             $scope.layerDtoPromises = [];
-            //TODO Auto fix layer orders to match DOM of ga-map.
-            function orderLayers() {
-                var domLayers = $('ga-map-layer,ga-feature-layer,ga-marker-layer');
-                var allLayers = self.getLayers();
-                var relativeLayerIndex = 0;
-                for (var i = 0; i < domLayers.length; i++) {
-                    var el = domLayers[i];
-
-                    var elementScope = $(el).isolateScope();
-                    var elementLayerId = elementScope.layerDto != null ? elementScope.layerDto.id : null;
-                    if(elementLayerId != null) {
-                        for (var j = 0; j < allLayers.length; j++) {
-                            var currentLayer = allLayers[j];
-                            if(currentLayer.id === elementLayerId) {
-                                if(relativeLayerIndex !== j) {
-                                    //raise/lower layer to correct order
-//                                    self.raiseLayerDrawOrder(currentLayer.id,relativeLayerIndex - j);
-                                }
-                            }
-                        }
-                        relativeLayerIndex++;
-                    }
-                }
-            }
             var self = this;
             /**
              * @ngdoc method
@@ -127,7 +92,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                             } else {
                                 var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer, $scope.framework);
                                 deferredLayer.resolve(layerDto);
-                                orderLayers();
+                                //Layers added late in the cycle take care of updating order of layers.
                                 $scope.$emit('layerAdded', layerDto);
                             }
 						});
@@ -140,9 +105,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 						//$log.info(layer);
 						var layerDto = GAMapService.addLayer($scope.mapInstance, layer, $scope.framework);
                         deferredLayer.resolve(layerDto);
-                        orderLayers();
 						$scope.$emit('layerAdded', layerDto);
 					} else {
+
 						$scope.layerPromises.push(deferredAll.promise);
                         $scope.layerDtoPromises.push(deferredLayer);
                         //Wait for digest
@@ -150,6 +115,41 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 					}
 				}
                 return deferredLayer.promise;
+            };
+
+            var initialMarkerLayers = [];
+            $scope.deferredMarkers = [];
+
+            self.addMarkerLayer = function(layer, groupName) {
+                  if(!groupName) {
+                      return self.addLayer(layer);
+                  } else {
+                      initialMarkerLayers.push(groupName);
+                      var foundExistingGroup = false;
+                      var markerLayer;
+                      for (var i = 0; i < initialMarkerLayers.length; i++) {
+                          markerLayer = initialMarkerLayers[i];
+                          if(markerLayer === groupName) {
+                              foundExistingGroup = true;
+                              break;
+                          }
+                      }
+
+                      if(!foundExistingGroup) {
+                          return self.addLayer(layer);
+                      } else {
+                          if (!$scope.layersReady) {
+                              var initDeferred = $q.defer();
+                              $scope.deferredMarkers.push(initDeferred);
+                              return initDeferred.promise;
+                          } else {
+                              var deferred = $q.defer();
+                              deferred.resolve();
+                              return deferred.promise;
+                          }
+
+                      }
+                  }
             };
 
             self.getMapOptions = function () {
@@ -1414,11 +1414,16 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param point {Point} - screen point to place the marker
              * @param markerGroupName {string} - group name associated with the new marker
              * @param iconUrl {string} - A url to the desired icon for the marker
-             *
+             * @param args {object} - Contains properties 'width' and 'height' for deinfining the size of a the marker
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
-                GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
+                return GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
             };
+
+            self.removeMapMarker = function(markerId) {
+                GAMapService.removeMapMarker($scope.mapInstance, markerId, $scope.framework);
+            };
+
             /**
              * Removes the first layer found that matches the name provided
              *
@@ -1755,6 +1760,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                         scope.layerDtoPromises[i].resolve(layerDto);
                         allLayerDtos.push(layerDto);
                     }
+                }
+                for (var deferredMarkerIndex = 0; deferredMarkerIndex < scope.deferredMarkers.length; deferredMarkerIndex++) {
+                    scope.deferredMarkers[deferredMarkerIndex].resolve();
                 }
                 /**
                  * Sends an instance of all map layers when they are all loaded to parent listeners

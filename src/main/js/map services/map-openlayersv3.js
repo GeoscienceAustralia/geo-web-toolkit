@@ -769,7 +769,8 @@
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
-                    iconFeature.setId(GAWTUtils.generateUuid());
+                    var id = GAWTUtils.generateUuid();
+                    iconFeature.setId(id);
 
                     var iconStyle = new ol.style.Style({
                         image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -795,6 +796,23 @@
                         });
                         markerLayer.set('name', markerGroupName);
                         mapInstance.addLayer(markerLayer);
+                    }
+                    return { id: id, groupName: markerGroupName};
+                },
+                removeMapMarker: function(mapInstance, markerId) {
+                    for (var i = 0; i < mapInstance.getLayers().getLength(); i++) {
+                        var layer = mapInstance.getLayers().item(i);
+                        var source = layer.getSource();
+                        if(typeof source.getFeatures === 'function' && source.getFeatures().length > 0) {
+                            for (var j = 0; j < source.getFeatures().length; j++) {
+                                var marker = source.getFeatures()[j];
+                                if(marker.getId() === markerId) {
+                                    source.removeFeature(marker);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                     }
                 },
                 getLonLatFromPixel: function (mapInstance, x, y, projection) {
@@ -832,6 +850,17 @@
                     if (lat == null) {
                         throw new ReferenceError("'lat' value cannot be null or undefined");
                     }
+                    var pos = [lon, lat];
+                    if(service.displayProjection !== mapInstance.getView().getProjection().getCode()) {
+                        pos = ol.proj.transform(pos, service.displayProjection, mapInstance.getView().getProjection());
+                    }
+                    var result = mapInstance.getPixelFromCoordinate(pos);
+                    //Due to olv3 rendering async, function getPixelFromCoordinate may return null and a force render is required.
+                    if(result == null) { mapInstance.renderSync();result = mapInstance.getPixelFromCoordinate(pos); }
+                    return {
+                        x: result[0],
+                        y: result[1]
+                    };
                     if(service.is3d(mapInstance)) {
                         //TODO reverse ray pick
                     }

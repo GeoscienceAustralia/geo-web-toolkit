@@ -415,7 +415,7 @@ app.service('olv2MapService', [
 				}
 			},
 			setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
-				var markerLayer = mapInstance.getLayersBy('name', markerGroupName);
+				var markersLayers = mapInstance.getLayersBy('name', markerGroupName);
 
 				var opx = mapInstance.getLonLatFromPixel(coords);
 
@@ -424,15 +424,32 @@ app.service('olv2MapService', [
 				var icon = new OpenLayers.Icon(iconUrl, size, offset);
 				var marker = new OpenLayers.Marker(opx, icon.clone());
 				marker.map = mapInstance;
-
+				var id = GAWTUtils.generateUuid();
+				marker.id = id;
 				// Marker layer exists so get the layer and add the marker
-				if (markerLayer != null && markerLayer.length > 0 && markerLayer[0].addMarker instanceof OpenLayers.Layer.Markers) {
-					markerLayer[0].addMarker(marker);
+				if (markersLayers != null && markersLayers.length > 0 && typeof markersLayers[0].addMarker === 'function') {
+					markersLayers[0].addMarker(marker);
 				} else { // Marker layer does not exist so we create the layer then add the marker
 					var markers = new OpenLayers.Layer.Markers(markerGroupName);
 
 					mapInstance.addLayer(markers);
 					markers.addMarker(marker);
+				}
+				return {id: id, groupName: markerGroupName};
+			},
+			removeMapMarker: function(mapInstance, markerId) {
+				for (var i = 0; i < mapInstance.layers.length; i++) {
+					var layer = mapInstance.layers[i];
+					if(layer.markers != null && layer.markers.length > 0) {
+						for (var j = 0; j < layer.markers.length; j++) {
+							var marker = layer.markers[j];
+							if(marker.id === markerId) {
+								layer.removeMarker(marker);
+								break;
+							}
+						}
+						break;
+					}
 				}
 			},
 			getLonLatFromPixel: function (mapInstance, x, y, projection) {
@@ -464,7 +481,11 @@ app.service('olv2MapService', [
 				if (lat == null) {
 					throw new ReferenceError("'lat' value cannot be null or undefined");
 				}
-				return mapInstance.getPixelFromLonLat(new OpenLayers.LonLat(lon, lat));
+				var pos = new OpenLayers.LonLat(lon, lat);
+				if (service.displayProjection && service.displayProjection !== mapInstance.projection) {
+					pos = pos.transform(service.displayProjection, mapInstance.projection);
+				}
+				return mapInstance.getPixelFromLonLat(pos);
 			},
 			getPointFromEvent: function (e) {
 				// Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
