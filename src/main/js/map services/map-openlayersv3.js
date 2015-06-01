@@ -7,7 +7,8 @@
         [
             'gawebtoolkit.mapservices.layer.openlayersv3',
             'gawebtoolkit.mapservices.controls.openlayersv3',
-            'gawebtoolkit.mapservices.map.ol3cesium'
+            'gawebtoolkit.mapservices.map.ol3cesium',
+            'gawebtoolkit.events-openlayers3'
         ]);
 
     var olCesiumInstance;
@@ -19,11 +20,12 @@
         'GAWTUtils',
         'GeoLayer',
         'ol3CesiumMapService',
+        'ol3CesiumEventManager',
         'ga.config',
         '$q',
         '$log',
         '$timeout',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, ol3CesiumMapService, appConfig, $q, $log, $timeout) {
+        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, ol3CesiumMapService,ol3CesiumEventManager, appConfig, $q, $log, $timeout) {
 
             function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
                 var _geowebtoolkit = mapInstance.get('_geowebtoolkit') || {};
@@ -172,10 +174,11 @@
                     cleanClientCache(mapInstance, olv3LayerService);
                 },
                 registerMapMouseMove: function (mapInstance, callback) {
-                    $(mapInstance.getViewport()).on('mousemove', callback);
+                    ol3CesiumEventManager.registerMapMouseMove(mapInstance, olCesiumInstance,callback);
                 },
                 registerMapClick: function (mapInstance, callback) {
                     if (callback == null) {
+                        $log.error('callback provided to "registerMapClick" was null');
                         return;
                     }
                     if(service.is3d(mapInstance)) {
@@ -196,14 +199,7 @@
                 },
                 //TODO unregister
                 registerMapMouseMoveEnd: function (mapInstance, callback) {
-                    $(mapInstance.getViewport()).on('mousemove', function (obj, e) {
-                        if (service.mousemoveTimeout !== undefined) {
-                            window.clearTimeout(service.mousemoveTimeout);
-                        }
-                        service.mousemoveTimeout = window.setTimeout(function () {
-                            callback(obj, e);
-                        }, 100);
-                    });
+                    ol3CesiumEventManager.registerMapMouseMoveEnd(mapInstance, olCesiumInstance,callback);
                 },
                 registerMapEvent: function (mapInstance, eventName, callback) {
                     if(service.is3d(mapInstance)) {
