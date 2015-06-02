@@ -191,6 +191,9 @@ app.service('olv2MapService', [
 			},
 			activateControl: function (mapInstance, controlId) {
 				var control = service.getControlById(mapInstance, controlId);
+				if(control == null) {
+					throw new Error('Control "' + controlId + '" not found. Failed to activate control');
+				}
 				control.activate();
 			},
 			deactivateControl: function (mapInstance, controlId) {
@@ -307,6 +310,18 @@ app.service('olv2MapService', [
 					throw new TypeError('Expected number');
 				}
 				mapInstance.zoomTo(zoomLevel);
+			},
+			getMapElementId: function (mapInstance) {
+				if(typeof mapInstance.div === 'object') {
+					return $(mapInstance.div)[0].id;
+				}
+				return mapInstance.div;
+			},
+			getProjection: function (mapInstance) {
+				return mapInstance.projection;
+			},
+			getDisplayProjection: function (mapInstance) {
+				return mapInstance.displayProjection || service.displayProjection || 'EPSG:4326';
 			},
 			/**
 			 * Changes base layer to specified layer ID

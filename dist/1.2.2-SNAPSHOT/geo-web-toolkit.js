@@ -3107,7 +3107,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             zoomLevel: '@',
             isStaticMap:'@',
 			initialExtent: '=',
-            framework:'@'
+            framework:'@',
+            existingMapInstance: '='
         },
         controller: ['$scope',function ($scope) {
 			$log.info('map creation started...');
@@ -4008,7 +4009,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getProjection = function () {
-                return $scope.datumProjection;
+                return GAMapService.getProjection($scope.mapInstance,self.getFrameworkVersion());
             };
             /**
              *
@@ -4077,7 +4078,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getDisplayProjection = function () {
-                return $scope.displayProjection;
+                return GAMapService.getDisplayProjection($scope.mapInstance, self.getFrameworkVersion());
             };
 
             /**
@@ -4465,7 +4466,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @return {string}
              * */
             self.getMapElementId = function () {
-                return $scope.mapElementId;
+                return GAMapService.getMapElementId($scope.mapInstance,$scope.framework);
             };
             /**
              * Adds a marker to an existing marker group/layer or creates a new group/layer to add
@@ -4731,7 +4732,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 //                return layersReadyDeferred.promise;
 //            };
             self.getFrameworkVersion = function () {
-                return $scope.framework;
+                if(OpenLayers != null && $scope.mapInstance instanceof OpenLayers.Map) {
+                    return 'olv2';
+                }
+                if(ol != null && $scope.mapInstance instanceof ol.Map) {
+                    return 'olv3';
+                }
             };
             $scope.gaMap = self;
 
@@ -4750,16 +4756,21 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              return $scope.mapInstance;
              };*/
 
-            //Initialise map
-            $scope.mapInstance = GAMapService.initialiseMap({
-                mapElementId: $scope.mapElementId,
-                datumProjection: $scope.datumProjection,
-                displayProjection: $scope.displayProjection,
-                initialExtent: $scope.initialExtent,
-                centerPosition: $scope.centerPosition,
-                zoomLevel: $scope.zoomLevel,
-                isStaticMap: $scope.isStaticMap
-            }, $scope.framework);
+            if($scope.existingMapInstance) {
+                $scope.mapInstance = $scope.existingMapInstance;
+            } else {
+                //Initialise map
+                $scope.mapInstance = GAMapService.initialiseMap({
+                    mapElementId: $scope.mapElementId,
+                    datumProjection: $scope.datumProjection,
+                    displayProjection: $scope.displayProjection,
+                    initialExtent: $scope.initialExtent,
+                    centerPosition: $scope.centerPosition,
+                    zoomLevel: $scope.zoomLevel,
+                    isStaticMap: $scope.isStaticMap
+                }, $scope.framework);
+            }
+
 
             /**
              * Sends an instance of the map to any parent listens
@@ -4839,7 +4850,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 //layersReadyDeferred.resolve(allLayerDtos);
 
                 scope.layersReady = true;
-                scope.gaMap.setInitialPositionAndZoom();
+                if(!scope.existingMapInstance) {
+                    scope.gaMap.setInitialPositionAndZoom();
+                }
             }
 		},
         transclude: false
@@ -4935,6 +4948,21 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);
                 service.zoomTo(mapInstance, zoomLevel);
+            },
+            getMapElementId: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getMapElementId(mapInstance);
+            },
+            getProjection: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getProjection(mapInstance);
+            },
+            getDisplayProjection: function(mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getDisplayProjection(mapInstance);
             },
             currentZoomLevel: function (mapInstance, version) {
                 var useVersion = version || 'olv2';
@@ -6424,7 +6452,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                             args.layerType
                         );
                 }
-                layer.geoLayerType = args.layerType;
+                layer.set('geoLayerType',args.layerType);
                 if(args.maxZoomLevel) {
                     layer.geoMaxZoom = parseInt(args.maxZoomLevel);
                 }
@@ -7245,6 +7273,9 @@ app.service('olv2MapService', [
 			},
 			activateControl: function (mapInstance, controlId) {
 				var control = service.getControlById(mapInstance, controlId);
+				if(control == null) {
+					throw new Error('Control "' + controlId + '" not found. Failed to activate control');
+				}
 				control.activate();
 			},
 			deactivateControl: function (mapInstance, controlId) {
@@ -7361,6 +7392,18 @@ app.service('olv2MapService', [
 					throw new TypeError('Expected number');
 				}
 				mapInstance.zoomTo(zoomLevel);
+			},
+			getMapElementId: function (mapInstance) {
+				if(typeof mapInstance.div === 'object') {
+					return $(mapInstance.div)[0].id;
+				}
+				return mapInstance.div;
+			},
+			getProjection: function (mapInstance) {
+				return mapInstance.projection;
+			},
+			getDisplayProjection: function (mapInstance) {
+				return mapInstance.displayProjection || service.displayProjection || 'EPSG:4326';
 			},
 			/**
 			 * Changes base layer to specified layer ID
@@ -8145,10 +8188,10 @@ app.service('olv2MapService', [
                         return null;
                     }
                     var result = [];
-                    var topLeft = ol.proj.transform([ext[0], ext[3]], mapInstance.getView().getProjection(), service.displayProjection);
-                    var topRight = ol.proj.transform([ext[2], ext[3]], mapInstance.getView().getProjection(), service.displayProjection);
-                    var bottomLeft = ol.proj.transform([ext[0], ext[1]], mapInstance.getView().getProjection(), service.displayProjection);
-                    var bottomRight = ol.proj.transform([ext[2], ext[1]], mapInstance.getView().getProjection(), service.displayProjection);
+                    var topLeft = ol.proj.transform([ext[0], ext[3]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
+                    var topRight = ol.proj.transform([ext[2], ext[3]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
+                    var bottomLeft = ol.proj.transform([ext[0], ext[1]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
+                    var bottomRight = ol.proj.transform([ext[2], ext[1]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
                     result.push(topLeft);
                     result.push(topRight);
                     result.push(bottomLeft);
@@ -8563,6 +8606,15 @@ app.service('olv2MapService', [
                     }
                     mapInstance.getView().setZoom(zoomLevel);
                 },
+                getMapElementId: function (mapInstance) {
+                    return mapInstance.getTarget();
+                },
+                getProjection: function (mapInstance) {
+                    return mapInstance.getView().getProjection().getCode();
+                },
+                getDisplayProjection: function (mapInstance) {
+                    return service.displayProjection || 'ESPG:4326';
+                },
                 /**
                  * Changes base layer to specified layer ID
                  * @param mapInstance {Object} - mapInstance provided by ga-map directive
@@ -8727,7 +8779,7 @@ app.service('olv2MapService', [
                     }
                     var result = mapInstance.getPixelFromCoordinate(pos);
                     //Due to olv3 rendering async, function getPixelFromCoordinate may return null and a force render is required.
-                    if(result == null) mapInstance.renderSync();result = mapInstance.getPixelFromCoordinate(pos);
+                    if(result == null) { mapInstance.renderSync();result = mapInstance.getPixelFromCoordinate(pos); }
                     return {
                         x: result[0],
                         y: result[1]
@@ -9296,7 +9348,7 @@ app.service('olv2MapService', [
                         e.feature = new ol.Feature(new ol.geom.LineString(e.geometry));
                     }
                     var feature = e.feature.clone();
-                    var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection);
+                    var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection || 'EPSG:4326');
                     var format = new ol.format.GeoJSON();
                     var geoJson = format.writeFeature(feature);
                     var featureGeoJson = angular.fromJson(geoJson);
@@ -9419,7 +9471,7 @@ app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
     };
 
     GeoLayer.fromOpenLayersV3Layer = function(layer) {
-        var layerType =layer.geoLayerType;
+        var layerType =layer.geoLayerType || layer.get('geoLayerType');
         var opacity;
         if(typeof layer.get('opacity') === 'string') {
             opacity = Number(layer.get('opacity'));
@@ -10853,6 +10905,9 @@ angular.module('gawebtoolkit.ui.templates', []).run(['$templateCache', function(
                 $scope.$watch('layerOpacity', function (newVal, oldVal) {
                     if (newVal && oldVal !== newVal) {
                         $($element).slider($scope.getSliderOptions());
+                        if($scope.layerId) {
+                            $scope.mapController.setOpacity($scope.layerId,newVal);
+                        }
                     }
                 });
                 //HACK to give jquery ui slider title text.

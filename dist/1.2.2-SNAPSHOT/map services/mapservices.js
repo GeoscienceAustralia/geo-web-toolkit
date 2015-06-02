@@ -72,7 +72,7 @@ app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
     };
 
     GeoLayer.fromOpenLayersV3Layer = function(layer) {
-        var layerType =layer.geoLayerType;
+        var layerType =layer.geoLayerType || layer.get('geoLayerType');
         var opacity;
         if(typeof layer.get('opacity') === 'string') {
             opacity = Number(layer.get('opacity'));

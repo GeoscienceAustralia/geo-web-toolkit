@@ -112,6 +112,9 @@
                 $scope.$watch('layerOpacity', function (newVal, oldVal) {
                     if (newVal && oldVal !== newVal) {
                         $($element).slider($scope.getSliderOptions());
+                        if($scope.layerId) {
+                            $scope.mapController.setOpacity($scope.layerId,newVal);
+                        }
                     }
                 });
                 //HACK to give jquery ui slider title text.
