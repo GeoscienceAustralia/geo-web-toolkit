@@ -33,16 +33,7 @@
         $scope.$on('mapControllerReady', function (event, mapController) {
             $scope.mapController = mapController;
             $scope.myLayers = $scope.mapController.getLayers();
-            console.log($scope.myLayers);
         });
-        $scope.start = function () {
-            console.log('start drawing');
-            $scope.mapController.startDrawingOnLayer('My feature layer',{
-                featureType: $scope.selectedItem,
-                color: "#000000",
-                opacity: 1.0,
-                radius: 6});
-        };
 
         var map = new OpenLayers.Map("map");
 
@@ -65,7 +56,6 @@
         );
 
         map.addLayers([ol_wms, dm_wms]);
-        //map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.zoomToMaxExtent();
 
         $scope.existingInstance = map;

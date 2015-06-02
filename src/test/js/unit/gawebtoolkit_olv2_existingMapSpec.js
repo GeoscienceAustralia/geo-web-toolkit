@@ -28,7 +28,8 @@
                 var elementHtml =
                     '<ga-map ng-if="existingInstance" framework="olv2" existing-map-instance="existingInstance"> ' +
                     '</ga-map>' +
-                    '<ga-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />';
+                    '<ga-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />' +
+                    '<div id="map"></div>';
 
 
                 element = angular
@@ -36,9 +37,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $scope.$digest();
-                var mapEl = document.createElement('div');
-                mapEl.setAttribute('id','map');
-                document.body.appendChild(mapEl);
+
                 var map = new OpenLayers.Map("map");
 
                 var ol_wms = new OpenLayers.Layer.WMS(
@@ -458,11 +457,6 @@
                     passed = true;
                 }
                 expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "getMapElementId" without an exception', function () {
-                var passed = false;
-                var mapElementId = $scope.mapController.getMapElementId();
-                expect(mapElementId).toBe('map');
             });
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
                 var passed = false;

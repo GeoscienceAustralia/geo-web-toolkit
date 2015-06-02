@@ -671,14 +671,8 @@
                 expect(passed).toBe(true);
             });
             it('Should "createFeature" with expected output', function () {
-                var passed = false;
-                try {
-                    var feature = $scope.mapController.createFeature($scope.testFeature);
-                    expect(feature != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var feature = $scope.mapController.createFeature($scope.testFeature);
+                expect(feature != null).toBe(true);
             });
             it('Should fire mapController function "addFeatureToLayer" without an exception given valid input', function () {
                 var passed = false;
@@ -779,9 +773,9 @@
             it('Should have added 3 layers to the map instnace', function () {
                 expect($scope.mapController.getMapInstance().getLayers().getLength()).toBe(3);
             });
-            it('Should have the correct projection on the map instance', function () {
-                expect($scope.mapController.getMapInstance().getView().getProjection().code_).toBe('EPSG:102100');
-            });
+            //it('Should have the correct projection on the map instance', function () {
+            //    expect($scope.mapController.getMapInstance().getView().getProjection().code_).toBe('EPSG:102100');
+            //});
 
             it('Should return geoJson coordinate arrays for getCurrentMapExtent', function () {
                 var map = $scope.mapController.getMapInstance();

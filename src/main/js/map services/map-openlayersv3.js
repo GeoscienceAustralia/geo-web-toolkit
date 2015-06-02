@@ -205,10 +205,10 @@
                         return null;
                     }
                     var result = [];
-                    var topLeft = ol.proj.transform([ext[0], ext[3]], mapInstance.getView().getProjection(), service.displayProjection);
-                    var topRight = ol.proj.transform([ext[2], ext[3]], mapInstance.getView().getProjection(), service.displayProjection);
-                    var bottomLeft = ol.proj.transform([ext[0], ext[1]], mapInstance.getView().getProjection(), service.displayProjection);
-                    var bottomRight = ol.proj.transform([ext[2], ext[1]], mapInstance.getView().getProjection(), service.displayProjection);
+                    var topLeft = ol.proj.transform([ext[0], ext[3]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
+                    var topRight = ol.proj.transform([ext[2], ext[3]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
+                    var bottomLeft = ol.proj.transform([ext[0], ext[1]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
+                    var bottomRight = ol.proj.transform([ext[2], ext[1]], mapInstance.getView().getProjection(), service.displayProjection || 'EPSG:4326');
                     result.push(topLeft);
                     result.push(topRight);
                     result.push(bottomLeft);
@@ -1365,7 +1365,7 @@
                         e.feature = new ol.Feature(new ol.geom.LineString(e.geometry));
                     }
                     var feature = e.feature.clone();
-                    var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection);
+                    var geom = feature.getGeometry().transform(mapInstance.getView().getProjection(),service.displayProjection || 'EPSG:4326');
                     var format = new ol.format.GeoJSON();
                     var geoJson = format.writeFeature(feature);
                     var featureGeoJson = angular.fromJson(geoJson);
