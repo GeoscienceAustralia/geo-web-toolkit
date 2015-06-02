@@ -623,6 +623,15 @@
                     }
                     mapInstance.getView().setZoom(zoomLevel);
                 },
+                getMapElementId: function (mapInstance) {
+                    return mapInstance.getTarget();
+                },
+                getProjection: function (mapInstance) {
+                    return mapInstance.getView().getProjection().getCode();
+                },
+                getDisplayProjection: function (mapInstance) {
+                    return service.displayProjection || 'ESPG:4326';
+                },
                 /**
                  * Changes base layer to specified layer ID
                  * @param mapInstance {Object} - mapInstance provided by ga-map directive

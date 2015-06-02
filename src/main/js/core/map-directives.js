@@ -949,7 +949,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getProjection = function () {
-                return $scope.datumProjection;
+                return GAMapService.getProjection($scope.mapInstance,self.getFrameworkVersion());
             };
             /**
              *
@@ -1018,7 +1018,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * </example>
              * */
             self.getDisplayProjection = function () {
-                return $scope.displayProjection;
+                return GAMapService.getDisplayProjection($scope.mapInstance, self.getFrameworkVersion());
             };
 
             /**
@@ -1406,7 +1406,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @return {string}
              * */
             self.getMapElementId = function () {
-                return $scope.mapElementId;
+                return GAMapService.getMapElementId($scope.mapInstance,$scope.framework);
             };
             /**
              * Adds a marker to an existing marker group/layer or creates a new group/layer to add
@@ -1672,7 +1672,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 //                return layersReadyDeferred.promise;
 //            };
             self.getFrameworkVersion = function () {
-                return $scope.framework;
+                if(OpenLayers != null && $scope.mapInstance instanceof OpenLayers.Map) {
+                    return 'olv2';
+                }
+                if(ol != null && $scope.mapInstance instanceof ol.Map) {
+                    return 'olv3';
+                }
             };
             $scope.gaMap = self;
 

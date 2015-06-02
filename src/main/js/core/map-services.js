@@ -29,6 +29,21 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 service.zoomTo(mapInstance, zoomLevel);
             },
+            getMapElementId: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getMapElementId(mapInstance);
+            },
+            getProjection: function (mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getProjection(mapInstance);
+            },
+            getDisplayProjection: function(mapInstance, version) {
+                var useVersion = version || 'olv2';
+                var service = mapServiceLocator.getImplementation(useVersion);
+                return service.getDisplayProjection(mapInstance);
+            },
             currentZoomLevel: function (mapInstance, version) {
                 var useVersion = version || 'olv2';
                 var service = mapServiceLocator.getImplementation(useVersion);

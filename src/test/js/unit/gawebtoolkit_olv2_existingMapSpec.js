@@ -1,43 +1,65 @@
 /* global describe, beforeEach, module, inject, it, expect, runs, angular, afterEach, jasmine */
 (function () {
     "use strict";
-    describe(
-        'OpenLayers v2.1.13 "ga-map" implementation tests',
-        function () {
-            var $compile,
-                $scope,
-                $timeout,
-                element,
-                mapControllerListener,
-                layerService;
 
-            var mapThatIsStatic;
+    describe(
+        'Existing map instance spec for OLV2',
+        function () {
+            var $compile, $scope, $timeout, element, mapControllerListener, layerController1, layerController2, layerController3;
+
             // Load the myApp module, which contains the directive
             beforeEach(module('testApp'));
 
             // Store references to $rootScope and $compile
             // so they are available to all tests in this describe block
-            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, GALayerService) {
+            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_) {
                 // The injector unwraps the underscores (_) from around the parameter names when matching
                 $compile = _$compile_;
                 $timeout = _$timeout_;
                 $scope = _$rootScope_;
-                layerService = GALayerService;
                 mapControllerListener = jasmine.createSpy('mapControllerListener');
                 $scope.$on('mapControllerReady', function (event, args) {
                     mapControllerListener(args);
+
                     $scope.mapController = args;
+                    $scope.myLayers = $scope.mapController.getLayers();
                 });
 
-                $scope.testWmsLayer = {
-                    "mapType": "WMS",
-                    "visibility": true,
-                    "name": "Australian Seabed Features",
-                    "url": "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
-                    "layers": "Geomorphic_Features",
-                    "opacity": 1.0
-                };
+                var elementHtml =
+                    '<ga-map ng-if="existingInstance" framework="olv2" existing-map-instance="existingInstance"> ' +
+                    '</ga-map>' +
+                    '<ga-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />';
 
+
+                element = angular
+                    .element(elementHtml);
+                $compile(element)($scope);
+                $scope.$digest();
+                $scope.$digest();
+                var mapEl = document.createElement('div');
+                mapEl.setAttribute('id','map');
+                document.body.appendChild(mapEl);
+                var map = new OpenLayers.Map("map");
+
+                var ol_wms = new OpenLayers.Layer.WMS(
+                    "Australian Landsat Mosaic",
+                    "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
+                    {layers: "0"}
+                );
+
+                var dm_wms = new OpenLayers.Layer.WMS(
+                    "Australian Seabed Features",
+                    "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
+                    {
+                        layers: "Geomorphic_Features",
+                        transparent: "true",
+                        format: "image/png"
+                    },
+                    {isBaseLayer: false, visibility: false}
+                );
+
+                var featureLayer = new OpenLayers.Layer.Vector("feature layer1");
+                var featureReader = new OpenLayers.Format.GeoJSON();
                 $scope.testFeature = {
                     "type": "Feature",
                     "crs": {
@@ -55,65 +77,27 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-                var mapEl = document.createElement('div');
-                mapEl.setAttribute('id','gamap');
-                document.body.appendChild(mapEl);
-                var ele = '<ga-map map-element-id="gamap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
-                    'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
-                    '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
-                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                    'wrap-date-line="true"' +
-                    'layer-type="WMS"' +
-                    'is-base-layer="true"' +
-                    '></ga-map-layer>' +
-                    '<ga-feature-layer layer-name="feature layer1">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-feature-layer layer-name="feature layer2">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></ga-map-control>' +
-                    '</ga-map>';
-                element = angular
-                    .element(ele);
-                mapThatIsStatic = ele.replace('map-element-id="map"','map-element-id="map" is-static-map="true"');
-                $compile(element)($scope);
+                var olFeature = featureReader.read(angular.toJson($scope.testFeature),$scope.testFeature.type);
+                featureLayer.addFeatures([olFeature]);
+
+                map.addLayers([ol_wms, dm_wms,featureLayer]);
+                map.zoomToMaxExtent();
+
+                $scope.existingInstance = map;
+
+                $scope.$digest();
                 $scope.$digest();
                 $timeout.flush();
             }));
-            it('Should fire layer service function "createLayer" without an exception given valid value', function () {
-                var args = {
-                    layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
-                    layerName: "Foo",
-                    wrapDateLine: true,
-                    layerType: "WMS",
-                    isBaseLayer: true
-                };
-                var layerOptions = layerService.defaultLayerOptions(args);
-                var layer = layerService.createLayer(layerOptions);
-                expect(layer != null).toBe(true);
-                expect(layer.name).toBe("Foo");
-            });
-            it('Should fire mapController function "addLayer" without an exception given valid value', function () {
-                //Adds a layer, create with test args and then pass to add as addLayer method expects implementation of a layer
-                //which create returns
-                var args = {
-                    layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
-                    layerName: "Foo",
-                    wrapDateLine: true,
-                    layerType: "WMS",
-                    isBaseLayer: true
-                };
-                var layerOptions = layerService.defaultLayerOptions(args);
-                var layer = layerService.createLayer(layerOptions);
-                var layerDto;
-                $scope.mapController.addLayer(layer).then(function (resultLayerDto) {
-                    layerDto = resultLayerDto;
-                    expect(layerDto != null).toBe(true);
-                    expect(layerDto.name).toBe("Foo");
-                });
 
+
+            //Tests
+            it('Sanity check. Should have 3 layers', function () {
+
+                expect($scope.mapController.getMapInstance() != null).toBe(true);
+                expect($scope.mapController.getMapInstance().layers.length).toBe(3);
             });
+
             it('Should fire mapController function "zoomToMaxExtent" without an exception given valid map instance', function () {
                 var passed = false;
                 try {
@@ -191,7 +175,7 @@
                 expect(passed).toBe(true);
             });
             it('Should have no controls listed when created as a static map.', function () {
-                expect($scope.mapController.getMapInstance().controls.length).toBe(1); //Overview map in html template
+                expect($scope.mapController.getMapInstance().controls.length).toBe(4); //default controls when creating an OLV2 map directly
             });
             it('Should fire mapController function "getLonLatFromPixel" without an exception given valid input', function () {
                 var passed = false;
@@ -225,7 +209,7 @@
             });
             it('Should fire mapController function "getPixelFromLonLat" with an exception given invalid input', function () {
                 var lonPassed = false;
-                var latPassed = false
+                var latPassed = false;
                 try {
                     $scope.mapController.getPixelFromLonLat(null, 123);
                 } catch(e) {
@@ -327,6 +311,7 @@
             });
             it('Should fire mapController function "getDisplayProjection" without an exception', function () {
                 var projection = $scope.mapController.getDisplayProjection();
+
                 expect(projection != null).toBe(true);
             });
             it('Should fire mapController function "setLayerVisibility" without an exception given valid input', function () {
@@ -476,13 +461,8 @@
             });
             it('Should fire mapController function "getMapElementId" without an exception', function () {
                 var passed = false;
-                try {
-                    var mapElementId = $scope.mapController.getMapElementId();
-                    expect(mapElementId).toBe('gamap');
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var mapElementId = $scope.mapController.getMapElementId();
+                expect(mapElementId).toBe('map');
             });
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
                 var passed = false;
@@ -495,14 +475,9 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "removeLayerByName" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    $scope.mapController.removeLayerByName('Australian Landsat Mosaic');
-                    expect($scope.mapController.getLayers().length).toBe(2);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                expect($scope.mapController.getLayers().length).toBe(3);
+                $scope.mapController.removeLayerByName('Australian Landsat Mosaic');
+                expect($scope.mapController.getLayers().length).toBe(2);
             });
             it('Should fire mapController function "removeLayersByName" without an exception given valid input', function () {
                 var passed = false;
@@ -579,54 +554,7 @@
                 }
                 expect(passed).toBe(true);
             });
-            it('Should fire mapController function "activateControl" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    $scope.mapController.activateControl('myOverviewTestId');
-                    var isActive = $scope.mapController.isControlActive('myOverviewTestId');
-                    expect(isActive).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "deactivateControl" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    $scope.mapController.activateControl('myOverviewTestId');
-                    var isActive = $scope.mapController.isControlActive('myOverviewTestId');
-                    expect(isActive).toBe(true);
-                    $scope.mapController.deactivateControl('myOverviewTestId');
-                    var isInactive = !$scope.mapController.isControlActive('myOverviewTestId');
-                    expect(isInactive).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "registerControlEvent" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var func = function () {
-                    };
-                    $scope.mapController.registerControlEvent('myOverviewTestId', 'activate', func);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "unRegisterControlEvent" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var func = function () {
-                    };
-                    $scope.mapController.registerControlEvent('myOverviewTestId', 'activate', func);
-                    $scope.mapController.unRegisterControlEvent('myOverviewTestId', 'activate', func);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
+
             it('Should fire mapController function "registerMapEvent" without an exception given valid input', function () {
                 var passed = false;
                 try {
@@ -808,23 +736,12 @@
             it('Should have added 3 layers to the map instnace', function () {
                 expect($scope.mapController.getMapInstance().layers.length).toBe(3);
             });
-            it('Should have the correct projection on the map instance', function () {
-                expect($scope.mapController.getMapInstance().projection === 'EPSG:102100').toBe(true);
-            });
 
             it('Should return geoJson coordinate arrays for getCurrentMapExtent', function () {
                 //Because an extent has 4 points
                 expect($scope.mapController.getCurrentMapExtent().length).toBe(4);
                 //Because geoJson stores coordinates as [lon,lat]
                 expect($scope.mapController.getCurrentMapExtent()[0].length).toBe(2);
-            });
-
-            it('Should have set the initial extent', function () {
-                //Exact map extents are not returns because of integer zoom levels and possible animation time.
-                expect($scope.mapController.getCurrentMapExtent()[0][0] > 110.0).toBe(true);
-                expect($scope.mapController.getCurrentMapExtent()[0][1] > -45.0).toBe(true);
-                expect($scope.mapController.getCurrentMapExtent()[1][0] < 160.0).toBe(true);
-                expect($scope.mapController.getCurrentMapExtent()[1][1] > -45.0).toBe(true);
             });
         });
 })();
