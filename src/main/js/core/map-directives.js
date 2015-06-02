@@ -47,7 +47,8 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             zoomLevel: '@',
             isStaticMap:'@',
 			initialExtent: '=',
-            framework:'@'
+            framework:'@',
+            existingMapInstance: '='
         },
         controller: ['$scope',function ($scope) {
 			$log.info('map creation started...');
@@ -1690,16 +1691,21 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              return $scope.mapInstance;
              };*/
 
-            //Initialise map
-            $scope.mapInstance = GAMapService.initialiseMap({
-                mapElementId: $scope.mapElementId,
-                datumProjection: $scope.datumProjection,
-                displayProjection: $scope.displayProjection,
-                initialExtent: $scope.initialExtent,
-                centerPosition: $scope.centerPosition,
-                zoomLevel: $scope.zoomLevel,
-                isStaticMap: $scope.isStaticMap
-            }, $scope.framework);
+            if($scope.existingMapInstance) {
+                $scope.mapInstance = $scope.existingMapInstance;
+            } else {
+                //Initialise map
+                $scope.mapInstance = GAMapService.initialiseMap({
+                    mapElementId: $scope.mapElementId,
+                    datumProjection: $scope.datumProjection,
+                    displayProjection: $scope.displayProjection,
+                    initialExtent: $scope.initialExtent,
+                    centerPosition: $scope.centerPosition,
+                    zoomLevel: $scope.zoomLevel,
+                    isStaticMap: $scope.isStaticMap
+                }, $scope.framework);
+            }
+
 
             /**
              * Sends an instance of the map to any parent listens
@@ -1779,7 +1785,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 //layersReadyDeferred.resolve(allLayerDtos);
 
                 scope.layersReady = true;
-                scope.gaMap.setInitialPositionAndZoom();
+                if(!scope.existingMapInstance) {
+                    scope.gaMap.setInitialPositionAndZoom();
+                }
             }
 		},
         transclude: false
