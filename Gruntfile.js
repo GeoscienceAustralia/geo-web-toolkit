@@ -13,6 +13,7 @@ module.exports = function (grunt) {
                                 'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
                                 'http://maps.google.com/maps/api/js?sensor=false&.js',
                                 'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js',
+                                'https://cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol.js',
                                 'dist/geo-web-toolkit-min.js'],
                                 styles: ["http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css",
                                 "http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"],
@@ -27,12 +28,24 @@ module.exports = function (grunt) {
             options: {
                 mangle: true,
                 sourceMap: true,
-                sourceMapName: 'dist/geo-web-toolkit-min.js.map',
+                sourceMapName: 'src/main/js/geo-web-toolkit-min.js.map',
                 beautify: false
             },
-            my_target: {
+            release: {
                 files: {
                     'dist/geo-web-toolkit-min.js':
+                        [
+                            'src/main/js/config/*.js',
+                            'src/main/js/core/*.js',
+                            'src/main/js/vendor/*.js',
+                            'src/main/js/map services/*.js',
+                            'src/main/js/ui/**/*.js'
+                        ]
+                }
+            },
+            webjar: {
+                files: {
+                    'src/main/js/geo-web-toolkit-min.js':
                         [
                             'src/main/js/config/*.js',
                             'src/main/js/core/*.js',
