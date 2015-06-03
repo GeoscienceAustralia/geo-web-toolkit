@@ -1,29 +1,29 @@
 module.exports = function (grunt) {
-	grunt.initConfig({
-		pkg: grunt.file.readJSON('package.json'),
-		ngdocs: {
-			options: {
-				dest: 'docs',
-				scripts: ['http://code.jquery.com/jquery-1.11.0.js',
-                                'http://code.jquery.com/ui/1.10.4/jquery-ui.js',
-                                'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js',
-                                'angular.js',
-                                'bower_components/angular-route/angular-route.js',
-                                'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
-                                'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
-                                'http://maps.google.com/maps/api/js?sensor=false&.js',
-                                'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js',
-                                'https://cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol.js',
-                                'dist/geo-web-toolkit-min.js'],
-                                styles: ["http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css",
-                                "http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"],
-				html5Mode: false
-			},
-			api: {
-				src: ['src/**/*.js', '!src/**/*.spec.js'],
-				title: 'API Documentation'
-			}
-		},
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        ngdocs: {
+            options: {
+                dest: 'docs',
+                scripts: ['http://code.jquery.com/jquery-1.11.0.js',
+                    'http://code.jquery.com/ui/1.10.4/jquery-ui.js',
+                    'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js',
+                    'angular.js',
+                    'bower_components/angular-route/angular-route.js',
+                    'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
+                    'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
+                    'http://maps.google.com/maps/api/js?sensor=false&.js',
+                    'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol.js',
+                    'dist/geo-web-toolkit-min.js'],
+                styles: ["http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css",
+                    "http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"],
+                html5Mode: false
+            },
+            api: {
+                src: ['src/**/*.js', '!src/**/*.spec.js'],
+                title: 'API Documentation'
+            }
+        },
         uglify: {
             options: {
                 mangle: true,
@@ -33,35 +33,33 @@ module.exports = function (grunt) {
             },
             release: {
                 files: {
-                    'dist/geo-web-toolkit-min.js':
-                        [
-                            'src/main/js/config/*.js',
-                            'src/main/js/core/*.js',
-                            'src/main/js/vendor/*.js',
-                            'src/main/js/map services/*.js',
-                            'src/main/js/ui/**/*.js'
-                        ]
+                    'dist/geo-web-toolkit-min.js': [
+                        'src/main/js/config/*.js',
+                        'src/main/js/core/*.js',
+                        'src/main/js/vendor/*.js',
+                        'src/main/js/map services/*.js',
+                        'src/main/js/ui/**/*.js'
+                    ]
                 }
             },
             webjar: {
                 files: {
-                    'src/main/js/geo-web-toolkit-min.js':
-                        [
-                            'src/main/js/config/*.js',
-                            'src/main/js/core/*.js',
-                            'src/main/js/vendor/*.js',
-                            'src/main/js/map services/*.js',
-                            'src/main/js/ui/**/*.js'
-                        ]
+                    'src/main/js/geo-web-toolkit-min.js': [
+                        'src/main/js/config/*.js',
+                        'src/main/js/core/*.js',
+                        'src/main/js/vendor/*.js',
+                        'src/main/js/map services/*.js',
+                        'src/main/js/ui/**/*.js'
+                    ]
                 }
             }
         },
-        ngtemplates:  {
+        ngtemplates: {
             'gawebtoolkit.ui.templates': {
-                src:      'src/main/js/ui/**/*.html',
+                src: 'src/main/js/ui/**/*.html',
                 dest: 'src/main/js/toolkit-templates.js',
                 options: {
-                    standalone:true
+                    standalone: true
                 }
             }
         },
@@ -72,6 +70,28 @@ module.exports = function (grunt) {
             dist: {
                 src: ['dist/geo-web-toolkit-min.js', 'src/main/js/toolkit-templates.js'],
                 dest: 'dist/geo-web-toolkit-min.js'
+            },
+            webjar: {
+                src: ['src/main/js/geo-web-toolkit-min.js', 'src/main/js/toolkit-templates.js'],
+                dest: 'src/main/js/geo-web-toolkit-min.js'
+            }
+        },
+        copy: {
+            main: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'src/main/js/',
+                        src: [
+                            'config/**',
+                            'core/**',
+                            'map services/**',
+                            'ui/**',
+                            'vendor/**'
+                        ],
+                        dest: 'dist/'
+                    }
+                ]
             }
         },
         karma: {
@@ -84,26 +104,27 @@ module.exports = function (grunt) {
             }
         },
         bumpup: {
-            files: ['package.json','bower.json']
+            files: ['package.json', 'bower.json']
         },
         tagrelease: {
             file: 'bower.json',
-            commit:  true,
+            commit: true,
             message: 'Release %version%',
-            prefix:  'v',
+            prefix: 'v',
             annotate: false
         }
-	});
+    });
     grunt.loadNpmTasks('grunt-karma');
-	grunt.loadNpmTasks('grunt-ngdocs');
+    grunt.loadNpmTasks('grunt-ngdocs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-bumpup');
     grunt.loadNpmTasks('grunt-tagrelease');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-	grunt.registerTask('default',['uglify','ngdocs','ngtemplates','concat']);
-    grunt.registerTask('test',['default','karma']);
+    grunt.registerTask('default', ['uglify', 'ngdocs', 'ngtemplates', 'concat', 'copy']);
+    grunt.registerTask('test', ['default', 'karma']);
 
     grunt.registerTask('release', function (type) {
         type = type ? type : 'patch';
