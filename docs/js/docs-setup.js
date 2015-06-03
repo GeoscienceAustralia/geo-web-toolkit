@@ -182,6 +182,7 @@ NG_DOCS={
     "angular-ui-utils.min.js",
     "js?sensor=false&.js",
     "OpenLayers.js",
+    "ol.js",
     "geo-web-toolkit-min.js"
   ]
 };
