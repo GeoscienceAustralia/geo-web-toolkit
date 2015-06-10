@@ -1297,9 +1297,10 @@
                     } else {
                         olCesiumInstance = new olcs.OLCesium({map: mapInstance, target: mapInstance.getTarget()}); // map is the ol.Map instance
                         var scene = olCesiumInstance.getCesiumScene();
-                        if(appConfig.cesiumOptions != null && appConfig.cesiumOptions.includeCustomTerrainProvider) {
+                        var cesiumOptions = appConfig().cesiumOptions;
+                        if(cesiumOptions != null && cesiumOptions.includeCustomTerrainProvider) {
                             var terrainProvider = new Cesium.CesiumTerrainProvider({
-                                url: appConfig.cesiumOptions.customTerrainProviderUrl
+                                url: cesiumOptions.customTerrainProviderUrl
                             });
                             scene.terrainProvider = terrainProvider;
                         }
