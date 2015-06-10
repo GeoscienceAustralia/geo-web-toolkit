@@ -471,9 +471,7 @@
                 handleMeasure: function (mapInstance, vectorLayer, drawInteraction,callback) {
                     service.measureIsDrawEndComplete = false;
                     drawInteraction.on("drawend", function (e) {
-                        mapInstance.un('pointerup', service.measurePointerUpEvent);
-                        mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                        mapInstance.un('pointermove', service.measurePointerDownEvent);
+                        service._cleanupMeasureEvents(mapInstance);
                         callback(e);
                         service.measureIsDrawEndComplete = true;
                     },service);
@@ -492,28 +490,31 @@
                     if(existingControl == null) {
                         if(eventName === 'measure' && service.measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            mapInstance.removeInteraction(service.measureEventDrawInteraction);
-                            mapInstance.removeLayer(service.measureEventVectorLayer);
-                            service.measureEventVectorLayer = null;
-                            service.measureEventDrawInteraction = null;
-                            service.measureEventSource = null;
-                            mapInstance.un('pointerup', service.measurePointerUpEvent);
-                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                            mapInstance.un('pointermove', service.measurePointerDownEvent);
+                            service._cleanupMeasureEvents(mapInstance);
                         }
                         if(eventName === 'measurepartial' && service.measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            mapInstance.removeInteraction(service.measureEventDrawInteraction);
-                            mapInstance.removeLayer(service.measureEventVectorLayer);
-                            service.measureEventVectorLayer = null;
-                            service.measureEventDrawInteraction = null;
-                            service.measureEventSource = null;
-                            mapInstance.un('pointerup', service.measurePointerUpEvent);
-                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                            mapInstance.un('pointermove', service.measurePointerDownEvent);
+                            service._cleanupMeasureEvents(mapInstance);
                         }
                     } else {
                         existingControl.un(eventName,callback);
+                    }
+                },
+                _cleanupMeasureEvents: function (mapInstance) {
+                    //Handle measure with custom implementation as OLV3 does not have a measure control
+                    mapInstance.removeInteraction(service.measureEventDrawInteraction);
+                    mapInstance.removeLayer(service.measureEventVectorLayer);
+                    service.measureEventVectorLayer = null;
+                    service.measureEventDrawInteraction = null;
+                    service.measureEventSource = null;
+                    if(service.measurePointerUpEvent) {
+                        mapInstance.un('pointerup', service.measurePointerUpEvent);
+                    }
+                    if(service.measurePointerMoveEvent) {
+                        mapInstance.un('pointermove', service.measurePointerMoveEvent);
+                    }
+                    if(service.measurePointerDownEvent) {
+                        mapInstance.un('pointermove', service.measurePointerDownEvent);
                     }
                 },
                 /**
