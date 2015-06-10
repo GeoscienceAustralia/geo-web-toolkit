@@ -77,14 +77,6 @@
 
             });
 
-            it('Should have 4 markers on the one layer', function () {
-                var mapInstance = $scope.mapController.getMapInstance();
-                //One for OSM, one for shared marker layer
-                expect(mapInstance.getLayers().getLength()).toBe(2);
-                expect(mapInstance.getLayers().item(1).getSource().getFeatures() != null).toBe(true);
-                expect(mapInstance.getLayers().item(1).getSource().getFeatures().length).toBe(4);
-
-            });
 
             it('Should be able to create markers dynamically from an ng-repeat', function () {
                 var mapInstance = $scope.mapController.getMapInstance();

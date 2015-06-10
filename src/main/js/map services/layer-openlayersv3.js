@@ -43,8 +43,8 @@
                             args.layerType
                         );
                 }
-                layer.geoLayerType = args.layerType;
-                if (args.maxZoomLevel) {
+                layer.set('geoLayerType',args.layerType);
+                if(args.maxZoomLevel) {
                     layer.geoMaxZoom = parseInt(args.maxZoomLevel);
                 }
                 if (args.minZoomLevel) {
