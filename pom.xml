@@ -35,7 +35,6 @@
         <js.src.dir>src/main/js</js.src.dir>
         <js.test.src.dir>src/test/js</js.test.src.dir>
         <js.webjar.dir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</js.webjar.dir>
-        <js.dest.dir>${project.build.directory}/dist</js.dest.dir>
     </properties>
 
 	<dependencies>
@@ -139,7 +138,7 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>validate</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -148,22 +147,6 @@
                             <resources>
                                 <resource>
                                     <directory>${js.src.dir}</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-resources-2</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${js.dest.dir}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${js.webjar.dir}</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
@@ -296,25 +279,6 @@
 											</goal>
 											<goal>npm</goal>
 											<goal>grunt</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											net.alchim31.maven
-										</groupId>
-										<artifactId>
-											yuicompressor-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.3.2,)
-										</versionRange>
-										<goals>
-											<goal>compress</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
