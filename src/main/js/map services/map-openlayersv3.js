@@ -41,6 +41,25 @@
                 return result;
             }
 
+            var mapClickCallbacks = [];
+
+            function addMapClickCallback(callback) {
+                for(var i = 0; i < mapClickCallbacks.length; i++) {
+                    if(mapClickCallbacks[i] === callback) {
+                        return;
+                    }
+                }
+                mapClickCallbacks.push(callback);
+            }
+
+            function removeMapClickCallback(callback) {
+                for(var i = 0; i < mapClickCallbacks.length; i++) {
+                    if(mapClickCallbacks[i] === callback) {
+                        mapClickCallbacks.slice(i);
+                    }
+                }
+            }
+
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
@@ -83,6 +102,7 @@
                     config.controls = [];
 
                     service.displayProjection = args.displayProjection;
+                    service.datumProjection = args.datumProjection;
                     var map = new ol.Map(config);
 
                     //HACK TODO Move to a post create map register (not created yet)
@@ -186,16 +206,18 @@
                     } else {
                         mapInstance.on('click', callback);
                     }
+                    addMapClickCallback(callback);
                 },
                 unRegisterMapClick: function (mapInstance, callback) {
                     if (callback == null) {
                         return;
                     }
                     if(service.is3d(mapInstance)) {
-                        ol3CesiumMapService.registerMapClick(olCesiumInstance,callback);
+                        ol3CesiumMapService.unRegisterMapClick(olCesiumInstance,callback);
                     } else {
                         mapInstance.un('click', callback);
                     }
+                    removeMapClickCallback(callback);
                 },
                 //TODO unregister
                 registerMapMouseMoveEnd: function (mapInstance, callback) {
@@ -478,22 +500,8 @@
                         };
                         updateToolkitMapInstanceProperty(mapInstance,'measurePointerUpEvent',measurePointerUpEvent);
 
-                        //var measurePointerDownEvent = function (event) {
-                        //    var measureSingleClickTimeout = getToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeout');
-                        //    var measureSingleClickTimeoutDate = getToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeoutDate');
-                        //    var doubleClickCheck = new Date(new Date() + 250);
-                        //    if(!isDragging && measureSingleClickTimeoutDate != null && doubleClickCheck < measureSingleClickTimeoutDate) {
-                        //
-                        //    }
-                        //    updateToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeoutDate',new Date());
-                        //};
-
-                        //updateToolkitMapInstanceProperty(mapInstance,'measurePointerDownEvent',measurePointerDownEvent);
-
-
                         mapInstance.on('pointerup', measurePointerUpEvent);
                         mapInstance.on('pointermove', measurePointerMoveEvent);
-                        //mapInstance.on('pointerdown', measurePointerDownEvent);
                         callback(e);
                     }, service);
                 },
@@ -568,10 +576,6 @@
                     if(measurePointerMoveEvent) {
                         mapInstance.un('pointermove', measurePointerMoveEvent);
                     }
-                    //var measurePointerDownEvent = getToolkitMapInstanceProperty(mapInstance,'measurePointerDownEvent');
-                    //if(measurePointerDownEvent) {
-                    //    mapInstance.un('pointermove', measurePointerDownEvent);
-                    //}
                 },
                 /**
                  * Gets the current list of layers in the map instance and returns as Layer type (geo-web-toolkit DTO)
@@ -785,7 +789,14 @@
                 },
                 setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
                     var markerLayer = olv3LayerService.getLayerBy(mapInstance, 'name', markerGroupName);
-                    var latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
+                    var latLon;
+                    if(service.is3d(mapInstance)) {
+                        latLon = ol3CesiumMapService.getCoordinateFromPixel(olCesiumInstance,{x: coords.x, y: coords.y});
+                        latLon = ol.proj.transform(latLon, 'EPSG:4326',mapInstance.getView().getProjection().getCode());
+                    } else {
+                        latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
+                    }
+
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
@@ -844,8 +855,16 @@
                     if (y == null) {
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
+                    var result;
+                    if(service.is3d(mapInstance)) {
+                        result = ol3CesiumMapService.getCoordinateFromPixel(olCesiumInstance,{x:x,y:y});
+                        return {
+                            lon: result[0],
+                            lat: result[1]
+                        };
+                    }
+                    result = mapInstance.getCoordinateFromPixel([x, y]);
 
-                    var result = mapInstance.getCoordinateFromPixel([x, y]);
                     if (projection) {
                         result = ol.proj.transform(result,mapInstance.getView().getProjection() , projection);
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
@@ -878,10 +897,16 @@
                 getPointFromEvent: function (e) {
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
                     // incorrect value in regards to your screen pixels
-                    return {
-                        x: e.pixel[0],
-                        y: e.pixel[1]
-                    };
+                    if(e.pixel) {
+                        return {
+                            x: e.pixel[0],
+                            y: e.pixel[1]
+                        };
+                    }
+                    //ol3-cesium
+                    if(e.position) {
+                        return e.position;
+                    }
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
                     if(!layerName) {
@@ -1378,12 +1403,10 @@
                             scene.terrainProvider = terrainProvider;
                         }
 
-                        $timeout(function () {
-                            service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget());
-                        });
-
                         olCesiumInstance.setEnabled(true);
                     }
+
+                    service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget());
 
                 },
                 switchTo2dView: function (mapInstance) {
@@ -1403,12 +1426,12 @@
                             // Mouse over the globe to see the cartographic position
                             var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
                             handler.setInputAction(function (movement) {
+
                                 var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                                 if (cartesian) {
                                     var cartographic = ellipsoid.cartesianToCartographic(cartesian);
                                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
                                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
-
                                     //Update default ol v3 control element for mouse position.
                                     $('.ol-mouse-position')[0].innerText = control.getCoordinateFormat()([longitudeString, latitudeString]);
                                 }
@@ -1421,9 +1444,18 @@
                             mapInstance.render();
                         }
                     });
+                    for(var i = 0; i < mapClickCallbacks.length; i++) {
+                        var cb = mapClickCallbacks[i];
+                        ol3CesiumMapService.registerMapClick(olCesiumInstance,cb);
+                        mapInstance.un('click', cb);
+                    }
                 },
                 syncMapControlsWithOl3: function (mapInstance, targetId) {
-
+                    for(var i = 0; i < mapClickCallbacks.length; i++) {
+                        var cb = mapClickCallbacks[i];
+                        ol3CesiumMapService.unRegisterMapClick(olCesiumInstance,cb);
+                        mapInstance.on('click', cb);
+                    }
                 },
                 searchWfs: function (mapInstance, clientId, query, attribute) {
                     throw new Error("NotImplemented");
