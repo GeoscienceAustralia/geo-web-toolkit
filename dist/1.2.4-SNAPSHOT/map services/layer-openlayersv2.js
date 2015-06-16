@@ -203,7 +203,12 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             return new OpenLayers.Layer.Google(args.layerName, options);
         },
         clearFeatureLayer: function (mapInstance, layerId) {
-
+            var layer = service.getLayerById(mapInstance, layerId);
+            if(!layer) {
+                $log.error('clearFeatureLayer: Layer "' + layerId + '" not found.');
+            } else {
+                layer.removeAllFeatures();
+            }
         },
         createXYZLayer: function (args) {
             //TODO incorporate default options to args via extend
@@ -447,11 +452,20 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         },
         registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            layer.events.register(eventName, layer, callback);
+            if(layer == null) {
+                $log.warn('registerLayerEvent: Layer not found - "' + layerId + '"');
+            } else {
+                layer.events.register(eventName, layer, callback);
+            }
+
         },
         unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            layer.events.unregister(eventName,layer,callback);
+            if(layer == null) {
+                $log.warn('unRegisterLayerEvent: Layer not found - "' + layerId + '"');
+            } else {
+                layer.events.unregister(eventName, layer, callback);
+            }
         },
         //Should this be moved to a separate service as it is more of a helper?
         getMarkerCountForLayerName: function (mapInstance, layerName) {

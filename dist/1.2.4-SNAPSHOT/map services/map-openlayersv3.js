@@ -6,7 +6,9 @@
     var app = angular.module('gawebtoolkit.mapservices.map.openlayersv3',
         [
             'gawebtoolkit.mapservices.layer.openlayersv3',
-            'gawebtoolkit.mapservices.controls.openlayersv3'
+            'gawebtoolkit.mapservices.controls.openlayersv3',
+            'gawebtoolkit.mapservices.map.ol3cesium',
+            'gawebtoolkit.events-openlayers3'
         ]);
 
     var olCesiumInstance;
@@ -17,11 +19,13 @@
         'olv3MapControls',
         'GAWTUtils',
         'GeoLayer',
+        'ol3CesiumMapService',
+        'ol3CesiumEventManager',
         'ga.config',
         '$q',
         '$log',
         '$timeout',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer,appConfig, $q, $log, $timeout) {
+        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, ol3CesiumMapService,ol3CesiumEventManager, appConfig, $q, $log, $timeout) {
 
             function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
                 var _geowebtoolkit = mapInstance.get('_geowebtoolkit') || {};
@@ -35,6 +39,25 @@
                     result = temp[propertyName];
                 }
                 return result;
+            }
+
+            var mapClickCallbacks = [];
+
+            function addMapClickCallback(callback) {
+                for(var i = 0; i < mapClickCallbacks.length; i++) {
+                    if(mapClickCallbacks[i] === callback) {
+                        return;
+                    }
+                }
+                mapClickCallbacks.push(callback);
+            }
+
+            function removeMapClickCallback(callback) {
+                for(var i = 0; i < mapClickCallbacks.length; i++) {
+                    if(mapClickCallbacks[i] === callback) {
+                        mapClickCallbacks.slice(i);
+                    }
+                }
             }
 
             var service = {
@@ -79,6 +102,7 @@
                     config.controls = [];
 
                     service.displayProjection = args.displayProjection;
+                    service.datumProjection = args.datumProjection;
                     var map = new ol.Map(config);
 
                     //HACK TODO Move to a post create map register (not created yet)
@@ -170,33 +194,47 @@
                     cleanClientCache(mapInstance, olv3LayerService);
                 },
                 registerMapMouseMove: function (mapInstance, callback) {
-                    $(mapInstance.getViewport()).on('mousemove', callback);
+                    ol3CesiumEventManager.registerMapMouseMove(mapInstance, olCesiumInstance,callback);
                 },
                 registerMapClick: function (mapInstance, callback) {
-                    if (callback != null) {
+                    if (callback == null) {
+                        $log.error('callback provided to "registerMapClick" was null');
+                        return;
+                    }
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.registerMapClick(olCesiumInstance,callback);
+                    } else {
                         mapInstance.on('click', callback);
                     }
+                    addMapClickCallback(callback);
                 },
                 unRegisterMapClick: function (mapInstance, callback) {
-                    if (callback != null) {
+                    if (callback == null) {
+                        return;
+                    }
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.unRegisterMapClick(olCesiumInstance,callback);
+                    } else {
                         mapInstance.un('click', callback);
                     }
+                    removeMapClickCallback(callback);
                 },
                 //TODO unregister
                 registerMapMouseMoveEnd: function (mapInstance, callback) {
-                    $(mapInstance.getViewport()).on('mousemove', function (obj, e) {
-                        if (service.mousemoveTimeout !== undefined) {
-                            window.clearTimeout(service.mousemoveTimeout);
-                        }
-                        service.mousemoveTimeout = window.setTimeout(function () {
-                            callback(obj, e);
-                        }, 100);
-                    });
+                    ol3CesiumEventManager.registerMapMouseMoveEnd(mapInstance, olCesiumInstance,callback);
                 },
                 registerMapEvent: function (mapInstance, eventName, callback) {
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.registerMapEvent(olCesiumInstance,eventName,callback);
+                        return;
+                    }
                     mapInstance.on(eventName, callback);
                 },
                 unRegisterMapEvent: function (mapInstance, eventName, callback) {
+                    if(service.is3d(mapInstance)) {
+                        ol3CesiumMapService.unRegisterMapEvent(olCesiumInstance,eventName,callback);
+                        return;
+                    }
                     mapInstance.un(eventName, callback);
                 },
                 getCurrentMapExtent: function (mapInstance) {
@@ -342,13 +380,19 @@
                     });
 
                     if(existingControl == null) {
+                        var measureEventVectorLayer;
+                        var measureEventDrawInteraction;
                         if(eventName === 'measurepartial') {
                             service.initMeasureEventLayer(mapInstance);
-                            service.handleMeasurePartial(mapInstance,service.measureEventVectorLayer,service.measureEventDrawInteraction,callback);
+                            measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+                            measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction');
+                            service.handleMeasurePartial(mapInstance, measureEventVectorLayer, measureEventDrawInteraction,callback);
                         }
                         if(eventName === 'measure') {
                             service.initMeasureEventLayer(mapInstance);
-                            service.handleMeasure(mapInstance,service.measureEventVectorLayer,service.measureEventDrawInteraction,callback);
+                            measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+                            measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction');
+                            service.handleMeasure(mapInstance, measureEventVectorLayer, measureEventDrawInteraction,callback);
                         }
 
                     } else {
@@ -357,110 +401,137 @@
                 },
                 initMeasureEventLayer: function(mapInstance) {
                     //Clear existing layer if exists
-                    if(service.measureEventVectorLayer) {
-                        mapInstance.removeLayer(service.measureEventVectorLayer);
+                    var measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+                    if(measureEventVectorLayer) {
+                        mapInstance.removeLayer(measureEventVectorLayer);
+                    }
+                    var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction');
+                    if(measureEventDrawInteraction) {
+                        mapInstance.removeInteraction(measureEventDrawInteraction);
+                    }
+                    var measureEventSource = getToolkitMapInstanceProperty(mapInstance, 'measureEventSource');
+                    if(!measureEventSource) {
+                        updateToolkitMapInstanceProperty(mapInstance,'measureEventSource',new ol.source.Vector());
+                        measureEventSource = getToolkitMapInstanceProperty(mapInstance,'measureEventSource');
                     }
 
-                    if(service.measureEventDrawInteraction) {
-                        mapInstance.removeInteraction(service.measureEventDrawInteraction);
-                    }
-
-                    service.measureEventSource = service.measureEventSource || new ol.source.Vector();
-
-                    service.measureEventVectorLayer = service.measureEventVectorLayer || new ol.layer.Vector({
-                        source: service.measureEventSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: '#ffcc33',
-                                width: 2
-                            }),
-                            image: new ol.style.Circle({
-                                radius: 7,
-                                fill: new ol.style.Fill({
-                                    color: '#ffcc33'
-                                })
-                            })
-                        })
-                    });
-
-                    service.measureEventVectorLayer.set('id', GAWTUtils.generateUuid());
-
-                    service.measureEventDrawInteraction = service.measureEventDrawInteraction || new ol.interaction.Draw({
-                        source: service.measureEventSource,
-                        type: "LineString",
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: 'rgba(0, 0, 0, 0.5)',
-                                lineDash: [10, 10],
-                                width: 2
-                            }),
-                            image: new ol.style.Circle({
-                                radius: 5,
-                                stroke: new ol.style.Stroke({
-                                    color: 'rgba(0, 0, 0, 0.7)'
-                                }),
+                    measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance, 'measureEventVectorLayer');
+                    if(!measureEventVectorLayer) {
+                        updateToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer',new ol.layer.Vector({
+                            source: measureEventSource,
+                            style: new ol.style.Style({
                                 fill: new ol.style.Fill({
                                     color: 'rgba(255, 255, 255, 0.2)'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#ffcc33',
+                                    width: 2
+                                }),
+                                image: new ol.style.Circle({
+                                    radius: 7,
+                                    fill: new ol.style.Fill({
+                                        color: '#ffcc33'
+                                    })
                                 })
                             })
-                        })
-                    });
+                        }));
+                        measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+                    }
 
-                    mapInstance.addLayer(service.measureEventVectorLayer);
-                    mapInstance.addInteraction(service.measureEventDrawInteraction);
+                    measureEventVectorLayer.set('id', GAWTUtils.generateUuid());
+
+                    measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
+                    if(!measureEventDrawInteraction) {
+                        updateToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction', new ol.interaction.Draw({
+                            source: measureEventSource,
+                            type: "LineString",
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(255, 255, 255, 0.2)'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: 'rgba(0, 0, 0, 0.5)',
+                                    lineDash: [10, 10],
+                                    width: 2
+                                }),
+                                image: new ol.style.Circle({
+                                    radius: 5,
+                                    stroke: new ol.style.Stroke({
+                                        color: 'rgba(0, 0, 0, 0.7)'
+                                    }),
+                                    fill: new ol.style.Fill({
+                                        color: 'rgba(255, 255, 255, 0.2)'
+                                    })
+                                })
+                            })
+                        }));
+                        measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
+                    }
+
+                    mapInstance.addLayer(measureEventVectorLayer);
+                    mapInstance.addInteraction(measureEventDrawInteraction);
                 },
                 handleMeasurePartial: function (mapInstance,vectorLayer,drawInteraction, callback) {
                     drawInteraction.on("drawstart", function (e) {
                         var isDragging = false;
+                        service.pauseDoubleClickZoom_(mapInstance);
                         var sketchFeature = e.feature;
-                        service.measurePointerMoveEvent = function (event) {
+                        var measurePointerMoveEvent = function (event) {
                             isDragging = !!event.dragging;
                         };
-                        service.measureSingleClickTimeout = null;
-                        service.measurePointerUpEvent = function (event) {
-                            if(service.measureSingleClickTimeout) {
-                                $timeout.cancel(service.measureSingleClickTimeout);
+                        updateToolkitMapInstanceProperty(mapInstance,'measurePointerMoveEvent',measurePointerMoveEvent);
+
+                        var measurePointerUpEvent = function (event) {
+                            var measureSingleClickTimeout = getToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeout');
+                            if(measureSingleClickTimeout) {
+                                $timeout.cancel(measureSingleClickTimeout);
                             }
                             if(!isDragging) {
-                                service.measureSingleClickTimeout = $timeout(function () {
-                                    if(!service.measureIsDrawEndComplete) {
+                                updateToolkitMapInstanceProperty(mapInstance,'measureSingleClickTimeout', $timeout(function () {
+                                    var measureIsDrawEndComplete = getToolkitMapInstanceProperty(mapInstance,'measureIsDrawEndComplete');
+                                    if(!measureIsDrawEndComplete) {
                                         event.feature = sketchFeature;
                                         callback(event);
                                     } else {
-                                        service.measureIsDrawEndComplete = false;
+                                        updateToolkitMapInstanceProperty(mapInstance,'measureIsDrawEndComplete',false);
                                     }
-                                },10);
+                                },10));
                             }
                         };
+                        updateToolkitMapInstanceProperty(mapInstance,'measurePointerUpEvent',measurePointerUpEvent);
 
-                        service.measurePointerDownEvent = function (event) {
-                            var doubleClickCheck = new Date(new Date() + 250);
-                            if(!isDragging && service.measureSingleClickTimeout != null && doubleClickCheck < service.measureSingleClickTimeout) {
-                                service.measureIsDoubleClick = true;
-                            }
-                            service.measureSingleClickTimeout = new Date();
-                        };
-                        mapInstance.on('pointerup', service.measurePointerUpEvent);
-                        mapInstance.on('pointermove', service.measurePointerMoveEvent);
-                        mapInstance.on('pointerdown', service.measurePointerDownEvent);
+                        mapInstance.on('pointerup', measurePointerUpEvent);
+                        mapInstance.on('pointermove', measurePointerMoveEvent);
                         callback(e);
                     }, service);
                 },
                 handleMeasure: function (mapInstance, vectorLayer, drawInteraction,callback) {
-                    service.measureIsDrawEndComplete = false;
+                    updateToolkitMapInstanceProperty(mapInstance,'measureIsDrawEndComplete', false);
                     drawInteraction.on("drawend", function (e) {
-                        mapInstance.un('pointerup', service.measurePointerUpEvent);
-                        mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                        mapInstance.un('pointermove', service.measurePointerDownEvent);
+                        service._cleanupMeasureEvents(mapInstance);
                         callback(e);
-                        service.measureIsDrawEndComplete = true;
+                        //HACK to handle enable/disable of default double click zoom
+                        $timeout(function () {
+                            service.enableDoubleClickZoom_(mapInstance);
+                        },50);
+                        updateToolkitMapInstanceProperty(mapInstance,'measureIsDrawEndComplete', true);
                     },service);
+                },
+                pauseDoubleClickZoom_: function (mapInstance) {
+                    var interactions = mapInstance.getInteractions();
+                    interactions.forEach(function(i) {
+                        if(i instanceof ol.interaction.DoubleClickZoom) {
+                            i.setActive(false);
+                        }
+                    });
+                },
+                enableDoubleClickZoom_: function (mapInstance) {
+                    var interactions = mapInstance.getInteractions();
+                    interactions.forEach(function(i) {
+                        if(i instanceof ol.interaction.DoubleClickZoom) {
+                            i.setActive(true);
+                        }
+                    });
                 },
                 //return void
                 unRegisterControlEvent: function (mapInstance, controlId, eventName, callback) {
@@ -474,30 +545,36 @@
                     });
 
                     if(existingControl == null) {
-                        if(eventName === 'measure' && service.measureEventDrawInteraction) {
+                        var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
+                        if(eventName === 'measure' && measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            mapInstance.removeInteraction(service.measureEventDrawInteraction);
-                            mapInstance.removeLayer(service.measureEventVectorLayer);
-                            service.measureEventVectorLayer = null;
-                            service.measureEventDrawInteraction = null;
-                            service.measureEventSource = null;
-                            mapInstance.un('pointerup', service.measurePointerUpEvent);
-                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                            mapInstance.un('pointermove', service.measurePointerDownEvent);
+                            service._cleanupMeasureEvents(mapInstance);
                         }
-                        if(eventName === 'measurepartial' && service.measureEventDrawInteraction) {
+                        if(eventName === 'measurepartial' && measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            mapInstance.removeInteraction(service.measureEventDrawInteraction);
-                            mapInstance.removeLayer(service.measureEventVectorLayer);
-                            service.measureEventVectorLayer = null;
-                            service.measureEventDrawInteraction = null;
-                            service.measureEventSource = null;
-                            mapInstance.un('pointerup', service.measurePointerUpEvent);
-                            mapInstance.un('pointermove', service.measurePointerMoveEvent);
-                            mapInstance.un('pointermove', service.measurePointerDownEvent);
+                            service._cleanupMeasureEvents(mapInstance);
                         }
                     } else {
                         existingControl.un(eventName,callback);
+                    }
+                },
+                _cleanupMeasureEvents: function (mapInstance) {
+                    //Handle measure with custom implementation as OLV3 does not have a measure control
+                    var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
+                    var measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+
+                    mapInstance.removeInteraction(measureEventDrawInteraction);
+                    mapInstance.removeLayer(measureEventVectorLayer);
+                    updateToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer', null);
+                    updateToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction',null);
+                    updateToolkitMapInstanceProperty(mapInstance,'measureEventSource',null);
+                    var measurePointerUpEvent = getToolkitMapInstanceProperty(mapInstance,'measurePointerUpEvent');
+                    if(measurePointerUpEvent) {
+                        mapInstance.un('pointerup', measurePointerUpEvent);
+                    }
+                    var measurePointerMoveEvent = getToolkitMapInstanceProperty(mapInstance,'measurePointerMoveEvent');
+                    if(measurePointerMoveEvent) {
+                        mapInstance.un('pointermove', measurePointerMoveEvent);
                     }
                 },
                 /**
@@ -712,7 +789,14 @@
                 },
                 setMapMarker: function (mapInstance, coords, markerGroupName, iconUrl, args) {
                     var markerLayer = olv3LayerService.getLayerBy(mapInstance, 'name', markerGroupName);
-                    var latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
+                    var latLon;
+                    if(service.is3d(mapInstance)) {
+                        latLon = ol3CesiumMapService.getCoordinateFromPixel(olCesiumInstance,{x: coords.x, y: coords.y});
+                        latLon = ol.proj.transform(latLon, 'EPSG:4326',mapInstance.getView().getProjection().getCode());
+                    } else {
+                        latLon = mapInstance.getCoordinateFromPixel([coords.x,coords.y]);
+                    }
+
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
@@ -771,8 +855,16 @@
                     if (y == null) {
                         throw new ReferenceError("'y' value cannot be null or undefined");
                     }
+                    var result;
+                    if(service.is3d(mapInstance)) {
+                        result = ol3CesiumMapService.getCoordinateFromPixel(olCesiumInstance,{x:x,y:y});
+                        return {
+                            lon: result[0],
+                            lat: result[1]
+                        };
+                    }
+                    result = mapInstance.getCoordinateFromPixel([x, y]);
 
-                    var result = mapInstance.getCoordinateFromPixel([x, y]);
                     if (projection) {
                         result = ol.proj.transform(result,mapInstance.getView().getProjection() , projection);
                     } else if (service.displayProjection && service.displayProjection !== mapInstance.getView().getProjection()) {
@@ -805,10 +897,16 @@
                 getPointFromEvent: function (e) {
                     // Open layers requires the e.xy object, be careful not to use e.x and e.y will return an
                     // incorrect value in regards to your screen pixels
-                    return {
-                        x: e.pixel[0],
-                        y: e.pixel[1]
-                    };
+                    if(e.pixel) {
+                        return {
+                            x: e.pixel[0],
+                            y: e.pixel[1]
+                        };
+                    }
+                    //ol3-cesium
+                    if(e.position) {
+                        return e.position;
+                    }
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
                     if(!layerName) {
@@ -1305,12 +1403,10 @@
                             scene.terrainProvider = terrainProvider;
                         }
 
-                        $timeout(function () {
-                            service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget());
-                        });
-
                         olCesiumInstance.setEnabled(true);
                     }
+
+                    service.syncMapControlsWithOl3Cesium(mapInstance, mapInstance.getTarget());
 
                 },
                 switchTo2dView: function (mapInstance) {
@@ -1330,12 +1426,12 @@
                             // Mouse over the globe to see the cartographic position
                             var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
                             handler.setInputAction(function (movement) {
+
                                 var cartesian = scene.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                                 if (cartesian) {
                                     var cartographic = ellipsoid.cartesianToCartographic(cartesian);
                                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude);
                                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude);
-
                                     //Update default ol v3 control element for mouse position.
                                     $('.ol-mouse-position')[0].innerText = control.getCoordinateFormat()([longitudeString, latitudeString]);
                                 }
@@ -1348,9 +1444,18 @@
                             mapInstance.render();
                         }
                     });
+                    for(var i = 0; i < mapClickCallbacks.length; i++) {
+                        var cb = mapClickCallbacks[i];
+                        ol3CesiumMapService.registerMapClick(olCesiumInstance,cb);
+                        mapInstance.un('click', cb);
+                    }
                 },
                 syncMapControlsWithOl3: function (mapInstance, targetId) {
-
+                    for(var i = 0; i < mapClickCallbacks.length; i++) {
+                        var cb = mapClickCallbacks[i];
+                        ol3CesiumMapService.unRegisterMapClick(olCesiumInstance,cb);
+                        mapInstance.on('click', cb);
+                    }
                 },
                 searchWfs: function (mapInstance, clientId, query, attribute) {
                     throw new Error("NotImplemented");
