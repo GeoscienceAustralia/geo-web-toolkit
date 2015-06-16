@@ -4,6 +4,8 @@ Geoscience Australia's web mapping toolkit.
 
 Contains AngularJS-based modules to support rapid development of web mapping applications.
 
+Available via `bower install geo-web-toolkit`.
+
 ## Requirements
 
 Required:
