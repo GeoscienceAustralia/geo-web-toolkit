@@ -8,7 +8,7 @@
     /*
      * This service wraps olv3 layer functionality that is used via the GAMaps and GALayer service
      * */
-    app.service('olv3LayerService', [ '$log', '$q','$timeout', 'GeoLayer','GAWTUtils', function ($log, $q,$timeout,GeoLayer,GAWTUtils) {
+    app.service('olv3LayerService', ['$log', '$q', '$timeout', 'GeoLayer', 'GAWTUtils', function ($log, $q, $timeout, GeoLayer, GAWTUtils) {
         var service = {
             xyzTileCachePath: "/tile/{z}/{y}/{x}",
             createLayer: function (args) {
@@ -47,7 +47,7 @@
                 if(args.maxZoomLevel) {
                     layer.geoMaxZoom = parseInt(args.maxZoomLevel);
                 }
-                if(args.minZoomLevel) {
+                if (args.minZoomLevel) {
                     layer.geoMinZoom = parseInt(args.minZoomLevel);
                 }
 
@@ -61,7 +61,7 @@
                 var layer;
 
                 if (args.url == null) {
-                    layer = new ol.layer.Vector({ source: new ol.source.Vector(), format: new ol.format.GeoJSON() });
+                    layer = new ol.layer.Vector({source: new ol.source.Vector(), format: new ol.format.GeoJSON()});
                 } else {
                     service.postAddLayerCache = service.postAddLayerCache || [];
                     //TODO remove fixed style, should default out of config
@@ -96,10 +96,10 @@
                 }
                 //TODO Layer IDs are not provided by OLV3, UUIDs should be generated for each layer created.
                 /*if (args.postAddLayer != null) {
-                    service.postAddLayerCache[layer.id] = args.postAddLayer;
-                }*/
+                 service.postAddLayerCache[layer.id] = args.postAddLayer;
+                 }*/
                 //Clean up any references to layers that no longer exist.
-                layer.set('name',args.layerName);
+                layer.set('name', args.layerName);
                 layer.set('isBaseLayer', args.isBaseLayer || false);
 
                 return layer;
@@ -118,7 +118,7 @@
             createBingLayer: function (args) {
                 var bingLayerType;
                 var bingLayerName = args.layerName;
-                switch(args.layerType.toLocaleLowerCase()) {
+                switch (args.layerType.toLocaleLowerCase()) {
                     case 'aerial':
                         bingLayerType = 'Aerial';
                         bingLayerName = bingLayerName || 'Bing Aerial';
@@ -150,19 +150,20 @@
                     })
                 });
 
-                layer.set('name',bingLayerName);
+                layer.set('name', bingLayerName);
                 layer.setVisible(args.visibility === true || args.visibility === 'true');
                 return layer;
             },
             createOsmLayer: function (args) {
-                var layer =  new ol.layer.Tile({
+                var layer = new ol.layer.Tile({
                     source: new ol.source.OSM()
                 });
                 layer.setVisible(args.visibility === true || args.visibility === 'true');
                 return layer;
             },
             clearFeatureLayer: function (mapInstance, layerId) {
-
+                var layer = service.getLayerById(mapInstance, layerId);
+                layer.getSource().clear();
             },
             createXYZLayer: function (args) {
                 var sourceOptions = {
@@ -170,7 +171,7 @@
                     crossOrigin: '*/*'
                 };
 
-                if(args.layerAttribution != null) {
+                if (args.layerAttribution != null) {
                     sourceOptions.attributions = [new ol.Attribution({
                         html: args.layerAttribution
                     })];
@@ -183,7 +184,7 @@
                 };
 
                 var result = new ol.layer.Tile(layerOptions);
-                result.set('name',args.layerName);
+                result.set('name', args.layerName);
                 result.set('isBaseLayer', args.isBaseLayer || false);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
                 // More info at - https://github.com/openlayers/ol3/issues/2907
@@ -198,24 +199,23 @@
                     'LAYERS': args.layers,
                     'TILED': true
                 };
-                if(args.format) {
+                if (args.format) {
                     sourceOptions.params.FORMAT = args.format;
                 }
 
                 //default wrap
                 sourceOptions.wrapX = true;
-                if(args.wrapDateLine != null) {
+                if (args.wrapDateLine != null) {
                     sourceOptions.wrapX = args.wrapDateLine === 'true' || args.wrapDateLine === true;
                 }
 
                 sourceOptions.serverType = ('mapserver');
 
-                if(args.layerAttribution != null) {
+                if (args.layerAttribution != null) {
                     sourceOptions.attributions = [new ol.Attribution({
                         html: args.layerAttribution
                     })];
                 }
-
 
                 var wmsSource = new ol.source.TileWMS(sourceOptions);
                 var layerOptions = {};
@@ -226,7 +226,7 @@
                 var result = new ol.layer.Tile(layerOptions);
                 // Due to the lack of support for ids or names from OLV3, inject the name parsed from the directive.
                 // More info at - https://github.com/openlayers/ol3/issues/2907
-                result.set('name',args.layerName);
+                result.set('name', args.layerName);
                 result.set('isBaseLayer', args.isBaseLayer || false);
                 return result;
             },
@@ -242,7 +242,7 @@
                     visible: args.visibility === true || args.visibility === 'true'
                 };
                 var result = new ol.layer.Tile(layerOptions);
-                result.set('name',args.layerName);
+                result.set('name', args.layerName);
                 result.set('isBaseLayer', args.isBaseLayer || false);
                 return result;
             },
@@ -252,14 +252,14 @@
                 return layerOptions;
             },
             cleanupLayer: function (mapInstance, layerId) {
-                var layer = service.getLayerBy(mapInstance,'id',layerId);
-                if(layer != null) {
+                var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                if (layer != null) {
                     mapInstance.removeLayer(layer);
                 }
             },
             createFeature: function (mapInstance, geoJson) {
                 var reader;
-                if(mapInstance.getView().getProjection() !== geoJson.crs.properties.name) {
+                if (mapInstance.getView().getProjection() !== geoJson.crs.properties.name) {
                     reader = new ol.format.GeoJSON({
                         'defaultDataProjection': geoJson.crs.properties.name
                     });
@@ -277,7 +277,7 @@
             addFeatureToLayer: function (mapInstance, layerId, feature) {
                 var layer = service.getLayerById(mapInstance, layerId);
                 var source = layer.getSource();
-                if(typeof source.getFeatures !== 'function') {
+                if (typeof source.getFeatures !== 'function') {
                     throw new Error('Layer does not have a valid source for features.');
                 }
                 var writer = new ol.format.GeoJSON();
@@ -303,7 +303,7 @@
             },
             //Should this be labeled as an internal method?
             getLayerById: function (mapInstance, layerId) {
-                return service.getLayerBy(mapInstance,'id',layerId);
+                return service.getLayerBy(mapInstance, 'id', layerId);
             },
             getLayerBy: function (mapInstance, propertyName, propertyValue) {
 
@@ -317,16 +317,16 @@
                 });
                 return layer;
             },
-            getLayerByName: function (mapInstance,layerName) {
+            getLayerByName: function (mapInstance, layerName) {
                 // If more than one layer has the same name then only the first will be destroyed
-                return service.getLayerBy(mapInstance,'name',layerName);
+                return service.getLayerBy(mapInstance, 'name', layerName);
             },
             getLayersBy: function (mapInstance, propertyName, propertyValue) {
                 var layers = mapInstance.getLayers();
                 var results = [];
                 layers.forEach(function (layer) {
                     var propVal = layer.get(propertyName);
-                    if(propVal && propVal.indexOf(propertyValue) !== -1) {
+                    if (propVal && propVal.indexOf(propertyValue) !== -1) {
                         results.push(GeoLayer.fromOpenLayersV3Layer(layer));
                     }
                 });
@@ -337,7 +337,7 @@
                 var results = [];
                 layers.forEach(function (layer) {
                     var propVal = layer.get(propertyName);
-                    if(propVal && propVal.indexOf(propertyValue) !== -1) {
+                    if (propVal && propVal.indexOf(propertyValue) !== -1) {
                         results.push(layer);
                     }
                 });
@@ -346,7 +346,7 @@
             //Should this be labeled as an internal method?
             removeLayerByName: function (mapInstance, layerName) {
                 // If more than one layer has the same name then only the first will be destroyed
-                var layers = service._getLayersBy(mapInstance,'name', layerName);
+                var layers = service._getLayersBy(mapInstance, 'name', layerName);
                 if (layers.length > 0) {
                     mapInstance.removeLayer(layers[0]);
                 }
@@ -354,7 +354,7 @@
             //Should this be labeled as an internal method?
             removeLayersByName: function (mapInstance, layerName) {
                 // Destroys all layers with the specified layer name
-                var layers = service._getLayersBy(mapInstance,'name', layerName);
+                var layers = service._getLayersBy(mapInstance, 'name', layerName);
                 for (var i = 0; i < layers.length; i++) {
                     mapInstance.removeLayer(layers[i]);
                 }
@@ -366,7 +366,7 @@
                 mapInstance.removeLayer(layerInstance);
             },
             removeLayerById: function (mapInstance, layerId) {
-                var layer = service._getLayersBy(mapInstance,'id', layerId)[0];
+                var layer = service._getLayersBy(mapInstance, 'id', layerId)[0];
                 mapInstance.removeLayer(layer);
             },
             removeFeatureFromLayer: function (mapInstance, layerId, featureId) {
@@ -374,7 +374,7 @@
                 var features = layer.getSource().getFeatures();
                 for (var i = 0; i < features.length; i++) {
                     var feature = features[i];
-                    if(feature.id === featureId) {
+                    if (feature.id === featureId) {
                         layer.getSource().removeFeature(feature);
                         break;
                     }
@@ -384,7 +384,7 @@
                 service.registeredInteractions = service.registeredInteractions || [];
                 for (var i = 0; i < service.registeredInteractions.length; i++) {
                     var interaction = service.registeredInteractions[i];
-                    if(interaction.id === '' + layerId + '_features') {
+                    if (interaction.id === '' + layerId + '_features') {
                         //Remove existing, limitation, only one feature selection event at once...?
                         mapInstance.removeInteraction(interaction.select);
                     }
@@ -393,7 +393,7 @@
                     condition: ol.events.condition.click
                 });
                 selectClick.on('select', function (e) {
-                    if(e.target.get('id') === layerId) {
+                    if (e.target.get('id') === layerId) {
                         callback(e);
                     }
                 });
@@ -405,17 +405,17 @@
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
                 //$log.info(layerId);
-                var layer = service.getLayerBy(mapInstance,'id', layerId);
-                layer.getSource().on(eventName,callback);
+                var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                layer.getSource().on(eventName, callback);
             },
             unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
                 //$log.info(layerId);
-                var layer = service.getLayerBy(mapInstance,'id', layerId);
-                layer.getSource().un(eventName,callback);
+                var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                layer.getSource().un(eventName, callback);
             },
             //Should this be moved to a separate service as it is more of a helper?
             getMarkerCountForLayerName: function (mapInstance, layerName) {
-                var layer = service.getLayerBy(mapInstance,'name',layerName);
+                var layer = service.getLayerBy(mapInstance, 'name', layerName);
                 return layer == null ? 0 : typeof layer.getSource().getFeatures === "undefined" ? 0 : layer.getSource().getFeatures().length;
             },
             filterFeatureLayer: function (mapInstance, layerId, filterValue) {
@@ -444,7 +444,7 @@
 
                 var layer = service.getLayerById(mapInstance, layerId);
                 var source = layer.getSource();
-                if(source.getFeatures == null) {
+                if (source.getFeatures == null) {
                     return features;
                 }
                 var existingFeatures = source.getFeatures();
@@ -455,25 +455,25 @@
                 return features;
             },
             raiseLayerDrawOrder: function (mapInstance, layerId, delta) {
-
-                var layer = service.getLayerById(mapInstance, layerId);
                 var allLayers = mapInstance.getLayers();
                 var layerIndex;
                 for (var i = 0; i < allLayers.getLength(); i++) {
                     var currentLayer = allLayers.item(i);
-                    if(currentLayer.get('id') === layerId) {
+                    if (currentLayer.get('id') === layerId) {
                         layerIndex = i;
                         break;
                     }
                 }
                 var updatedIndex = layerIndex + delta;
-                var layerAtUpdatedIndex = mapInstance.getLayers().getArray()[updatedIndex];
-                mapInstance.getLayers().getArray()[updatedIndex] = layer;
-                mapInstance.getLayers().getArray()[layerIndex] = layerAtUpdatedIndex;
+                if(layerIndex === updatedIndex) {
+                    return;
+                }
+                var layerArray = mapInstance.getLayers().getArray();
+                layerArray.splice(updatedIndex,0,layerArray.splice(layerIndex,1)[0]);
                 mapInstance.updateSize();
             },
             postAddLayerCache: {}
         };
         return service;
-    } ]);
+    }]);
 })();

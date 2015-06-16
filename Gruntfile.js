@@ -28,7 +28,7 @@ module.exports = function (grunt) {
             options: {
                 mangle: true,
                 sourceMap: true,
-                sourceMapName: 'src/main/js/geo-web-toolkit-min.js.map',
+                sourceMapName: 'dist/geo-web-toolkit-min.js.map',
                 beautify: false
             },
             release: {

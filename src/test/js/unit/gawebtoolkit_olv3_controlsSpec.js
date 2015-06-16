@@ -41,6 +41,7 @@
                     '<ga-map-control map-control-name="ScaleLine"></ga-map-control>' +
                     '<ga-map-control map-control-name="panzoombar"></ga-map-control>' +
                     '<ga-map-control map-control-name="attribution"></ga-map-control>' +
+                    '<ga-map-control map-control-name="mouseposition" />' +
                     '<div id="gamap"></div></ga-map>');
                 $compile(element)($scope);
                 $scope.$digest();
@@ -58,7 +59,7 @@
 
             it('Should have added an overviewmap control', function () {
                 //Overview map is added at the end due to bug with control if added to the map just after initialization/first render
-                expect($scope.mapController.getMapInstance().getControls().item(3).get('name')).toBe("overviewmap");
+                expect($scope.mapController.getMapInstance().getControls().item(4).get('name')).toBe("overviewmap");
             });
 
             it('Should have added a ScaleLine control', function () {
@@ -75,7 +76,7 @@
             });
 
             it('Should ignore the last control as the name is not specified', function () {
-                expect($scope.mapController.getMapInstance().getControls().getLength() === 4).toBe(true);
+                expect($scope.mapController.getMapInstance().getControls().getLength() === 5).toBe(true);
             });
 
             it('Should modify options and fire "preOptionsLoaded"', function () {
