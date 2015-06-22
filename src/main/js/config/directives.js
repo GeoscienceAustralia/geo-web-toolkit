@@ -135,6 +135,10 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                     if($attrs.configValue != null) {
                         $scope.configLocal = true;
                     }
+                    if($attrs.localStorageKey != null) {
+                        $scope.fromLocalStorage = true;
+                        $scope.localStorageKey = $attrs.localStorageKey;
+                    }
                     if ($attrs.gaConfigPath != null && $attrs.gaConfigPath.indexOf('{{') !== -1) {
                         configPath = $scope.$eval($interpolate($attrs.gaConfigPath));
                     } else {
@@ -189,6 +193,14 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                         $timeout(function () {
 
                             processSuccessResponse($scope.$eval($attrs.configValue));
+                        },1000);
+                    }
+
+                    if($scope.fromLocalStorage) {
+                        $log.info('Loading config from local storage...');
+                        $timeout(function () {
+                            var data = window.localStorage.getItem($scope.localStorageKey);
+                            processSuccessResponse(angular.copy(JSON.parse(data)));
                         },1000);
                     }
                 };

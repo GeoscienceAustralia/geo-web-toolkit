@@ -257,7 +257,8 @@
                 isControlActive: function (mapInstance, controlId, controlName) {
                     //Handle UI control compatibility.
                     if(controlName === 'measureline') {
-                        return service.measureEventDrawInteraction != null;
+                        var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
+                        return measureEventDrawInteraction != null;
                     }
                     //TODO no active state in olv3
                     var controls = mapInstance.getControls();
@@ -473,6 +474,10 @@
                 },
                 handleMeasurePartial: function (mapInstance,vectorLayer,drawInteraction, callback) {
                     drawInteraction.on("drawstart", function (e) {
+                        var measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+                        if(measureEventVectorLayer) {
+                            measureEventVectorLayer.getSource().clear();
+                        }
                         var isDragging = false;
                         service.pauseDoubleClickZoom_(mapInstance);
                         var sketchFeature = e.feature;
@@ -548,26 +553,18 @@
                         var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
                         if(eventName === 'measure' && measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            service._cleanupMeasureEvents(mapInstance);
+                            service._cleanupMeasureEvents(mapInstance, true);
                         }
                         if(eventName === 'measurepartial' && measureEventDrawInteraction) {
                             //Handle measure with custom implementation as OLV3 does not have a measure control
-                            service._cleanupMeasureEvents(mapInstance);
+                            service._cleanupMeasureEvents(mapInstance, true);
                         }
                     } else {
                         existingControl.un(eventName,callback);
                     }
                 },
-                _cleanupMeasureEvents: function (mapInstance) {
+                _cleanupMeasureEvents: function (mapInstance, remove) {
                     //Handle measure with custom implementation as OLV3 does not have a measure control
-                    var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
-                    var measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
-
-                    mapInstance.removeInteraction(measureEventDrawInteraction);
-                    mapInstance.removeLayer(measureEventVectorLayer);
-                    updateToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer', null);
-                    updateToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction',null);
-                    updateToolkitMapInstanceProperty(mapInstance,'measureEventSource',null);
                     var measurePointerUpEvent = getToolkitMapInstanceProperty(mapInstance,'measurePointerUpEvent');
                     if(measurePointerUpEvent) {
                         mapInstance.un('pointerup', measurePointerUpEvent);
@@ -575,6 +572,17 @@
                     var measurePointerMoveEvent = getToolkitMapInstanceProperty(mapInstance,'measurePointerMoveEvent');
                     if(measurePointerMoveEvent) {
                         mapInstance.un('pointermove', measurePointerMoveEvent);
+                    }
+
+                    if(remove) {
+                        var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction');
+                        var measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer');
+                        if(measureEventDrawInteraction) mapInstance.removeInteraction(measureEventDrawInteraction);
+                        if(measureEventVectorLayer) mapInstance.removeLayer(measureEventVectorLayer);
+
+                        updateToolkitMapInstanceProperty(mapInstance,'measureEventVectorLayer', null);
+                        updateToolkitMapInstanceProperty(mapInstance,'measureEventDrawInteraction',null);
+                        updateToolkitMapInstanceProperty(mapInstance,'measureEventSource',null);
                     }
                 },
                 /**
