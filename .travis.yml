@@ -4,6 +4,10 @@ branches:
 language: node_js
 node_js:
   - "0.10"
+install:
+  - bower install
+script:
+  - grunt build
 after_success:
 - chmod +x .travis/push-docs-to-gh-pages.sh
 - .travis/push-docs-to-gh-pages.sh
