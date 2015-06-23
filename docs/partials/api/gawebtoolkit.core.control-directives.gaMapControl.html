@@ -1,0 +1,85 @@
+<h1><code ng:non-bindable="">gaMapControl</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.core</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><h4 id="description_overview">Overview</h4>
+<p>gaMapControl is a wrapper for a native map control</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-map-control
+       map-control-name="{string|@}"
+       map-control-id="{string|@}"
+       control-options="{string|@}"
+       [container-element-id="{string|@}"]
+       [control-enabled="{number|@}"]&gt;
+&lt;/ga-map-control&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mapControlName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><ul>
+<li>The name of the control that is intended to be added to the map layer<h4 id="usage_directive-info_mapcontrolname-acceptable-values">mapControlName acceptable values</h4>
+The following values can be used as control name:
+&lt;<ul>
+   <li>permalink:</li>
+   <li>overviewmap:</li>
+   <li>scale:</li>
+   <li>scaleline:</li>
+   <li>panzoombar:</li>
+   <li>darwin.panzoombar:</li>
+   <li>mouseposition:</li>
+   <li>attribution:</li>
+   <li>measureline:</li>
+   <li>measurepolygon:</li>
+   <li>wmsgetfeatureinfo:</li>
+</ul></li>
+</ul>
+</div></td></tr><tr><td>mapControlId</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><ul>
+<li>A string value to be allocated to the control as its ID</li>
+</ul>
+</div></td></tr><tr><td>controlOptions</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><ul>
+<li>A string value that requests a setting to the specified control</li>
+</ul>
+</div></td></tr><tr><td>containerElementId <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><ul>
+<li>The id of the layer that this control will be added to</li>
+</ul>
+</div></td></tr><tr><td>controlEnabled <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><ul>
+<li>A boolean value (&#39;true&#39; or &#39;false&#39;) that toggles the control on/off</li>
+</ul>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="gawebtoolkit-core-control-directives-page gawebtoolkit-core-control-directives-gamapcontrol-page"><h4 id="example_source">Source</h4>
+<div source-edit="simpleMap" source-edit-deps="angular.js script.js" source-edit-html="index.html-0" source-edit-css="style.css-1" source-edit-js="script.js-2" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-0" ng-html-wrap-loaded="simpleMap angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-0">
+    <div id="map"></div>
+    <ga-map map-element-id="map">
+        <ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">
+        </ga-map-layer>
+           <ga-map-control map-control-name="mouseposition"></ga-map-control>
+           <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+           <ga-map-control map-control-name="Permalink"></ga-map-control>
+           <ga-map-control map-control-name="scale"></ga-map-control>
+           <ga-map-control map-control-name="ScaleLine"></ga-map-control>
+           <ga-map-control map-control-name="panzoombar"></ga-map-control>
+           <ga-map-control map-control-name="measureline"></ga-map-control>
+           <ga-map-control map-control-name="measurepolygon"></ga-map-control>
+           <ga-map-control map-control-name="wmsgetfeatureinfo"></ga-map-control>
+    </ga-map>
+</script>
+</div>
+<div class="tab-pane" title="style.css">
+<pre class="prettyprint linenums" ng-set-text="style.css-1"></pre>
+<style type="text/css" id="style.css-1">#map {width: 650px;height:600px;}</style>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js-2"></pre>
+<script type="text/ng-template" id="script.js-2">var app = angular.module('simpleMap',['gawebtoolkit.core']);</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="simpleMap" ng-set-html="index.html-0" ng-eval-javascript="script.js-2"></div>
+</div></div>
+</div>

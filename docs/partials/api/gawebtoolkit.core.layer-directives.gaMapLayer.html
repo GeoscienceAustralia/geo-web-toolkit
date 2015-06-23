@@ -1,0 +1,91 @@
+<h1><code ng:non-bindable="">gaMapLayer</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.core</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><h4 id="description_overview">Overview</h4>
+<p>gaMapLayer adds layer to the page. This tag should be placed within the gaMap tag</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-map-layer
+       layer-attribution="{string|@}"
+       layer-name="{string|@}"
+       layer-url="{string|@}"
+       [layers="{string|@}"]
+       [layer-type="{number|@}"]
+       wrap-date-line="{string|@}"
+       visibility="{string|@}"
+       is-base-layer="{string|@}"
+       controller-emit-event-name="{string|@}"&gt;
+&lt;/ga-map-layer&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerAttribution</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>The id of the element where the map is to be rendered</li>
+</ul>
+</div></td></tr><tr><td>layerName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A name allocated to the layer for future reference</li>
+</ul>
+</div></td></tr><tr><td>layerUrl</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A string value that defines the URL from which the content of the layer will be loaded.</li>
+</ul>
+</div></td></tr><tr><td>layers <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A comma separated value that tells the remote server which layers of data should is requested form the server. This will be used to make the right request form the remote server that is defined by layerUrl.</li>
+</ul>
+</div></td></tr><tr><td>layerType <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>The type of the data that is being load on the layer.
+Following types are supported:
+<ul>
+   <li>WMS</li>
+   <li>arcgiscache</li>
+   <li>xyzfilecache</li>
+</ul>
+<font color="red">Note:</font> This directive does not support WFS type. In order to request for WFS type <a href="#/api/gawebtoolkit.core.feature-directives:gaFeatureLayer">gaFeatureLayer</a> should be used.</li>
+</ul>
+</div></td></tr><tr><td>wrapDateLine</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A boolean value (&#39;true&#39;, &#39;false&#39;) which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.</li>
+</ul>
+</div></td></tr><tr><td>visibility</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A boolean value (&#39;true&#39;, &#39;false&#39;) for toggling layer on/off</li>
+</ul>
+</div></td></tr><tr><td>isBaseLayer</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A boolean value (&#39;true&#39;, &#39;false&#39;) telling the server if this layer is base layer or not</li>
+</ul>
+</div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><ul>
+<li>A string value that allocates an AngularJS controller to this layer to be used in JavaScript codes. This will be used in cases that the layer should be controllable with JS codes.
+Following functions are supported by this controller:<ul>
+  <li>hide</li>
+  <li>show</li>
+  <li>setOpacity</li>
+</ul></li>
+</ul>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="gawebtoolkit-core-layer-directives-page gawebtoolkit-core-layer-directives-gamaplayer-page"><h4 id="example_source">Source</h4>
+<div source-edit="simpleMap" source-edit-deps="angular.js script.js" source-edit-html="index.html-9" source-edit-css="style.css-10" source-edit-js="script.js-11" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-9" ng-html-wrap-loaded="simpleMap angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-9">
+    <div id="map"></div>
+    <ga-map map-element-id="map" center-position='[130, -25]' zoom-level="3">
+        <ga-map-layer layer-name="baseLayer" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS"></ga-map-layer>
+        
+        <ga-map-layer layer-name="Topographic" layer-url="http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer" map-bg-color="#194584" is-base-layer="false" layer-type="WMS"></ga-map-layer>
+    </ga-map>
+</script>
+</div>
+<div class="tab-pane" title="style.css">
+<pre class="prettyprint linenums" ng-set-text="style.css-10"></pre>
+<style type="text/css" id="style.css-10">#map {width: 650px;height:600px;}</style>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js-11"></pre>
+<script type="text/ng-template" id="script.js-11">var app = angular.module('simpleMap',['gawebtoolkit.core']);</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="simpleMap" ng-set-html="index.html-9" ng-eval-javascript="script.js-11"></div>
+</div></div>
+</div>

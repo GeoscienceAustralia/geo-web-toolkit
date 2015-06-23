@@ -1,0 +1,158 @@
+<h1><code ng:non-bindable="">gaLayerInteractionToggle</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.ui</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><p>This control provides a button to toggle interaction with a layer on/off</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-layer-interaction-toggle
+       toggle-icon-source="{string}"
+       map-controller="{object}"
+       controller-emit-event-name="{string}"
+       toggle-off-callback="{function}"
+       toggle-on-callback="{function()}"
+       on-layer-click-call-back="{function}"
+       layer-interaction-id="{string}"&gt;
+&lt;/ga-layer-interaction-toggle&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>toggleIconSource</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>A string value of toggle button&#39;s icon URL</li>
+</ul>
+</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>controller instance for the map</li>
+</ul>
+</div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>event that is fired that passes the controller</li>
+</ul>
+</div></td></tr><tr><td>toggleOffCallback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>Callback function to be called when toggle button is turns off</li>
+</ul>
+</div></td></tr><tr><td>toggleOnCallback</td><td><a href="" class="label type-hint type-hint-function">function()</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>Callback function to be called when toggle button turns on</li>
+</ul>
+</div></td></tr><tr><td>onLayerClickCallBack</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>Callback function to be called when the map layer is clicked</li>
+</ul>
+</div></td></tr><tr><td>layerInteractionId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><ul>
+<li>ID of the layer that this toggle button will interact with</li>
+</ul>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayerinteractiontoggle-page"><h4 id="example_source">Source</h4>
+<div source-edit="layerInteractionToggle" source-edit-deps="angular.js layerInteractionToggle.js" source-edit-html="layerInteractionToggle.html" source-edit-css="layerInteractionToggle.css" source-edit-js="layerInteractionToggle.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="layerInteractionToggle.html">
+<pre class="prettyprint linenums" ng-set-text="layerInteractionToggle.html"></pre>
+<script type="text/ng-template" id="layerInteractionToggle.html">
+<div ng-controller="ourMapController">
+        <div class="toolber">
+     <ga-layer-interaction-toggle
+     toggle-icon-source="//np.ga.gov.au/gamaps/resources/img/Layers.png"
+     controller-emit-event-name="toggleInteractionEvent"
+     map-controller="mapController"
+     layer-interaction-id="layers[1].id"
+     on-layer-click-callback="clickCallback()"
+     class="toggleInteractionButton">Toggle Interaction of "{{layers[1].name}}" layer on/off
+     </ga-layer-interaction-toggle>
+     <ga-layer-control ng-show="toggleInteractionController.isToggleActive()" layer-data="layers[1]" map-controller="mapController" class="alert alert-info"></ga-layer-control>
+     </div>
+     <div class="alert alert-danger layerClicked">Layer Clicked</div>
+     <div id="map" style="width:90%;height:600px"></div>
+     <ga-map
+     map-element-id="map"
+     datum-projection='EPSG:102100'
+     display-projection='EPSG:4326'
+     center-position='[130, -25]'
+     zoom-level="4">
+     <ga-map-layer
+     layer-name="World Image"
+     layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
+     wrap-date-line="true"
+     layer-type="XYZTileCache"
+     is-base-layer="true"
+     visibility="false">
+     </ga-map-layer>
+     <ga-map-layer
+     layer-name="Earthquake hazard contours"
+     layer-type="WMS"
+     layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
+     is-base-layer="false"
+     layers="hazardContours"
+     background-color="#ffffff">
+     </ga-map-layer>
+     <ga-map-control map-control-name="mouseposition"></ga-map-control>
+     <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+     <ga-map-control map-control-name="Permalink"></ga-map-control>
+     <ga-map-control map-control-name="ScaleLine"></ga-map-control>
+     <ga-map-control map-control-name="panzoombar"></ga-map-control>
+     </ga-map>
+
+</div>
+</script>
+</div>
+<div class="tab-pane" title="layerInteractionToggle.css">
+<pre class="prettyprint linenums" ng-set-text="layerInteractionToggle.css"></pre>
+<style type="text/css" id="layerInteractionToggle.css">
+            #map {
+                background-color: #21468b
+            }
+     .alert-info {
+                float: left;
+                clear: both;
+                min-height: 80px;
+                width: 100%;
+            }
+     .alert-danger {
+                position: absolute;
+                display: none;
+                z-index: 10000;
+            }
+     .alert label {
+                margin-left: 10px;
+            }
+     .toggleInteractionButton {
+                float: left;
+            }
+     .toolber {
+                display: inline-block;
+            }
+</style>
+</div>
+<div class="tab-pane" title="layerInteractionToggle.js">
+<pre class="prettyprint linenums" ng-set-text="layerInteractionToggle.js"></pre>
+<script type="text/ng-template" id="layerInteractionToggle.js">
+     var app = angular.module('layerInteractionToggle',
+     ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     app.controller("ourMapController",["$scope", function($scope) {
+                $scope.$on("mapControllerReady", function(event, args) {
+                    $scope.mapController = args;
+                    $scope.$on("layersReady", function() {
+                        $scope.layers = $scope.mapController.getLayers();
+                    });
+                });
+                $scope.$on("toggleInteractionEvent", function(event, args) {
+                    $scope.toggleInteractionController = args;
+                    $scope.clickCallback = function() {
+                        $(".layerClicked").fadeIn();
+                        setTimeout(function() {
+                            $(".layerClicked").fadeOut();
+                        }, 1000);
+                    };
+                });
+            }]);
+
+     $(".alert-danger")
+     .css({
+                    "margin-top": "10px",
+                    "margin-left": ( ($("#map").width() - $(".alert-danger").width()) / 2 ) + "px"
+        });
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="layerInteractionToggle" ng-set-html="layerInteractionToggle.html" ng-eval-javascript="layerInteractionToggle.js"></div>
+</div></div>
+</div>
