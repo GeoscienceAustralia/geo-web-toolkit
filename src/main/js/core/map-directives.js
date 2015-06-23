@@ -1664,13 +1664,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GALayerService.removeFeatureFromLayer($scope.mapInstance, layerId, featureId, $scope.framework);
             };
 
+            /**
+             * @function
+             * Raises the draw order of the specified layer
+             * @param {String} layerId - ID of the layer to raise
+             * @param {Number} delta - Change in layer order
+             * */
             self.raiseLayerDrawOrder = function (layerId, delta) {
                 GALayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
             };
-//            var layersReadyDeferred = $q.defer();
-//            self.layersReady = function () {
-//                return layersReadyDeferred.promise;
-//            };
+
+            /**
+             * @function
+             * Gets the current framework ID
+            * */
             self.getFrameworkVersion = function () {
                 if(OpenLayers != null && $scope.mapInstance instanceof OpenLayers.Map) {
                     return 'olv2';
