@@ -674,13 +674,18 @@
                  * Zooms to a specified extent
                  * //TODO What is common data structure for 'extent' object, current takes OpenLayers bounds
                  * @param mapInstance {Object} - mapInstance provided by ga-map directive
-                 * @param extent {Object} - OpenLayers.Bounds object
+                 * @param extent {[][]} - extent, eg [[10,10],[5,5]]
                  * @example
                  * var bounds = mapController.createBounds([[100.0,-20.0],[160.0,-20.0],[100.0,-40.0],[160.0,-40.0]]);
                  * mapController.zoomToExtent(bounds);
                  * */
                 zoomToExtent: function (mapInstance, extent) {
-
+                    var convertedExtent = [extent[0][0],extent[0][1],extent[1][0],extent[1][1]];
+                    var map = mapInstance;
+                    var view = map.getView();
+                    var finalExtent = convertedExtent || view.getProjection().getExtent();
+                    var size = map.getSize();
+                    view.fitExtent(finalExtent, size);
                 },
                 //TODO sensible errors when unsupported layerId is used.
                 zoomToLayer: function (mapInstance, layerId) {

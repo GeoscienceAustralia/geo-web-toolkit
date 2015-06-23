@@ -1568,48 +1568,46 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GAMapService.registerMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
             };
 
+            /**
+             * */
             self.registerLayerEvent = function (layerId, eventName, callback) {
                 GALayerService.registerLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
             };
 
+            /**
+             * @function
+             * Un-registers a registered layer event callback
+             * @param {String} layerId - ID of a specific layer.
+             * @param {String} eventName - Name of the event to un-register.
+             * @param {function} callback - Callback function previously registered.
+             * */
             self.unRegisterLayerEvent = function(layerId,eventName,callback) {
                 GALayerService.unRegisterLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
             };
 
+            /**
+             * @function
+             * Un-registers a registered map event callback
+             * @param {String} eventName - Name of the event to un-register.
+             * @param {function} callback - Callback function previously registered.
+             * */
             self.unRegisterMapEvent = function (eventName, callback) {
                 GAMapService.unRegisterMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
             };
 
+            /**
+             * @function
+             * Gets the current map extent value
+             * @return {Object}
+             * */
             self.getCurrentMapExtent = function () {
                 return GAMapService.getCurrentMapExtent($scope.mapInstance, $scope.framework);
             };
 
             /**
-             * @private
-             *
-             * Helper function to ensure all layers are loaded, async or other wise.
+             * @function
+             * Switches the map between 2D and 3D if the specified framework supports it, eg olv3.
              * */
-//            self.waitingForAsyncLayer = function () {
-//                $scope.waitingForNumberOfLayers++;
-//            };
-
-            /**
-             * @private
-             *
-             * Helper function to ensure all layers are loaded, async or other wise.
-             * */
-//            self.asyncLayerLoaded = function () {
-//                $scope.waitingForNumberOfLayers--;
-//            };
-
-//            self.asyncLayerError = function (layer) {
-//                $scope.waitingForNumberOfLayers--;
-//                var index = $scope.layerPromises.indexOf(layer);
-//                if (index > -1) {
-//                    $scope.layerPromises.splice(index, 1);
-//                }
-//            };
-
             self.switch3d = function () {
                 if(!GAMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
                     return;
@@ -1621,6 +1619,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 }
             };
 
+            /**
+             * @function
+             * Queries the map instance and returns if currently viewing in 3D mode.
+             * @return {Boolean}
+             * */
             self.is3d = function () {
                 if(!GAMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
                     return false;
@@ -1632,14 +1635,34 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             };
 
+            /**
+             * @function
+             * Gets all features from a specific layer
+             * @param {String} layerId - ID of a specific layer
+             * @return {GeoJSON[]}
+             * */
             self.getLayerFeatures = function (layerId) {
                 return GALayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
             };
 
+
+            /**
+             * @function
+             * Creates the framework specific feature object, then can be passed to 'addFeatureToLayer' to add.
+             * These functions are separated to allow incremental migration easier.
+             * @param {GeoJSON} geoJson - GeoJSON object to create the feature from.
+             * */
             self.createFeature = function (geoJson) {
                 return GALayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
             };
 
+            /**
+             * @function
+             * Adds the provided GeoJSON feature to the specified layerId
+             * @param {String} layerId - ID of the specific layer
+             * @param {Object} feature - Framework specific object, use 'createFeature' using GeoJSON to create.
+             * @return {GeoJSON}
+             * */
             self.addFeatureToLayer = function (layerId, feature) {
                 return GALayerService.addFeatureToLayer($scope.mapInstance, layerId, feature, $scope.framework);
             };
@@ -1656,10 +1679,21 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GAMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
             };
 
+            /**
+             * @function
+             * Parses event from measure event to extract distance and units
+             * @param {Object} event - Event object used in registered callbacks. This will be the native event object of the underlying framework, eg OpenLayers 2.
+             * */
             self.getMeasureFromEvent = function (event) {
                 return GAMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
             };
 
+            /**
+             * @function
+             * Remove single feature from existing layer
+             * @param {String} layerId - ID of the layer to remove a feature from
+             * @param {String} featureId - ID of the feature that needs to be removed
+             * */
             self.removeFeatureFromLayer = function (layerId, featureId) {
                 GALayerService.removeFeatureFromLayer($scope.mapInstance, layerId, featureId, $scope.framework);
             };
