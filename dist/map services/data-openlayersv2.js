@@ -9,7 +9,7 @@
             var projection = mapInstance.projection;
             var bounds = mapInstance.getExtent();
             var bbox = bounds.toBBOX();
-            var point = (event instanceof MouseEvent) ? pointEvent.xy : pointEvent;
+            var point = (pointEvent instanceof MouseEvent) ? pointEvent.xy : pointEvent;
             var halfHeight = mapInstance.getSize().h / 2;
             var halfWidth = mapInstance.getSize().w / 2;
             var centerPoint = new OpenLayers.Geometry.Point(halfWidth, halfHeight);
