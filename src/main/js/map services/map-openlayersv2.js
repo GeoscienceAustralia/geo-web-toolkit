@@ -691,7 +691,7 @@ app.service('olv2MapService', [
 			getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, pointEvent, tolerance) {
 				tolerance = tolerance || 0;
 				var deferred = $q.defer();
-				var point = event instanceof MouseEvent ? pointEvent.xy : pointEvent;
+				var point = pointEvent instanceof MouseEvent ? pointEvent.xy : pointEvent;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-tolerance, tolerance);
 				var urPx = originalPx.add(tolerance, -tolerance);
@@ -738,7 +738,7 @@ app.service('olv2MapService', [
 			},
 			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, pointEvent,tolerance) {
                 tolerance = tolerance || 0;
-				var point = event instanceof MouseEvent ? pointEvent.xy : pointEvent;
+				var point = pointEvent instanceof MouseEvent ? pointEvent.xy : pointEvent;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-tolerance, tolerance);
 				var urPx = originalPx.add(tolerance, -tolerance);
