@@ -56,15 +56,19 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             }
             var googleLayerType;
             switch(args.layerType.toLocaleLowerCase()) {
+                case 'googlehybrid':
                 case 'hybrid':
                     googleLayerType = google.maps.MapTypeId.HYBRID;
                     break;
+                case 'googlesatellite':
                 case 'satellite':
                     googleLayerType = google.maps.MapTypeId.SATELLITE;
                     break;
+                case 'googlestreet':
                 case 'street':
                     googleLayerType = google.maps.MapTypeId.STREET;
                     break;
+                case 'googleterrain':
                 case 'terrain':
                     googleLayerType = google.maps.MapTypeId.TERRAIN;
                     break;
