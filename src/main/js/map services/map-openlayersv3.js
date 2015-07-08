@@ -722,6 +722,10 @@
                 getDisplayProjection: function (mapInstance) {
                     return service.displayProjection || 'ESPG:4326';
                 },
+                getSize: function (mapInstance) {
+                    var size = mapInstance.getSize();
+                    return {width: size[0], height: size[1] };
+                },
                 /**
                  * Changes base layer to specified layer ID
                  * @param mapInstance {Object} - mapInstance provided by ga-map directive

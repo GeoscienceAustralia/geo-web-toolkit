@@ -1021,6 +1021,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GAMapService.getDisplayProjection($scope.mapInstance, self.getFrameworkVersion());
             };
 
+            self.getSize = function () {
+                return GAMapService.getSize($scope.mapInstance, self.getFrameworkVersion());
+            };
+
             /**
              * @ngdoc method
              * @name gawebtoolkit.core.map-directives:gaMap#setLayerVisibility

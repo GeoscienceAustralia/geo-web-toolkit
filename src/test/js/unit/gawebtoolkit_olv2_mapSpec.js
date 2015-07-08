@@ -826,5 +826,14 @@
                 expect($scope.mapController.getCurrentMapExtent()[1][0] < 160.0).toBe(true);
                 expect($scope.mapController.getCurrentMapExtent()[1][1] > -45.0).toBe(true);
             });
+
+            it('Should get the size of the map', function() {
+                //Mocking required due to no div size in PhantomJS
+                var map = $scope.mapController.getMapInstance();
+                map.getSize = function() { return {w: 500, h: 500};};
+
+                expect($scope.mapController.getSize().width).toBe(500);
+                expect($scope.mapController.getSize().height).toBe(500);
+            });
         });
 })();

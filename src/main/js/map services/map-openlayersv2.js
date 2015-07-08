@@ -323,6 +323,10 @@ app.service('olv2MapService', [
 			getDisplayProjection: function (mapInstance) {
 				return mapInstance.displayProjection || service.displayProjection || 'EPSG:4326';
 			},
+			getSize: function (mapInstance) {
+				var size = mapInstance.getSize();
+				return {width: size.w, height: size.h };
+			},
 			/**
 			 * Changes base layer to specified layer ID
 			 * @param mapInstance {Object} - mapInstance provided by ga-map directive
