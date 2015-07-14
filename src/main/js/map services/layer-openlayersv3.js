@@ -406,11 +406,13 @@
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
                 //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                eventName = eventName === 'loadstart' ? 'tileloadstart' : eventName;
                 layer.getSource().on(eventName, callback);
             },
             unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
                 //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                eventName = eventName === 'loadend' ? 'tileloadend' : eventName;
                 layer.getSource().un(eventName, callback);
             },
             //Should this be moved to a separate service as it is more of a helper?

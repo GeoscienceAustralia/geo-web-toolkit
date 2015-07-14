@@ -91,6 +91,11 @@ app.service('GALayerService', ['ga.config', 'mapLayerServiceLocator', function (
             var service = mapLayerServiceLocator.getImplementation(useVersion);
             service.registerLayerEvent(mapInstance, layerId, eventName, callback);
         },
+        unRegisterLayerEvent: function(mapInstance, layerId, eventName, callback, version) {
+            var useVersion = version || 'olv2';
+            var service = mapLayerServiceLocator.getImplementation(useVersion);
+            service.unRegisterLayerEvent(mapInstance, layerId, eventName, callback);
+        },
         unRegisterMapEvent: function (mapInstance, layerId, eventName, callback,version) {
             var useVersion = version || 'olv2';
             var service = mapLayerServiceLocator.getImplementation(useVersion);

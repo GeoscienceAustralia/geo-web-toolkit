@@ -268,6 +268,36 @@
                 expect(layersCount).toBe(4);
             });
 
+            it('Should be able to register a layer event', function () {
+                var layer = $scope.mapController.getLayers()[3];
+                var passed = false;
+                try {
+                    $scope.mapController.registerLayerEvent(layer.id,'loadstart', function () {
+                        //do stuff
+                    });
+                    passed = true;
+                } catch(error) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
+            });
+
+            it('Should be able to un-register a layer event', function () {
+                var layer = $scope.mapController.getLayers()[3];
+                var passed = false;
+                function test() {
+
+                }
+                try {
+                    $scope.mapController.registerLayerEvent(layer.id,'loadstart', test);
+                    $scope.mapController.unRegisterLayerEvent(layer.id,'loadstart', test);
+                    passed = true;
+                } catch(error) {
+                    passed = false;
+                }
+                expect(passed).toBe(true);
+            });
+
 //		it('Should be able to change opacity via layerController', function () {
 //			var olv2FirstLayer = $scope.mapController.getMapInstance().layers[2];
 //			expect(olv2FirstLayer.opacity === 1.0).toBe(true);
