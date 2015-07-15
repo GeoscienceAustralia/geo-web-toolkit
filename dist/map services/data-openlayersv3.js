@@ -128,10 +128,13 @@
         return {
             getLayersByWMSCapabilities: function (url) {
                 var deferred = $q.defer();
-                $http.get(url + "?request=GetCapabilities").success(function (data, status, headers, config) {
+                var getCapsUrl = url.indexOf('?') > 0 ? url + "&request=GetCapabilities" : url + "?request=GetCapabilities";
+                $http.get(getCapsUrl).success(function (data, status, headers, config) {
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var allLayers = format.read(data).capability.layers;
                     deferred.resolve(allLayers);
+                }).error(function(data, status, headers, config) {
+                    deferred.reject(status);
                 });
                 return deferred.promise;
             },
