@@ -132,6 +132,8 @@
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var allLayers = format.read(data).capability.layers;
                     deferred.resolve(allLayers);
+                }).error(function(data, status, headers, config) {
+                    deferred.reject(status);
                 });
                 return deferred.promise;
             },
