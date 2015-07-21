@@ -4,12 +4,12 @@
 
     var app = angular.module('gawebtoolkit.mapservices.data.openlayersv2', []);
 
-    var olv2DataService = ['$q', '$http', function ($q, $http) {
+    var olv2DataService = ['$q', '$http','ga.config', function ($q, $http,GAConfig) {
         function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {
             var projection = mapInstance.projection;
             var bounds = mapInstance.getExtent();
             var bbox = bounds.toBBOX();
-            var point = (pointEvent instanceof MouseEvent) ? pointEvent.xy : pointEvent;
+            var point = (pointEvent != null && pointEvent instanceof MouseEvent) ? pointEvent.xy : pointEvent;
             var halfHeight = mapInstance.getSize().h / 2;
             var halfWidth = mapInstance.getSize().w / 2;
             var centerPoint = new OpenLayers.Geometry.Point(halfWidth, halfHeight);
@@ -153,6 +153,9 @@
                     },
                     scope: this
                 };
+                if(GAConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = GAConfig().defaultOptions.proxyHost;
+                }
                 OpenLayers.Request.GET(requestParams);
                 return deferred.promise;
             },
@@ -239,6 +242,9 @@
                     },
                     scope: this
                 };
+                if(GAConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = GAConfig().defaultOptions.proxyHost;
+                }
                 OpenLayers.Request.GET(requestParams);
                 return deferred.promise;
             }

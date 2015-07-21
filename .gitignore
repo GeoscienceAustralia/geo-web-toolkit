@@ -6,6 +6,7 @@
 /.idea/
 /.settings/
 /docs/
+/coverage/
 .project
 .classpath
 *.log
