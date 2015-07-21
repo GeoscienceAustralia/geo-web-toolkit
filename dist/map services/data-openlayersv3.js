@@ -5,13 +5,13 @@
     "use strict";
     var app = angular.module('gawebtoolkit.mapservices.data.openlayersv3', []);
 
-    var olv2DataService = ['$q', '$http', function ($q, $http) {
+    var olv2DataService = ['$q', '$http', 'ga.config', function ($q, $http,GAConfig) {
         function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {
             var projection = mapInstance.getView().getProjection().getCode();
             var bounds = mapInstance.getView().calculateExtent(mapInstance.getSize());
             var olv2Bounds = new OpenLayers.Bounds(bounds[0],bounds[1],bounds[2],bounds[3]);
             var bbox = olv2Bounds.toBBOX();
-            var point = (pointEvent instanceof ol.MapBrowserPointerEvent) ? pointEvent.pixel : pointEvent;
+            var point = (pointEvent != null && pointEvent instanceof ol.MapBrowserPointerEvent) ? pointEvent.pixel : pointEvent;
             if(point.position != null) {
                 point = [point.position.x,point.position.y];
             }
@@ -163,6 +163,9 @@
                     },
                     scope: this
                 };
+                if(GAConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = GAConfig().defaultOptions.proxyHost;
+                }
                 OpenLayers.Request.GET(requestParams);
                 return deferred.promise;
             },
@@ -244,6 +247,9 @@
                     },
                     scope: this
                 };
+                if(GAConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = GAConfig().defaultOptions.proxyHost;
+                }
                 OpenLayers.Request.GET(requestParams);
                 return deferred.promise;
             }
