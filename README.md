@@ -25,6 +25,10 @@ The toolkit can be built using Maven
 
 `>> mvn clean install`
 
+Or can be built without the need for Java using Grunt using `grunt build`.
+
+Angular dependency graph can be generated using `grunt depgraph` but does required [`graphviz`](http://www.graphviz.org/) to be installed.
+
 ## Documentation
 
 Maven build generates ngdocs in the `docs` directory.
