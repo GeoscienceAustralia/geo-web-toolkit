@@ -3,11 +3,7 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.map.ol3cesium',
-        [
-            'gawebtoolkit.mapservices.layer.openlayersv3',
-            'gawebtoolkit.mapservices.controls.openlayersv3'
-        ]);
+    var app = angular.module('gawebtoolkit.mapservices.map.ol3cesium', []);
 
     app.service('ol3CesiumMapService', [function () {
         var spaceEventHandler;
