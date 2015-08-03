@@ -113,20 +113,12 @@ module.exports = function (grunt) {
             prefix: 'v',
             annotate: false
         },
-        'modules-graph': {
-            options: {
-                externalDependenciesColor:'red'
-            },
-            debug: {
+        angular_architecture_graph: {
+            diagram: {
                 files: {
-                    'angular-dependency-graph.dot': ['src/main/js/**/*.js']
-                }
-            }
-        },
-        graphviz: {
-            dependencies: {
-                files: {
-                    'angular-dependency-graph.png': 'angular-dependency-graph.dot'
+                    "architecture": [
+                        "src/main/js/**/*.js"
+                    ]
                 }
             }
         }
@@ -140,14 +132,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-tagrelease');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
+    grunt.loadNpmTasks('grunt-angular-architecture-graph');
     grunt.loadNpmTasks('grunt-graphviz');
-    grunt.loadNpmTasks('grunt-angular-modules-graph');
 
     grunt.registerTask('default', ['uglify', 'ngdocs', 'ngtemplates', 'concat', 'copy']);
     grunt.registerTask('test', ['default', 'karma']);
     grunt.registerTask('build', ['default', 'karma']);
-
-    grunt.registerTask('depgraph', ['modules-graph', 'graphviz']);
 
     grunt.registerTask('release', function (type) {
         type = type ? type : 'patch';
