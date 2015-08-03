@@ -27,7 +27,8 @@ The toolkit can be built using Maven
 
 Or can be built without the need for Java using Grunt using `grunt build`.
 
-Angular dependency graph can be generated using `grunt depgraph` but does required [`graphviz`](http://www.graphviz.org/) to be installed.
+Angular dependency graph can be generated using `grunt angular_architecture_graph` but does required [`graphviz`](http://www.graphviz.org/) to be installed. 
+The output of this can be found in the `/architecture` folder. This generates an overview module graph as well as detailed component level diagrams for all internal modules.
 
 ## Documentation
 
