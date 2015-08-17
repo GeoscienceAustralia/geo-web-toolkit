@@ -8,19 +8,21 @@ var app = angular.module('gawebtoolkit.core.data-services', ['gawebtoolkit.mapse
 app.service('GADataService', ['$log', 'ga.config', 'dataServiceLocator',
     function ($log, GAConfig, dataServiceLocator) {
         'use strict';
+        //OpenLayers 2 as default
+        var defaultFramework = 'olv2';
         return {
             getLayersByWMSCapabilities: function (url, version) {
-                var useVersion = version || 'olv2';
+                var useVersion = version || defaultFramework;
                 var service = dataServiceLocator.getImplementation(useVersion);
                 return service.getLayersByWMSCapabilities(url);
             },
             getWMSFeatures: function (mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, version) {
-                var useVersion = version || 'olv2';
+                var useVersion = version || defaultFramework;
                 var service = dataServiceLocator.getImplementation(useVersion);
                 return service.getWMSFeatures(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
             },
             getWMSFeaturesByLayerId: function (mapInstance, url, layerId, point, version) {
-                var useVersion = version || 'olv2';
+                var useVersion = version || defaultFramework;
                 var service = dataServiceLocator.getImplementation(useVersion);
                 return service.getLayersByWMSCapabilities(mapInstance, url, layerId, point);
             }
