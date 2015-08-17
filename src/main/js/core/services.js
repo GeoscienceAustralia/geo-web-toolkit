@@ -5,6 +5,10 @@ var $ = $ || {};
 var app = angular.module('gawebtoolkit.utils', []);
 app.service('GAWTUtils', [ function() {
    'use strict';
+   function convertHexToRgb(hexVal) {
+       hexVal = parseInt(hexVal.charAt(0) === '#'? hexVal.substring(1,7): hexVal, 16);
+       return [Math.floor(hexVal / 65536), Math.floor((hexVal % 65536) / 256), hexVal % 256];
+   }
    return {
       generateUuid : function() {
          //Code from - https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
@@ -16,19 +20,11 @@ app.service('GAWTUtils', [ function() {
             return v.toString(16);
          });
       },
-      convertHexToRgb: function (hexVal) {
-         function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16);}
-         function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16);}
-         function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16);}
-         function cutHex(h) {return (h.charAt(0)==="#") ? h.substring(1,7):h;}
-         return [hexToR(hexVal),hexToG(hexVal),hexToB(hexVal)];
-      },
+      convertHexToRgb: convertHexToRgb,
       convertHexAndOpacityToRgbArray: function (hexVal, opacity) {
-         function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16);}
-         function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16);}
-         function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16);}
-         function cutHex(h) {return (h.charAt(0)==="#") ? h.substring(1,7):h;}
-         return [hexToR(hexVal),hexToG(hexVal),hexToB(hexVal), opacity];
+         var a = convertHexToRgb(hexVal);
+         a.push(opacity);
+         return a;
       }
 
 
