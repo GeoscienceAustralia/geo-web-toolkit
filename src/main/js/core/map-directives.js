@@ -1532,12 +1532,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GALayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element, $scope.framework);
             };
 
-			self.getFeatureInfo = function (callback,url,featureType, featurePrefix, geometryName, point, tolerance) {
-				return GAMapService.getFeatureInfo($scope.mapInstance,callback, url,featureType, featurePrefix, geometryName, point, tolerance, $scope.framework);
+			self.getFeatureInfo = function (url,featureType, featurePrefix, geometryName, point, tolerance) {
+				return GAMapService.getFeatureInfo($scope.mapInstance, url,featureType, featurePrefix, geometryName, point, tolerance, $scope.framework);
 			};
 
-			self.getFeatureInfoFromLayer = function (callback,layerId, point,tolerance) {
-				return GAMapService.getFeatureInfoFromLayer($scope.mapInstance,callback,layerId, point,tolerance, $scope.framework);
+			self.getFeatureInfoFromLayer = function (layerId, point,tolerance) {
+				return GAMapService.getFeatureInfoFromLayer($scope.mapInstance,layerId, point,tolerance, $scope.framework);
 			};
 
             self.resetMapFired = function () {

@@ -1,7 +1,10 @@
 var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var ol = ol || {};
-var app = angular.module('gawebtoolkit.core.layer-services', ['gawebtoolkit.mapservices']);
+var app = angular.module('gawebtoolkit.core.layer-services', [
+    'gawebtoolkit.mapservices',
+    'gawebtoolkit.core.map-config'
+]);
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.

@@ -1,7 +1,10 @@
 var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var ol = ol || {};
-var app = angular.module('gawebtoolkit.core.map-services', ['gawebtoolkit.mapservices']);
+var app = angular.module('gawebtoolkit.core.map-services', [
+    'gawebtoolkit.mapservices',
+    'gawebtoolkit.core.map-config'
+]);
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.
@@ -264,15 +267,15 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var service = mapServiceLocator.getImplementation(useVersion);
                 return service.createWfsClient(url, featureType, featurePrefix, wfsVersion, geometryName, datumProjection, isLonLatOrderValid);
             },
-            getFeatureInfo: function (mapInstance, callback, url, featureType, featurePrefix, geometryName, point, tolerance, version) {
+            getFeatureInfo: function (mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.getFeatureInfo(mapInstance, callback, url, featureType, featurePrefix, geometryName, point, tolerance);
+                return service.getFeatureInfo(mapInstance, url, featureType, featurePrefix, geometryName, point, tolerance);
             },
-            getFeatureInfoFromLayer: function (mapInstance, callback, layerId, point, tolerance, version) {
+            getFeatureInfoFromLayer: function (mapInstance, layerId, point, tolerance, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapServiceLocator.getImplementation(useVersion);
-                return service.getFeatureInfoFromLayer(mapInstance, callback, layerId, point, tolerance);
+                return service.getFeatureInfoFromLayer(mapInstance, layerId, point, tolerance);
             },
             getMeasureFromEvent: function (mapInstance, e, version) {
                 var useVersion = version || defaultFramework;

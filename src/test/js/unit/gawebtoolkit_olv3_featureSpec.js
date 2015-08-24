@@ -60,12 +60,11 @@
                 $timeout(function () {
                     //Mock function that required rendered canvas.
                     $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) { return [12,34];};
-                    $scope.mapController.getFeatureInfoFromLayer(function () {
-
-                            //return feature //TODO currently no way to mock due to reliance on OL. Injected script tag into head with callback ref.
-                        },layer.id,
+                    $scope.mapController.getFeatureInfoFromLayer(layer.id,
                         {x: 20,y:20}
-                    );
+                    ).then(function () {
+                            //return feature //TODO currently no way to mock due to reliance on OL. Injected script tag into head with callback ref.
+                        });
                     expect(layer.name).toBe('Australian Landsat Mosaic');
                 });
                 $timeout.flush();

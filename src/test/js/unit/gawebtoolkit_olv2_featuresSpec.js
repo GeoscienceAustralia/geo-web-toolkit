@@ -72,11 +72,11 @@
                 $timeout(function () {
                     var passed = true;
                     try {
-                        $scope.mapController.getFeatureInfoFromLayer(function () {
-                                //return feature //TODO currently no way to mock due to reliance on OL. Injected script tag into head with callback ref.
-                            },layer.id,
+                        $scope.mapController.getFeatureInfoFromLayer(layer.id,
                             {x: 20,y:20}
-                        );
+                        ).then(function () {
+                                //return feature //TODO currently no way to mock due to reliance on OL. Injected script tag into head with callback ref.
+                            });
                     }
                     catch (ex) {
                         passed = false;
