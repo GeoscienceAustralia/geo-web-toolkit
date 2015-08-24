@@ -735,13 +735,16 @@ app.service('olv2MapService', [
 								};
 							}
 							deferred.resolve(geoObject);
+						} else {
+							deferred.reject(result.error);
 						}
 					}
 				});
 				return deferred.promise;
 			},
-			getFeatureInfoFromLayer: function (mapInstance, callback, layerId, pointEvent,tolerance) {
+			getFeatureInfoFromLayer: function (mapInstance, layerId, pointEvent,tolerance) {
                 tolerance = tolerance || 0;
+				var deferred = $q.defer();
 				var point = pointEvent instanceof MouseEvent ? pointEvent.xy : pointEvent;
 				var originalPx = new OpenLayers.Pixel(point.x, point.y);
 				var llPx = originalPx.add(-tolerance, tolerance);
@@ -778,10 +781,13 @@ app.service('olv2MapService', [
 									}
 								};
 							}
-							callback(geoObject);
+							deferred.resolve(geoObject);
+						} else {
+							deferred.reject(result.error);
 						}
 					}
 				});
+				return deferred.promise;
 			},
 			createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
 				var protocol = new OpenLayers.Protocol.WFS({

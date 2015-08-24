@@ -1310,17 +1310,20 @@
                                     };
                                 }
                                 deferred.resolve(geoObject);
+                            } else {
+                                deferred.reject(result.error);
                             }
                         }
                     });
                     return deferred.promise;
                 },
-                getFeatureInfoFromLayer: function (mapInstance, callback, layerId, pointEvent, tolerance) {
+                getFeatureInfoFromLayer: function (mapInstance, layerId, pointEvent, tolerance) {
                     if(OpenLayers == null) {
                         throw new Error("NotImplemented");
                     }
                     $log.warn('getFeatureInfoFromLayer not implemented for OpenLayers version 3, falling back to OpenLayers v2 to get GeoJSON features from server');
                     tolerance = tolerance || 0;
+                    var deferred = $q.defer();
                     var point = (pointEvent instanceof ol.SelectEvent) ? pointEvent.pixel : pointEvent;
                     var originalPx = new OpenLayers.Pixel(point.x, point.y);
                     var llPx = originalPx.add(-tolerance, tolerance);
@@ -1375,10 +1378,13 @@
                                         }
                                     };
                                 }
-                                callback(geoObject);
+                                deferred.resolve(geoObject);
+                            } else {
+                                deferred.reject(result);
                             }
                         }
                     });
+                    return deferred.promise;
                 },
                 createWfsClient: function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
                     throw new Error("NotImplemented");
