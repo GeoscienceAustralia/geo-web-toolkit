@@ -1413,6 +1413,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return GAMapService.getMapElementId($scope.mapInstance,$scope.framework);
             };
             /**
+             * @ngdoc method
              * Adds a marker to an existing marker group/layer or creates a new group/layer to add
              * the marker too.
              *
