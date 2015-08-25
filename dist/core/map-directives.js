@@ -709,7 +709,6 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              *               };
              *
              *           var mapClickCallback = function(e) {
-             *               console.log(e);
              *               var x = e.pageX - $('#getLonLat').offset().left
              *               var y = e.pageY - $('#getLonLat').offset().top
              *               var LonLatObj = $scope.mapController.getLonLatFromPixel(x, y);
@@ -1229,7 +1228,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="setCenterPosition">
              * <a class="btn btn-primary" ng-click="setCenterPosition()">Move to Australia</a>
              * <div id="setCenterPosition"></div>
-             * <ga-map map-element-id="setCenterPosition" zoom-level="4">
+             * <ga-map map-element-id="setCenterPosition" zoom-level="4" display-projection="EPSG:4326" datum-project="EPSG:3857" framework="olv3">
              * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              * </ga-map>
              * </div>
@@ -1240,7 +1239,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * $scope.$on("mapControllerReady", function(event, args) {
              * $scope.mapController = args;
              * $scope.setCenterPosition = function() {
-             * $scope.mapController.setCenter(130, -25);
+             * $scope.mapController.setCenter(-25, 130);
              * $scope.mapController.zoomTo(4);
              * }
              * })

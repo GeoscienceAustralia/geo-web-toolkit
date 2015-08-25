@@ -23,7 +23,7 @@ app.value('ga.config', function () {
         opacity: 1.0,
         layerAttribution: '',
         displayInLayerSwitcher: true,
-        projection: 'EPSG:102100',
+        projection: 'EPSG:3857',
         displayProjection: 'EPSG:4326',
         numZoomLevels: 15,
         transparent: true,
