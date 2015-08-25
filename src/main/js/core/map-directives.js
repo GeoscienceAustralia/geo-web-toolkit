@@ -182,7 +182,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="mapController.zoomToMaxExtent()">Zoom to Max</a>
              * <div id="zoomToMax"></div>
              * <ga-map map-element-id="zoomToMax" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
+             * <ga-osm-layer></ga-osm-layer>
              * <ga-map-control map-control-name="mouseposition"></ga-map-control>
              * </ga-map-layer>
              * </ga-map>
@@ -219,7 +219,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="currentZoomLevel = mapController.currentZoomLevel()">Get the current zoom level : <span ng-model="currentZoomLevel" class="bg-primary">{{currentZoomLevel}}</span></a>
              * <div id="currentZoomLevel"></div>
              * <ga-map map-element-id="currentZoomLevel" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
+             * <ga-osm-layer></ga-osm-layer>
              * <ga-map-control map-control-name="mouseposition"></ga-map-control>
              * </ga-map-layer>
              * </ga-map>
@@ -262,15 +262,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 <div id="mapMouseMove"></div>
                 <ga-map
                     map-element-id="mapMouseMove"
-                    datum-projection='EPSG:102100'
-                    display-projection='EPSG:4326'
                     center-position='[130, -25]'
                 zoom-level="4">
-                <ga-map-layer
-                    layer-name="Overview World Screen"
-                    layer-type="GoogleStreet"
-                    is-base-layer="true">
-                </ga-map-layer>
+                <ga-osm-layer></ga-osm-layer>
                 <ga-map-layer
                     layer-name="Topographic" 
                     layer-type="WMS"
@@ -344,15 +338,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     <div id="mapMouseMoveEnd"></div>
                     <ga-map
                         map-element-id="mapMouseMoveEnd"
-                        datum-projection='EPSG:102100'
-                        display-projection='EPSG:4326'
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-map-layer
-                            layer-name="Overview World Screen"
-                            layer-type="GoogleStreet"
-                            is-base-layer="true">
-                        </ga-map-layer>
+                        <ga-osm-layer></ga-osm-layer>
                         <ga-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
@@ -435,15 +423,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     <div id="mouseMapClick"></div>
                     <ga-map
                         map-element-id="mouseMapClick"
-                        datum-projection='EPSG:102100'
-                        display-projection='EPSG:4326'
                         center-position='[130, -25]'
-                    zoom-level="4">
-                    <ga-map-layer
-                        layer-name="Overview World Screen"
-                        layer-type="GoogleStreet"
-                        is-base-layer="true">
-                    </ga-map-layer>
+                        zoom-level="4">
+                    <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
                     <ga-map-layer
                         layer-name="Topographic" 
                         layer-type="WMS"
@@ -522,15 +504,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     <div id="unRegisterMouseMapClick"></div>
                 <ga-map
                     map-element-id="unRegisterMouseMapClick"
-                    datum-projection='EPSG:102100'
-                    display-projection='EPSG:4326'
                     center-position='[130, -25]'
                     zoom-level="4">
-                    <ga-map-layer
-                        layer-name="Overview World Screen"
-                        layer-type="GoogleStreet"
-                        is-base-layer="true">
-                    </ga-map-layer>
+                    <ga-osm-layer></ga-osm-layer>
                     <ga-map-layer
                         layer-name="Topographic" 
                         layer-type="WMS"
@@ -614,23 +590,24 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <example module="addOurControl">
              * <file name="addOurControl.html">
              * <div ng-controller="addOurControl">
-             * <a class="btn btn-primary" ng-click="addOurControl()">Add Control</a>
-             * <div id="addOurControl"></div>
-             * <ga-map map-element-id="addOurControl" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
-             * </ga-map-layer>
-             * </ga-map>
+             *      <a class="btn btn-primary" ng-click="addOurControl()">Add Control</a>
+             *      <div id="addOurControl"></div>
+             *      <ga-map map-element-id="addOurControl"
+             *              center-position='[130, -25]'
+             *              zoom-level="4">
+             *          <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
+             *      </ga-map>
              * </div>
              * </file>
              * <file name="addOurControl.js">
              * angular.module("addOurControl",['gawebtoolkit.core'])
-             * .controller("addOurControl", ["$scope", function($scope) {
-             * $scope.$on("mapControllerReady", function(event, args) {
-             * $scope.mapController = args;
-             * $scope.addOurControl = function() {
-             * $scope.mapController.addControl("panzoombar", "", "addOurControl", "ourCustomControl");
-             * }
-             * })
+             *  .controller("addOurControl", ["$scope", function($scope) {
+             *      $scope.$on("mapControllerReady", function(event, args) {
+             *          $scope.mapController = args;
+             *          $scope.addOurControl = function() {
+             *          $scope.mapController.addControl("panzoombar");
+             *      }
+             *  })
              * }]);
              * </file>
              * <file name="addOurControl.css">
@@ -657,57 +634,53 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <example module="getLonLat">
              * <file name="getLonLat.html">
              * <div ng-controller="ourMapController">
-                <div id="toolbar">
-                    <a class="btn btn-primary" ng-click="toggleMouseClickRegistration($event)">{{registerMapClickButton}}</a>
-                    <span ng-show="isMapClickRegistered" class="alert alert-danger messagebox">
-                        {{mouseClickStatus + " | " + mouseClickMsg}}</span>
-                </div>        
-                <div id="getLonLat"></div>
-                <ga-map
-                    map-element-id="getLonLat"
-                    datum-projection='EPSG:102100'
-                    display-projection='EPSG:4326'
-                    center-position='[130, -25]'
-                    zoom-level="4">
-                    <ga-map-layer
-                        layer-name="Overview World Screen"
-                        layer-type="GoogleStreet"
-                        is-base-layer="true">
-                    </ga-map-layer>
-                    <ga-map-layer
-                        layer-name="Topographic" 
-                        layer-type="WMS"
-                        layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
-                        is-base-layer="false"
-                        layers="hazardContours"
-                        background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
-              </div>
+             *   <div id="toolbar">
+             *       <a class="btn btn-primary" ng-click="toggleMouseClickRegistration($event)">{{registerMapClickButton}}</a>
+             *       <span ng-show="isMapClickRegistered" class="alert alert-danger messagebox">
+             *           {{mouseClickStatus + " | " + mouseClickMsg}}</span>
+             *   </div>
+             *   <div id="getLonLat"></div>
+             *   <ga-map
+             *       map-element-id="getLonLat"
+             *       center-position='[130, -25]'
+             *       zoom-level="4">
+             *       <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
+             *       <ga-map-layer
+             *           layer-name="Topographic"
+             *           layer-type="WMS"
+             *           layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
+             *           is-base-layer="false"
+             *           layers="hazardContours">
+             *       </ga-map-layer>
+             *   </ga-map>
+             * </div>
              * </file>
              * <file name="getLonLat.js">
              *  var app = angular.module('getLonLat', ['gawebtoolkit.core']);
-                app.controller('ourMapController',['$scope', function ($scope) {
-                    $scope.mouseMoveRegistered = false;
-                    $scope.$on('mapControllerReady', function(event,args) {
-                        $scope.mapController = args;
-                        $scope.mouseClickStatus = "mouseClickStatus";
-                        $scope.mouseClickMsg = "mouseClickMsg";
-                        $scope.registerMapClickButton = "Register map click";
-                        $scope.toggleMouseClickRegistration = function(e) {
-                                $scope.isMapClickRegistered = true;
-                                $scope.mouseClickStatus = "Map click registered";
-                                angular.element(e.target).attr("disabled", "");
-                                $scope.mapController.registerMapClick(mapClickCallback);
-                            };
-
-                        var mapClickCallback = function(e) {
-                            LonLatObj = $scope.mapController.getLonLatFromPixel(e.pageX, e.pageY, $scope.mapController.getProjection());
-                            $scope.mouseClickMsg = "Longitude: " + LonLatObj.lon + " | Latitude: " + LonLatObj.lat;
-                            $scope.$apply();
-                        };
-                    });
-                }]);
+             *   app.controller('ourMapController',['$scope', function ($scope) {
+             *       $scope.mouseMoveRegistered = false;
+             *       $scope.$on('mapControllerReady', function(event,args) {
+             *           $scope.mapController = args;
+             *           $scope.mouseClickStatus = "mouseClickStatus";
+             *           $scope.mouseClickMsg = "mouseClickMsg";
+             *           $scope.registerMapClickButton = "Register map click";
+             *           $scope.toggleMouseClickRegistration = function(e) {
+             *                   $scope.isMapClickRegistered = true;
+             *                   $scope.mouseClickStatus = "Map click registered";
+             *                   angular.element(e.target).attr("disabled", "");
+             *                   $scope.mapController.registerMapClick(mapClickCallback);
+             *               };
+             *
+             *           var mapClickCallback = function(e) {
+             *               console.log(e);
+             *               var x = e.pageX - $('#getLonLat').offset().left
+             *               var y = e.pageY - $('#getLonLat').offset().top
+             *               var LonLatObj = $scope.mapController.getLonLatFromPixel(x, y);
+             *               $scope.mouseClickMsg = "Longitude: " + LonLatObj.lon + " | Latitude: " + LonLatObj.lat;
+             *               $scope.$apply();
+             *           };
+             *       });
+             *   }]);
              * </file>
              * <file name="getLonLat.css">
              *  #getLonLat {
@@ -773,12 +746,12 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <example module="dumpLayers">
              * <file name="dumpLayers.html">
              * <div ng-controller="dumpLayers">
-             * <a class="btn btn-primary" ng-click="dumpLayers()">Dump layers object to console</a>
-             * <div id="dumpLayers"></div>
-             * <ga-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
-             * </ga-map-layer>
-             * </ga-map>
+             *      <a class="btn btn-primary" ng-click="dumpLayers()">Dump layers object to console</a>
+             *      <div id="dumpLayers"></div>
+             *      <ga-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
+             *              <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
+             *      </ga-map-layer>
+             *      </ga-map>
              * </div>
              * </file>
              * <file name="dumpLayers.js">
@@ -818,7 +791,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="dumpLayersByName()">Dump base layer's details object to console</a>
              * <div id="dumpLayersByName"></div>
              * <ga-map map-element-id="dumpLayersByName" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              * </ga-map-layer>
              * </ga-map>
              * </div>
@@ -858,7 +831,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="zoomToLayer()">Zoom to base layer extent</a>
              * <div id="zoomToLayer"></div>
              * <ga-map map-element-id="zoomToLayer" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              * </ga-map-layer>
              * </ga-map>
              * </div>
@@ -900,15 +873,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     <div id="getMapProjection"></div>
                     <ga-map
                         map-element-id="getMapProjection"
-                        datum-projection='EPSG:102100'
-                        display-projection='EPSG:4326'
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-map-layer
-                            layer-name="Overview World Screen"
-                            layer-type="GoogleStreet"
-                            is-base-layer="true">
-                        </ga-map-layer>
+                        <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
                         <ga-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
@@ -969,15 +936,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     <div id="getDisplayProjection"></div>
                     <ga-map
                         map-element-id="getDisplayProjection"
-                        datum-projection='EPSG:102100'
-                        display-projection='EPSG:4326'
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-map-layer
-                            layer-name="Overview World Screen"
-                            layer-type="GoogleStreet"
-                            is-base-layer="true">
-                        </ga-map-layer>
+                        <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
                         <ga-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
@@ -1040,7 +1001,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <input type="checkbox" ng-model="layerVisibility" ng-change="setVisibility()" /> Toggle base layer visibility on/off
              * <div id="setVisibility"></div>
              * <ga-map map-element-id="setVisibility" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              * <ga-map-control map-control-name="mouseposition"></ga-map-control>
              * </ga-map-layer>
              * </ga-map>
@@ -1112,8 +1073,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <input placeholder="0-19" type="number" ng-model="zoomLevel" style="width: 50px" /><a class="btn btn-primary" ng-click="setZoomLevel()">  Set zoom level to {{zoomLevel}}</a>
              * <div id="setZoomLevel"></div>
              * <ga-map map-element-id="setZoomLevel" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
-             * </ga-map-layer>
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              * </ga-map>
              * </div>
              * </file>
@@ -1157,8 +1117,6 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 <div id="setBaseLayer"></div>
                 <ga-map
                     map-element-id="setBaseLayer"
-                    datum-projection='EPSG:102100'
-                    display-projection='EPSG:4326'
                     center-position='[130, -25]'
                     zoom-level="4">
                     <ga-map-layer
@@ -1177,11 +1135,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                         is-base-layer="true"
                         visibility="false">
                     </ga-map-layer>
-                    <ga-map-layer
-                        layer-name="Overview World Screen"
-                        layer-type="GoogleStreet"
-                        is-base-layer="true">
-                    </ga-map-layer>
+                    <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
                     </ga-map-layer>
                     <ga-map-layer
                         layer-name="Earthquake hazard contours" 
@@ -1239,8 +1193,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="setCenterPosition()">Move to Australia</a>
              * <div id="setCenterPosition"></div>
              * <ga-map map-element-id="setCenterPosition" zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
-             * </ga-map-layer>
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              * </ga-map>
              * </div>
              * </file>
@@ -1317,8 +1270,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="chklayer2 = checklayer(1)">  Check base layer : {{chklayer2}}</a>
              * <div id="checkBaseLayer"></div>
              * <ga-map map-element-id="checkBaseLayer" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
-             * </ga-map-layer>
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              *<ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
         </ga-map-layer>
              * </ga-map>
@@ -1373,8 +1325,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <input placeholder="0-1" type="number" ng-model="opacityLevel" style="width: 50px; height: auto;" /><a class="btn btn-primary" ng-click="setOpacityLevel()">  Set top layer's opacity to {{opacityLevel}}</a>
              * <div id="setOpacity"></div>
              * <ga-map map-element-id="setOpacity" center-position='[130, -25]' zoom-level="4">
-             * <ga-map-layer layer-name="Simple map layer name"  layer-type="GoogleStreet" is-base-layer="true">
-             * </ga-map-layer>
+             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
              *<ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
         </ga-map-layer>
              * </ga-map>
@@ -1424,7 +1375,7 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * @param {string} markerGroupName - group name associated with the new marker
              * @param {string} iconUrl - A url to the desired icon for the marker
              * @param {Object} args - Contains properties 'width' and 'height' for deinfining the size of a the marker
-             * @return {Object}
+             * @returns {Object} Marker ID and group name.
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
                 return GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
