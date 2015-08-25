@@ -1414,13 +1414,17 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
             };
             /**
              * @ngdoc method
+             * @name gawebtoolkit.core.map-directives:gaMap#setMapMarker
+             * @description
              * Adds a marker to an existing marker group/layer or creates a new group/layer to add
              * the marker too.
+             * @methodOf gawebtoolkit.core.map-directives:gaMap
              *
              * @param point {Point} - screen point to place the marker
              * @param markerGroupName {string} - group name associated with the new marker
              * @param iconUrl {string} - A url to the desired icon for the marker
              * @param args {object} - Contains properties 'width' and 'height' for deinfining the size of a the marker
+             * @return {Object}
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
                 return GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
