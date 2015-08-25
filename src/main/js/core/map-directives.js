@@ -1420,10 +1420,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * the marker too.
              * @methodOf gawebtoolkit.core.map-directives:gaMap
              *
-             * @param point {Point} - screen point to place the marker
-             * @param markerGroupName {string} - group name associated with the new marker
-             * @param iconUrl {string} - A url to the desired icon for the marker
-             * @param args {object} - Contains properties 'width' and 'height' for deinfining the size of a the marker
+             * @param {Point} point - screen point to place the marker
+             * @param {string} markerGroupName - group name associated with the new marker
+             * @param {string} iconUrl - A url to the desired icon for the marker
+             * @param {Object} args - Contains properties 'width' and 'height' for deinfining the size of a the marker
              * @return {Object}
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
