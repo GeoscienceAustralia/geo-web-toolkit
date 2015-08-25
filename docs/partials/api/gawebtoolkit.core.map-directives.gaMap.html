@@ -1367,17 +1367,54 @@ $scope.mapController = args;
 <div class="tabbable"><div class="tab-pane" title="index.html">
 <pre class="prettyprint linenums" ng-set-text="index.html-12" ng-html-wrap-loaded="simpleMap angular.js script.js"></pre>
 <script type="text/ng-template" id="index.html-12">
-        <div id="map"></div>
-        <ga-map map-element-id="map">
-            <ga-map-layer layer-name="Simple map layer name"  layer-type="WMS" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true">
-                </ga-map-layer>
+        <style>
+            .ol-scale-line {
+                left:inherit;
+                right:8px;
+            }
+        </style>
+        <h3>OpenLayers v2 with geo-web-toolkit<h3>
+        <div id="mapv2"></div>
+        <ga-map map-element-id="mapv2" center-position='[130, -25]' zoom-level="4"
+                framework="olv2">
+            <ga-osm-layer></ga-osm-layer>
+            <ga-map-layer
+                            layer-name="Australian Topography 2014"
+                            layer-type="ArcGISCache"
+                            layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
+                            is-base-layer="false"
+                            visibility="true">
+            </ga-map-layer>
             <ga-map-control map-control-name="mouseposition"></ga-map-control>
+            <ga-map-control map-control-name="panzoombar"></ga-map-control>
+            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
+        </ga-map>
+        <h3>OpenLayers v3.5.0 with geo-web-toolkit<h3>
+        <div id="mapv3"></div>
+        <ga-map map-element-id="mapv3" center-position='[130, -25]' zoom-level="4"
+                framework="olv3">
+            <ga-osm-layer></ga-osm-layer>
+            <ga-map-layer
+                             layer-name="Australian Topography 2014"
+                             layer-type="ArcGISCache"
+                             layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
+                             is-base-layer="false"
+                             visibility="true">
+            </ga-map-layer>
+            <ga-map-control map-control-name="mouseposition"></ga-map-control>
+            <ga-map-control map-control-name="panzoombar"></ga-map-control>
+            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
         </ga-map>
 </script>
 </div>
 <div class="tab-pane" title="style.css">
 <pre class="prettyprint linenums" ng-set-text="style.css-13"></pre>
-<style type="text/css" id="style.css-13">#map {width: 650px;height:600px;}</style>
+<style type="text/css" id="style.css-13">
+ #mapv2 {width: 650px;height:600px;}
+ #mapv3 {width: 650px;height:600px;}
+ </style>
 </div>
 <div class="tab-pane" title="script.js">
 <pre class="prettyprint linenums" ng-set-text="script.js-14"></pre>

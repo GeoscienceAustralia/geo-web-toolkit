@@ -38,7 +38,9 @@
       addTag('link', {rel: 'stylesheet', href: 'css/animations.css', type: 'text/css'});
 
       
-         addTag('link', {rel: 'stylesheet', href: 'http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css', type: 'text/css'}, sync);
+         addTag('link', {rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css', type: 'text/css'}, sync);
+      
+         addTag('link', {rel: 'stylesheet', href: 'css/ol.css', type: 'text/css'}, sync);
       
          addTag('link', {rel: 'stylesheet', href: 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css', type: 'text/css'}, sync);
       
@@ -53,7 +55,9 @@
       
         addTag('script', {src: 'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js'}, sync);
       
-        addTag('script', {src: 'js/angular.min.js'}, sync);
+        addTag('script', {src: 'grunt-scripts/angular.js'}, sync);
+      
+        addTag('script', {src: 'grunt-scripts/angular-animate.js'}, sync);
       
         addTag('script', {src: 'grunt-scripts/angular-route.js'}, sync);
       
@@ -65,7 +69,7 @@
       
         addTag('script', {src: 'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js'}, sync);
       
-        addTag('script', {src: 'https://cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol.js'}, sync);
+        addTag('script', {src: 'grunt-scripts/ol.js'}, sync);
       
         addTag('script', {src: 'grunt-scripts/geo-web-toolkit-min.js'}, sync);
       

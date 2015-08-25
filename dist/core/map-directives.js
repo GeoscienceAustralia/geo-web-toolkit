@@ -23,14 +23,51 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
  * @example
 <example module="simpleMap">
 <file name="index.html">
-        <div id="map"></div>
-        <ga-map map-element-id="map">
-            <ga-map-layer layer-name="Simple map layer name"  layer-type="WMS" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true">
-                </ga-map-layer>
+        <style>
+            .ol-scale-line {
+                left:inherit;
+                right:8px;
+            }
+        </style>
+        <h3>OpenLayers v2 with geo-web-toolkit<h3>
+        <div id="mapv2"></div>
+        <ga-map map-element-id="mapv2" center-position='[130, -25]' zoom-level="4"
+                framework="olv2">
+            <ga-osm-layer></ga-osm-layer>
+            <ga-map-layer
+                            layer-name="Australian Topography 2014"
+                            layer-type="ArcGISCache"
+                            layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
+                            is-base-layer="false"
+                            visibility="true">
+            </ga-map-layer>
             <ga-map-control map-control-name="mouseposition"></ga-map-control>
+            <ga-map-control map-control-name="panzoombar"></ga-map-control>
+            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
+        </ga-map>
+        <h3>OpenLayers v3.5.0 with geo-web-toolkit<h3>
+        <div id="mapv3"></div>
+        <ga-map map-element-id="mapv3" center-position='[130, -25]' zoom-level="4"
+                framework="olv3">
+            <ga-osm-layer></ga-osm-layer>
+            <ga-map-layer
+                             layer-name="Australian Topography 2014"
+                             layer-type="ArcGISCache"
+                             layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
+                             is-base-layer="false"
+                             visibility="true">
+            </ga-map-layer>
+            <ga-map-control map-control-name="mouseposition"></ga-map-control>
+            <ga-map-control map-control-name="panzoombar"></ga-map-control>
+            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
+            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
         </ga-map>
 </file>
-<file name="style.css">#map {width: 650px;height:600px;}</file>
+<file name="style.css">
+ #mapv2 {width: 650px;height:600px;}
+ #mapv3 {width: 650px;height:600px;}
+ </file>
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
