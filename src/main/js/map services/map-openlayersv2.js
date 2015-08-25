@@ -48,6 +48,15 @@ app.service('olv2MapService', [
 				if (args.datumProjection == null) {
 					args.datumProjection = mapConfig.defaultOptions.projection;
 				}
+
+				if(args.datumProjection == null) {
+					$log.warn('Datum projection has not been provided. Defaulting to EPSG:3857');
+					args.datumProjection = 'EPSG:3857';
+				}
+				if(args.displayProjection == null) {
+					$log.warn('Display projection has not been provided. Defaulting to EPSG:4326');
+					args.displayProjection = 'EPSG:4326';
+				}
 				config.projection = args.datumProjection;
 				config.numZoomLevels = mapConfig.defaultOptions.numZoomLevels;
 				config.displayProjection = args.displayProjection;
@@ -345,12 +354,15 @@ app.service('olv2MapService', [
 			 * @param projection {string} - Projection of the provided lat and lon.
 			 * */
 			setCenter: function (mapInstance, lat, lon, projection) {
-				var extent = new OpenLayers.LonLat(lon, lat);
+				var loc = new OpenLayers.LonLat(lon, lat);
 				if (projection == null) {
-					mapInstance.setCenter(extent);
+					var defaultTransformedLoc = loc.transform(mapInstance.displayProjection, mapInstance.projection);
+					mapInstance.setCenter(defaultTransformedLoc);
+				} else if(projection != mapInstance.projection) {
+					var transformedLoc = loc.transform(projection, mapInstance.projection);
+					mapInstance.setCenter(transformedLoc);
 				} else {
-					var transformedExtent = extent.transform(new OpenLayers.Projection(projection), new OpenLayers.Projection(mapInstance.getProjection()));
-					mapInstance.setCenter(transformedExtent);
+					mapInstance.setCenter(loc);
 				}
 			},
 			setInitialPositionAndZoom: function (mapInstance, args) {
