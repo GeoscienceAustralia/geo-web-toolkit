@@ -143,11 +143,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('release', function (type) {
         type = type ? type : 'patch';
-        grunt.task.run('uglify');         // Minify stuff
-        grunt.task.run('ngdocs');         // Build doco
-        grunt.task.run('ngtemplates');    // Build templates
-        grunt.task.run('concat');         // Concat templates with min
-        grunt.task.run('bumpup:' + type); // Bump up the package version
-        grunt.task.run('tagrelease');     // Commit & tag the changes from above
+        grunt.task.run('default');         // Minify stuff, Build doco, Build templates,Concat templates with min
+        //grunt.task.run('bumpup:' + type); // Bump up the package version
+        //grunt.task.run('tagrelease');     // Commit & tag the changes from above
     });
 };
