@@ -65,9 +65,9 @@
                 var mapInstance = $scope.mapController.getMapInstance();
                 //One for OSM, one for shared marker layer
                 expect(mapInstance.layers.length).toBe(2);
-                $scope.mapController.setMapMarker({lat:-20,lon:130},'foo','/test/foo.png',{width:'50',height:'50'});
-                $scope.mapController.setMapMarker({lat:-20,lon:130},'foo','/test/foo.png',{width:'50',height:'50'});
-                $scope.mapController.setMapMarker({lat:-20,lon:130},'foo','/test/foo.png',{width:'50',height:'50'});
+                $scope.mapController.setMapMarker({x:20,y:130},'foo','/test/foo.png',{width:'50',height:'50'});
+                $scope.mapController.setMapMarker({x:20,y:130},'foo','/test/foo.png',{width:'50',height:'50'});
+                $scope.mapController.setMapMarker({x:20,y:130},'foo','/test/foo.png',{width:'50',height:'50'});
 
                 expect(mapInstance.layers.length).toBe(3);
 
