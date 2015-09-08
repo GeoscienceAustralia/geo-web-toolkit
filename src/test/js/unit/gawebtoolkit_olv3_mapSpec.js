@@ -792,10 +792,10 @@
                 var map = $scope.mapController.getMapInstance();
                 //'mock' get size due to dependency on actually rendering map.
                 map.getSize = function() { return [500,500];};
-                expect($scope.mapController.getCurrentMapExtent()[0][0] > 100.0).toBe(true);
-                expect($scope.mapController.getCurrentMapExtent()[0][1] > -45.0).toBe(true);
-                expect($scope.mapController.getCurrentMapExtent()[1][0] < 160.0).toBe(true);
-                expect($scope.mapController.getCurrentMapExtent()[1][1] > -45.0).toBe(true);
+                expect($scope.mapController.getCurrentMapExtent()[0][0]).toBeGreaterThan(100.0);
+                expect($scope.mapController.getCurrentMapExtent()[0][1]).toBeGreaterThan(-45.0);
+                expect($scope.mapController.getCurrentMapExtent()[1][0]).toBeLessThan(160.0);
+                expect($scope.mapController.getCurrentMapExtent()[1][1]).toBeGreaterThan(-45.0);
             });
 
             it('Should get the size of the map', function() {
