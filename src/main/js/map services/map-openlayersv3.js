@@ -72,6 +72,14 @@
                     //.controls = [];
                     //convert olv2 params to olv3.
                     var viewOptions = {};
+
+                    if (args.displayProjection == null && mapConfig.defaultOptions && mapConfig.defaultOptions.displayProjection) {
+                        args.displayProjection = mapConfig.defaultOptions.displayProjection;
+                    }
+
+                    if (args.datumProjection == null && mapConfig.defaultOptions && mapConfig.defaultOptions.projection) {
+                        args.datumProjection = mapConfig.defaultOptions.projection;
+                    }
                     if(args.datumProjection == null) {
                         $log.warn('Datum projection has not been provided. Defaulting to EPSG:3857');
                         args.datumProjection = 'EPSG:3857';
@@ -734,13 +742,15 @@
                  * @param projection {string} - Projection of the provided lat and lon.
                  * */
                 setCenter: function (mapInstance, lat, lon, projection) {
-
-                    var point = [lon, lat];
+                    var loc = [lon, lat];
                     if (projection == null) {
-                        mapInstance.getView().setCenter(point);
+                        var defaultTransformedLoc = ol.proj.transform(loc, service.displayProjection, mapInstance.getView().getProjection());
+                        mapInstance.getView().setCenter(defaultTransformedLoc);
+                    } else if(projection != service.datumProjection) {
+                        var transformedLoc = ol.proj.transform(loc, projection, mapInstance.getView().getProjection());
+                        mapInstance.getView().setCenter(transformedLoc);
                     } else {
-                        var transformedExtent = ol.proj.transform(point, projection, mapInstance.getView().getProjection());
-                        mapInstance.getView().setCenter(transformedExtent);
+                        mapInstance.getView().setCenter(loc);
                     }
                 },
                 setInitialPositionAndZoom: function (mapInstance, args) {

@@ -61,7 +61,7 @@
             } else {
                 result.coordinateFormat = controlOptions.coordinateFormat == null ? wgs84Default(4) : controlOptions.coordinateFormat(4);
             }
-            result.projection = controlOptions.projection || mapOptions.displayProjection;
+            result.projection = controlOptions.projection || mapOptions.displayProjection || 'EPSG:4326';
             return result;
         }
         var service = {
