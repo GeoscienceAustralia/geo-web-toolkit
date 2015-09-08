@@ -111,24 +111,7 @@
 
                     service.displayProjection = args.displayProjection;
                     service.datumProjection = args.datumProjection;
-                    var map = new ol.Map(config);
-
-                    //HACK TODO Move to a post create map register (not created yet)
-                    window.setTimeout(function () {
-                        if (args.initialExtent) {
-                            var extent = [
-                                args.initialExtent[0][0],
-                                args.initialExtent[0][1],
-                                args.initialExtent[1][0],
-                                args.initialExtent[1][1]
-                            ];
-
-                            var transformedCenter = ol.proj.transformExtent(extent, args.displayProjection, args.datumProjection);
-                            map.getView().fitExtent(transformedCenter, map.getSize());
-                        }
-                    }, 10);
-
-                    return map;
+                    return new ol.Map(config);
                 },
                 // http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
                 getParameterByName: function (name) {
@@ -775,6 +758,38 @@
                     // other wise use the defaults provided by the config
                     if (service.getParameterByName('zoom') !== '' && args.centerPosition != null) {
                         throw new Error("NotImplemented");
+                    }
+
+                    if (args.initialExtent) {
+                        var ex = args.initialExtent;
+                        var minPos = ol.proj.transform(
+                            [ex[0][0], ex[2][1]],
+                            args.displayProjection,
+                            args.datumProjection);
+                        var maxPos = ol.proj.transform(
+                            [ex[1][0], ex[3][1]],
+                            args.displayProjection,
+                            args.datumProjection);
+                        var bounds = [
+                            minPos[0],
+                            minPos[1],
+                            maxPos[0],
+                            maxPos[1]
+                        ];
+                        mapInstance.getView().fitExtent(bounds, mapInstance.getSize());
+                    } else {
+                        if (args.centerPosition) {
+                            var center = JSON.parse(args.centerPosition);
+                            var pos = ol.proj.transform(
+                                [center[0], center[1]],
+                                service.displayProjection,
+                                service.datumProjection);
+                            console.log(pos);
+                            mapInstance.getView().setCenter(pos);
+                        }
+                        if (args.zoomLevel) {
+                            mapInstance.getView().setZoom(args.zoomLevel);
+                        }
                     }
                 },
                 isBaseLayer: function (mapInstance, layerId) {
