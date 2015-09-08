@@ -1271,6 +1271,19 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 return $scope.initialExtent;
             };
 
+            self.resetInitialExtent = function () {
+                var args = {
+                    mapElementId: $scope.mapElementId,
+                    datumProjection: $scope.datumProjection,
+                    displayProjection: $scope.displayProjection,
+                    centerPosition: $scope.centerPosition,
+                    zoomLevel: $scope.zoomLevel,
+                    initialExtent: $scope.initialExtent
+                };
+
+                GAMapService.setInitialPositionAndZoom($scope.mapInstance, args, $scope.framework);
+            };
+
             self.setInitialPositionAndZoom = function () {
 
                 var args = {
