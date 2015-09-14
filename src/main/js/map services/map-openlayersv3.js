@@ -762,14 +762,21 @@
 
                     if (args.initialExtent) {
                         var ex = args.initialExtent;
+                        console.log(ex);
+                        console.log(ex[0]);
+                        console.log(ex[0][0]);
                         var minPos = ol.proj.transform(
-                            [ex[0][0], ex[2][1]],
+                            [ex[0][0], ex[1][1]],
                             args.displayProjection,
                             args.datumProjection);
+                        console.log(minPos);
+
                         var maxPos = ol.proj.transform(
-                            [ex[1][0], ex[3][1]],
+                            [ex[1][0], ex[0][1]],
                             args.displayProjection,
                             args.datumProjection);
+                        console.log(maxPos);
+
                         var bounds = [
                             minPos[0],
                             minPos[1],
