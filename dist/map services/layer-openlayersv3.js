@@ -232,8 +232,13 @@
             },
             createArcGISCacheLayer: function (args) {
                 var sourceOptions = {
-                    url: args.layerUrl + service.xyzTileCachePath,
-                    crossOrigin: '*/*'
+                    crossOrigin: '*/*',
+                    tileSize:512,
+                    tileUrlFunction: function (tileCoord) {
+                        return url.replace('{z}', (tileCoord[0] - 1).toString())
+                            .replace('{x}', tileCoord[1].toString())
+                            .replace('{y}', (-tileCoord[2] - 1).toString());
+                    }
                 };
 
                 var layerOptions = {
