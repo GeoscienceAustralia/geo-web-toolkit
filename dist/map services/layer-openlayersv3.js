@@ -231,6 +231,7 @@
                 return result;
             },
             createArcGISCacheLayer: function (args) {
+                var url = args.layerUrl + service.xyzTileCachePath;
                 var sourceOptions = {
                     crossOrigin: '*/*',
                     tileSize:512,
