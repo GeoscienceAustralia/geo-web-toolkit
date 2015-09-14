@@ -234,12 +234,7 @@
                 var url = args.layerUrl + service.xyzTileCachePath;
                 var sourceOptions = {
                     crossOrigin: '*/*',
-                    tileSize:512,
-                    tileUrlFunction: function (tileCoord) {
-                        return url.replace('{z}', (tileCoord[0] - 1).toString())
-                            .replace('{x}', tileCoord[1].toString())
-                            .replace('{y}', (-tileCoord[2] - 1).toString());
-                    }
+                    url: url
                 };
 
                 var layerOptions = {
