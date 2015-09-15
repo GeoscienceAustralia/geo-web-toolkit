@@ -194,7 +194,6 @@
                             you can remove this whole <configuration> section.
                             -->
                             <arguments>install</arguments>
-							<arguments>--https-proxy ${https_proxy}</arguments>
                         </configuration>
                     </execution>
                     <execution>
