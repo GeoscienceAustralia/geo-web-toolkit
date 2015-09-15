@@ -167,12 +167,6 @@
 							<goal>replace</goal>
 						</goals>
 					</execution>
-					<execution>
-						<phase>clean</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-					</execution>
 				</executions>
 				<configuration>
 					<file>.bowerrc</file>
