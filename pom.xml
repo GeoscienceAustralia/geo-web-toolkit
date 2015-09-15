@@ -180,8 +180,6 @@
 						<!-- Optional configuration which provides for running any npm command -->
 						<configuration>
 							<arguments>--registry "http://registry.npmjs.org/" install</arguments>
-							<arguments>--proxy ${http_proxy}</arguments>
-							<arguments>--https-proxy ${https_proxy}</arguments>
 						</configuration>
 					</execution>
                     <execution>
@@ -196,6 +194,7 @@
                             you can remove this whole <configuration> section.
                             -->
                             <arguments>install</arguments>
+							<arguments>--https-proxy ${https_proxy}</arguments>
                         </configuration>
                     </execution>
                     <execution>
