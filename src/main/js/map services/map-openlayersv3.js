@@ -1172,7 +1172,7 @@
                                 e.feature.setStyle(style);
                             }
                         });
-                        
+
                         draw.on('drawend', function (e) {
                             if (e.feature) {
                                 e.feature.set('id', GAWTUtils.generateUuid());
@@ -1266,7 +1266,6 @@
                     return angular.fromJson(format.writeFeature(pointFeature));
                 },
                 drawLabelWithPoint: function (mapInstance, layerName, args) {
-
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.Vector();
@@ -1284,8 +1283,8 @@
                     });
 
                     var fillColor;
-                    var fillColorHex = args.fillColor || args.color || args.pointColor || '#000000';
-                    var fillOpacity = args.fillOpacity || args.opacity || args.pointOpacity || 0.5;
+                    var fillColorHex = args.fillColor || args.color  || '#000000';
+                    var fillOpacity = args.fillOpacity || args.opacity  || 0.5;
                     if (fillColorHex.indexOf('#') === 0) {
                         fillColor = GAWTUtils.convertHexAndOpacityToRgbArray(fillColorHex, fillOpacity);
                     } else {
@@ -1293,8 +1292,8 @@
                     }
 
                     var strokeColor;
-                    var strokeColorHex = args.fillColor || args.color || '#000000';
-                    var strokeOpacity = args.strokeOpacity || args.opacity || args.pointOpacity || 1.0;
+                    var strokeColorHex = args.fillColor || args.color ||  '#000000';
+                    var strokeOpacity = args.strokeOpacity || args.opacity ||  1.0;
                     if (strokeColorHex.indexOf('#') === 0) {
                         strokeColor = GAWTUtils.convertHexAndOpacityToRgbArray(strokeColorHex, strokeOpacity);
                     } else {
@@ -1328,7 +1327,6 @@
 
                         vector.set('name', layerName || args.layerName);
                         mapInstance.addLayer(vector);
-                        //vector.setStyle(style);
                     }
 
                     // Create a point to display the text
