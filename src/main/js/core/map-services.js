@@ -97,6 +97,14 @@ app.service('GAMapService', ['$log', 'ga.config', 'mapServiceLocator',
                 var useVersion = version || "olv2", service = mapServiceLocator.getImplementation(useVersion);
                 return service.getCurrentMapExtent(mapInstance);
             },
+            getMapScale: function (mapInstance, version) {
+                var useVersion = version || "olv2", service = mapServiceLocator.getImplementation(useVersion);
+                return service.getMapScale(mapInstance);
+            },
+            getMapCenter: function (mapInstance, version) {
+                var useVersion = version || "olv2", service = mapServiceLocator.getImplementation(useVersion);
+                return service.getMapCenter(mapInstance);
+            },
             addControl: function (mapInstance, controlName, controlOptions, elementId, controlId, mapOptions, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapServiceLocator.getImplementation(useVersion);

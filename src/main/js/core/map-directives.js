@@ -1615,6 +1615,24 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
 
             /**
              * @function
+             * Gets the current map scale
+             * @return {Object}
+             * */
+            self.getMapScale = function () {
+                return GAMapService.getMapScale($scope.mapInstance, $scope.framework);
+            };
+
+            /**
+             * @function
+             * Gets the coordinates for the center of the map
+             * @return {Object}
+             * */
+            self.getMapCenter = function () {
+                return GAMapService.getMapCenter($scope.mapInstance, $scope.framework);
+            };
+
+            /**
+             * @function
              * Switches the map between 2D and 3D if the specified framework supports it, eg olv3.
              * */
             self.switch3d = function () {
