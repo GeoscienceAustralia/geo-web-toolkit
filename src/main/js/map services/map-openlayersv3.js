@@ -1044,7 +1044,7 @@
                                     var selectedFeature = e.selected[selectedIndex];
                                     for (var sourceIndex = 0; sourceIndex < source.getFeatures().length; sourceIndex++) {
                                         var sourceFeature = source.getFeatures()[sourceIndex];
-                                        if (sourceFeature.get('id') != undefined && selectedFeature.get('id') != undefined ) {
+                                        if (sourceFeature.get('id') != undefined && selectedFeature.get('id') != undefined) {
                                             if (sourceFeature.get('id') === selectedFeature.get('id')) {
                                                 source.removeFeature(sourceFeature);
                                             }
@@ -1099,7 +1099,7 @@
                         case 'box':
                             interactionType = 'LineString';
                             maxPoints = 2;
-                            geometryFunction = function(coordinates, geometry) {
+                            geometryFunction = function (coordinates, geometry) {
                                 if (!geometry) {
                                     geometry = new ol.geom.Polygon(null);
                                 }
@@ -1117,6 +1117,7 @@
                         case 'circle':
                             interactionType = 'Circle';
                     }
+
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName || args.layerName);
                     var vector;
                     var source = new ol.source.Vector();
@@ -1143,7 +1144,6 @@
                         if (!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
-                        vector.setStyle(style);
                         source = vector.getSource();
                     } else {
                         // Create the layer if it doesn't exist
@@ -1156,9 +1156,9 @@
                         vector.set('name', layerName || args.layerName);
                         mapInstance.addLayer(vector);
                     }
+
                     var existingDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction');
                     if (!existingDrawInteraction) {
-
                         var draw = new ol.interaction.Draw({
                             source: source,
                             type: /** @type {ol.geom.GeometryType} */ (interactionType),
@@ -1166,22 +1166,30 @@
                             geometryFunction: geometryFunction,
                             maxPoints: maxPoints
                         });
+
+                        draw.on('drawstart', function (e) {
+                            if (e.feature) {
+                                e.feature.setStyle(style);
+                            }
+                        });
+                        
                         draw.on('drawend', function (e) {
                             if (e.feature) {
                                 e.feature.set('id', GAWTUtils.generateUuid());
                             }
                         });
+
                         updateToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction', draw);
                         mapInstance.addInteraction(draw);
                     }
                 },
-                convertHex: function (hex,opacity){
-                    var hex = hex.replace('#','');
-                    var r = parseInt(hex.substring(0,2), 16);
-                    var g = parseInt(hex.substring(2,4), 16);
-                    var b = parseInt(hex.substring(4,6), 16);
+                convertHex: function (hex, opacity) {
+                    var hex = hex.replace('#', '');
+                    var r = parseInt(hex.substring(0, 2), 16);
+                    var g = parseInt(hex.substring(2, 4), 16);
+                    var b = parseInt(hex.substring(4, 6), 16);
 
-                    var result = 'rgba('+r+','+g+','+b+','+opacity+')';
+                    var result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
                     return result;
                 },
                 stopDrawing: function (mapInstance) {
@@ -1227,13 +1235,12 @@
                         if (!(vector.getSource().addFeature instanceof Function)) {
                             throw new Error("Layer name '" + layerName || args.layerName + "' corresponds to a layer with an invalid source. Layer source must support features.");
                         }
-                        //vector.setStyle(style);
                     } else {
                         vector = new ol.layer.Vector({
                             source: source,
                             style: style,
                             format: new ol.format.GeoJSON(),
-                                id: "test"
+                            id: "test"
                         });
 
                         vector.set('name', layerName || args.layerName);
@@ -1269,15 +1276,16 @@
                         textBaseline: args.baseline,
                         font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: args.fillColor || args.color, width: args.fillWdith || args.width || 1}),
-                        stroke: new ol.style.Stroke({color: args.outlineColor || args.color, width: args.outlineWidth || args.width || 1}),
+                        fill: new ol.style.Fill({color: service.convertHex(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: service.convertHex(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
                         offsetX: args.offsetX || 0,
                         offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
                     });
+
                     var fillColor;
-                    var fillColorHex = args.fillColor || args.color || '#000000';
-                    var fillOpacity = args.fillOpacity || args.opacity || 0.5;
+                    var fillColorHex = args.fillColor || args.color || args.pointColor || '#000000';
+                    var fillOpacity = args.fillOpacity || args.opacity || args.pointOpacity || 0.5;
                     if (fillColorHex.indexOf('#') === 0) {
                         fillColor = GAWTUtils.convertHexAndOpacityToRgbArray(fillColorHex, fillOpacity);
                     } else {
@@ -1286,7 +1294,7 @@
 
                     var strokeColor;
                     var strokeColorHex = args.fillColor || args.color || '#000000';
-                    var strokeOpacity = args.strokeOpacity || args.opacity || 1.0;
+                    var strokeOpacity = args.strokeOpacity || args.opacity || args.pointOpacity || 1.0;
                     if (strokeColorHex.indexOf('#') === 0) {
                         strokeColor = GAWTUtils.convertHexAndOpacityToRgbArray(strokeColorHex, strokeOpacity);
                     } else {
