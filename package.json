@@ -2,7 +2,7 @@
   "name": "geo-web-toolkit",
   "version": "0.12.5",
   "dependencies": {
-    "openlayers": "~3.5.0"
+    "openlayers": "~3.9.0"
   },
   "devDependencies": {
     "bower": "~1.3",
