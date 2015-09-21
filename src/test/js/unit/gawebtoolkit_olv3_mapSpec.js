@@ -382,8 +382,8 @@
             });
             it('Should fire mapController function "createBoundingBox" without an exception given valid input', function () {
                 var boundingBox = $scope.mapController.createBoundingBox([
-                    [100, 100],
-                    [20, 20]
+                    [100, -12],
+                    [150, 40]
                 ]);
                 expect(boundingBox != null).toBe(true);
             });
@@ -391,8 +391,8 @@
                 var passed = false;
                 try {
                     var bounds = $scope.mapController.createBounds([
-                        [100, 100],
-                        [20, 20]
+                        [100, -12],
+                        [150, 40]
                     ]);
                     expect(bounds != null).toBe(true);
                     passed = true;
@@ -401,16 +401,13 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "zoomToExtent" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    $scope.mapController.zoomToExtent([
-                        [100, 100],
-                        [20, 20]
-                    ]);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var map = $scope.mapController.getMapInstance();
+                //'mock' get size due to dependency on actually rendering map.
+                map.getSize = function() { return [500,500];};
+                $scope.mapController.zoomToExtent([
+                    [100, -12],
+                    [150, 40]
+                ]);
             });
             it('Should fire mapController function "zoomTo" without an exception given valid input', function () {
                 var passed = false;
