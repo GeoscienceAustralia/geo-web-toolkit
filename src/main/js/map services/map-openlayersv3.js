@@ -1124,17 +1124,17 @@
 
                     var style = new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: service.convertHex(args.fillColor || args.color, args.opacity),
+                            color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color, args.opacity),
                             radius: args.fillRadius || args.radius
                         }),
                         stroke: new ol.style.Stroke({
-                            color: service.convertHex(args.strokeColor || args.color, args.opacity),
+                            color: GAWTUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color, args.opacity),
                             width: args.strokeRadius || args.radius
                         }),
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: service.convertHex(args.circleColor || args.color, args.opacity)
+                                color: GAWTUtils.convertHexAndOpacityToRgbArray(args.circleColor || args.color, args.opacity)
                             })
                         })
                     });
@@ -1183,15 +1183,6 @@
                         mapInstance.addInteraction(draw);
                     }
                 },
-                convertHex: function (hex, opacity) {
-                    var hex = hex.replace('#', '');
-                    var r = parseInt(hex.substring(0, 2), 16);
-                    var g = parseInt(hex.substring(2, 4), 16);
-                    var b = parseInt(hex.substring(4, 6), 16);
-
-                    var result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
-                    return result;
-                },
                 stopDrawing: function (mapInstance) {
                     var existingDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'featureDrawingInteraction');
                     if (existingDrawInteraction) {
@@ -1220,11 +1211,11 @@
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: service.convertHex(args.fillColor || args.color || '#000000', args.opacity)
+                                color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color || '#000000', args.opacity)
                             }),
                             stroke: new ol.style.Stroke(
                                 {
-                                    color: service.convertHex(args.strokeColor || args.color || '#000000', args.opacity),
+                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color || '#000000', args.opacity),
                                     width: args.strokeRadius || args.radius
                                 })
                         }),
@@ -1275,8 +1266,8 @@
                         textBaseline: args.baseline,
                         font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: service.convertHex(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
-                        stroke: new ol.style.Stroke({color: service.convertHex(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
+                        fill: new ol.style.Fill({color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
                         offsetX: args.offsetX || 0,
                         offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
