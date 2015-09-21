@@ -1,4 +1,0 @@
-{
-  "proxy":"BOWER_HTTP_PROXY",
-  "https-proxy": "BOWER_HTTPS_PROXY"
-}
