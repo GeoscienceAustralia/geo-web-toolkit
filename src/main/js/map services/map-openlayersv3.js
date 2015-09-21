@@ -256,7 +256,11 @@
                 },
                 getMapCenter: function (mapInstance) {
                     var center = mapInstance.getView().getCenter();
-                    return center;
+                    var coords = {
+                        lat: center[1],
+                        lon: center[0]
+                    }
+                    return coords;
                 },
                 //return bool
                 isControlActive: function (mapInstance, controlId, controlName) {
