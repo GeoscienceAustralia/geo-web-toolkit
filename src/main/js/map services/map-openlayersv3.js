@@ -760,7 +760,7 @@
                  * @param projection {string} - Projection of the provided lat and lon.
                  * */
                 setCenter: function (mapInstance, lat, lon, projection) {
-                    var loc = [lon, lat];
+                    var loc = [parseFloat(lon), parseFloat(lat)];
                     if (projection == null) {
                         var defaultTransformedLoc = ol.proj.transform(loc, service.displayProjection, mapInstance.getView().getProjection());
                         mapInstance.getView().setCenter(defaultTransformedLoc);
