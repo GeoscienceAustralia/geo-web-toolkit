@@ -265,31 +265,27 @@
                 expect(lonPassed).toBe(true);
                 expect(latPassed).toBe(true);
             });
+
+            it('Should fire mapController getMapScale without an exception', function () {
+                var scale = $scope.mapController.getMapScale();
+                expect(scale).toBeGreaterThan(0);
+            });
+
+            it('Should fire mapController getMapCenter without an exception', function () {
+                var center = $scope.mapController.getMapCenter();
+                expect(center).not.toEqual(null);
+            });
+
             it('Should fire mapController function "getPointFromEvent" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var point = $scope.mapController.getPointFromEvent({pixel: [300,450]});
-                    expect(point != null).toBe(true);
-                    expect(point.x).toBe(300);
-                    expect(point.y).toBe(450);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var point = $scope.mapController.getPointFromEvent({pixel: [300,450]});
+                expect(point != null).toBe(true);
+                expect(point.x).toBe(300);
+                expect(point.y).toBe(450);
             });
             it('Should fire mapController function "getLayers" without an exception ', function () {
-                $timeout(function () {
-                    var passed = false;
-                    try {
-                        var layers = $scope.mapController.getLayers();
-                        expect(layers != null).toBe(true);
-                        expect(layers.length > 0).toBe(true);
-                        passed = true;
-                    } catch (e) {
-                    }
-                    expect(passed).toBe(true);
-                });
-
+                var layers = $scope.mapController.getLayers();
+                expect(layers != null).toBe(true);
+                expect(layers.length > 0).toBe(true);
             });
             it('Should fire mapController function "getLayersByName" without an exception given valid input', function () {
                 var layers = $scope.mapController.getLayersByName('Test layer name 1');
@@ -297,15 +293,9 @@
                 expect(layers.length > 0).toBe(true);
             });
             it('Should fire mapController function "getLayersByName" without an exception given valid input that results in no values', function () {
-                var passed = false;
-                try {
-                    var layers = $scope.mapController.getLayersByName('test');
-                    expect(layers != null).toBe(true);
-                    expect(layers.length === 0).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var layers = $scope.mapController.getLayersByName('test');
+                expect(layers != null).toBe(true);
+                expect(layers.length === 0).toBe(true);
             });
             it('Should fire mapController function "getLayersByName" with an exception given invalid input', function () {
                 var passed = false;

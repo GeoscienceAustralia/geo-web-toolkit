@@ -223,7 +223,7 @@
             });
             it('Should fire mapController function "getPixelFromLonLat" with an exception given invalid input', function () {
                 var lonPassed = false;
-                var latPassed = false
+                var latPassed = false;
                 try {
                     $scope.mapController.getPixelFromLonLat(null, 123);
                 } catch(e) {
@@ -238,6 +238,15 @@
 
                 expect(lonPassed).toBe(true);
                 expect(latPassed).toBe(true);
+            });
+            it('Should fire mapController getMapScale without an exception', function () {
+                var scale = $scope.mapController.getMapScale();
+                expect(scale).toBeGreaterThan(0);
+            });
+
+            it('Should fire mapController getMapCenter without an exception', function () {
+                var center = $scope.mapController.getMapCenter();
+                expect(center).not.toEqual(null);
             });
             it('Should fire mapController function "getPointFromEvent" without an exception given valid input', function () {
                 var passed = false;
