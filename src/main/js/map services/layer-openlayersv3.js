@@ -236,7 +236,7 @@
                     crossOrigin: '*/*',
                     url: url
                 };
-
+                console.log('ARCGIS')
                 var layerOptions = {
                     opacity: args.opacity,
                     source: new ol.source.XYZ(sourceOptions),
@@ -405,14 +405,14 @@
                 mapInstance.addInteraction(selectClick);
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance, 'id', layerId);
                 eventName = eventName === 'loadstart' ? 'tileloadstart' : eventName;
-                layer.getSource().on(eventName, callback);
+                eventName = eventName === 'loadend' ? 'tileloadend' : eventName;
+                layer.getSource().un(eventName, callback);
             },
             unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                eventName = eventName === 'loadstart' ? 'tileloadstart' : eventName;
                 eventName = eventName === 'loadend' ? 'tileloadend' : eventName;
                 layer.getSource().un(eventName, callback);
             },
