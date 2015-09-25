@@ -1,0 +1,15 @@
+<label for="{{elementId}}" class="checkbox gaLayerControlLabel">
+    <input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"
+           ng-disabled="layerDisabled"/>{{layerData.name}}
+</label>
+<div class="gaLayerControlTransclude" ng-transclude></div>
+<div ng-show="layerData.visibility" class="gaLayerControlSliderContainer">
+    <ga-layer-opacity-slider
+            map-controller="mapController"
+            layer-opacity="layerData.opacity"
+            layer-id="{{layerData.id}}"
+            layer-disabled="layerDisabled"
+            on-opacity-change="changeOpacity(layerId,opacity)"
+            title-text="Opacity control for layer - {{layerData.name}}">
+    </ga-layer-opacity-slider>
+</div>

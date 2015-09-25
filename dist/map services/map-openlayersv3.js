@@ -663,9 +663,11 @@
                 createBounds: function (mapInstance, geoJsonCoordinateArray, projection) {
                     var bounds = [];
                     var view = mapInstance.getView();
+
                     for (var i = 0; i < geoJsonCoordinateArray.length; i++) {
                         bounds.push(ol.proj.transform([parseFloat(geoJsonCoordinateArray[i][0]), parseFloat(geoJsonCoordinateArray[i][1])], projection, view.getProjection()));
                     }
+
                     var extent = new ol.extent.boundingExtent(bounds)
                     return extent;
                 },

@@ -59,7 +59,8 @@
                 // args.serverType defaults to WFS, implementation should support others eg, geoJson
                 //If args.url is not provided, give blank layer that supports features.
                 var layer;
-
+                console.log('createFeatureLayer')
+console.log(args.style)
                 if (args.url == null) {
                     layer = new ol.layer.Vector({source: new ol.source.Vector(), format: new ol.format.GeoJSON()});
                 } else {
