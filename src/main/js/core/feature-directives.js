@@ -1134,28 +1134,10 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     } catch (e) {
                         throw new Error('Failed to parse style');
                     }
-                    console.log(directiveStyle)
 
-                    if ($scope.style) {
-                        var style = new ol.style.Style({
-                            image: new ol.style.Circle({
-                                radius: directiveStyle.radius,
-                                fill: new ol.style.Fill({
-                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity)
-                                }),
-                                stroke: new ol.style.Stroke(
-                                    {
-                                        color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity),
-                                        width: directiveStyle.radius
-                                    })
-                            })
-                        });
-                        layerOptions.style = style;
-                    }
-
-                    console.log(layerOptions)
                     $log.info(layerOptions.layerName + ' - constructing...');
                     var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+
                     //mapController.waitingForAsyncLayer();
                     //Async layer add
                     mapController.addLayer(layer).then(function (layerDto) {
@@ -1165,6 +1147,23 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                         $q.all($scope.featurePromises).then(function (allFeatures) {
                             for (var i = 0; i < allFeatures.length; i++) {
                                 var feature = allFeatures[i];
+
+                                if ($scope.style) {
+                                    var style = new ol.style.Style({
+                                        image: new ol.style.Circle({
+                                            radius: directiveStyle.radius,
+                                            fill: new ol.style.Fill({
+                                                color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity)
+                                            }),
+                                            stroke: new ol.style.Stroke({
+                                                color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity),
+                                                width: directiveStyle.radius
+                                            })
+                                        })
+                                    });
+                                    feature.setStyle(style);
+                                }
+
                                 mapController.addFeatureToLayer($scope.layerDto.id, feature);
                             }
                         });
