@@ -259,23 +259,14 @@
             },
             createFeature: function (mapInstance, geoJson) {
                 var reader;
-                if (mapInstance.getView().getProjection() !== geoJson.crs.properties.name) {
-                    reader = new ol.format.GeoJSON({
-                        'defaultDataProjection': geoJson.crs.properties.name
-                    });
-                } else {
-                    reader = new new ol.format.GeoJSON({
-                        'defaultDataProjection': mapInstance.getView().getProjection()
-                    });
-                }
+                reader = new ol.format.GeoJSON();
 
-                return reader.readFeature(angular.toJson(geoJson), {
-                    'dataProjection': geoJson.crs.properties.name,
+                return reader.readFeature(JSON.stringify(geoJson), {
+                    'dataProjection': ol.proj.get(geoJson.crs.properties.name),
                     'featureProjection': mapInstance.getView().getProjection()
                 });
             },
             addFeatureToLayer: function (mapInstance, layerId, feature) {
-                console.log(layerId)
                 var layer = service.getLayerById(mapInstance, layerId);
                 var source = layer.getSource();
                 if (typeof source.getFeatures !== 'function') {
@@ -293,8 +284,8 @@
                 }
 
                 var featureDto = angular.fromJson(featureJson);
-                feature.id = feature.getId() || GAWTUtils.generateUuid();
-                featureDto.id = feature.id;
+                feature.setId(feature.getId() || GAWTUtils.generateUuid());
+                featureDto.id = feature.getId();
 
                 return featureDto;
             },
