@@ -140,6 +140,7 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['uglify', 'ngdocs', 'ngtemplates', 'concat', 'copy']);
     grunt.registerTask('test', ['default', 'karma']);
     grunt.registerTask('build', ['default', 'karma']);
+    grunt.registerTask('fastbuild',['uglify', 'ngtemplates', 'concat', 'copy']);
 
     grunt.registerTask('release', function (type) {
         type = type ? type : 'patch';

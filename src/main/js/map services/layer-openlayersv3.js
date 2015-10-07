@@ -90,7 +90,7 @@
                         source: new ol.source.Vector({
                             url: args.url,
                             format: new ol.format.GeoJSON(),
-                            style: style
+                            style: args.style
                         })
                     });
                 }
@@ -236,7 +236,6 @@
                     crossOrigin: '*/*',
                     url: url
                 };
-
                 var layerOptions = {
                     opacity: args.opacity,
                     source: new ol.source.XYZ(sourceOptions),
@@ -260,18 +259,10 @@
             },
             createFeature: function (mapInstance, geoJson) {
                 var reader;
-                if (mapInstance.getView().getProjection() !== geoJson.crs.properties.name) {
-                    reader = new ol.format.GeoJSON({
-                        'defaultDataProjection': geoJson.crs.properties.name
-                    });
-                } else {
-                    reader = new new ol.format.GeoJSON({
-                        'defaultDataProjection': mapInstance.getView().getProjection()
-                    });
-                }
+                reader = new ol.format.GeoJSON();
 
-                return reader.readFeature(angular.toJson(geoJson), {
-                    'dataProjection': geoJson.crs.properties.name,
+                return reader.readFeature(JSON.stringify(geoJson), {
+                    'dataProjection': ol.proj.get(geoJson.crs.properties.name),
                     'featureProjection': mapInstance.getView().getProjection()
                 });
             },
@@ -281,6 +272,7 @@
                 if (typeof source.getFeatures !== 'function') {
                     throw new Error('Layer does not have a valid source for features.');
                 }
+
                 var writer = new ol.format.GeoJSON();
                 var featureJson;
                 if (feature instanceof Array) {
@@ -292,8 +284,9 @@
                 }
 
                 var featureDto = angular.fromJson(featureJson);
-                feature.id = feature.getId() || GAWTUtils.generateUuid();
-                featureDto.id = feature.id;
+                feature.setId(feature.getId() || GAWTUtils.generateUuid());
+                featureDto.id = feature.getId();
+
                 return featureDto;
             },
             parselatLong: function (latlong) {
@@ -405,14 +398,14 @@
                 mapInstance.addInteraction(selectClick);
             },
             registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance, 'id', layerId);
                 eventName = eventName === 'loadstart' ? 'tileloadstart' : eventName;
-                layer.getSource().on(eventName, callback);
+                eventName = eventName === 'loadend' ? 'tileloadend' : eventName;
+                layer.getSource().un(eventName, callback);
             },
             unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
-                //$log.info(layerId);
                 var layer = service.getLayerBy(mapInstance, 'id', layerId);
+                eventName = eventName === 'loadstart' ? 'tileloadstart' : eventName;
                 eventName = eventName === 'loadend' ? 'tileloadend' : eventName;
                 layer.getSource().un(eventName, callback);
             },

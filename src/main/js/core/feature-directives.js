@@ -998,8 +998,8 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     </file>
 </example>
  */
-app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log',
-    function ($timeout, $compile, $q, GALayerService,$log) {
+app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log', 'GAWTUtils',
+    function ($timeout, $compile, $q, GALayerService, $log, GAWTUtils) {
         'use strict';
         return {
             restrict: "E",
@@ -1011,6 +1011,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 projection: '@',
                 controllerEmitEventName: '@',
                 refreshLayer: '@',
+                style: '@',
                 postAddLayer: '&',
                 onLayerDestroy: '&'
             },
@@ -1040,6 +1041,29 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 };
 
                 self.addFeature = function (feature) {
+                    if ($scope.style) {
+                        var directiveStyle;
+                        try {
+                            directiveStyle = JSON.parse($scope.style);
+                        } catch (e) {
+                            throw new Error('Failed to parse style');
+                        }
+
+                        var style = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: directiveStyle.radius,
+                                fill: new ol.style.Fill({
+                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity)
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity),
+                                    width: directiveStyle.radius
+                                })
+                            })
+                        });
+                        feature.setStyle(style);
+                    }
+
                     if (feature.then !== null && typeof feature.then === 'function') {
                         if ($scope.layerControllerIsReady) {
                             feature.then(function (resultFeature) {
@@ -1127,6 +1151,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     layerOptions.postAddLayer = $scope.postAddLayer;
                     $log.info(layerOptions.layerName + ' - constructing...');
                     var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+
                     //mapController.waitingForAsyncLayer();
                     //Async layer add
                     mapController.addLayer(layer).then(function (layerDto) {

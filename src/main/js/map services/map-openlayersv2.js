@@ -145,6 +145,14 @@ app.service('olv2MapService', [
 
 				return result;
 			},
+            getMapScale: function (mapInstance) {
+                var scale = mapInstance.getScale();
+                return scale;
+            },
+            getMapCenter: function (mapInstance) {
+                var center = mapInstance.center;
+                return center;
+            },
 			isControlActive: function (mapInstance, controlId, controlName) {
 				var control;
 				for (var i = 0; mapInstance.controls.length; i++) {
@@ -283,6 +291,7 @@ app.service('olv2MapService', [
 					bounds.extend(lonLat);
 				}
 				//TODO return a geoJson equivalent
+
 				return bounds;
 			},
 			/**

@@ -122,7 +122,7 @@
                         type: "Feature",
                         geometry: {
                             type: "Point",
-                            coordinates: [geoNameResult.lng, geoNameResult.lat]
+                            coordinates: [parseFloat(geoNameResult.lng), parseFloat(geoNameResult.lat)]
                         },
                         crs: {
                             type: "name",
