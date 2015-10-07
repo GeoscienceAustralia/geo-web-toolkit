@@ -222,31 +222,6 @@
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(0);
             });
-            // TODO Can't test getLonLatFromPixel due to way OLV3 relies on the rendered frame.
-            /*it('Should fire mapController function "getLonLatFromPixel" without an exception given valid input', function () {
-                var lonLat = $scope.mapController.getLonLatFromPixel(100, 200);
-                expect(lonLat != null).toBe(true);
-            });
-            it('Should fire mapController function "getLonLatFromPixel" with an exception given invalid input', function () {
-                var passed = false;
-                try {
-                    $scope.mapController.getLonLatFromPixel(null, null);
-                    passed = false;
-                } catch (e) {
-                    passed = true;
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "getPixelFromLonLat" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var lonLat = $scope.mapController.getPixelFromLonLat(-20, 100);
-                    expect(lonLat != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });*/
             it('Should fire mapController function "getPixelFromLonLat" with an exception given invalid input', function () {
                 var lonPassed = false;
                 var latPassed = false;
@@ -334,29 +309,17 @@
                 expect(passed).toBe(true);
             });
             it('Should fire mapController function "getDisplayProjection" without an exception', function () {
-                var passed = false;
-                try {
-                    var projection = $scope.mapController.getDisplayProjection();
-                    expect(projection != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var projection = $scope.mapController.getDisplayProjection();
+                expect(projection != null).toBe(true);
             });
             it('Should fire mapController function "setLayerVisibility" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var layer = $scope.mapController.getLayers()[0];
-                    $scope.mapController.setLayerVisibility(layer.id, true);
-                    var visibleLayer = $scope.mapController.getLayers()[0];
-                    expect(visibleLayer.visibility).toBe(true);
-                    $scope.mapController.setLayerVisibility(layer.id, false);
-                    var invisibleLayer = $scope.mapController.getLayers()[0];
-                    expect(invisibleLayer.visibility).toBe(false);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var layer = $scope.mapController.getLayers()[0];
+                $scope.mapController.setLayerVisibility(layer.id, true);
+                var visibleLayer = $scope.mapController.getLayers()[0];
+                expect(visibleLayer.visibility).toBe(true);
+                $scope.mapController.setLayerVisibility(layer.id, false);
+                var invisibleLayer = $scope.mapController.getLayers()[0];
+                expect(invisibleLayer.visibility).toBe(false);
             });
 
             it('Should fire mapController function "setLayerVisibility" with an exception given invalid input', function () {
@@ -378,26 +341,11 @@
                 expect(boundingBox != null).toBe(true);
             });
             it('Should fire mapController function "createBounds" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var bounds = $scope.mapController.createBounds([
-                        [100, -12],
-                        [150, 40]
-                    ]);
-                    expect(bounds != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
-            });
-            it('Should fire mapController function "zoomToExtent" without an exception given valid input', function () {
-                var map = $scope.mapController.getMapInstance();
-                //'mock' get size due to dependency on actually rendering map.
-                map.getSize = function() { return [500,500];};
-                $scope.mapController.zoomToExtent([
+                var bounds = $scope.mapController.createBounds([
                     [100, -12],
                     [150, 40]
                 ]);
+                expect(bounds != null).toBe(true);
             });
             it('Should fire mapController function "zoomTo" without an exception given valid input', function () {
                 var passed = false;
@@ -648,87 +596,24 @@
                 expect(features.length > 0).toBe(true);
             });
             it('Should fire mapController function "createFeature" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var feature = $scope.mapController.createFeature($scope.testFeature);
-                    expect(feature != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var feature = $scope.mapController.createFeature($scope.testFeature);
+                expect(feature != null).toBe(true);
             });
             it('Should "createFeature" with expected output', function () {
                 var feature = $scope.mapController.createFeature($scope.testFeature);
                 expect(feature != null).toBe(true);
             });
             it('Should fire mapController function "addFeatureToLayer" without an exception given valid input', function () {
-                var passed = false;
-                try {
-                    var layer = $scope.mapController.getLayers()[2];
-                    var feature = $scope.mapController.createFeature($scope.testFeature);
-                    var featureDto = $scope.mapController.addFeatureToLayer(layer.id, feature);
-                    expect(feature != null).toBe(true);
-                    expect(featureDto != null).toBe(true);
-                    passed = true;
-                } catch (e) {
-                }
-                expect(passed).toBe(true);
+                var layer = $scope.mapController.getLayers()[2];
+                var feature = $scope.mapController.createFeature($scope.testFeature);
+                var featureDto = $scope.mapController.addFeatureToLayer(layer.id, feature);
+                expect(feature != null).toBe(true);
+                expect(featureDto != null).toBe(true);
+                expect(feature.getProperties() != null).toBe(true);
+                expect(feature.getProperties().name).toBe('Testing name');
+                expect(feature.getProperties().name).toBe('Testing name');
+                expect(featureDto.properties.name).toBe('Testing name');
             });
-            //it('Should fire mapController function "createWfsClient" without an exception given valid input', function () {
-            //    var passed = false;
-            //    //TODO Currently OLV3 - throw new Error("NotImplemented");
-            //    try {
-            //        var client = $scope.mapController.createWfsClient(
-            //            'http://localhost:8080',
-            //            'test',
-            //            'test','1.1.0',
-            //            'geoName',
-            //            'EPSG:4326',
-            //            true);
-            //        expect(client != null).toBe(true);
-            //        passed = true;
-            //    } catch (e) {
-            //    }
-            //    expect(passed).toBe(true);
-            //});
-            //it('Should fire mapController function "addWfsClient" without an exception given valid input', function () {
-            //    var passed = false;
-            //    try {
-            //        var client = $scope.mapController.createWfsClient(
-            //            'http://localhost:8080',
-            //            'test',
-            //            'test','1.1.0',
-            //            'geoName',
-            //            'EPSG:4326',
-            //            true);
-            //        expect(client != null).toBe(true);
-            //        var clientDto = $scope.mapController.addWfsClient(client);
-            //        expect(clientDto != null).toBe(true);
-            //        passed = true;
-            //    } catch (e) {
-            //    }
-            //    expect(passed).toBe(true);
-            //});
-            //it('Should fire mapController function "searchWfs" without an exception given valid input', function () {
-            //    var passed = false;
-            //    try {
-            //        var client = $scope.mapController.createWfsClient(
-            //            'http://localhost:8080',
-            //            'test',
-            //            'test','1.1.0',
-            //            'geoName',
-            //            'EPSG:4326',
-            //            true);
-            //        expect(client != null).toBe(true);
-            //        var clientDto = $scope.mapController.addWfsClient(client);
-            //        expect(clientDto != null).toBe(true);
-            //        var searchResult = $scope.mapController.searchWfs(clientDto.clientId,'testquery','NAME');
-            //        expect(searchResult != null).toBe(true);
-            //        passed = true;
-            //    } catch (e) {
-            //    }
-            //    expect(passed).toBe(true);
-            //});
             it('Should fire mapController function "getMeasureFromEvent" without an exception given valid input', function () {
                 var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
                 expect(measure != null).toBe(true);

@@ -1,4 +1,4 @@
-/* global angular, ol, olcs, $, Cesium */
+/* global angular, ol, olcs, $, Cesium, OpenLayers */
 
 (function () {
     "use strict";
@@ -251,15 +251,14 @@
                     var units = mapInstance.getView().getProjection().getUnits();
                     var dpi = 25.4 / 0.28;
                     var mpu = ol.proj.METERS_PER_UNIT[units];
-                    var scale = resolution * mpu * 39.37 * dpi;
-                    return scale;
+                    return resolution * mpu * 39.37 * dpi;
                 },
                 getMapCenter: function (mapInstance) {
                     var center = mapInstance.getView().getCenter();
                     var coords = {
                         lat: center[1],
                         lon: center[0]
-                    }
+                    };
                     return coords;
                 },
                 //return bool
@@ -586,8 +585,12 @@
                     if (remove) {
                         var measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction');
                         var measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance, 'measureEventVectorLayer');
-                        if (measureEventDrawInteraction) mapInstance.removeInteraction(measureEventDrawInteraction);
-                        if (measureEventVectorLayer) mapInstance.removeLayer(measureEventVectorLayer);
+                        if (measureEventDrawInteraction) {
+                            mapInstance.removeInteraction(measureEventDrawInteraction);
+                        }
+                        if (measureEventVectorLayer) {
+                            mapInstance.removeLayer(measureEventVectorLayer);
+                        }
 
                         updateToolkitMapInstanceProperty(mapInstance, 'measureEventVectorLayer', null);
                         updateToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction', null);
@@ -663,11 +666,14 @@
                 createBounds: function (mapInstance, geoJsonCoordinateArray, projection) {
                     var bounds = [];
                     var view = mapInstance.getView();
+                    projection = projection || ol.proj.get('EPSG:4326');
                     for (var i = 0; i < geoJsonCoordinateArray.length; i++) {
-                        bounds.push(ol.proj.transform([parseFloat(geoJsonCoordinateArray[i][0]), parseFloat(geoJsonCoordinateArray[i][1])], projection, view.getProjection()));
+                        bounds.push(
+                            ol.proj.transform(
+                                [parseFloat(geoJsonCoordinateArray[i][0]), parseFloat(geoJsonCoordinateArray[i][1])],
+                                projection, view.getProjection().getCode()));
                     }
-                    var extent = new ol.extent.boundingExtent(bounds)
-                    return extent;
+                    return new ol.extent.boundingExtent(bounds);
                 },
                 /**
                  * Zooms to a specified extent
@@ -752,7 +758,7 @@
                     if (projection == null) {
                         var defaultTransformedLoc = ol.proj.transform(loc, service.displayProjection, mapInstance.getView().getProjection());
                         mapInstance.getView().setCenter(defaultTransformedLoc);
-                    } else if (projection != service.datumProjection) {
+                    } else if (projection !== service.datumProjection) {
                         var transformedLoc = ol.proj.transform(loc, projection, mapInstance.getView().getProjection());
                         mapInstance.getView().setCenter(transformedLoc);
                     } else {
@@ -1036,7 +1042,7 @@
                                     var selectedFeature = e.selected[selectedIndex];
                                     for (var sourceIndex = 0; sourceIndex < source.getFeatures().length; sourceIndex++) {
                                         var sourceFeature = source.getFeatures()[sourceIndex];
-                                        if (sourceFeature.get('id') != undefined && selectedFeature.get('id') != undefined) {
+                                        if (sourceFeature.get('id') != null && selectedFeature.get('id') != null) {
                                             if (sourceFeature.get('id') === selectedFeature.get('id')) {
                                                 source.removeFeature(sourceFeature);
                                             }
@@ -1102,7 +1108,7 @@
                                 ]);
                                 return geometry;
                             };
-                            break
+                            break;
                         case 'polygon':
                             interactionType = 'Polygon';
                             break;
@@ -1407,7 +1413,7 @@
                         throw new Error("Invalid layer id");
                     }
                     var typeName, featurePrefix;
-                    var param = layer.getSource().getParams()["LAYERS"];
+                    var param = layer.getSource().getParams().LAYERS;
                     var parts = (OpenLayers.Util.isArray(param) ? param[0] : param).split(":");
                     if (parts.length > 1) {
                         featurePrefix = parts[0];
