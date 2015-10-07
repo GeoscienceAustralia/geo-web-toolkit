@@ -1041,14 +1041,14 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 };
 
                 self.addFeature = function (feature) {
-                    var directiveStyle;
-                    try {
-                        directiveStyle = JSON.parse($scope.style);
-                    } catch (e) {
-                        throw new Error('Failed to parse style');
-                    }
-
                     if ($scope.style) {
+                        var directiveStyle;
+                        try {
+                            directiveStyle = JSON.parse($scope.style);
+                        } catch (e) {
+                            throw new Error('Failed to parse style');
+                        }
+
                         var style = new ol.style.Style({
                             image: new ol.style.Circle({
                                 radius: directiveStyle.radius,
@@ -1149,15 +1149,6 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
                     layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                     layerOptions.postAddLayer = $scope.postAddLayer;
-
-                    var directiveStyle;
-
-                    try {
-                        directiveStyle = JSON.parse($scope.style);
-                    } catch (e) {
-                        throw new Error('Failed to parse style');
-                    }
-
                     $log.info(layerOptions.layerName + ' - constructing...');
                     var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
 
