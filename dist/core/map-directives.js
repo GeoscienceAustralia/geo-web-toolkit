@@ -1,5 +1,7 @@
 var angular = angular || {};
 var $ = $ || {};
+var ol = ol || {};
+var OpenLayers = OpenLayers || {};
 
 var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.core.map-services', 'gawebtoolkit.core.layer-services' ]);
 /**
@@ -1740,10 +1742,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * Gets the current framework ID
             * */
             self.getFrameworkVersion = function () {
-                if(OpenLayers != null && $scope.mapInstance instanceof OpenLayers.Map) {
+                if(window.OpenLayers != null && $scope.mapInstance instanceof window.OpenLayers.Map) {
                     return 'olv2';
                 }
-                if(ol != null && $scope.mapInstance instanceof ol.Map) {
+                if(window.ol != null && $scope.mapInstance instanceof window.ol.Map) {
                     return 'olv3';
                 }
             };
