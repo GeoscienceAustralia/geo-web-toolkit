@@ -171,6 +171,9 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
 
             return layer;
         },
+        setFeatureStyle: function () {
+          //TODO v2 styles
+        },
         createMarkerLayer: function (args) {
             return new OpenLayers.Layer.Markers(args.layerName);
         },
