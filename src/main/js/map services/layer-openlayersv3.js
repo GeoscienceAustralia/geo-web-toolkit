@@ -104,6 +104,21 @@
 
                 return layer;
             },
+            setFeatureStyle: function (featureInstance,styleArgs) {
+                var style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: styleArgs.radius,
+                        fill: new ol.style.Fill({
+                            color: GAWTUtils.convertHexAndOpacityToRgbArray(styleArgs.color, styleArgs.opacity)
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: GAWTUtils.convertHexAndOpacityToRgbArray(styleArgs.color, styleArgs.opacity),
+                            width: styleArgs.radius
+                        })
+                    })
+                });
+                featureInstance.setStyle(style);
+            },
             createMarkerLayer: function (args) {
                 var result = new ol.layer.Vector({
                     source: new ol.source.Vector(),

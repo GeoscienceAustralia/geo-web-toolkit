@@ -148,6 +148,11 @@
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.raiseLayerDrawOrder(mapInstance, layerId, delta);
+            },
+            setFeatureStyle: function (featureInstance, styleArgs, version) {
+                var useVersion = version || defaultFramework;
+                var service = mapLayerServiceLocator.getImplementation(useVersion);
+                return service.setFeatureStyle(featureInstance,styleArgs);
             }
         };
     }]);
