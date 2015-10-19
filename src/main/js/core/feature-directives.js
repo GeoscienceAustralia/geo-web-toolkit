@@ -1049,19 +1049,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                             throw new Error('Failed to parse style');
                         }
 
-                        var style = new ol.style.Style({
-                            image: new ol.style.Circle({
-                                radius: directiveStyle.radius,
-                                fill: new ol.style.Fill({
-                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity)
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(directiveStyle.color, directiveStyle.opacity),
-                                    width: directiveStyle.radius
-                                })
-                            })
-                        });
-                        feature.setStyle(style);
+                        GALayerService.setFeatureStyle(feature,directiveStyle,$scope.mapAPI.mapController.getFrameworkVersion());
                     }
 
                     if (feature.then !== null && typeof feature.then === 'function') {
