@@ -688,7 +688,26 @@
                     var map = mapInstance;
                     var view = map.getView();
                     var size = map.getSize();
-                    view.fit(extent, size);
+                    var ex = extent;
+
+                    var minPos = ol.proj.transform(
+                        [ex[0][0], ex[1][1]],
+                        ol.proj.get(service.displayProjection || 'ESPG:4326'),
+                        view.getProjection());
+
+                    var maxPos = ol.proj.transform(
+                        [ex[1][0], ex[0][1]],
+                        ol.proj.get(service.displayProjection || 'ESPG:4326'),
+                        view.getProjection());
+
+                    var bounds = [
+                        minPos[0],
+                        minPos[1],
+                        maxPos[0],
+                        maxPos[1]
+                    ];
+
+                    mapInstance.getView().fit(bounds, mapInstance.getSize());
                 },
                 //TODO sensible errors when unsupported layerId is used.
                 zoomToLayer: function (mapInstance, layerId) {
@@ -791,7 +810,7 @@
                             maxPos[0],
                             maxPos[1]
                         ];
-                        mapInstance.getView().fit(bounds, mapInstance.getSize());
+                        mapInstance.getView().fit(bounds, mapInstance.getSize(), {nearest:true});
                     } else {
                         if (args.centerPosition) {
                             var center = JSON.parse(args.centerPosition);
