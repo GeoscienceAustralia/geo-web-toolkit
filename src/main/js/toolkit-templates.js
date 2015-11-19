@@ -57,7 +57,7 @@ angular.module('gawebtoolkit.ui.templates', []).run(['$templateCache', function(
     "\n" +
     "       ng-class=\"{typeAheadLoading:waitingForResponse}\"\r" +
     "\n" +
-    "       uib-typeahead=\"result as result.properties.name for result in getSearchResults($viewValue)\"\r" +
+    "       typeahead=\"result as result.properties.name for result in getSearchResults($viewValue)\"\r" +
     "\n" +
     "       typeahead-template-url=\"{{resultTemplateUrl}}\"\r" +
     "\n" +

@@ -1,6 +1,6 @@
 <input type="text" class="search-box" placeholder="Place name search" ng-model="query"
        ng-class="{typeAheadLoading:waitingForResponse}"
-       uib-typeahead="result as result.properties.name for result in getSearchResults($viewValue)"
+       typeahead="result as result.properties.name for result in getSearchResults($viewValue)"
        typeahead-template-url="{{resultTemplateUrl}}"
        typeahead-on-select="onSelected($item, $model, $label)"
        typeahead-wait-ms="200" typeahead-editable="true"/>
