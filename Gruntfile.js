@@ -12,7 +12,7 @@ module.exports = function (grunt) {
                     'bower_components/angular-route/angular-route.js',
                     'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js',
                     'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
-                    'http://maps.google.com/maps/api/js?sensor=false&.js',
+                    'http://maps.google.com/maps/api/js?.js',
                     'http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js',
                     'node_modules/openlayers/dist/ol.js',
                     'dist/geo-web-toolkit-min.js'],
