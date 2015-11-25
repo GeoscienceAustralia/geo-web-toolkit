@@ -37,13 +37,13 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     <file name="index.html">
         <div id="map"></div>
         <div ng-controller="featureExampleController">
-            <ga-map map-element-id="map" center-position='[130, -25]' zoom-level="4">
-                <ga-google-layer></ga-google-layer>
-                <ga-feature-layer layer-name="My local geoJson features">
-                    <ga-feature ng-repeat="feature in features" geo-json-feature="feature">
-                    </ga-feature>
-                </ga-feature-layer>
-            </ga-map>
+            <geo-map map-element-id="map" center-position='[130, -25]' zoom-level="4">
+                <geo-google-layer></geo-google-layer>
+                <geo-feature-layer layer-name="My local geoJson features">
+                    <geo-feature ng-repeat="feature in features" geo-json-feature="feature">
+                    </geo-feature>
+                </geo-feature-layer>
+            </geo-map>
         </div>
     </file>
     <file name="style.css">#map {width: 650px;height:600px;}</file>
@@ -998,12 +998,12 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     </file>
 </example>
  */
-app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log', 'GAWTUtils',
+app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log', 'GAWTUtils',
     function ($timeout, $compile, $q, GALayerService, $log, GAWTUtils) {
         'use strict';
         return {
             restrict: "E",
-            require: "^gaMap",
+            require: "^geoMap",
             scope: {
                 url: '@',
                 layerName: '@',
@@ -1260,14 +1260,14 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
         <div ng-controller="featureExampleController">
             <button ng-click="changefeatures()" class="btn">Remove some feature layers</button>
             <div id="map"></div>
-            <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
-                <ga-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
-                </ga-map-layer>
-                <ga-feature-layer layer-name="My local geoJson features">
-                    <ga-feature ng-repeat="feature in features" geo-json-feature="feature">
-                    </ga-feature>
-                </ga-feature-layer>
-            </ga-map>
+            <geo-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
+                <geo-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
+                </geo-map-layer>
+                <geo-feature-layer layer-name="My local geoJson features">
+                    <geo-feature ng-repeat="feature in features" geo-json-feature="feature">
+                    </geo-feature>
+                </geo-feature-layer>
+            </geo-map>
         </div>
     </file>
     <file name="style.css">
@@ -2234,11 +2234,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 ]    </file>
 </example>
  */
-app.directive('gaFeature', [function () {
+app.directive('geoFeature', [function () {
     'use strict';
     return {
         restrict: "E",
-        require: "^gaFeatureLayer",
+        require: "^geoFeatureLayer",
         scope: {
             visibility: '@',
             geoJsonFeature: '=',

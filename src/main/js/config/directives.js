@@ -27,7 +27,7 @@ var app = angular.module('gawebtoolkit.config', []);
      <file name="index.html">
          <div id="map"></div>
          <div ng-controller="ourConfigController">
-         <ga-map-config ga-config-path="../docs-sources/ourConfigFile" template-path="../docs-sources/ourTemplate.html" static-config="true" class="ng-scope"></ga-map-config>
+         <geo-map-config ga-config-path="../docs-sources/ourConfigFile" template-path="../docs-sources/ourTemplate.html" static-config="true" class="ng-scope"></geo-map-config>
          </div>
      </file>
      <file name="style.css">
@@ -43,8 +43,8 @@ var app = angular.module('gawebtoolkit.config', []);
          });
      </file>
      <file name="ourTemplate.html">
-         <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position="{{myConfig.centrePosition}}" zoom-level="{{myConfig.zoomLevel}}">
-             <ga-map-layer 
+         <geo-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position="{{myConfig.centrePosition}}" zoom-level="{{myConfig.zoomLevel}}">
+             <geo-map-layer
                  ng-repeat="baseLayer in myConfig.baseMaps" 
                  layer-name="{{baseLayer.name}}" 
                  layer-url="{{baseLayer.url}}"
@@ -55,8 +55,8 @@ var app = angular.module('gawebtoolkit.config', []);
                  visibility="{{baseLayer.visibility}}" 
                  layer-attribution="{{baseLayer.attribution}}"
                  zoom-to-max="{{baseLayer.zoomToMax}}">
-             </ga-map-layer>
-             <ga-map-layer 
+             </geo-map-layer>
+             <geo-map-layer
                  ng-repeat="Layer in myConfig.layerMaps" 
                  layer-name="{{Layer.name}}" 
                  layer-url="{{Layer.url}}"
@@ -68,9 +68,9 @@ var app = angular.module('gawebtoolkit.config', []);
                  is-base-layer="{{Layer.isBaseLayer}}" 
                  visibility="{{Layer.visibility}}" 
                  layer-attribution="{{Layer.attribution}}">
-             </ga-map-layer>
-             <ga-map-control ng-repeat="control in myConfig.controls" map-control-name="{{control}}"></ga-map-control>
-         </ga-map> 
+             </geo-map-layer>
+             <geo-map-control ng-repeat="control in myConfig.controls" map-control-name="{{control}}"></geo-map-control>
+         </geo-map>
      </file>
      <file name="ourConfigFile.json">
          {
@@ -122,7 +122,7 @@ var app = angular.module('gawebtoolkit.config', []);
      </file>
  </example>
  */
-app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$timeout', '$parse', '$log',
+app.directive('geoMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$timeout', '$parse', '$log',
     function ($compile, $http, $q, $interpolate, $timeout, $parse, $log) {
         'use strict';
         return {

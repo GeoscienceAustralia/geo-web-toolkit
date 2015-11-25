@@ -40,22 +40,22 @@ var app = angular.module('gawebtoolkit.core.layer-directives', [ 'gawebtoolkit.c
 <example module="simpleMap">
 <file name="index.html">
     <div id="map"></div>
-    <ga-map map-element-id="map" center-position='[130, -25]' zoom-level="3">
-        <ga-map-layer layer-name="baseLayer" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS"></ga-map-layer>
+    <geo-map map-element-id="map" center-position='[130, -25]' zoom-level="3">
+        <geo-map-layer layer-name="baseLayer" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS"></geo-map-layer>
         
-        <ga-map-layer layer-name="Topographic" layer-url="http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer" map-bg-color="#194584" is-base-layer="false" layer-type="WMS"></ga-map-layer>
-    </ga-map>
+        <geo-map-layer layer-name="Topographic" layer-url="http://services.nationalmap.gov/ArcGIS/services/US_Topo_Availability/MapServer/WMSServer" map-bg-color="#194584" is-base-layer="false" layer-type="WMS"></geo-map-layer>
+    </geo-map>
 </file>
 <file name="style.css">#map {width: 650px;height:600px;}</file>
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
-app.directive('gaMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
+app.directive('geoMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 	function ($timeout, $compile, GALayerService, $log) {
 		'use strict';
 		return {
 			restrict: "E",
-			require: "^gaMap",
+			require: "^geoMap",
 			scope: {
 				layerAttribution: '@',
 				layerName: '@',

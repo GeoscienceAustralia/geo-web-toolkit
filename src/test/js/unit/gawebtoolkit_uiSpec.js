@@ -28,15 +28,15 @@ describe('gawebtoolkit ui component tests',
             });
             element = angular
                 .element('<div>' +
-                    '<ga-layer-control id="layerControl" map-controller="mapController" layer-data="testLayerData" on-visible="testOnVisible(layerId)"></ga-layer-control>' +
-                    '<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
+                    '<geo-layer-control id="layerControl" map-controller="mapController" layer-data="testLayerData" on-visible="testOnVisible(layerId)"></geo-layer-control>' +
+                    '<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                      'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                      'wrap-date-line="true"' +
                      'zoom-to-max="true"' +
                      'map-bg-color="#194584"' +
                      'layer-type="WMS"' +
                      'is-base-layer="true"' +
-                     '></ga-map-layer></ga-map><div id="gamap"></div></div>');
+                     '></geo-map-layer></geo-map><div id="gamap"></div></div>');
             $compile(element)(_$rootScope_);
             $scope.$digest();
             $timeout.flush();
@@ -57,15 +57,15 @@ describe('gawebtoolkit wfs search unit tests', function () {
         $compile = _$compile_;
         $scope = _$rootScope_;
         uiScope = $scope.$new();
-        mapElement = angular.element('<ga-map framework="olv3" map-element-id="gamap"></ga-map>');
+        mapElement = angular.element('<geo-map framework="olv3" map-element-id="gamap"></geo-map>');
 
         element = angular
-            .element('<ga-search-wfs' +
+            .element('<geo-search-wfs' +
                 'primary-wfs-property="Name" ' + 'map-controller="mapController"' +
                  'search-end-points="searchConfig.endPoints"' +
                  'on-results-selected="onSearchResultsSelected(item)"' +
                  'on-perform-search="onSearchResults(data)">' +
-                 '</ga-search-wfs>');
+                 '</geo-search-wfs>');
 
         $scope.$on('mapControllerReady', function (event, args) {
             uiScope.mapController = args;
@@ -122,7 +122,7 @@ describe('gawebtoolkit wfs search unit tests', function () {
 
     it('Should create a control to toggle client side measure functionality', function () {
         var el = angular
-            .element('<ga-measure-toggle map-controller="mapController"/>');
+            .element('<geo-measure-toggle map-controller="mapController"/>');
         var uiCompiled = $compile(el)(uiScope);
         uiScope.$digest();
         var uiIsolatedScope = uiCompiled.isolateScope();
@@ -132,7 +132,7 @@ describe('gawebtoolkit wfs search unit tests', function () {
 
     it('Should create draw interaction when UI control is activated.', function () {
         var el = angular
-            .element('<ga-measure-toggle map-controller="mapController"/>');
+            .element('<geo-measure-toggle map-controller="mapController"/>');
         var uiCompiled = $compile(el)(uiScope);
         uiScope.$digest();
         var uiIsolatedScope = uiCompiled.isolateScope();
@@ -146,7 +146,7 @@ describe('gawebtoolkit wfs search unit tests', function () {
 
     it('Should remove draw interaction when UI control is deactivated.', function () {
         var el = angular
-            .element('<ga-measure-toggle map-controller="mapController"/>');
+            .element('<geo-measure-toggle map-controller="mapController"/>');
         var uiCompiled = $compile(el)(uiScope);
         uiScope.$digest();
         var uiIsolatedScope = uiCompiled.isolateScope();
@@ -162,7 +162,7 @@ describe('gawebtoolkit wfs search unit tests', function () {
 
     it('Should remove draw interaction when UI control is destroyed.', function () {
         var el = angular
-            .element('<ga-measure-toggle map-controller="mapController"/>');
+            .element('<geo-measure-toggle map-controller="mapController"/>');
         var uiCompiled = $compile(el)(uiScope);
         uiScope.$digest();
         var uiIsolatedScope = uiCompiled.isolateScope();

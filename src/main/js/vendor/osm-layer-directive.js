@@ -18,19 +18,19 @@
      <example module="simpleMap">
      <file name="index.html">
      <div id="map"></div>
-     <ga-map map-element-id="map">
-     <ga-osm-layer></ga-osm-layer>
-     </ga-map>
+     <geo-map map-element-id="map">
+     <geo-osm-layer></geo-osm-layer>
+     </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
      <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
      </example>
      */
-    app.directive('gaOsmLayer', ['$timeout', '$compile', 'GALayerService', '$log',
+    app.directive('geoOsmLayer', ['$timeout', '$compile', 'GALayerService', '$log',
         function ($timeout, $compile, GALayerService, $log) {
             return {
                 restrict: "E",
-                require: "^gaMap",
+                require: "^geoMap",
                 scope: {
                     wrapDateLine: '@',
                     visibility: '@',

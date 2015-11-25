@@ -19,7 +19,7 @@ angular.module('gawebtoolkit.ui.templates', []).run(['$templateCache', function(
     "\n" +
     "    <div ng-repeat=\"layer in layersData\">\r" +
     "\n" +
-    "        <ga-layer-control map-controller=\"mapController\" layer-data=\"layer\"></ga-layer-control>\r" +
+    "        <geo-layer-control map-controller=\"mapController\" layer-data=\"layer\"></geo-layer-control>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
@@ -99,7 +99,7 @@ angular.module('gawebtoolkit.ui.templates', []).run(['$templateCache', function(
     "\n" +
     "<div ng-show=\"layerData.visibility\" class=\"gaLayerControlSliderContainer\">\r" +
     "\n" +
-    "    <ga-layer-opacity-slider\r" +
+    "    <geo-layer-opacity-slider\r" +
     "\n" +
     "            map-controller=\"mapController\"\r" +
     "\n" +
@@ -113,7 +113,7 @@ angular.module('gawebtoolkit.ui.templates', []).run(['$templateCache', function(
     "\n" +
     "            title-text=\"Opacity control for layer - {{layerData.name}}\">\r" +
     "\n" +
-    "    </ga-layer-opacity-slider>\r" +
+    "    </geo-layer-opacity-slider>\r" +
     "\n" +
     "</div>\r" +
     "\n"

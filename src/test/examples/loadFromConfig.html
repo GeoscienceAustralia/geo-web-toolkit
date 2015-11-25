@@ -29,9 +29,9 @@
 
                     </li>
                     <li class="toolBarContainerListItem">
-                        <ga-reset-control map-controller="mapController" class="toolItem toolBarItem" style="width:42px" ga-config="gaConfigReset" on-reset="configReset()">
+                        <geo-reset-control map-controller="mapController" class="toolItem toolBarItem" style="width:42px" ga-config="gaConfigReset" on-reset="configReset()">
                             <label style="margin-top:5px">Reset</label>
-                        </ga-reset-control>
+                        </geo-reset-control>
                     </li>
                     <li class="toolBarContainerListItem">
                         <div ng-controller="keepMapExtentController" class="keepMapExtentToolContainer">
@@ -88,7 +88,7 @@
                                 <div ui-sortable="sortableOptions" ng-model="gaConfig.layerMaps">
                                     <div ng-repeat="layer in gaConfig.layerMaps" class="list-group-item">
                                         <div ng-if="!layer.isGroupedLayers" class="movableLayer">
-                                            <ga-layer-control
+                                            <geo-layer-control
                                                     map-controller="mapController"
                                                     layer-data="layer"
                                                     on-start-loading="layerStartedLoading(layerId)"
@@ -97,7 +97,7 @@
                                                     layer-disabled="layer.error"
                                                     style="display:block">
                                                 <button type="button" style="width:20px;height:20px">Meta OGC</button>
-                                            </ga-layer-control>
+                                            </geo-layer-control>
                                             <div ng-show="layer.error" class="bg-danger">This layer failed to load.</div>
                                         </div>
                                         <div ng-if="layer.isGroupedLayers" ng-controller="groupedLayerMapsController">
@@ -106,15 +106,15 @@
                                                 <label ng-bind="layer.groupTitle" for="{{layer.groupId}}_visibility"></label>
                                             </h4>
                                             <div>
-                                                <ga-layers-drop-down class="groupedLayerSelector" ng-disabled="layer.error"
+                                                <geo-layers-drop-down class="groupedLayerSelector" ng-disabled="layer.error"
                                                                      layers-data="currentGroup.layerMaps"
                                                                      selected-model="groupSelectedId"
                                                                      map-controller="mapController"
                                                                      on-selected-layer-changed="selectedGroupLayerChanged(layerId, groupId)"
                                                                      on-layers-initialised="initialLayerUpdated(layerId, groupId)"
-                                                                     layer-group-id="{{layer.groupId}}"></ga-layers-drop-down>
+                                                                     layer-group-id="{{layer.groupId}}"></geo-layers-drop-down>
                                                 <div ng-if="layer.visibility">
-                                                    <ga-layer-opacity-slider ng-disabled="layer.error"  map-controller="mapController" layer-opacity="layer.opacity" layer-id="{{layer.id}}"></ga-layer-opacity-slider>
+                                                    <geo-layer-opacity-slider ng-disabled="layer.error"  map-controller="mapController" layer-opacity="layer.opacity" layer-id="{{layer.id}}"></geo-layer-opacity-slider>
                                                 </div>
                                                 <div ng-show="layer.error" class="bg-danger">This layer failed to load.</div>
                                             </div>
@@ -137,30 +137,30 @@
         </nav>
         <div class="leftDialogButtonContainer mapPreviewLeftDialogButtonContainer">
             <div ng-if="gaConfig.aboutConfig.enabled">
-                <ga-toggle  ga-toggle-clicked="aboutToggleClicked()"
+                <geo-toggle  ga-toggle-clicked="aboutToggleClicked()"
                             class="leftHandMenuButton"
                             ng-class="{activeLeftHandMenuButton: leftHandContentDisplay == 'About'}">
                     About
-                </ga-toggle>
+                </geo-toggle>
             </div>
             <div ng-if="gaConfig.legendConfig.enabled">
-                <ga-toggle  ga-toggle-clicked="legendToggleClicked()"
+                <geo-toggle  ga-toggle-clicked="legendToggleClicked()"
                             class="leftHandMenuButton"
                             ng-class="{activeLeftHandMenuButton: leftHandContentDisplay == 'Legend'}">
                     Legend <img src="resources/img/legend.png" height="18" />
-                </ga-toggle>
+                </geo-toggle>
             </div>
             <div ng-if="gaConfig.layersConfig.enabled">
-                <ga-toggle  ga-toggle-clicked="layersToggleClicked()"
+                <geo-toggle  ga-toggle-clicked="layersToggleClicked()"
                             class="leftHandMenuButton"
                             ng-class="{activeLeftHandMenuButton: leftHandContentDisplay == 'Layers'}">
                     Layers <img src="resources/img/Layers.png" height="18" />
-                </ga-toggle>
+                </geo-toggle>
             </div>
         </div>
     </div>
     <div class="baseLayerPickerContainer" ng-if="layerUiReady && gaConfig.baseMaps.length > 1">
-        <ga-base-layer-selector class="toolBarItem baseLayerSelect" map-controller="mapController" layers-data="gaConfig.baseMaps"></ga-base-layer-selector>
+        <geo-base-layer-selector class="toolBarItem baseLayerSelect" map-controller="mapController" layers-data="gaConfig.baseMaps"></geo-base-layer-selector>
     </div>
     <div class="mapOuterContainer">
         <div class="mapContainer" id="gamap1" ng-style="{backgroundColor:gaConfig.backgroundcolour}" style="position:fixed;width:54%;height:79%">
@@ -168,11 +168,11 @@
         </div>
     </div>
     <div>
-        <ga-map-config
+        <geo-map-config
                 config-value="config"
                 template-path="configmap.html"
                 pre-config="preConfigInit(config)">
-        </ga-map-config>
+        </geo-map-config>
     </div>
 </div>
 <script>

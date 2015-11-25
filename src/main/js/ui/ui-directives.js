@@ -12,7 +12,7 @@ var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ])
  * gaZoomToExtentButton
  * Notes: beforeZoom param 'points' is the underlying implementation object
  **/
-app.directive('gaZoomToExtentButton', [ function () {
+app.directive('geoZoomToExtentButton', [ function () {
     "use strict";
     return {
         restrict: 'E',
@@ -36,7 +36,7 @@ app.directive('gaZoomToExtentButton', [ function () {
 } ]);
 /**
  * */
-app.directive('gaZoomToCenterPositionAnchor', [ function () {
+app.directive('geoZoomToCenterPositionAnchor', [ function () {
     "use strict";
     return {
         restrict: 'E',
@@ -59,7 +59,7 @@ app.directive('gaZoomToCenterPositionAnchor', [ function () {
 /**
  *
  * */
-app.directive('gaZoomToLayerButton', [ function () {
+app.directive('geoZoomToLayerButton', [ function () {
     "use strict";
     return {
         restrict: 'E',
@@ -79,7 +79,7 @@ app.directive('gaZoomToLayerButton', [ function () {
 } ]);
 /**
  * */
-app.directive('gaToggle', [ function () {
+app.directive('geoToggle', [ function () {
     'use strict';
     var templateCache = '<button type="button" ng-click="toggle()"><div ng-transclude></div></button>';
     return {

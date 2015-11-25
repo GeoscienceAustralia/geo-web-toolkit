@@ -24,10 +24,10 @@
      * @require gaMap
      * @example
      */
-    app.directive('gaMapMarker', ['$log','$timeout','GALayerService', function ($log,$timeout,GALayerService) {
+    app.directive('geoMapMarker', ['$log','$timeout','GALayerService', function ($log,$timeout,GALayerService) {
         return {
             restrict: "E",
-            require: "^gaMap",
+            require: "^geoMap",
             scope: {
                 markerIcon: "@",
                 markerLong: "@",

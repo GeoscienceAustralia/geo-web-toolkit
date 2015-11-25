@@ -57,8 +57,8 @@
                 };
                 proj4.defs("EPSG:102113","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
                 proj4.defs("EPSG:102100","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
-                var ele = '<div id="map"></div><ga-map map-element-id="map" framework="olv3" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Test layer name 1" ' +
+                var ele = '<div id="map"></div><geo-map map-element-id="map" framework="olv3" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Test layer name 1" ' +
                     'layer-type="WMS" ' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer" ' +
                     'layers="World Bathymetry Image,Bathy Areas,Australian Landsat,Hillshade 3 second" ' +
@@ -67,18 +67,18 @@
                     'max-zoom-level="13" ' +
                     'format="image/png" ' +
                     'is-base-layer="true">' +
-                    '</ga-map-layer>' +
-                    '<ga-map-layer layer-name="Test layer name 2" ' +
+                    '</geo-map-layer>' +
+                    '<geo-map-layer layer-name="Test layer name 2" ' +
                     'layer-type="WMS" ' +
                     'wrap-date-line="true" ' +
                     'layer-url="http://www.ga.gov.au/gis/services/topography/Australian_Topography_2014_WM/MapServer/WMSServer" ' +
                     'layers="Populated_Places_1,Populated_Places_2,Populated_Places_3,Populated_Places_4,Populated_Places_5,Populated_Places_6,Populated_Places_7,Populated_Places_8"> ' +
-                    '</ga-map-layer> ' +
-                    '<ga-feature-layer layer-name="feature layer1">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></ga-map-control> ' +
-                    '</ga-map> ';
+                    '</geo-map-layer> ' +
+                    '<geo-feature-layer layer-name="feature layer1">' +
+                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                    '</geo-feature-layer>' +
+                    '<geo-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></geo-map-control> ' +
+                    '</geo-map> ';
                 mapWith3DSupportedProj = ele.replace('EPSG:102100','EPSG:3857');
 
                 mapThatIsStatic = ele.replace('map-element-id="map"','map-element-id="map" is-static-map="true"');

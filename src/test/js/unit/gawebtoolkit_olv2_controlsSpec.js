@@ -29,8 +29,8 @@
                     return options;
                 };
                 element = angular
-                    .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                    '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
+                    .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
                     'zoom-to-max="true"' +
@@ -38,13 +38,13 @@
                     'layer-type="WMS"' +
                     'is-base-layer="true"' +
                     '>' +
-                    '<ga-map-control map-control-name="OverviewMap" pre-options-loaded="testPreloadOptions(options)" control-options="overviewOptions"></ga-map-control>' +
-                    '<ga-map-control map-control-name="Permalink"></ga-map-control>' +
-                    '<ga-map-control map-control-name="ScaleLine"></ga-map-control>' +
-                    '<ga-map-control map-control-name="panzoombar"></ga-map-control>' +
-                    '<ga-map-control map-control-name="attribution"></ga-map-control>' +
-                    '<ga-map-control map-control-name></ga-map-control>' +
-                    '<div id="gamap"></div></ga-map>');
+                    '<geo-map-control map-control-name="OverviewMap" pre-options-loaded="testPreloadOptions(options)" control-options="overviewOptions"></geo-map-control>' +
+                    '<geo-map-control map-control-name="Permalink"></geo-map-control>' +
+                    '<geo-map-control map-control-name="ScaleLine"></geo-map-control>' +
+                    '<geo-map-control map-control-name="panzoombar"></geo-map-control>' +
+                    '<geo-map-control map-control-name="attribution"></geo-map-control>' +
+                    '<geo-map-control map-control-name></geo-map-control>' +
+                    '<div id="gamap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
 

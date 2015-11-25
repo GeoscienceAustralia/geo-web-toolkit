@@ -127,8 +127,8 @@ describe(
 				return config;
 			};
 			element = angular
-				.element('<ga-map-config ga-config-path="/resources/js/amsis" static-config="true" template-path="resources/partial/configmap.html" ' +
-					'</ga-map-config>');
+				.element('<geo-map-config ga-config-path="/resources/js/amsis" static-config="true" template-path="resources/partial/configmap.html" ' +
+					'</geo-map-config>');
 
 			$compile(element)($scope);
 
@@ -271,9 +271,9 @@ describe('gawebtoolkit config component tests - pre and post config hooks',
 				$scope.orderOfOps.push("post config fired");
 			};
 			element = angular
-				.element('<ga-map-config ga-config-path="/resources/js/amsis.json" template-path="resources/partial/configmap.html" ' +
+				.element('<geo-map-config ga-config-path="/resources/js/amsis.json" template-path="resources/partial/configmap.html" ' +
 					'pre-config="preConfigTest(config)" post-config="postConfigTest(config)">' +
-					'</ga-map-config>');
+					'</geo-map-config>');
 
 			$compile(element)($scope);
 

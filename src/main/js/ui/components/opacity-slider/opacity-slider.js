@@ -19,32 +19,32 @@
      * <file name="mapWithUISlider.html">
      * <div ng-controller="ourMapController">
      * <div class="opaictySlider">
-     * <ga-layer-opacity-slider
+     * <geo-layer-opacity-slider
      *  layer-id="{{layers[1].id}}"
      *  layer-opacity="layers[1].opacity"
-     *  map-controller="mapController"></ga-layer-opacity-slider>
+     *  map-controller="mapController"></geo-layer-opacity-slider>
      *  </div>
      * <div id="map"></div>
-     * <ga-map
+     * <geo-map
      *   map-element-id="map"
      *   datum-projection='EPSG:102100'
      *   display-projection='EPSG:4326'
      *   center-position='[130, -25]'
      *   zoom-level="4">
-     *   <ga-map-layer
+     *   <geo-map-layer
      *       layer-name="Overview World Screen"
      *       layer-type="GoogleStreet"
      *       is-base-layer="true">
-     *   </ga-map-layer>
-     *   <ga-map-layer
+     *   </geo-map-layer>
+     *   <geo-map-layer
      *       layer-name="Earthquake hazard contours"
      *       layer-type="WMS"
      *       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
      *       is-base-layer="false"
      *       layers="hazardContours"
      *       background-color="#ffffff">
-     *   </ga-map-layer>
-     * </ga-map>
+     *   </geo-map-layer>
+     * </geo-map>
      * </div>
      * </file>
      * <file name="mapWithUISlider.js">
@@ -71,7 +71,7 @@
      * </example>
      *
      */
-    app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
+    app.directive('geoLayerOpacitySlider', ['$timeout', function ($timeout) {
         //'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity"/>';
         return {
             restrict: "E",

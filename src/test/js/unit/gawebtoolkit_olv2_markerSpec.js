@@ -30,19 +30,19 @@
                 });
                 element = angular
                     .element(
-                    '<ga-map map-element-id="gamap" framework="olv2" zoom-level="4" center-position="[130, -25]">' +
-                    '<ga-osm-layer></ga-osm-layer>' +
-                    '<ga-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
-                    '<ga-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
-                    '<ga-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
-                    '<ga-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +                    '<ga-map-marker ng-repeat="marker in dynamicMarkers" ' +
+                    '<geo-map map-element-id="gamap" framework="olv2" zoom-level="4" center-position="[130, -25]">' +
+                    '<geo-osm-layer></geo-osm-layer>' +
+                    '<geo-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
+                    '<geo-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
+                    '<geo-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
+                    '<geo-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +                    '<geo-map-marker ng-repeat="marker in dynamicMarkers" ' +
                     'layer-name="{{marker.name}}" ' +
                     'marker-lat="{{marker.lat}}" ' +
                     'marker-long="{{marker.lon}}" ' +
                     'marker-icon="{{marker.url}}" ' +
                     'marker-height="{{marker.height}}" ' +
                     'marker-width="{{marker.width}}" />' +
-                    '</ga-map><div id="gamap"></div>');
+                    '</geo-map><div id="gamap"></div>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();

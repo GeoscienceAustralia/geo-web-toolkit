@@ -27,10 +27,10 @@
 
             it('Start drawing creates interaction for OpenLayers 3', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -46,10 +46,10 @@
 
             it('Should fail to start drawing due to specifying an invalid layer to draw on.', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -73,10 +73,10 @@
 
             it('Should start drawing when specifying a valid layer to draw on.', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-feature-layer layer-name="Simple map layer name">' +
-                    '</ga-feature-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-feature-layer layer-name="Simple map layer name">' +
+                    '</geo-feature-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -110,10 +110,10 @@
 
             it('Stop drawing removes interaction for OpenLayers 3', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -132,10 +132,10 @@
 
             it('Should create a new layer to draw label and return GeoJSON feature', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -159,10 +159,10 @@
 
             it('Should create a new layer to draw label with circle and return GeoJSON feature collection', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -188,10 +188,10 @@
 
             it('Should fire \'startRemoveSelectedFeature\' with invalid layer name and NOT create a vector layer with provided name', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -205,10 +205,10 @@
 
             it('Should fire \'stopRemoveSelectedFeature\' without a layer and do nothing.', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -223,11 +223,11 @@
 
             it('Should fire \'stopRemoveSelectedFeature\' and deactivate interaction', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '<ga-feature-layer layer-name="My layer" />' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '<geo-feature-layer layer-name="My layer" />' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -244,11 +244,11 @@
 
             it('Should fire \'stopRemoveSelectedFeature\' and deactivate interaction', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '<ga-feature-layer layer-name="My layer" />' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '<geo-feature-layer layer-name="My layer" />' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -265,11 +265,11 @@
 
             it('Should register an interaction when registering a control event for "measurepartial"', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '<ga-feature-layer layer-name="My layer" />' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '<geo-feature-layer layer-name="My layer" />' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -285,11 +285,11 @@
 
             it('Should register an interaction when registering a control event for "measure"', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '<ga-feature-layer layer-name="My layer" />' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '<geo-feature-layer layer-name="My layer" />' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
@@ -305,11 +305,11 @@
 
             it('Should remove any existing draw interactions and readd if events registered more than once for "measurepartial"/"measure".', function () {
                 var elementHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                    '</ga-map-layer>' +
-                    '<ga-feature-layer layer-name="My layer" />' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
+                    '<geo-feature-layer layer-name="My layer" />' +
+                    '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);

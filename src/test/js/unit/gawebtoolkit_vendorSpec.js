@@ -53,9 +53,9 @@
 
             it('Empty Google layer with OpenLayers v2 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-google-layer></ga-google-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-google-layer></geo-google-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
@@ -65,9 +65,9 @@
             });
             it('Empty Google layer with OpenLayers v3 should digest and fail due to no support for Google Maps in OpenLayers 3', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-google-layer></ga-google-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-google-layer></geo-google-layer>' +
+                    '</geo-map> ';
                 var passed = false;
                 try {
                     element = angular
@@ -83,9 +83,9 @@
             });
             it('Empty Bing layer, without provided API key and OpenLayers v2 should digest and fail with friendly error message.', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer></ga-bing-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-bing-layer></geo-bing-layer>' +
+                    '</geo-map> ';
                 var passed = false;
                 try {
                     element = angular
@@ -102,9 +102,9 @@
             });
             it('Empty Bing layer with OpenLayers v2 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></ga-bing-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></geo-bing-layer>' +
+                    '</geo-map> ';
                 var passed = true;
                 try {
                     element = angular
@@ -121,9 +121,9 @@
             });
             it('Empty Bing layer with OpenLayers v3 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></ga-bing-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT"></geo-bing-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
@@ -134,9 +134,9 @@
             });
             it('Open Street Maps layer with OpenLayers v2 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-osm-layer></ga-osm-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-osm-layer></geo-osm-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
@@ -146,9 +146,9 @@
             });
             it('Open Street Maps layer with OpenLayers v3 should digest and create the layer successfully', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-osm-layer></ga-osm-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-osm-layer></geo-osm-layer>' +
+                    '</geo-map> ';
                 element = angular
                     .element(emptyGooglelayer);
                 $compile(element)($scope);
@@ -159,9 +159,9 @@
 
             it('Open Street Maps layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-osm-layer visibility="{{vis}}"></ga-osm-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-osm-layer visibility="{{vis}}"></geo-osm-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 element = angular
                     .element(emptyGooglelayer);
@@ -176,9 +176,9 @@
 
             it('Google layer with OpenLayers v2 should digest and set layer visibility correctly.', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-google-layer visibility="{{vis}}"></ga-google-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-google-layer visibility="{{vis}}"></geo-google-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 element = angular
                     .element(emptyGooglelayer);
@@ -197,9 +197,9 @@
 
             it('Bing layer with OpenLayers v3 should digest and set layer visibility correctly.', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" visibility="{{vis}}"></ga-bing-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" visibility="{{vis}}"></geo-bing-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 element = angular
                     .element(emptyGooglelayer);
@@ -216,9 +216,9 @@
 
             it('Should reconstruct Open Street Maps layer if used with an ng-if', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-osm-layer ng-if="updateLayer" visibility="{{vis}}"></ga-osm-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-osm-layer ng-if="updateLayer" visibility="{{vis}}"></geo-osm-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 $scope.updateLayer = true;
                 element = angular
@@ -237,9 +237,9 @@
 
             it('Should observe layer-type for changes and reconstruct layer as required for Google vendor layer', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-google-layer layer-type="{{layerType}}" visibility="{{vis}}"></ga-google-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-google-layer layer-type="{{layerType}}" visibility="{{vis}}"></geo-google-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
                 element = angular
@@ -264,9 +264,9 @@
 
             it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 2', function () {
                 var emptyGooglelayer = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></geo-bing-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
                 element = angular
@@ -292,9 +292,9 @@
 
             it('Should observe layer-type for changes and reconstruct layer as required for Bing vendor layer with OpenLayers 3', function () {
                 var emptyBingLayerHtml = '<div id="map"></div>' +
-                    '<ga-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
-                    '<ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></ga-bing-layer>' +
-                    '</ga-map> ';
+                    '<geo-map map-element-id="map" framework="olv3" zoom-level="4" center-position="[130, -25]"> ' +
+                    '<geo-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" layer-type="{{layerType}}" visibility="{{vis}}"></geo-bing-layer>' +
+                    '</geo-map> ';
                 $scope.vis = false;
                 $scope.layerType = 'Hybrid';
                 element = angular

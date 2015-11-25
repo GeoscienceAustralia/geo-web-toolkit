@@ -17,15 +17,15 @@
      <example module="simpleMap">
      <file name="index.html">
      <div id="map"></div>
-     <ga-map map-element-id="map">
-     <ga-google-layer></ga-google-layer>
-     </ga-map>
+     <geo-map map-element-id="map">
+     <geo-google-layer></geo-google-layer>
+     </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
      <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
      </example>
      */
-    app.directive('gaGoogleLayer', ['$timeout', '$compile', 'GALayerService', '$log',
+    app.directive('geoGoogleLayer', ['$timeout', '$compile', 'GALayerService', '$log',
         function ($timeout, $compile, GALayerService, $log) {
             var validGoogleLayerTypes = ['street','hybrid','satellite','terrain'];
             var validateGoogleLayerType = function (layerType) {
@@ -39,7 +39,7 @@
             };
             return {
                 restrict: "E",
-                require: "^gaMap",
+                require: "^geoMap",
                 scope: {
                     layerType: '@',
                     visibility: '@',

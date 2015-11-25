@@ -33,38 +33,38 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
         </style>
         <h3>OpenLayers v2 with geo-web-toolkit<h3>
         <div id="mapv2"></div>
-        <ga-map map-element-id="mapv2" center-position='[130, -25]' zoom-level="4"
+        <geo-map map-element-id="mapv2" center-position='[130, -25]' zoom-level="4"
                 framework="olv2">
-            <ga-osm-layer></ga-osm-layer>
-            <ga-map-layer
+            <geo-osm-layer></geo-osm-layer>
+            <geo-map-layer
                             layer-name="Australian Topography 2014"
                             layer-type="ArcGISCache"
                             layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
                             is-base-layer="false"
                             visibility="true">
-            </ga-map-layer>
-            <ga-map-control map-control-name="mouseposition"></ga-map-control>
-            <ga-map-control map-control-name="panzoombar"></ga-map-control>
-            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-        </ga-map>
+            </geo-map-layer>
+            <geo-map-control map-control-name="mouseposition"></geo-map-control>
+            <geo-map-control map-control-name="panzoombar"></geo-map-control>
+            <geo-map-control map-control-name="OverviewMap"></geo-map-control>
+            <geo-map-control map-control-name="ScaleLine"></geo-map-control>
+        </geo-map>
         <h3>OpenLayers v3.5.0 with geo-web-toolkit<h3>
         <div id="mapv3"></div>
-        <ga-map map-element-id="mapv3" center-position='[130, -25]' zoom-level="4"
+        <geo-map map-element-id="mapv3" center-position='[130, -25]' zoom-level="4"
                 framework="olv3">
-            <ga-osm-layer></ga-osm-layer>
-            <ga-map-layer
+            <geo-osm-layer></geo-osm-layer>
+            <geo-map-layer
                              layer-name="Australian Topography 2014"
                              layer-type="ArcGISCache"
                              layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
                              is-base-layer="false"
                              visibility="true">
-            </ga-map-layer>
-            <ga-map-control map-control-name="mouseposition"></ga-map-control>
-            <ga-map-control map-control-name="panzoombar"></ga-map-control>
-            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-        </ga-map>
+            </geo-map-layer>
+            <geo-map-control map-control-name="mouseposition"></geo-map-control>
+            <geo-map-control map-control-name="panzoombar"></geo-map-control>
+            <geo-map-control map-control-name="OverviewMap"></geo-map-control>
+            <geo-map-control map-control-name="ScaleLine"></geo-map-control>
+        </geo-map>
 </file>
 <file name="style.css">
  #mapv2 {width: 650px;height:600px;}
@@ -73,7 +73,7 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
-app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService','GADataService', '$q','$log',
+app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService','GADataService', '$q','$log',
 	function ($timeout, $compile, GAMapService, GALayerService,GADataService, $q, $log) {
     'use strict';
     return {
@@ -220,11 +220,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="zoomToMax">
              * <a class="btn btn-primary" ng-click="mapController.zoomToMaxExtent()">Zoom to Max</a>
              * <div id="zoomToMax"></div>
-             * <ga-map map-element-id="zoomToMax" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer></ga-osm-layer>
-             * <ga-map-control map-control-name="mouseposition"></ga-map-control>
-             * </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="zoomToMax" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer></geo-osm-layer>
+             * <geo-map-control map-control-name="mouseposition"></geo-map-control>
+             * </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="zoomToMaxJS.js">
@@ -257,11 +257,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="currentZoomLevel">
              * <a class="btn btn-primary" ng-click="currentZoomLevel = mapController.currentZoomLevel()">Get the current zoom level : <span ng-model="currentZoomLevel" class="bg-primary">{{currentZoomLevel}}</span></a>
              * <div id="currentZoomLevel"></div>
-             * <ga-map map-element-id="currentZoomLevel" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer></ga-osm-layer>
-             * <ga-map-control map-control-name="mouseposition"></ga-map-control>
-             * </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="currentZoomLevel" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer></geo-osm-layer>
+             * <geo-map-control map-control-name="mouseposition"></geo-map-control>
+             * </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="currentZoomLevel.js">
@@ -299,20 +299,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                 </div>
 
                 <div id="mapMouseMove"></div>
-                <ga-map
+                <geo-map
                     map-element-id="mapMouseMove"
                     center-position='[130, -25]'
                 zoom-level="4">
-                <ga-osm-layer></ga-osm-layer>
-                <ga-map-layer
+                <geo-osm-layer></geo-osm-layer>
+                <geo-map-layer
                     layer-name="Topographic" 
                     layer-type="WMS"
                     layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                     is-base-layer="false"
                     layers="hazardContours"
                     background-color="#ffffff">
-                </ga-map-layer>
-            </ga-map>
+                </geo-map-layer>
+            </geo-map>
             </div>
              * </div>
              * </file>
@@ -375,20 +375,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     </div>
 
                     <div id="mapMouseMoveEnd"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="mapMouseMoveEnd"
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-osm-layer></ga-osm-layer>
-                        <ga-map-layer
+                        <geo-osm-layer></geo-osm-layer>
+                        <geo-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
                             layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                             is-base-layer="false"
                             layers="hazardContours"
                             background-color="#ffffff">
-                        </ga-map-layer>
-                    </ga-map>
+                        </geo-map-layer>
+                    </geo-map>
                 </div>
 
              * </file>
@@ -460,20 +460,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     </div>
             
                     <div id="mouseMapClick"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="mouseMapClick"
                         center-position='[130, -25]'
                         zoom-level="4">
-                    <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                    <ga-map-layer
+                    <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                    <geo-map-layer
                         layer-name="Topographic" 
                         layer-type="WMS"
                         layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                         is-base-layer="false"
                         layers="hazardContours"
                         background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
+                    </geo-map-layer>
+                </geo-map>
              * </div>
              * </file>
              * <file name="mouseMapClick.js">
@@ -541,20 +541,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                             {{mouseClickStatus + " | " + mouseClickMsg}}</span>
                     </div>
                     <div id="unRegisterMouseMapClick"></div>
-                <ga-map
+                <geo-map
                     map-element-id="unRegisterMouseMapClick"
                     center-position='[130, -25]'
                     zoom-level="4">
-                    <ga-osm-layer></ga-osm-layer>
-                    <ga-map-layer
+                    <geo-osm-layer></geo-osm-layer>
+                    <geo-map-layer
                         layer-name="Topographic" 
                         layer-type="WMS"
                         layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                         is-base-layer="false"
                         layers="hazardContours"
                         background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
+                    </geo-map-layer>
+                </geo-map>
             </div>
              * </file>
              * <file name="unRegisterMouseMapClick.js">
@@ -631,11 +631,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="addOurControl">
              *      <a class="btn btn-primary" ng-click="addOurControl()">Add Control</a>
              *      <div id="addOurControl"></div>
-             *      <ga-map map-element-id="addOurControl"
+             *      <geo-map map-element-id="addOurControl"
              *              center-position='[130, -25]'
              *              zoom-level="4">
-             *          <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             *      </ga-map>
+             *          <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             *      </geo-map>
              * </div>
              * </file>
              * <file name="addOurControl.js">
@@ -679,19 +679,19 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              *           {{mouseClickStatus + " | " + mouseClickMsg}}</span>
              *   </div>
              *   <div id="getLonLat"></div>
-             *   <ga-map
+             *   <geo-map
              *       map-element-id="getLonLat"
              *       center-position='[130, -25]'
              *       zoom-level="4">
-             *       <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             *       <ga-map-layer
+             *       <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             *       <geo-map-layer
              *           layer-name="Topographic"
              *           layer-type="WMS"
              *           layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
              *           is-base-layer="false"
              *           layers="hazardContours">
-             *       </ga-map-layer>
-             *   </ga-map>
+             *       </geo-map-layer>
+             *   </geo-map>
              * </div>
              * </file>
              * <file name="getLonLat.js">
@@ -786,10 +786,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="dumpLayers">
              *      <a class="btn btn-primary" ng-click="dumpLayers()">Dump layers object to console</a>
              *      <div id="dumpLayers"></div>
-             *      <ga-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
-             *              <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             *      </ga-map-layer>
-             *      </ga-map>
+             *      <geo-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
+             *              <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             *      </geo-map-layer>
+             *      </geo-map>
              * </div>
              * </file>
              * <file name="dumpLayers.js">
@@ -828,10 +828,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="dumpLayersByName">
              * <a class="btn btn-primary" ng-click="dumpLayersByName()">Dump base layer's details object to console</a>
              * <div id="dumpLayersByName"></div>
-             * <ga-map map-element-id="dumpLayersByName" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             * </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="dumpLayersByName" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             * </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="dumpLayersByName.js">
@@ -868,10 +868,10 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="zoomToLayer">
              * <a class="btn btn-primary" ng-click="zoomToLayer()">Zoom to base layer extent</a>
              * <div id="zoomToLayer"></div>
-             * <ga-map map-element-id="zoomToLayer" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             * </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="zoomToLayer" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             * </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="zoomToLayer.js">
@@ -909,20 +909,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                         <a class="btn btn-primary" ng-click="projection = mapController.getProjection()">Get Projection: {{projection}}</a>
                     </div>
                     <div id="getMapProjection"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="getMapProjection"
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                        <ga-map-layer
+                        <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                        <geo-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
                             layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                             is-base-layer="false"
                             layers="hazardContours"
                             background-color="#ffffff">
-                        </ga-map-layer>
-                    </ga-map>
+                        </geo-map-layer>
+                    </geo-map>
                 </div>
              * </file>
              * <file name="getProjection.js">
@@ -972,20 +972,20 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                         <a class="btn btn-primary" ng-click="projection = mapController.getDisplayProjection()">Get Display Projection: {{projection}}</a>
                     </div>
                     <div id="getDisplayProjection"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="getDisplayProjection"
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                        <ga-map-layer
+                        <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                        <geo-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
                             layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                             is-base-layer="false"
                             layers="hazardContours"
                             background-color="#ffffff">
-                        </ga-map-layer>
-                    </ga-map>
+                        </geo-map-layer>
+                    </geo-map>
                 </div>
              * </file>
              * <file name="getDisplayProjection.js">
@@ -1038,11 +1038,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="setVisibility">
              * <input type="checkbox" ng-model="layerVisibility" ng-change="setVisibility()" /> Toggle base layer visibility on/off
              * <div id="setVisibility"></div>
-             * <ga-map map-element-id="setVisibility" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             * <ga-map-control map-control-name="mouseposition"></ga-map-control>
-             * </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="setVisibility" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             * <geo-map-control map-control-name="mouseposition"></geo-map-control>
+             * </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="setVisibility.js">
@@ -1110,9 +1110,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="setZoomLevel">
              * <input placeholder="0-19" type="number" ng-model="zoomLevel" style="width: 50px" /><a class="btn btn-primary" ng-click="setZoomLevel()">  Set zoom level to {{zoomLevel}}</a>
              * <div id="setZoomLevel"></div>
-             * <ga-map map-element-id="setZoomLevel" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             * </ga-map>
+             * <geo-map map-element-id="setZoomLevel" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="setZoomLevel.js">
@@ -1153,37 +1153,37 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
                     ng-change="mapController.setBaseLayer(selectedBaseLayer)"
                     ng-options="baseLayer.id as baseLayer.name for baseLayer in baseLayers"></select>
                 <div id="setBaseLayer"></div>
-                <ga-map
+                <geo-map
                     map-element-id="setBaseLayer"
                     center-position='[130, -25]'
                     zoom-level="4">
-                    <ga-map-layer
+                    <geo-map-layer
                         layer-name="World Image"
                         layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
                         wrap-date-line="true"
                         layer-type="XYZTileCache"
                         is-base-layer="true"
                         visibility="false">
-                    </ga-map-layer>
-                    <ga-map-layer
+                    </geo-map-layer>
+                    <geo-map-layer
                         layer-name="World Political Boundaries" 
                         layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer" 
                         wrap-date-line="true" 
                         layer-type="XYZTileCache"
                         is-base-layer="true"
                         visibility="false">
-                    </ga-map-layer>
-                    <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                    </ga-map-layer>
-                    <ga-map-layer
+                    </geo-map-layer>
+                    <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                    </geo-map-layer>
+                    <geo-map-layer
                         layer-name="Earthquake hazard contours" 
                         layer-type="WMS"
                         layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                         is-base-layer="false"
                         layers="hazardContours"
                         background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
+                    </geo-map-layer>
+                </geo-map>
                </div>
              * </file>
              * <file name="setBaseLayer.js">
@@ -1230,9 +1230,9 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="setCenterPosition">
              * <a class="btn btn-primary" ng-click="setCenterPosition()">Move to Australia</a>
              * <div id="setCenterPosition"></div>
-             * <ga-map map-element-id="setCenterPosition" zoom-level="4" display-projection="EPSG:4326" datum-project="EPSG:3857" framework="olv3">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             * </ga-map>
+             * <geo-map map-element-id="setCenterPosition" zoom-level="4" display-projection="EPSG:4326" datum-project="EPSG:3857" framework="olv3">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="setCenterPosition.js">
@@ -1320,11 +1320,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <a class="btn btn-primary" ng-click="chklayer1 = checklayer(0)">  Check base layer : {{chklayer1}}</a>
              * <a class="btn btn-primary" ng-click="chklayer2 = checklayer(1)">  Check base layer : {{chklayer2}}</a>
              * <div id="checkBaseLayer"></div>
-             * <ga-map map-element-id="checkBaseLayer" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             *<ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
-        </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="checkBaseLayer" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             *<geo-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
+        </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="checkBaseLayer.js">
@@ -1375,11 +1375,11 @@ app.directive('gaMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService
              * <div ng-controller="setOpacityController">
              * <input placeholder="0-1" type="number" ng-model="opacityLevel" style="width: 50px; height: auto;" /><a class="btn btn-primary" ng-click="setOpacityLevel()">  Set top layer's opacity to {{opacityLevel}}</a>
              * <div id="setOpacity"></div>
-             * <ga-map map-element-id="setOpacity" center-position='[130, -25]' zoom-level="4">
-             * <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-             *<ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
-        </ga-map-layer>
-             * </ga-map>
+             * <geo-map map-element-id="setOpacity" center-position='[130, -25]' zoom-level="4">
+             * <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+             *<geo-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
+        </geo-map-layer>
+             * </geo-map>
              * </div>
              * </file>
              * <file name="setOpacityLevel.js">

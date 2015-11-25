@@ -19,7 +19,7 @@
      * @restrict E
      * @example
      */
-    app.directive('gaLayersDropDown', [ function () {
+    app.directive('geoLayersDropDown', [ function () {
 
         return {
             restrict: "E",

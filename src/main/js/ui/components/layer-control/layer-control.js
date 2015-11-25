@@ -27,31 +27,31 @@
      * <example module="mapWithUIController">
      * <file name="mapWithUIController.html">
      * <div ng-controller="ourMapController">
-     * <ga-layer-control
+     * <geo-layer-control
      *  layer-data="layers[1]"
      *  map-controller="mapController"
-     *  class="alert alert-info"></ga-layer-control>
+     *  class="alert alert-info"></geo-layer-control>
      * <div id="map"></div>
-     * <ga-map
+     * <geo-map
      *   map-element-id="map"
      *   datum-projection='EPSG:102100'
      *   display-projection='EPSG:4326'
      *   center-position='[130, -25]'
      *   zoom-level="4">
-     *   <ga-map-layer
+     *   <geo-map-layer
      *       layer-name="Overview World Screen"
      *       layer-type="GoogleStreet"
      *       is-base-layer="true">
-     *   </ga-map-layer>
-     *   <ga-map-layer
+     *   </geo-map-layer>
+     *   <geo-map-layer
      *       layer-name="Earthquake hazard contours"
      *       layer-type="WMS"
      *       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
      *       is-base-layer="false"
      *       layers="hazardContours"
      *       background-color="#ffffff">
-     *   </ga-map-layer>
-     * </ga-map>
+     *   </geo-map-layer>
+     * </geo-map>
      * </div>
      * </file>
      * <file name="mapWithUIController.js">
@@ -85,7 +85,7 @@
      * </example>
      *
      */
-    app.directive('gaLayerControl', ['GAWTUtils',
+    app.directive('geoLayerControl', ['GAWTUtils',
         function (GAWTUtils) {
             return {
                 restrict: "E",

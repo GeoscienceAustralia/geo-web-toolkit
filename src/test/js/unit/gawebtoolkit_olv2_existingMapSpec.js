@@ -26,9 +26,9 @@
                 });
 
                 var elementHtml =
-                    '<ga-map ng-if="existingInstance" framework="olv2" existing-map-instance="existingInstance"> ' +
-                    '</ga-map>' +
-                    '<ga-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />' +
+                    '<geo-map ng-if="existingInstance" framework="olv2" existing-map-instance="existingInstance"> ' +
+                    '</geo-map>' +
+                    '<geo-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />' +
                     '<div id="map"></div>';
 
 

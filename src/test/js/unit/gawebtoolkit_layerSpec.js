@@ -39,7 +39,7 @@ describe(
                $scope.layerController = args;
             });
             element = angular
-                  .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"'
+                  .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<geo-map-layer layer-name="Australian Landsat Mosaic"'
                         + 'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"'
                         + 'wrap-date-line="true"'
                         + 'zoom-to-max="true"'
@@ -48,7 +48,7 @@ describe(
                         + 'is-base-layer="true"'
                         + 'controller-emit-event-name="customControllerEmitEventName"'
                         + '>'
-                        + '<div id="gamap"></div></ga-map>');
+                        + '<div id="gamap"></div></geo-map>');
             $compile(element)($scope);
             $scope.$digest();
 

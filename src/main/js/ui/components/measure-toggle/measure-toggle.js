@@ -6,7 +6,7 @@
     /**
      *
      * */
-    app.directive('gaMeasureToggle', [function () {
+    app.directive('geoMeasureToggle', [function () {
 
         return {
             restrict: "EA",

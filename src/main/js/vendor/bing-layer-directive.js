@@ -20,15 +20,15 @@
      <example module="simpleMap">
      <file name="index.html">
      <div id="map"></div>
-     <ga-map map-element-id="map">
-     <ga-bing-layer></ga-bing-layer>
-     </ga-map>
+     <geo-map map-element-id="map">
+     <geo-bing-layer></geo-bing-layer>
+     </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
      <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
      </example>
      */
-    app.directive('gaBingLayer', ['$timeout', '$compile', 'GALayerService', '$log',
+    app.directive('geoBingLayer', ['$timeout', '$compile', 'GALayerService', '$log',
         function ($timeout, $compile, GALayerService, $log) {
             var validBingLayerTypes = ['road','aerial','aerialwithlabels','birdseye','birdseyewithlabels'];
             var validateBingLayerType = function (layerType) {
@@ -42,7 +42,7 @@
             };
             return {
                 restrict: "E",
-                require: "^gaMap",
+                require: "^geoMap",
                 scope: {
                     layerType: '@',
                     visibility: '@',

@@ -5,7 +5,7 @@
 
     /**
      * */
-    app.directive('gaDialogToggle', [ function () {
+    app.directive('geoDialogToggle', [ function () {
         return {
             restrict: "E",
             templateUrl:'src/main/js/ui/components/deprecated/dialog-toggle.html',
@@ -33,7 +33,7 @@
     /**
      *
      * */
-    app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GAWTUtils) {
+    app.directive('geoStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GAWTUtils) {
         return {
             restrict: "AE",
             templateUrl: 'src/main/js/ui/components/deprecated/static-dialog.html',
@@ -113,7 +113,7 @@
      *
      *   filterFn ? This directive could be expanded to customise the way the layers are filtered
      * */
-    app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
+    app.directive('geoLayersDialog', ['GAWTUtils', function (GAWTUtils) {
         return {
             restrict: "E",
             templateUrl: 'src/main/js/ui/components/deprecated/layers-dialog.html',
@@ -186,7 +186,7 @@
      * @restrict E
      * @example
      */
-    app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
+    app.directive('geoSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
         //Using 'result.id' as the result features coming back should have a server id.
         //Specific property names are dynamic and cannot be relied on.
         return {

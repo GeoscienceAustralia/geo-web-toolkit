@@ -99,15 +99,15 @@
                     ]
                 };
                 element = angular
-                    .element('<ga-map framework="olv3" map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                    '<ga-map-layer ng-repeat="baseLayer in mapConfig.baseMaps" layer-name="{{baseLayer.name}}"' +
+                    .element('<geo-map framework="olv3" map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    '<geo-map-layer ng-repeat="baseLayer in mapConfig.baseMaps" layer-name="{{baseLayer.name}}"' +
                     'layer-url="{{baseLayer.url}}"' +
                     'is-base-layer="true"' +
                     'wrap-date-line="{{baseLayer.wrapDateLine}}"' +
                     'layer-type="{{baseLayer.mapType}}"' +
                     'layer-attribution="{{baseLayer.attribution}}"' +
-                    '></ga-map-layer>' +
-                    '<ga-map-layer ng-repeat="layer in mapConfig.layerMaps" ' +
+                    '></geo-map-layer>' +
+                    '<geo-map-layer ng-repeat="layer in mapConfig.layerMaps" ' +
                     'layer-name="{{layer.name}}"' +
                     'layer-url="{{layer.url}}"' +
                     'wrap-date-line="{{layer.wrapDateLine}}"' +
@@ -115,8 +115,8 @@
                     'controller-emit-event-name="{{layer.controllerEventName}}"' +
                     'visibility="{{layer.visibility}}" ' +
                     'opacity="{{layer.opacity}}" ' +
-                    'refresh-layer="{{layer.refresh}}"></ga-map-layer>' +
-                    '<div id="gamap"></div></ga-map>');
+                    'refresh-layer="{{layer.refresh}}"></geo-map-layer>' +
+                    '<div id="gamap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -309,17 +309,17 @@
                 };
 
                 element = angular
-                    .element('<ga-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                    '<ga-map-layer layer-name="Australian Landsat Mosaic - Base layer"' +
+                    .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    '<geo-map-layer layer-name="Australian Landsat Mosaic - Base layer"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
                     'layer-type="WMS"' +
                     'is-base-layer="true"' +
-                    '></ga-map-layer>' +
-                    '<ga-feature-layer layer-name="Australian Landsat Mosaic - feature Layer">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '</ga-map><div id="gamap"></div>');
+                    '></geo-map-layer>' +
+                    '<geo-feature-layer layer-name="Australian Landsat Mosaic - feature Layer">' +
+                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                    '</geo-feature-layer>' +
+                    '</geo-map><div id="gamap"></div>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();

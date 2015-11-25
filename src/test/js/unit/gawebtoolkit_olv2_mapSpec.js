@@ -55,22 +55,22 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-                var ele = '<ga-map map-element-id="gamap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
+                var ele = '<geo-map map-element-id="gamap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
                     'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
-                    '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
+                    '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
                     'layer-type="WMS"' +
                     'is-base-layer="true"' +
-                    '></ga-map-layer>' +
-                    '<ga-feature-layer layer-name="feature layer1">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-feature-layer layer-name="feature layer2">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></ga-map-control>' +
-                    '</ga-map>' +
+                    '></geo-map-layer>' +
+                    '<geo-feature-layer layer-name="feature layer1">' +
+                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                    '</geo-feature-layer>' +
+                    '<geo-feature-layer layer-name="feature layer2">' +
+                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                    '</geo-feature-layer>' +
+                    '<geo-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></geo-map-control>' +
+                    '</geo-map>' +
                     '<div id="gamap"></div>';
                 element = angular
                     .element(ele);
