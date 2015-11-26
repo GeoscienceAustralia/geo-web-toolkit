@@ -73,8 +73,8 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
-app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerService', 'GeoDataService', '$q','$log',
-	function ($timeout, $compile, GAMapService, GeoLayerService, GeoDataService, $q, $log) {
+app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerService', 'GeoDataService', '$q','$log',
+	function ($timeout, $compile, GeoMapService, GeoLayerService, GeoDataService, $q, $log) {
     'use strict';
     return {
         restrict: "E",
@@ -130,7 +130,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
                                 //Lower layer throws error with data
                                 $log.info("failed to load layer");
                             } else {
-                                var layerDto = GAMapService.addLayer($scope.mapInstance, resultLayer, $scope.framework);
+                                var layerDto = GeoMapService.addLayer($scope.mapInstance, resultLayer, $scope.framework);
                                 deferredLayer.resolve(layerDto);
                                 //Layers added late in the cycle take care of updating order of layers.
                                 $scope.$emit('layerAdded', layerDto);
@@ -143,7 +143,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
 				}else {
 					if ($scope.layersReady) {
 						//$log.info(layer);
-						var layerDto = GAMapService.addLayer($scope.mapInstance, layer, $scope.framework);
+						var layerDto = GeoMapService.addLayer($scope.mapInstance, layer, $scope.framework);
                         deferredLayer.resolve(layerDto);
 						$scope.$emit('layerAdded', layerDto);
 					} else {
@@ -241,7 +241,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.zoomToMaxExtent = function () {
-                GAMapService.zoomToMaxExtent($scope.mapInstance, $scope.framework);
+                GeoMapService.zoomToMaxExtent($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -278,7 +278,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.currentZoomLevel = function () {
-                return GAMapService.currentZoomLevel($scope.mapInstance, $scope.framework);
+                return GeoMapService.currentZoomLevel($scope.mapInstance, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -355,7 +355,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.registerMapMouseMove = function (callback) {
-                GAMapService.registerMapMouseMove($scope.mapInstance, callback, $scope.framework);
+                GeoMapService.registerMapMouseMove($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -439,7 +439,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.registerMapMouseMoveEnd = function (callback) {
-                GAMapService.registerMapMouseMoveEnd($scope.mapInstance, callback, $scope.framework);
+                GeoMapService.registerMapMouseMoveEnd($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -522,7 +522,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.registerMapClick = function (callback) {
-                GAMapService.registerMapClick($scope.mapInstance, callback, $scope.framework);
+                GeoMapService.registerMapClick($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -613,7 +613,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.unRegisterMapClick = function (callback) {
-                GAMapService.unRegisterMapClick($scope.mapInstance, callback, $scope.framework);
+                GeoMapService.unRegisterMapClick($scope.mapInstance, callback, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -655,7 +655,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.addControl = function (controlName, controlOptions, elementId, controlId) {
-                return GAMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId, self.getMapOptions(), $scope.framework);
+                return GeoMapService.addControl($scope.mapInstance, controlName, controlOptions, elementId, controlId, self.getMapOptions(), $scope.framework);
             };
             /**
              * @ngdoc method
@@ -740,7 +740,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.getLonLatFromPixel = function (x, y, projection) {
-                return GAMapService.getLonLatFromPixel($scope.mapInstance, x, y, projection, $scope.framework);
+                return GeoMapService.getLonLatFromPixel($scope.mapInstance, x, y, projection, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -755,7 +755,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * // eg, point equals x: 25, y: 63</pre></code>
              * */
             self.getPixelFromLonLat = function (lon, lat) {
-                return GAMapService.getPixelFromLonLat($scope.mapInstance, lon, lat, $scope.framework);
+                return GeoMapService.getPixelFromLonLat($scope.mapInstance, lon, lat, $scope.framework);
             };
 
             /**
@@ -769,7 +769,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Point} - A point object extracted from the event.
              * */
             self.getPointFromEvent = function (event) {
-                return GAMapService.getPointFromEvent(event, $scope.framework);
+                return GeoMapService.getPointFromEvent(event, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -809,7 +809,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.getLayers = function () {
-                return GAMapService.getLayers($scope.mapInstance, $scope.framework);
+                return GeoMapService.getLayers($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -851,7 +851,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.getLayersByName = function (layerName) {
-                return GAMapService.getLayersByName($scope.mapInstance, layerName, $scope.framework);
+                return GeoMapService.getLayersByName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -892,7 +892,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.zoomToLayer = function (layerId) {
-                GAMapService.zoomToLayer($scope.mapInstance, layerId, $scope.framework);
+                GeoMapService.zoomToLayer($scope.mapInstance, layerId, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -954,7 +954,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.getProjection = function () {
-                return GAMapService.getProjection($scope.mapInstance,self.getFrameworkVersion());
+                return GeoMapService.getProjection($scope.mapInstance,self.getFrameworkVersion());
             };
             /**
              *
@@ -1017,11 +1017,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.getDisplayProjection = function () {
-                return GAMapService.getDisplayProjection($scope.mapInstance, self.getFrameworkVersion());
+                return GeoMapService.getDisplayProjection($scope.mapInstance, self.getFrameworkVersion());
             };
 
             self.getSize = function () {
-                return GAMapService.getSize($scope.mapInstance, self.getFrameworkVersion());
+                return GeoMapService.getSize($scope.mapInstance, self.getFrameworkVersion());
             };
 
             /**
@@ -1065,7 +1065,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.setLayerVisibility = function (layerId, visibility) {
-                GAMapService.setLayerVisibility($scope.mapInstance, layerId, visibility, $scope.framework);
+                GeoMapService.setLayerVisibility($scope.mapInstance, layerId, visibility, $scope.framework);
             };
 
             /**
@@ -1075,7 +1075,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Object}
              * */
             self.createBoundingBox = function (lonLatArray) {
-                return GAMapService.createBoundingBox($scope.mapInstance, lonLatArray, $scope.framework);
+                return GeoMapService.createBoundingBox($scope.mapInstance, lonLatArray, $scope.framework);
             };
             /**
              * Creates a bounding object and returns an implementation specific object
@@ -1086,7 +1086,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Object}
              * */
             self.createBounds = function (geoJsonCoordinates, projection) {
-                return GAMapService.createBounds($scope.mapInstance, geoJsonCoordinates, projection, $scope.framework);
+                return GeoMapService.createBounds($scope.mapInstance, geoJsonCoordinates, projection, $scope.framework);
             };
             /**
              * Zooms map to bounds around provided LonLat array
@@ -1094,7 +1094,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @param lonLatArray {LonLat[]} - array of LonLat to build a bounds to zoom too.
              * */
             self.zoomToExtent = function (lonLatArray) {
-                GAMapService.zoomToExtent($scope.mapInstance, lonLatArray, $scope.framework);
+                GeoMapService.zoomToExtent($scope.mapInstance, lonLatArray, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1134,7 +1134,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.zoomTo = function (zoomLevel) {
-                GAMapService.zoomTo($scope.mapInstance, zoomLevel, $scope.framework);
+                GeoMapService.zoomTo($scope.mapInstance, zoomLevel, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1213,7 +1213,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.setBaseLayer = function (layerId) {
-                GAMapService.setBaseLayer($scope.mapInstance, layerId, $scope.framework);
+                GeoMapService.setBaseLayer($scope.mapInstance, layerId, $scope.framework);
             };
             /**
              * @ngdoc method
@@ -1255,7 +1255,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.setCenter = function (lat, lon, projection) {
-                GAMapService.setCenter($scope.mapInstance, lat, lon, projection, $scope.framework);
+                GeoMapService.setCenter($scope.mapInstance, lat, lon, projection, $scope.framework);
             };
 
             self.getInitialExtent = function () {
@@ -1272,7 +1272,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
                     initialExtent: $scope.initialExtent
                 };
 
-                GAMapService.setInitialPositionAndZoom($scope.mapInstance, args, $scope.framework);
+                GeoMapService.setInitialPositionAndZoom($scope.mapInstance, args, $scope.framework);
             };
 
             self.setInitialPositionAndZoom = function () {
@@ -1292,7 +1292,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
                     };
                 }
                 if (!$scope.initialPositionSet) {
-                    GAMapService.setInitialPositionAndZoom($scope.mapInstance, args, $scope.framework);
+                    GeoMapService.setInitialPositionAndZoom($scope.mapInstance, args, $scope.framework);
                 }
 
                 $scope.initialPositionSet = true;
@@ -1348,7 +1348,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>
              * */
             self.isBaseLayer = function (layerId) {
-                return GAMapService.isBaseLayer($scope.mapInstance, layerId, $scope.framework);
+                return GeoMapService.isBaseLayer($scope.mapInstance, layerId, $scope.framework);
             };
 
             /**
@@ -1404,7 +1404,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * </example>             
              * */
             self.setOpacity = function (layerId, opacity) {
-                GAMapService.setOpacity($scope.mapInstance, layerId, opacity, $scope.framework);
+                GeoMapService.setOpacity($scope.mapInstance, layerId, opacity, $scope.framework);
             };
             /**
              * Returns the map element Id that was originally passed to gaMap
@@ -1412,7 +1412,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {string}
              * */
             self.getMapElementId = function () {
-                return GAMapService.getMapElementId($scope.mapInstance,$scope.framework);
+                return GeoMapService.getMapElementId($scope.mapInstance,$scope.framework);
             };
             /**
              * @ngdoc method
@@ -1429,11 +1429,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @returns {Object} Marker ID and group name.
              * */
             self.setMapMarker = function (point, markerGroupName, iconUrl, args) {
-                return GAMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
+                return GeoMapService.setMapMarker($scope.mapInstance, point, markerGroupName, iconUrl, args, $scope.framework);
             };
 
             self.removeMapMarker = function(markerId) {
-                GAMapService.removeMapMarker($scope.mapInstance, markerId, $scope.framework);
+                GeoMapService.removeMapMarker($scope.mapInstance, markerId, $scope.framework);
             };
 
             /**
@@ -1485,39 +1485,39 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @param points {LonLat[]} - Array of LonLat to draw.
              * */
             self.drawPolyLine = function (points, layerName) {
-                GAMapService.drawPolyLine($scope.mapInstance, points, layerName, $scope.framework);
+                GeoMapService.drawPolyLine($scope.mapInstance, points, layerName, $scope.framework);
             };
             
             self.startRemoveSelectedFeature = function (layerName) {
-                return GAMapService.startRemoveSelectedFeature($scope.mapInstance, layerName, $scope.framework);
+                return GeoMapService.startRemoveSelectedFeature($scope.mapInstance, layerName, $scope.framework);
             };
 
             self.stopRemoveSelectedFeature = function () {
-                return GAMapService.stopRemoveSelectedFeature($scope.mapInstance, $scope.framework);
+                return GeoMapService.stopRemoveSelectedFeature($scope.mapInstance, $scope.framework);
             };
             
             self.removeFeature = function (layerName, feature) {
-                return GAMapService.removeFeature($scope.mapInstance, layerName, feature, $scope.framework);
+                return GeoMapService.removeFeature($scope.mapInstance, layerName, feature, $scope.framework);
             };
 
             self.startDrawingOnLayer = function (layerName, args) {
-                return GAMapService.startDrawingOnLayer($scope.mapInstance,layerName, args,$scope.framework);
+                return GeoMapService.startDrawingOnLayer($scope.mapInstance,layerName, args,$scope.framework);
             };
 
             self.stopDrawing = function () {
-                return GAMapService.stopDrawing($scope.mapInstance,$scope.framework);
+                return GeoMapService.stopDrawing($scope.mapInstance,$scope.framework);
             };
             
             self.drawLabel = function (layerName, args) {
-                return GAMapService.drawLabel($scope.mapInstance, layerName, args, $scope.framework);
+                return GeoMapService.drawLabel($scope.mapInstance, layerName, args, $scope.framework);
             };   
             
             self.drawLabelWithPoint = function (layerName, args) {
-                return GAMapService.drawLabelWithPoint($scope.mapInstance, layerName, args, $scope.framework);
+                return GeoMapService.drawLabelWithPoint($scope.mapInstance, layerName, args, $scope.framework);
             };           
 
             self.isControlActive = function (controlId, controlName) {
-                return GAMapService.isControlActive($scope.mapInstance, controlId,controlName, $scope.framework);
+                return GeoMapService.isControlActive($scope.mapInstance, controlId,controlName, $scope.framework);
             };
 
             self.getLayersByWMSCapabilities = function(url) {
@@ -1540,11 +1540,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
             };
 
 			self.getFeatureInfo = function (url,featureType, featurePrefix, geometryName, point, tolerance) {
-				return GAMapService.getFeatureInfo($scope.mapInstance, url,featureType, featurePrefix, geometryName, point, tolerance, $scope.framework);
+				return GeoMapService.getFeatureInfo($scope.mapInstance, url,featureType, featurePrefix, geometryName, point, tolerance, $scope.framework);
 			};
 
 			self.getFeatureInfoFromLayer = function (layerId, point,tolerance) {
-				return GAMapService.getFeatureInfoFromLayer($scope.mapInstance,layerId, point,tolerance, $scope.framework);
+				return GeoMapService.getFeatureInfoFromLayer($scope.mapInstance,layerId, point,tolerance, $scope.framework);
 			};
 
             self.resetMapFired = function () {
@@ -1555,28 +1555,28 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * TBC
              * */
             self.activateControl = function (controlId) {
-                GAMapService.activateControl($scope.mapInstance, controlId, $scope.framework);
+                GeoMapService.activateControl($scope.mapInstance, controlId, $scope.framework);
             };
 
             self.deactivateControl = function (controlId) {
-                GAMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
+                GeoMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
             };
             /**
              * TBC
              * */
             self.registerControlEvent = function (controlId, eventName, callback) {
-                GAMapService.registerControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
+                GeoMapService.registerControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
             };
 
             /**
              * TBC
              * */
             self.unRegisterControlEvent = function (controlId, eventName, callback) {
-                GAMapService.unRegisterControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
+                GeoMapService.unRegisterControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
             };
 
             self.registerMapEvent = function (eventName, callback) {
-                GAMapService.registerMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
+                GeoMapService.registerMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
             };
 
             /**
@@ -1603,7 +1603,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @param {function} callback - Callback function previously registered.
              * */
             self.unRegisterMapEvent = function (eventName, callback) {
-                GAMapService.unRegisterMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
+                GeoMapService.unRegisterMapEvent($scope.mapInstance, eventName, callback, $scope.framework);
             };
 
             /**
@@ -1612,7 +1612,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Object}
              * */
             self.getCurrentMapExtent = function () {
-                return GAMapService.getCurrentMapExtent($scope.mapInstance, $scope.framework);
+                return GeoMapService.getCurrentMapExtent($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -1621,7 +1621,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Object}
              * */
             self.getMapScale = function () {
-                return GAMapService.getMapScale($scope.mapInstance, $scope.framework);
+                return GeoMapService.getMapScale($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -1630,7 +1630,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Object}
              * */
             self.getMapCenter = function () {
-                return GAMapService.getMapCenter($scope.mapInstance, $scope.framework);
+                return GeoMapService.getMapCenter($scope.mapInstance, $scope.framework);
             };
 
             /**
@@ -1638,13 +1638,13 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * Switches the map between 2D and 3D if the specified framework supports it, eg olv3.
              * */
             self.switch3d = function () {
-                if(!GAMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
+                if(!GeoMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
                     return;
                 }
-                if(!GAMapService.is3d($scope.mapInstance,$scope.framework)) {
-                    GAMapService.switchTo3dView($scope.mapInstance,$scope.framework);
+                if(!GeoMapService.is3d($scope.mapInstance,$scope.framework)) {
+                    GeoMapService.switchTo3dView($scope.mapInstance,$scope.framework);
                 } else {
-                    GAMapService.switchTo2dView($scope.mapInstance,$scope.framework);
+                    GeoMapService.switchTo2dView($scope.mapInstance,$scope.framework);
                 }
             };
 
@@ -1654,10 +1654,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @return {Boolean}
              * */
             self.is3d = function () {
-                if(!GAMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
+                if(!GeoMapService.is3dSupported($scope.mapInstance,$scope.framework)) {
                     return false;
                 }
-                return GAMapService.is3d($scope.mapInstance,$scope.framework);
+                return GeoMapService.is3d($scope.mapInstance,$scope.framework);
             };
 
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
@@ -1697,15 +1697,15 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
             };
 
             self.createWfsClient = function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
-                return GAMapService.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid, $scope.framework);
+                return GeoMapService.createWfsClient(url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid, $scope.framework);
             };
 
             self.addWfsClient = function (wfsClient) {
-                return GAMapService.addWfsClient(wfsClient, $scope.framework);
+                return GeoMapService.addWfsClient(wfsClient, $scope.framework);
             };
 
             self.searchWfs = function (clientId, query, attribute) {
-                return GAMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
+                return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
             };
 
             /**
@@ -1714,7 +1714,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * @param {Object} event - Event object used in registered callbacks. This will be the native event object of the underlying framework, eg OpenLayers 2.
              * */
             self.getMeasureFromEvent = function (event) {
-                return GAMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
+                return GeoMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
             };
 
             /**
@@ -1756,7 +1756,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
              * Default bind to handle window resizing
              * */
             $(window).bind('resize', function () {
-                GAMapService.mapResized($scope.mapInstance, $scope.framework);
+                GeoMapService.mapResized($scope.mapInstance, $scope.framework);
             });
 
             //Allowing other directives to get mapInstance from scope could lead
@@ -1770,7 +1770,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
                 $scope.mapInstance = $scope.existingMapInstance;
             } else {
                 //Initialise map
-                $scope.mapInstance = GAMapService.initialiseMap({
+                $scope.mapInstance = GeoMapService.initialiseMap({
                     mapElementId: $scope.mapElementId,
                     datumProjection: $scope.datumProjection,
                     displayProjection: $scope.displayProjection,
@@ -1837,7 +1837,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerServi
                         //$log.info(layer);
                         scope.layerDtoPromises[i].reject(layer);
                     } else {
-                        var layerDto = GAMapService.addLayer(scope.mapInstance, layer, scope.framework);
+                        var layerDto = GeoMapService.addLayer(scope.mapInstance, layer, scope.framework);
                         scope.layerDtoPromises[i].resolve(layerDto);
                         allLayerDtos.push(layerDto);
                     }
