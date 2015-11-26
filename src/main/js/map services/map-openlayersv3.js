@@ -17,7 +17,7 @@
     app.service('olv3MapService', [
         'olv3LayerService',
         'olv3MapControls',
-        'GAWTUtils',
+        'GeoUtils',
         'GeoLayer',
         'ol3CesiumMapService',
         'ol3CesiumEventManager',
@@ -25,7 +25,7 @@
         '$q',
         '$log',
         '$timeout',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, ol3CesiumMapService, ol3CesiumEventManager, appConfig, $q, $log, $timeout) {
+        function (olv3LayerService, olv3MapControls, GeoUtils, GeoLayer, ol3CesiumMapService, ol3CesiumEventManager, appConfig, $q, $log, $timeout) {
 
             function updateToolkitMapInstanceProperty(mapInstance, propertyName, propertyValue) {
                 var _geowebtoolkit = mapInstance.get('_geowebtoolkit') || {};
@@ -296,7 +296,7 @@
                         controlOptions.collapsed = !controlOptions.maximized;
                     }
                     var con = olv3MapControls.createControl(controlName, controlOptions, div, mapOptions);
-                    con.set('id', controlId || con.get('id') || GAWTUtils.generateUuid());
+                    con.set('id', controlId || con.get('id') || GeoUtils.generateUuid());
                     con.set('name', controlName || '');
                     //Overview map can't be added after the map creation unless the map has performed a render.
                     //HACK to wait for map before adding this control.
@@ -447,7 +447,7 @@
                         measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance, 'measureEventVectorLayer');
                     }
 
-                    measureEventVectorLayer.set('id', GAWTUtils.generateUuid());
+                    measureEventVectorLayer.set('id', GeoUtils.generateUuid());
 
                     measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction');
                     if (!measureEventDrawInteraction) {
@@ -856,7 +856,7 @@
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
-                    var id = GAWTUtils.generateUuid();
+                    var id = GeoUtils.generateUuid();
                     iconFeature.setId(id);
 
                     var iconStyle = new ol.style.Style({
@@ -969,7 +969,7 @@
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
                     if (!layerName) {
-                        layerName = GAWTUtils.generateUuid();
+                        layerName = GeoUtils.generateUuid();
                     }
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName);
                     var vector;
@@ -1000,7 +1000,7 @@
                         geometry: geom,
                         name: layerName
                     });
-                    feature.setId(GAWTUtils.generateUuid());
+                    feature.setId(GeoUtils.generateUuid());
 
                     if (vectors.length > 0) {
                         vector = vectors[0];
@@ -1122,17 +1122,17 @@
 
                     var style = new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color, args.opacity),
+                            color: GeoUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color, args.opacity),
                             radius: args.fillRadius || args.radius
                         }),
                         stroke: new ol.style.Stroke({
-                            color: GAWTUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color, args.opacity),
+                            color: GeoUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color, args.opacity),
                             width: args.strokeRadius || args.radius
                         }),
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: GAWTUtils.convertHexAndOpacityToRgbArray(args.circleColor || args.color, args.opacity)
+                                color: GeoUtils.convertHexAndOpacityToRgbArray(args.circleColor || args.color, args.opacity)
                             })
                         })
                     });
@@ -1173,7 +1173,7 @@
 
                         draw.on('drawend', function (e) {
                             if (e.feature) {
-                                e.feature.set('id', GAWTUtils.generateUuid());
+                                e.feature.set('id', GeoUtils.generateUuid());
                             }
                         });
 
@@ -1209,11 +1209,11 @@
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color || '#000000', args.opacity)
+                                color: GeoUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color || '#000000', args.opacity)
                             }),
                             stroke: new ol.style.Stroke(
                                 {
-                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color || '#000000', args.opacity),
+                                    color: GeoUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color || '#000000', args.opacity),
                                     width: args.strokeRadius || args.radius
                                 })
                         }),
@@ -1242,7 +1242,7 @@
                     var point = new ol.geom.Point(updatedPosition);
                     var pointFeature = new ol.Feature({
                         geometry: point,
-                        id: GAWTUtils.generateUuid()
+                        id: GeoUtils.generateUuid()
                     });
                     pointFeature.setStyle(style);
                     vector.getSource().addFeature(pointFeature);
@@ -1264,8 +1264,8 @@
                         textBaseline: args.baseline,
                         font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
-                        stroke: new ol.style.Stroke({color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
+                        fill: new ol.style.Fill({color: GeoUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: GeoUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
                         offsetX: args.offsetX || 0,
                         offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
@@ -1275,7 +1275,7 @@
                     var fillColorHex = args.fillColor || args.color || '#000000';
                     var fillOpacity = args.fillOpacity || args.opacity || 0.5;
                     if (fillColorHex.indexOf('#') === 0) {
-                        fillColor = GAWTUtils.convertHexAndOpacityToRgbArray(fillColorHex, fillOpacity);
+                        fillColor = GeoUtils.convertHexAndOpacityToRgbArray(fillColorHex, fillOpacity);
                     } else {
                         fillColor = args.fillColor || args.color;
                     }
@@ -1284,7 +1284,7 @@
                     var strokeColorHex = args.fillColor || args.color || '#000000';
                     var strokeOpacity = args.strokeOpacity || args.opacity || 1.0;
                     if (strokeColorHex.indexOf('#') === 0) {
-                        strokeColor = GAWTUtils.convertHexAndOpacityToRgbArray(strokeColorHex, strokeOpacity);
+                        strokeColor = GeoUtils.convertHexAndOpacityToRgbArray(strokeColorHex, strokeOpacity);
                     } else {
                         strokeColor = args.strokeColor || args.color;
                     }
@@ -1326,7 +1326,7 @@
 
                     var pointFeature = new ol.Feature({
                         geometry: point,
-                        id: GAWTUtils.generateUuid()
+                        id: GeoUtils.generateUuid()
                     });
                     pointFeature.setStyle(style);
                     vector.getSource().addFeature(pointFeature);
@@ -1465,7 +1465,7 @@
                 addWfsClient: function (wfsClient) {
                     service.wfsClientCache = service.wfsClientCache || [];
 
-                    var wfsClientId = GAWTUtils.generateUuid();
+                    var wfsClientId = GeoUtils.generateUuid();
                     service.wfsClientCache[wfsClientId] = wfsClient;
 
                     return {

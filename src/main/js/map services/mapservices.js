@@ -40,7 +40,7 @@ var app = angular.module('gawebtoolkit.mapservices',
 //	visibility: olv2Layer.visibility,
 //	opacity: olv2Layer.opacity
 
-app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
+app.factory('GeoLayer', ['GeoUtils',function (GeoUtils) {
 	"use strict";
 	var GeoLayer = function (id, name, type, visibility, opacity) {
 		this.id = id;
@@ -81,7 +81,7 @@ app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
         }
 
         if(!layer.get('id')) {
-            layer.set('id', GAWTUtils.generateUuid());
+            layer.set('id', GeoUtils.generateUuid());
         }
 
 

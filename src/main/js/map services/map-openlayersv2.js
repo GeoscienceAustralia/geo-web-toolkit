@@ -12,11 +12,11 @@ var app = angular.module('gawebtoolkit.mapservices.map.openlayersv2',
 app.service('olv2MapService', [
 	'olv2LayerService',
 	'olv2MapControls',
-	'GAWTUtils',
+	'GeoUtils',
 	'GeoLayer',
 	'$q',
 	'$log',
-	function (olv2LayerService, olv2MapControls, GAWTUtils,GeoLayer, $q, $log) {
+	function (olv2LayerService, olv2MapControls, GeoUtils,GeoLayer, $q, $log) {
 		'use strict';
 		function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {
 			mapInstance._geowebtoolkit = mapInstance._geowebtoolkit || {};
@@ -464,7 +464,7 @@ app.service('olv2MapService', [
 				var icon = new OpenLayers.Icon(iconUrl, size, offset);
 				var marker = new OpenLayers.Marker(opx, icon.clone());
 				marker.map = mapInstance;
-				var id = GAWTUtils.generateUuid();
+				var id = GeoUtils.generateUuid();
 				marker.id = id;
 				// Marker layer exists so get the layer and add the marker
 				if (markersLayers != null && markersLayers.length > 0 && typeof markersLayers[0].addMarker === 'function') {
@@ -668,7 +668,7 @@ app.service('olv2MapService', [
 					labelSelect: true
 				};
 				vector.addFeatures([pointFeature]);
-				var featureId = GAWTUtils.generateUuid();
+				var featureId = GeoUtils.generateUuid();
 				pointFeature.id = featureId;
 				var geoJsonWriter = new OpenLayers.Format.GeoJSON();
 				var geoJsonFeature = geoJsonWriter.write(pointFeature);
@@ -691,7 +691,7 @@ app.service('olv2MapService', [
 				var point = new OpenLayers.Geometry.Point(args.lon, args.lat).transform(new OpenLayers.Projection(args.projection), mapInstance.getProjection());
 	            var pointFeature = new OpenLayers.Feature.Vector(point);
 
-				var pointFeatureId = GAWTUtils.generateUuid();
+				var pointFeatureId = GeoUtils.generateUuid();
 				pointFeature.id = pointFeatureId;
 	            // Add the text to the style of the layer
 	            vector.style = {
@@ -827,7 +827,7 @@ app.service('olv2MapService', [
 			addWfsClient: function (wfsClient) {
 				service.wfsClientCache = service.wfsClientCache || [];
 
-				var wfsClientId = GAWTUtils.generateUuid();
+				var wfsClientId = GeoUtils.generateUuid();
 				service.wfsClientCache[wfsClientId] = wfsClient;
 
 				return {

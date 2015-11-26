@@ -8,7 +8,7 @@
     /*
      * This service wraps olv3 layer functionality that is used via the GAMaps and GALayer service
      * */
-    app.service('olv3LayerService', ['$log', '$q', '$timeout', 'GeoLayer', 'GAWTUtils', function ($log, $q, $timeout, GeoLayer, GAWTUtils) {
+    app.service('olv3LayerService', ['$log', '$q', '$timeout', 'GeoLayer', 'GeoUtils', function ($log, $q, $timeout, GeoLayer, GeoUtils) {
         var service = {
             xyzTileCachePath: "/tile/{z}/{y}/{x}",
             createLayer: function (args) {
@@ -109,10 +109,10 @@
                     image: new ol.style.Circle({
                         radius: styleArgs.radius,
                         fill: new ol.style.Fill({
-                            color: GAWTUtils.convertHexAndOpacityToRgbArray(styleArgs.color, styleArgs.opacity)
+                            color: GeoUtils.convertHexAndOpacityToRgbArray(styleArgs.color, styleArgs.opacity)
                         }),
                         stroke: new ol.style.Stroke({
-                            color: GAWTUtils.convertHexAndOpacityToRgbArray(styleArgs.color, styleArgs.opacity),
+                            color: GeoUtils.convertHexAndOpacityToRgbArray(styleArgs.color, styleArgs.opacity),
                             width: styleArgs.radius
                         })
                     })
@@ -299,7 +299,7 @@
                 }
 
                 var featureDto = angular.fromJson(featureJson);
-                feature.setId(feature.getId() || GAWTUtils.generateUuid());
+                feature.setId(feature.getId() || GeoUtils.generateUuid());
                 featureDto.id = feature.getId();
 
                 return featureDto;

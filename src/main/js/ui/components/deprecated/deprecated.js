@@ -33,7 +33,7 @@
     /**
      *
      * */
-    app.directive('geoStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GAWTUtils) {
+    app.directive('geoStaticDialog', ['$timeout', 'GeoUtils', function ($timeout, GeoUtils) {
         return {
             restrict: "AE",
             templateUrl: 'src/main/js/ui/components/deprecated/static-dialog.html',
@@ -55,7 +55,7 @@
                     $('#' + $scope.dialogId).dialog($scope.dialogConfig);
                 });
                 //Initialise id element to use for cleaning up/closing the dialog
-                $scope.dialogId = GAWTUtils.generateUuid();
+                $scope.dialogId = GeoUtils.generateUuid();
                 var self = this;
                 self.openDialog = function () {
                     $('#' + $scope.dialogId).dialog('open');
@@ -113,7 +113,7 @@
      *
      *   filterFn ? This directive could be expanded to customise the way the layers are filtered
      * */
-    app.directive('geoLayersDialog', ['GAWTUtils', function (GAWTUtils) {
+    app.directive('geoLayersDialog', ['GeoUtils', function (GeoUtils) {
         return {
             restrict: "E",
             templateUrl: 'src/main/js/ui/components/deprecated/layers-dialog.html',
@@ -130,7 +130,7 @@
                     $('#' + $scope.dialogId).dialog($scope.dialogConfig);
                 });
                 //Initialise id element to use for cleaning up/closing the dialog
-                $scope.dialogId = GAWTUtils.generateUuid();
+                $scope.dialogId = GeoUtils.generateUuid();
 
                 $scope.isClosed = !$scope.dialogConfig.autoOpen;
                 var self = this;

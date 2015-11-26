@@ -85,8 +85,8 @@
      * </example>
      *
      */
-    app.directive('geoLayerControl', ['GAWTUtils',
-        function (GAWTUtils) {
+    app.directive('geoLayerControl', ['GeoUtils',
+        function (GeoUtils) {
             return {
                 restrict: "E",
                 templateUrl: 'src/main/js/ui/components/layer-control/layer-control.html',
@@ -101,7 +101,7 @@
                     onFinishedLoading: '&'
                 },
                 controller: ['$scope', function ($scope) {
-                    $scope.elementId = GAWTUtils.generateUuid();
+                    $scope.elementId = GeoUtils.generateUuid();
                 }],
                 compile: function compile() {
                     return {

@@ -3,7 +3,7 @@ var console = console || {};
 var $ = $ || {};
 
 var app = angular.module('gawebtoolkit.utils', []);
-app.service('GAWTUtils', [ function() {
+app.service('GeoUtils', [ function() {
    'use strict';
    function convertHexToRgb(hexVal) {
        hexVal = parseInt(hexVal.charAt(0) === '#'? hexVal.substring(1,7): hexVal, 16);
