@@ -28,8 +28,8 @@
      <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
      </example>
      */
-    app.directive('geoBingLayer', ['$timeout', '$compile', 'GALayerService', '$log',
-        function ($timeout, $compile, GALayerService, $log) {
+    app.directive('geoBingLayer', ['$timeout', '$compile', 'GeoLayerService', '$log',
+        function ($timeout, $compile, GeoLayerService, $log) {
             var validBingLayerTypes = ['road','aerial','aerialwithlabels','birdseye','birdseyewithlabels'];
             var validateBingLayerType = function (layerType) {
                 for (var i = 0; i < validBingLayerTypes.length; i++) {
@@ -67,7 +67,7 @@
                     $scope.mapAPI = {};
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
-                    layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                    layerOptions = GeoLayerService.defaultLayerOptions(attrs,$scope.framework);
                     layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType;
                     if(!validateBingLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Bing layer type - ' + layerOptions.layerType +
@@ -87,7 +87,7 @@
                         if(layerOptions.bingApiKey == null) {
                             throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the ga-bing-layer attribute 'bing-api-key'");
                         }
-                        layer = GALayerService.createBingLayer(layerOptions,$scope.framework);
+                        layer = GeoLayerService.createBingLayer(layerOptions,$scope.framework);
                         //Async layer add
                         //mapController.waitingForAsyncLayer();
                         mapController.addLayer(layer).then(function (layerDto) {
@@ -133,13 +133,13 @@
                         if (layerIndex != null) {
                             mapController.removeLayerById($scope.layerDto.id);
                             $scope.layerDto = null;
-                            layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                            layerOptions = GeoLayerService.defaultLayerOptions(attrs,$scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
                             if(layerOptions.bingApiKey == null) {
                                 throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the ga-bing-layer attribute 'bing-api-key'");
                             }
-                            layer = GALayerService.createBingLayer(layerOptions,$scope.framework);
+                            layer = GeoLayerService.createBingLayer(layerOptions,$scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;

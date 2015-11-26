@@ -24,7 +24,7 @@
      * @require gaMap
      * @example
      */
-    app.directive('geoMapMarker', ['$log','$timeout','GALayerService', function ($log,$timeout,GALayerService) {
+    app.directive('geoMapMarker', ['$log','$timeout','GeoLayerService', function ($log,$timeout,GeoLayerService) {
         return {
             restrict: "E",
             require: "^geoMap",
@@ -86,7 +86,7 @@
                     if(typeof $scope.markerHeight === 'string') {
                         height = parseInt($scope.markerHeight);
                     }
-                    var layer = GALayerService.createLayer({layerType:'markerlayer',layerName: $scope.layerName },$scope.framework);
+                    var layer = GeoLayerService.createLayer({layerType:'markerlayer',layerName: $scope.layerName },$scope.framework);
                     mapController.addMarkerLayer(layer, $scope.layerName).then(function () {
                         //Force digest to process initial async layers in correct order
                         var position = mapController.getPixelFromLonLat(lon, lat);

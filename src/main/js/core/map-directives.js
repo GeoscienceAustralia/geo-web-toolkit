@@ -73,8 +73,8 @@ var app = angular.module('gawebtoolkit.core.map-directives', [ 'gawebtoolkit.cor
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
-app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerService','GADataService', '$q','$log',
-	function ($timeout, $compile, GAMapService, GALayerService,GADataService, $q, $log) {
+app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GeoLayerService','GADataService', '$q','$log',
+	function ($timeout, $compile, GAMapService, GeoLayerService,GADataService, $q, $log) {
     'use strict';
     return {
         restrict: "E",
@@ -204,8 +204,8 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
             };
 
             self.createLayer = function(layerArgs) {
-                var layerOptions = GALayerService.defaultLayerOptions(layerArgs,$scope.framework);
-                return GALayerService.createLayer(layerOptions,$scope.framework);
+                var layerOptions = GeoLayerService.defaultLayerOptions(layerArgs,$scope.framework);
+                return GeoLayerService.createLayer(layerOptions,$scope.framework);
             };
 
             /**
@@ -1443,7 +1443,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              *
              * */
             self.removeLayerByName = function (layerName) {
-                GALayerService.removeLayerByName($scope.mapInstance, layerName, $scope.framework);
+                GeoLayerService.removeLayerByName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * Removes all layers matching the name provided
@@ -1451,7 +1451,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @param layerName {string} - Name of the named layer
              * */
             self.removeLayersByName = function (layerName) {
-                GALayerService.removeLayersByName($scope.mapInstance, layerName, $scope.framework);
+                GeoLayerService.removeLayersByName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * Removes layer by reference to a layer object
@@ -1459,7 +1459,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @deprecated
              * */
             self.removeLayer = function (layerInstance) {
-                GALayerService.removeLayer($scope.mapInstance, layerInstance, $scope.framework);
+                GeoLayerService.removeLayer($scope.mapInstance, layerInstance, $scope.framework);
             };
 
             /**
@@ -1467,7 +1467,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @param layerId {string} - Id of a layer to remove
              * */
             self.removeLayerById = function (layerId) {
-                GALayerService.removeLayerById($scope.mapInstance, layerId, $scope.framework);
+                GeoLayerService.removeLayerById($scope.mapInstance, layerId, $scope.framework);
             };
             /**
              * Gets the count of markers of the first layer matching the name provided
@@ -1476,7 +1476,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @return {Number}
              * */
             self.getMarkerCountForLayerName = function (layerName) {
-                return GALayerService.getMarkerCountForLayerName($scope.mapInstance, layerName, $scope.framework);
+                return GeoLayerService.getMarkerCountForLayerName($scope.mapInstance, layerName, $scope.framework);
             };
             /**
              * Draws a polyline on the map provided an array of LatLons on a new layer of the provided name.
@@ -1536,7 +1536,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * TBC
              * */
             self.registerFeatureSelected = function (layerId, callback, element) {
-                return GALayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element, $scope.framework);
+                return GeoLayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element, $scope.framework);
             };
 
 			self.getFeatureInfo = function (url,featureType, featurePrefix, geometryName, point, tolerance) {
@@ -1582,7 +1582,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
             /**
              * */
             self.registerLayerEvent = function (layerId, eventName, callback) {
-                GALayerService.registerLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
+                GeoLayerService.registerLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
             };
 
             /**
@@ -1593,7 +1593,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @param {function} callback - Callback function previously registered.
              * */
             self.unRegisterLayerEvent = function(layerId,eventName,callback) {
-                GALayerService.unRegisterLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
+                GeoLayerService.unRegisterLayerEvent($scope.mapInstance,layerId,eventName,callback, $scope.framework);
             };
 
             /**
@@ -1661,7 +1661,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
             };
 
             self.filterFeatureLayer = function (layerId, filterValue, featureAttributes) {
-                GALayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
+                GeoLayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             };
 
             /**
@@ -1671,7 +1671,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @return {GeoJSON[]}
              * */
             self.getLayerFeatures = function (layerId) {
-                return GALayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
+                return GeoLayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
             };
 
 
@@ -1682,7 +1682,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @param {GeoJSON} geoJson - GeoJSON object to create the feature from.
              * */
             self.createFeature = function (geoJson) {
-                return GALayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
+                return GeoLayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
             };
 
             /**
@@ -1693,7 +1693,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @return {GeoJSON}
              * */
             self.addFeatureToLayer = function (layerId, feature) {
-                return GALayerService.addFeatureToLayer($scope.mapInstance, layerId, feature, $scope.framework);
+                return GeoLayerService.addFeatureToLayer($scope.mapInstance, layerId, feature, $scope.framework);
             };
 
             self.createWfsClient = function (url, featureType, featurePrefix, version, geometryName, datumProjection, isLonLatOrderValid) {
@@ -1724,7 +1724,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @param {String} featureId - ID of the feature that needs to be removed
              * */
             self.removeFeatureFromLayer = function (layerId, featureId) {
-                GALayerService.removeFeatureFromLayer($scope.mapInstance, layerId, featureId, $scope.framework);
+                GeoLayerService.removeFeatureFromLayer($scope.mapInstance, layerId, featureId, $scope.framework);
             };
 
             /**
@@ -1734,7 +1734,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GAMapService', 'GALayerServic
              * @param {Number} delta - Change in layer order
              * */
             self.raiseLayerDrawOrder = function (layerId, delta) {
-                GALayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
+                GeoLayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
             };
 
             /**

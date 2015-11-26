@@ -50,8 +50,8 @@ var app = angular.module('gawebtoolkit.core.layer-directives', [ 'gawebtoolkit.c
 <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
 </example>
  */
-app.directive('geoMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
-	function ($timeout, $compile, GALayerService, $log) {
+app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log',
+	function ($timeout, $compile, GeoLayerService, $log) {
 		'use strict';
 		return {
 			restrict: "E",
@@ -137,7 +137,7 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 				var constructLayer = function () {
 					initialiseDefaults();
 					$scope.constructionInProgress = true;
-					layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+					layerOptions = GeoLayerService.defaultLayerOptions(attrs,$scope.framework);
                     layerOptions.initialExtent = mapController.getInitialExtent();
                     layerOptions.mapElementId = mapController.getMapElementId();
                     layerOptions.format = $scope.format;
@@ -146,7 +146,7 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						return;
 					}
 
-                    layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                    layer = GeoLayerService.createLayer(layerOptions,$scope.framework);
 					//Async layer add
 					//mapController.waitingForAsyncLayer();
 					mapController.addLayer(layer).then(function (layerDto) {
@@ -193,10 +193,10 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GALayerService', '$log',
 						mapController.removeLayerById($scope.layerDto.id);
 						$scope.layerDto = null;
 						initialiseDefaults();
-						layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+						layerOptions = GeoLayerService.defaultLayerOptions(attrs,$scope.framework);
                         layerOptions.initialExtent = mapController.getInitialExtent();
                         layerOptions.format = $scope.format;
-						layer = GALayerService.createLayer(layerOptions,$scope.framework);
+						layer = GeoLayerService.createLayer(layerOptions,$scope.framework);
 						//Async layer add
 						mapController.addLayer(layer).then(function (layerDto) {
 							$scope.layerDto = layerDto;

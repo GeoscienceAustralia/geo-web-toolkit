@@ -998,8 +998,8 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     </file>
 </example>
  */
-app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log', 'GeoUtils',
-    function ($timeout, $compile, $q, GALayerService, $log, GeoUtils) {
+app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerService', '$log', 'GeoUtils',
+    function ($timeout, $compile, $q, GeoLayerService, $log, GeoUtils) {
         'use strict';
         return {
             restrict: "E",
@@ -1049,7 +1049,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService
                             throw new Error('Failed to parse style');
                         }
 
-                        GALayerService.setFeatureStyle(feature,directiveStyle,$scope.mapAPI.mapController.getFrameworkVersion());
+                        GeoLayerService.setFeatureStyle(feature,directiveStyle,$scope.mapAPI.mapController.getFrameworkVersion());
                     }
 
                     if (feature.then !== null && typeof feature.then === 'function') {
@@ -1103,7 +1103,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService
                 };
 
                 self.clearFeatures = function () {
-                    GALayerService.clearFeatureLayer(
+                    GeoLayerService.clearFeatureLayer(
                         $scope.mapAPI.mapController.getMapInstance(),
                         $scope.layerDto.id,
                         $scope.mapAPI.mapController.getFrameworkVersion());
@@ -1134,11 +1134,11 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService
 
                 var constructLayer = function () {
                     $scope.constructionInProgress = true;
-                    var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                    var layerOptions = GeoLayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
                     layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                     layerOptions.postAddLayer = $scope.postAddLayer;
                     $log.info(layerOptions.layerName + ' - constructing...');
-                    var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+                    var layer = GeoLayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
 
                     //mapController.waitingForAsyncLayer();
                     //Async layer add
@@ -1182,10 +1182,10 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService
                     if (layerIndex != null) {
                         mapController.removeLayerById($scope.layerDto.id);
                         $scope.layerDto = null;
-                        var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                        var layerOptions = GeoLayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
                         layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                         layerOptions.postAddLayer = $scope.postAddLayer;
-                        var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+                        var layer = GeoLayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
                         //Async layer add
                         mapController.addLayer(layer).then(function (layerDto) {
                             $scope.layerDto = layerDto;
@@ -1220,7 +1220,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService
                         $scope.onLayerDestroy({map: mapController.getMapInstance()});
                     }
                     $timeout(function () {
-                        GALayerService.cleanupLayer(mapController.getMapInstance(), $scope.layerDto.id);
+                        GeoLayerService.cleanupLayer(mapController.getMapInstance(), $scope.layerDto.id);
                     });
 
                     //mapController.removeLayerById($scope.layerDto.id);
