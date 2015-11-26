@@ -7,7 +7,7 @@
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.
-    app.service('GADataService', ['$log', 'ga.config', 'dataServiceLocator',
+    app.service('GeoDataService', ['$log', 'ga.config', 'dataServiceLocator',
         function ($log, GAConfig, dataServiceLocator) {
             'use strict';
             //OpenLayers 2 as default
