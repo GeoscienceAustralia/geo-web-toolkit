@@ -22,7 +22,7 @@
                 $compile = _$compile_;
                 $timeout = _$timeout_;
                 $scope = _$rootScope_;
-                utilsService = $injector.get('GAWTUtils');
+                utilsService = $injector.get('GeoUtils');
                 mapControllerListener = jasmine.createSpy('mapControllerListener');
                 $scope.$on('mapControllerReady', function (event, args) {
                     mapControllerListener(args);

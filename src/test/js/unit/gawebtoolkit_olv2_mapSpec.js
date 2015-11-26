@@ -17,12 +17,12 @@
 
             // Store references to $rootScope and $compile
             // so they are available to all tests in this describe block
-            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, GALayerService) {
+            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, GeoLayerService) {
                 // The injector unwraps the underscores (_) from around the parameter names when matching
                 $compile = _$compile_;
                 $timeout = _$timeout_;
                 $scope = _$rootScope_;
-                layerService = GALayerService;
+                layerService = GeoLayerService;
                 mapControllerListener = jasmine.createSpy('mapControllerListener');
                 $scope.$on('mapControllerReady', function (event, args) {
                     mapControllerListener(args);
