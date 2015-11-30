@@ -15,7 +15,7 @@ var app = angular.module('gawebtoolkit.config', []);
      <li>A controller should be created attached to our AngularJS application, this controller will trigger an event which injects our configuration (loaded in page in JSON format) to the scope as a JavaScript object</li>
      <li>By calling defined controller within our app element in HTML, all the configuration will be accessible. Controller can be called in the template file or in the main application's HMTL codes</li>
  </ul>
- * @param {string|@} gaConfigPath - A string value containing the path to our configuration JSON file 
+ * @param {string|@} geoConfigPath - A string value containing the path to our configuration JSON file 
  * @param {string|@} staticConfig - A boolean value ("true" or "false") that toggles using configuration/template files on/off
  * @param {string|@} templatePath - A string value containing the path to our HTML template file
  *
@@ -27,7 +27,7 @@ var app = angular.module('gawebtoolkit.config', []);
      <file name="index.html">
          <div id="map"></div>
          <div ng-controller="ourConfigController">
-         <geo-map-config ga-config-path="../docs-sources/ourConfigFile" template-path="../docs-sources/ourTemplate.html" static-config="true" class="ng-scope"></geo-map-config>
+         <geo-map-config geo-config-path="../docs-sources/ourConfigFile" template-path="../docs-sources/ourTemplate.html" static-config="true" class="ng-scope"></geo-map-config>
          </div>
      </file>
      <file name="style.css">
@@ -139,10 +139,10 @@ app.directive('geoMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$tim
                         $scope.fromLocalStorage = true;
                         $scope.localStorageKey = $attrs.localStorageKey;
                     }
-                    if ($attrs.gaConfigPath != null && $attrs.gaConfigPath.indexOf('{{') !== -1) {
-                        configPath = $scope.$eval($interpolate($attrs.gaConfigPath));
+                    if ($attrs.geoConfigPath != null && $attrs.geoConfigPath.indexOf('{{') !== -1) {
+                        configPath = $scope.$eval($interpolate($attrs.geoConfigPath));
                     } else {
-                        configPath = $attrs.gaConfigPath;
+                        configPath = $attrs.geoConfigPath;
                     }
 
                     if ($attrs.staticConfig === 'true') {
@@ -155,21 +155,21 @@ app.directive('geoMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$tim
                         }
                         if ($attrs.preConfig) {
                             var preConfigAssignmentFn = $parse($attrs.preConfig);
-                            $scope.gaConfigTemp = preConfigAssignmentFn($scope, {
+                            $scope.geoConfigTemp = preConfigAssignmentFn($scope, {
                                 config: data
                             });
                         } else {
-                            $scope.gaConfigTemp = data;
+                            $scope.geoConfigTemp = data;
                         }
 
                         //$scope.configReady = true;
-                        $scope.$emit('configDataLoaded', $scope.gaConfigTemp);
-                        $scope.$broadcast('configDataLoaded', $scope.gaConfigTemp);
+                        $scope.$emit('configDataLoaded', $scope.geoConfigTemp);
+                        $scope.$broadcast('configDataLoaded', $scope.geoConfigTemp);
 
                         if ($attrs.postConfig) {
                             var postConfigAssignmentFn = $parse($attrs.postConfig);
                             postConfigAssignmentFn($scope, {
-                                config: $scope.gaConfigTemp
+                                config: $scope.geoConfigTemp
                             });
                         }
                         //$scope.$emit('configReady', $scope.configReady);

@@ -2,7 +2,7 @@ var angular = angular || {};
 var OpenLayers = OpenLayers || {};
 var app = angular.module('gawebtoolkit.core.map-config', []);
 
-app.value('ga.config', function () {
+app.value('geoConfig', function () {
     'use strict';
     //TODO These values are all OLV2 specific and these values should come from consuming application
     //to merge with defaults written for a specific implementation (like OLV2) in map services.

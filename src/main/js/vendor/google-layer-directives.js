@@ -66,7 +66,7 @@
                     layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType;
                     if(!validateGoogleLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Google layer type - ' + layerOptions.layerType +
-                            ' used. Defaulting to "Hybrid". Specify default Google layer type in "ga.config" - googleLayerType');
+                            ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType');
                         layerOptions.layerType = 'Hybrid';
                     }
                     var addLayerCallback = function () {

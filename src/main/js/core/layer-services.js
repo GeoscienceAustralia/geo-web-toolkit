@@ -7,7 +7,7 @@
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.
-    app.service('GeoLayerService', ['ga.config', 'mapLayerServiceLocator', function (GAConfig, mapLayerServiceLocator) {
+    app.service('GeoLayerService', ['geoConfig', 'mapLayerServiceLocator', function (geoConfig, mapLayerServiceLocator) {
         'use strict';
         //OpenLayers 2 as default
         var defaultFramework = 'olv2';
@@ -79,7 +79,7 @@
                 //For now it is current assumed it's openlayers Release 2.13.1
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
-                return service.defaultLayerOptions(attrs, new GAConfig());
+                return service.defaultLayerOptions(attrs, new geoConfig());
             },
             createFeature: function (mapInstance, geoJson,version) {
                 var useVersion = version || defaultFramework;

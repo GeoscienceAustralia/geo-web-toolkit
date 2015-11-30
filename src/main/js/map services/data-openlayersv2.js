@@ -4,7 +4,7 @@
 
     var app = angular.module('gawebtoolkit.mapservices.data.openlayersv2', []);
 
-    var olv2DataService = ['$q', '$http','ga.config', function ($q, $http,GAConfig) {
+    var olv2DataService = ['$q', '$http', 'geoConfig', function ($q, $http, geoConfig) {
         function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {
             var projection = mapInstance.projection;
             var bounds = mapInstance.getExtent();
@@ -153,8 +153,8 @@
                     },
                     scope: this
                 };
-                if(GAConfig().defaultOptions.proxyHost) {
-                    requestParams.proxy = GAConfig().defaultOptions.proxyHost;
+                if(geoConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = geoConfig().defaultOptions.proxyHost;
                 }
                 OpenLayers.Request.GET(requestParams);
                 return deferred.promise;
@@ -242,8 +242,8 @@
                     },
                     scope: this
                 };
-                if(GAConfig().defaultOptions.proxyHost) {
-                    requestParams.proxy = GAConfig().defaultOptions.proxyHost;
+                if(geoConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = geoConfig().defaultOptions.proxyHost;
                 }
                 OpenLayers.Request.GET(requestParams);
                 return deferred.promise;

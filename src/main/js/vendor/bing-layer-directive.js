@@ -71,7 +71,7 @@
                     layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType;
                     if(!validateBingLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Bing layer type - ' + layerOptions.layerType +
-                        ' used. Defaulting to "Road". Specify default Bing layer type in "ga.config" - bingLayerType');
+                        ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType');
                         layerOptions.layerType = 'Road';
                     }
                     var addLayerCallback = function () {

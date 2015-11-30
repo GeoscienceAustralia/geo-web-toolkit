@@ -7,8 +7,8 @@
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.
-    app.service('GeoMapService', ['$log', 'ga.config', 'mapServiceLocator',
-        function ($log, GAConfig, mapServiceLocator) {
+    app.service('GeoMapService', ['$log', 'geoConfig', 'mapServiceLocator',
+        function ($log, geoConfig, mapServiceLocator) {
             'use strict';
             //OpenLayers 2 as default
             var defaultFramework = 'olv2';
@@ -18,7 +18,7 @@
                     var useVersion = version || defaultFramework;
                     var service = mapServiceLocator.getImplementation(useVersion);
                     try {
-                        return service.initialiseMap(args, new GAConfig());
+                        return service.initialiseMap(args, new geoConfig());
                     } catch (e) {
                         $log.error('Failed to initialise map');
                         throw e;
@@ -177,7 +177,7 @@
                 setInitialPositionAndZoom: function (mapInstance, args, version) {
                     var useVersion = version || defaultFramework;
                     var service = mapServiceLocator.getImplementation(useVersion);
-                    service.setInitialPositionAndZoom(mapInstance, args, new GAConfig());
+                    service.setInitialPositionAndZoom(mapInstance, args, new geoConfig());
                 },
                 setBaseLayer: function (mapInstance, layerId, version) {
                     var useVersion = version || defaultFramework;

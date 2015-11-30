@@ -22,14 +22,14 @@
         <div class="toolBarContainer" style="position: absolute;width:100%;padding-right:46%">
             <div>
                 <ul>
-                    <li ng-repeat="tool in gaConfig.toolsConfig.tools" class="toolBarContainerListItem">
+                    <li ng-repeat="tool in geoConfig.toolsConfig.tools" class="toolBarContainerListItem">
                         <div ng-include="tool.toolToggleUrl" class="toolItemContainer"></div>
                     </li>
                     <li class="toolBarContainerListItem">
 
                     </li>
                     <li class="toolBarContainerListItem">
-                        <geo-reset-control map-controller="mapController" class="toolItem toolBarItem" style="width:42px" ga-config="gaConfigReset" on-reset="configReset()">
+                        <geo-reset-control map-controller="mapController" class="toolItem toolBarItem" style="width:42px" geo-config="geoConfigReset" on-reset="configReset()">
                             <label style="margin-top:5px">Reset</label>
                         </geo-reset-control>
                     </li>
@@ -46,7 +46,7 @@
                 <div class="rightMenuContentOuterContainer">
                     <div class="rightMenuContentInnerContainer">
                         <div ng-hide="rightHandContentDisplay == ''" class="pull-left" ng-click="closeRightHandMenu()"><a href=""><span class="glyphicon glyphicon-chevron-right"></span></a></div>
-                        <div ng-repeat="tool in gaConfig.toolsConfig.tools" class="rightHandSidePanel" ng-show="rightHandContentDisplay == tool.id">
+                        <div ng-repeat="tool in geoConfig.toolsConfig.tools" class="rightHandSidePanel" ng-show="rightHandContentDisplay == tool.id">
                             <div ng-include="tool.toolPanelUrl">
                             </div>
                         </div>
@@ -59,7 +59,7 @@
             </nav>
         </div>
     </div>
-    <div ng-controller="leftDialogsController" ng-if="gaConfig">
+    <div ng-controller="leftDialogsController" ng-if="geoConfig">
         <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="leftHandMenuNav" style="left:inherit" ng-hide="leftHandContentDisplay == ''">
             <!--                <div style="height:81px"></div>
                             <div style="height:60px;background-color: grey"></div>-->
@@ -69,24 +69,24 @@
                     <div>
                         <div ng-hide="leftHandContentDisplay == ''" class="pull-right closeLeftContainer" ng-click="closeLeftHandMenu()"><a href=""><span class="glyphicon glyphicon-chevron-left"></span></a></div>
                         <div ng-show="leftHandContentDisplay == 'About'" class="leftHandMenuItemContainer">
-                            <span ng-if="gaConfig.aboutConfig.bodyUrl == null || gaConfig.aboutConfig.bodyUrl == ''" ng-bind="gaConfig.previewDescription"></span>
-                            <span ng-include="gaConfig.aboutConfig.bodyUrl"></span>
+                            <span ng-if="geoConfig.aboutConfig.bodyUrl == null || geoConfig.aboutConfig.bodyUrl == ''" ng-bind="geoConfig.previewDescription"></span>
+                            <span ng-include="geoConfig.aboutConfig.bodyUrl"></span>
                         </div>
                         <div ng-show="leftHandContentDisplay == 'Legend'" class="leftHandMenuItemContainer">
-                            <div ng-if="gaConfig.legendConfig.legendUrl != null">
-                                <div ng-include="gaConfig.legendConfig.legendUrl"></div>
+                            <div ng-if="geoConfig.legendConfig.legendUrl != null">
+                                <div ng-include="geoConfig.legendConfig.legendUrl"></div>
                             </div>
-                            <div ng-if="gaConfig.legendConfig.legendImgUrl" style="width:100%;height:100%">
-                                <img ng-src="{{gaConfig.legendConfig.legendImgUrl}}" class="img-responsive" />
+                            <div ng-if="geoConfig.legendConfig.legendImgUrl" style="width:100%;height:100%">
+                                <img ng-src="{{geoConfig.legendConfig.legendImgUrl}}" class="img-responsive" />
                             </div>
                         </div>
                         <div ng-if="layerUiReady" ng-show="leftHandContentDisplay == 'Layers'" ng-controller="layersPanelController" class="leftHandMenuItemContainer">
                             <div class="list-group">
                                 <div class="list-group-item" style="margin-bottom: 5px;">
-                                    <h4 ng-bind="gaConfig.title"></h4>
+                                    <h4 ng-bind="geoConfig.title"></h4>
                                 </div>
-                                <div ui-sortable="sortableOptions" ng-model="gaConfig.layerMaps">
-                                    <div ng-repeat="layer in gaConfig.layerMaps" class="list-group-item">
+                                <div ui-sortable="sortableOptions" ng-model="geoConfig.layerMaps">
+                                    <div ng-repeat="layer in geoConfig.layerMaps" class="list-group-item">
                                         <div ng-if="!layer.isGroupedLayers" class="movableLayer">
                                             <geo-layer-control
                                                     map-controller="mapController"
@@ -136,21 +136,21 @@
             </div>
         </nav>
         <div class="leftDialogButtonContainer mapPreviewLeftDialogButtonContainer">
-            <div ng-if="gaConfig.aboutConfig.enabled">
+            <div ng-if="geoConfig.aboutConfig.enabled">
                 <geo-toggle  ga-toggle-clicked="aboutToggleClicked()"
                             class="leftHandMenuButton"
                             ng-class="{activeLeftHandMenuButton: leftHandContentDisplay == 'About'}">
                     About
                 </geo-toggle>
             </div>
-            <div ng-if="gaConfig.legendConfig.enabled">
+            <div ng-if="geoConfig.legendConfig.enabled">
                 <geo-toggle  ga-toggle-clicked="legendToggleClicked()"
                             class="leftHandMenuButton"
                             ng-class="{activeLeftHandMenuButton: leftHandContentDisplay == 'Legend'}">
                     Legend <img src="resources/img/legend.png" height="18" />
                 </geo-toggle>
             </div>
-            <div ng-if="gaConfig.layersConfig.enabled">
+            <div ng-if="geoConfig.layersConfig.enabled">
                 <geo-toggle  ga-toggle-clicked="layersToggleClicked()"
                             class="leftHandMenuButton"
                             ng-class="{activeLeftHandMenuButton: leftHandContentDisplay == 'Layers'}">
@@ -159,11 +159,11 @@
             </div>
         </div>
     </div>
-    <div class="baseLayerPickerContainer" ng-if="layerUiReady && gaConfig.baseMaps.length > 1">
-        <geo-base-layer-selector class="toolBarItem baseLayerSelect" map-controller="mapController" layers-data="gaConfig.baseMaps"></geo-base-layer-selector>
+    <div class="baseLayerPickerContainer" ng-if="layerUiReady && geoConfig.baseMaps.length > 1">
+        <geo-base-layer-selector class="toolBarItem baseLayerSelect" map-controller="mapController" layers-data="geoConfig.baseMaps"></geo-base-layer-selector>
     </div>
     <div class="mapOuterContainer">
-        <div class="mapContainer" id="gamap1" ng-style="{backgroundColor:gaConfig.backgroundcolour}" style="position:fixed;width:54%;height:79%">
+        <div class="mapContainer" id="gamap1" ng-style="{backgroundColor:geoConfig.backgroundcolour}" style="position:fixed;width:54%;height:79%">
 
         </div>
     </div>
@@ -196,7 +196,7 @@
             });
         });
 
-        $scope.gaConfig = {
+        $scope.geoConfig = {
             "id": "twi",
             "title": "Treaties with Indonesia",
             "datumProjection": "EPSG:102100",

@@ -31,7 +31,7 @@ app.service('olv2MapService', [
 		}
 		var service = {
 			/**
-			 * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
+			 * Initialises/Creates map object providing applications defaults from 'geoConfig' module provided by
 			 * 'gawebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
 			 * @param args {Object} - arguments passed from ga-map directive
 			 * @param mapConfig {Object} - defaults passed from either toolkit or overridden in consuming application

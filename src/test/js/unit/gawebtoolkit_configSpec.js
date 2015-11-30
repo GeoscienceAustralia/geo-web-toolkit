@@ -102,7 +102,7 @@ describe(
 				});
 			$httpBackend.when('GET', 'resources/partial/configmap.html').respond(
 					'<div ng-controller="testConfigController">' +
-					'<div ui-jq="dialog" ui-options="gaConfig.rightDialogConfig">' +
+					'<div ui-jq="dialog" ui-options="geoConfig.rightDialogConfig">' +
 					'<div ng-repeat="layer in layers">' +
 					'{{layer.groupName}}' +
 					'<div ng-repeat="layer in layers">' +
@@ -127,7 +127,7 @@ describe(
 				return config;
 			};
 			element = angular
-				.element('<geo-map-config ga-config-path="/resources/js/amsis" static-config="true" template-path="resources/partial/configmap.html" ' +
+				.element('<geo-map-config geo-config-path="/resources/js/amsis" static-config="true" template-path="resources/partial/configmap.html" ' +
 					'</geo-map-config>');
 
 			$compile(element)($scope);
@@ -235,7 +235,7 @@ describe('gawebtoolkit config component tests - pre and post config hooks',
 				});
 			$httpBackend.when('GET', 'resources/partial/configmap.html').respond(
 					'<div ng-controller="testConfigController">' +
-					'<div ui-jq="dialog" ui-options="gaConfig.rightDialogConfig">' +
+					'<div ui-jq="dialog" ui-options="geoConfig.rightDialogConfig">' +
 					'<div ng-repeat="layer in layers">' +
 					'{{layer.groupName}}' +
 					'<div ng-repeat="layer in layers">' +
@@ -271,7 +271,7 @@ describe('gawebtoolkit config component tests - pre and post config hooks',
 				$scope.orderOfOps.push("post config fired");
 			};
 			element = angular
-				.element('<geo-map-config ga-config-path="/resources/js/amsis.json" template-path="resources/partial/configmap.html" ' +
+				.element('<geo-map-config geo-config-path="/resources/js/amsis.json" template-path="resources/partial/configmap.html" ' +
 					'pre-config="preConfigTest(config)" post-config="postConfigTest(config)">' +
 					'</geo-map-config>');
 

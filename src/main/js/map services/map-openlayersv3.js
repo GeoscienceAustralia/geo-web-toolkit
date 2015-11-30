@@ -21,7 +21,7 @@
         'GeoLayer',
         'ol3CesiumMapService',
         'ol3CesiumEventManager',
-        'ga.config',
+        'geoConfig',
         '$q',
         '$log',
         '$timeout',
