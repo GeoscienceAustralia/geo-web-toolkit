@@ -6,10 +6,10 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.core.vendor-layers:gaOsmLayer
+     * @name geowebtoolkit.core.vendor-layers:geoOsmLayer
      * @description
      * ## Overview ##
-     * gaGoogleLayer directive is used to create an Open Street Maps layer.
+     * geoGoogleLayer directive is used to create an Open Street Maps layer.
      * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
      * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope

@@ -29,14 +29,14 @@ describe('geowebtoolkit ui component tests',
             element = angular
                 .element('<div>' +
                     '<geo-layer-control id="layerControl" map-controller="mapController" layer-data="testLayerData" on-visible="testOnVisible(layerId)"></geo-layer-control>' +
-                    '<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
+                    '<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' + '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                      'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                      'wrap-date-line="true"' +
                      'zoom-to-max="true"' +
                      'map-bg-color="#194584"' +
                      'layer-type="WMS"' +
                      'is-base-layer="true"' +
-                     '></geo-map-layer></geo-map><div id="gamap"></div></div>');
+                     '></geo-map-layer></geo-map><div id=geomapp"></div></div>');
             $compile(element)(_$rootScope_);
             $scope.$digest();
             $timeout.flush();
@@ -57,7 +57,7 @@ describe('geowebtoolkit wfs search unit tests', function () {
         $compile = _$compile_;
         $scope = _$rootScope_;
         uiScope = $scope.$new();
-        mapElement = angular.element('<geo-map framework="olv3" map-element-id="gamap"></geo-map>');
+        mapElement = angular.element('<geo-map framework="olv3" map-element-idgeomapap"></geo-map>');
 
         element = angular
             .element('<geo-search-wfs' +

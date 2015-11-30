@@ -3,7 +3,7 @@
     "use strict";
 
     describe(
-        'geowebtoolkit ga-map controller interface tests',
+        'geowebtoolkit geo-map controller interface tests',
         function() {
             var $compile, $scope, $timeout, element, listener, layerAddedListener;
 
@@ -27,7 +27,7 @@
                     layerAddedListener(args);
                 });
                 element = angular
-                    .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                     '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
@@ -38,7 +38,7 @@
                     '></geo-map-layer>' +
                     '<geo-feature-layer layer-name="my feature layer" refresh-layer="{{refreshTest}}">' +
                     '</geo-feature-layer>' +
-                    '<div id="gamap"></div></geo-map>');
+                    '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();

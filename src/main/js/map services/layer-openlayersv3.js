@@ -6,7 +6,7 @@
     var app = angular.module('geowebtoolkit.mapservices.layer.openlayersv3', []);
 
     /*
-     * This service wraps olv3 layer functionality that is used via the GAMaps and GALayer service
+     * This service wraps olv3 layer functionality that is used via the GeoMaps and GeoLayer service
      * */
     app.service('olv3LayerService', ['$log', '$q', '$timeout', 'GeoLayer', 'GeoUtils', function ($log, $q, $timeout, GeoLayer, GeoUtils) {
         var service = {

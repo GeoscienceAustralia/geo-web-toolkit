@@ -7,7 +7,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.ui.directives:gaBaseLayerSelector
+     * @name geowebtoolkit.ui.directives:geoBaseLayerSelector
      * @param {Layer[]} layersData - Layers that the control uses to switch base layers
      * @param {object} mapController - controller instance for the map
      * @param {string} controllerEmitEventName - event that is fired that passes the controller

@@ -3,7 +3,7 @@
     "use strict";
 
     describe(
-        'OpenLayers v2 "ga-map-marker" implementation tests',
+        'OpenLayers v2 "geo-map-marker" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, listener, preload;
 
@@ -30,7 +30,7 @@
                 });
                 element = angular
                     .element(
-                    '<geo-map map-element-id="gamap" framework="olv2" zoom-level="4" center-position="[130, -25]">' +
+                    '<geo-map map-element-id="geomap" framework="olv2" zoom-level="4" center-position="[130, -25]">' +
                     '<geo-osm-layer></geo-osm-layer>' +
                     '<geo-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
                     '<geo-map-marker layer-name="myMarkerLayer" marker-lat="-20" marker-long="130" marker-icon="dummy/icon/url.png" marker-height="50" marker-width="50" />' +
@@ -42,7 +42,7 @@
                     'marker-icon="{{marker.url}}" ' +
                     'marker-height="{{marker.height}}" ' +
                     'marker-width="{{marker.width}}" />' +
-                    '</geo-map><div id="gamap"></div>');
+                    '</geo-map><div id="geomap"></div>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();

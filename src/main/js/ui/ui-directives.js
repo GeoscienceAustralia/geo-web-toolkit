@@ -9,7 +9,7 @@ var app = angular.module('geowebtoolkit.ui.directives', [ 'geowebtoolkit.utils' 
 
 
 /**
- * gaZoomToExtentButton
+ * geoZoomToExtentButton
  * Notes: beforeZoom param 'points' is the underlying implementation object
  **/
 app.directive('geoZoomToExtentButton', [ function () {

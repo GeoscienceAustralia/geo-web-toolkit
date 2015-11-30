@@ -1,6 +1,6 @@
 /* global angular, $, describe, jasmine, beforeEach, it, expect, module, inject */
 describe(
-    'geowebtoolkit ga-map controller interface tests',
+    'geowebtoolkit geo-map controller interface tests',
     function () {
         "use strict";
         var $compile, $scope, $timeout, element, listener;
@@ -21,7 +21,7 @@ describe(
                 $scope.mapController = args;
             });
             element = angular
-                .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                .element('<geo-map map-element-id="geoMap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                 '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                 'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                 'wrap-date-line="true"' +
@@ -30,7 +30,7 @@ describe(
                 'layer-type="WMS"' +
                 'is-base-layer="true"' +
                 '></geo-map-layer>' +
-                '<div id="gamap"></div></geo-map>');
+                '<div id="geomap"></div></geo-map>');
             $compile(element)($scope);
             $scope.$digest();
 
@@ -184,7 +184,7 @@ describe(
             $scope = _$rootScope_;
             $timeout = _$timeout_;
             element = angular
-                .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                 '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                 'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                 'wrap-date-line="true"' +
@@ -192,7 +192,7 @@ describe(
                 'map-bg-color="#194584"' +
                 'layer-type="WMS"' +
                 'is-base-layer="true"' +
-                '></geo-map-layer><div id="gamap"></div></geo-map>');
+                '></geo-map-layer><div id="geomap"></div></geo-map>');
             $scope.$on('mapControllerReady', function (event, args) {
                 $scope.mapController = args;
             });
@@ -215,7 +215,7 @@ describe(
             // Check that the compiled element contains the templated content
             expect(element.isolateScope().datumProjection === 'EPSG:102100').toBe(true);
             expect(element.isolateScope().displayProjection === 'EPSG:4326').toBe(true);
-            expect(element.isolateScope().mapElementId === 'gamap').toBe(true);
+            expect(element.isolateScope().mapElementId === 'geomap').toBe(true);
         });
 
         it('Should have added 1 layer', function () {

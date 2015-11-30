@@ -13,10 +13,10 @@ var app = angular.module('geowebtoolkit.core.control-directives',
 
 /**
  * @ngdoc directive
- * @name geowebtoolkit.core.control-directives:gaMapControl
+ * @name geowebtoolkit.core.control-directives:geoMapControl
  * @description
  * ## Overview ##
- * gaMapControl is a wrapper for a native map control
+ * geoMapControl is a wrapper for a native map control
  * @param {string|@} mapControlName - The name of the control that is intended to be added to the map layer
  * ##mapControlName acceptable values##
  * The following values can be used as control name:
@@ -40,7 +40,7 @@ var app = angular.module('geowebtoolkit.core.control-directives',
 
  * @scope
  * @restrict E
- * @require gaMap
+ * @require geoMap
  * @example
  <example module="simpleMap">
      <file name="index.html">

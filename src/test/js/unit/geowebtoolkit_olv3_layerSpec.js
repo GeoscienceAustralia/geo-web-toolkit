@@ -3,7 +3,7 @@
     "use strict";
 
     describe(
-        'OpenLayers v3 "ga-map-layer" implementation tests',
+        'OpenLayers v3 "geo-map-layer" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, mapControllerListener, layerController1, layerController2, layerController3;
 
@@ -99,7 +99,7 @@
                     ]
                 };
                 element = angular
-                    .element('<geo-map framework="olv3" map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    .element('<geo-map framework="olv3" map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                     '<geo-map-layer ng-repeat="baseLayer in mapConfig.baseMaps" layer-name="{{baseLayer.name}}"' +
                     'layer-url="{{baseLayer.url}}"' +
                     'is-base-layer="true"' +
@@ -116,7 +116,7 @@
                     'visibility="{{layer.visibility}}" ' +
                     'opacity="{{layer.opacity}}" ' +
                     'refresh-layer="{{layer.refresh}}"></geo-map-layer>' +
-                    '<div id="gamap"></div></geo-map>');
+                    '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -309,7 +309,7 @@
                 };
 
                 element = angular
-                    .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                     '<geo-map-layer layer-name="Australian Landsat Mosaic - Base layer"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
@@ -319,7 +319,7 @@
                     '<geo-feature-layer layer-name="Australian Landsat Mosaic - feature Layer">' +
                     '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
                     '</geo-feature-layer>' +
-                    '</geo-map><div id="gamap"></div>');
+                    '</geo-map><div id="geomap"></div>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();

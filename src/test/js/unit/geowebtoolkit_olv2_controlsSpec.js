@@ -2,7 +2,7 @@
 (function() {
     "use strict";
     describe(
-        'OpenLayers v2.1.13 "ga-map-control" implementation tests',
+        'OpenLayers v2.1.13 "geo-map-control" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, listener, preload;
 
@@ -29,7 +29,7 @@
                     return options;
                 };
                 element = angular
-                    .element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+                    .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
                     '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
@@ -44,7 +44,7 @@
                     '<geo-map-control map-control-name="panzoombar"></geo-map-control>' +
                     '<geo-map-control map-control-name="attribution"></geo-map-control>' +
                     '<geo-map-control map-control-name></geo-map-control>' +
-                    '<div id="gamap"></div></geo-map>');
+                    '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
 

@@ -5,11 +5,11 @@ var console = console || {};
 var app = angular.module('geowebtoolkit.config', []);
 /**
  * @ngdoc directive
- * @name geowebtoolkit.config.directives:gaMapConfig
+ * @name geowebtoolkit.config.directives:geoMapConfig
  * @description
  * ## Overview ##
- * gaMapConfig directive is used for loading a configuration file in JSON format and a "template" HTML file. These two will be used as our data and view layers.
- *  <p><span class="note">NOTE: </span>Follwing items should be considered when using gaMapConfig:</p>
+ * geoMapConfig directive is used for loading a configuration file in JSON format and a "template" HTML file. These two will be used as our data and view layers.
+ *  <p><span class="note">NOTE: </span>Follwing items should be considered when using geoMapConfig:</p>
  <ul>
      <li>'geowebtoolkit.config' must be referenced and loaded when creating our AngularJS application</li>
      <li>A controller should be created attached to our AngularJS application, this controller will trigger an event which injects our configuration (loaded in page in JSON format) to the scope as a JavaScript object</li>

@@ -5,10 +5,10 @@ var app = angular.module('geowebtoolkit.core.feature-directives', [ 'geowebtoolk
 
 /**
  * @ngdoc directive
- * @name geowebtoolkit.core.feature-directives:gaFeatureLayer
+ * @name geowebtoolkit.core.feature-directives:geoFeatureLayer
  * @description
  * ## Overview ##
- * gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/geowebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.
+ * geoFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/geowebtoolkit.core.layer-directives:geoMapLayer">geoFeatureLayer</a> should be used. This tag should be placed within the geoMap tag.
  * @param {string|@} layerName - A name allocated to the layer for future reference
  * @param {string|@} url - A string value that defines the URL from which the content of the layer will be loaded
  * @param {function|@} postAddLayer -  Function callback fired after the layer is added
@@ -29,7 +29,7 @@ var app = angular.module('geowebtoolkit.core.feature-directives', [ 'geowebtoolk
  </ul>
  *@param {string|@} visibility -  A boolean value ("true" or "false") that toggles the visibility of the layer on/off
  *
- * @requires gaMap
+ * @requires geoMap
  * @scope
  * @restrict E
  * @example
@@ -1017,7 +1017,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
             },
             controller: ['$scope',function ($scope) {
                 $scope.layerControllerIsReady = false;
-                $scope.gaFeatures = [];
+                $scope.geoFeatures = [];
                 $scope.featurePromises = [];
                 var self = this;
 
@@ -1082,7 +1082,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
 
                 self.createFeatureAsync = function (geoJsonFeature, isLonLatOrderValid) {
                     var deferred = $q.defer();
-                    $scope.gaFeatures.push({
+                    $scope.geoFeatures.push({
                         deferred: deferred,
                         feature: geoJsonFeature,
                         isLonLatOrderValid: isLonLatOrderValid
@@ -1251,7 +1251,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
  * @param {string} inputFormat - TBA
  * @param {string} inLonLatOrderValid - TBA
  *
- * @requires gaFeatureLayer
+ * @requires geoFeatureLayer
  * @scope
  * @restrict E
  * @example

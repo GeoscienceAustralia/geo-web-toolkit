@@ -2,7 +2,7 @@
 (function () {
     "use strict";
     describe(
-        'OpenLayers v2.1.13 "ga-map" implementation tests',
+        'OpenLayers v2.1.13 "geo-map" implementation tests',
         function () {
             var $compile,
                 $scope,
@@ -55,7 +55,7 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-                var ele = '<geo-map map-element-id="gamap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
+                var ele = '<geo-map map-element-id="geomap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
                     'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
                     '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
@@ -71,10 +71,10 @@
                     '</geo-feature-layer>' +
                     '<geo-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></geo-map-control>' +
                     '</geo-map>' +
-                    '<div id="gamap"></div>';
+                    '<div id="geomap"></div>';
                 element = angular
                     .element(ele);
-                mapThatIsStatic = ele.replace('map-element-id="gamap"','map-element-id="gamap" is-static-map="true"');
+                mapThatIsStatic = ele.replace('map-element-id="geomap"','map-element-id="geomap" is-static-map="true"');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -487,7 +487,7 @@
             //    try {
             //        var mapElementId = $scope.mapController.getMapElementId();
             //        console.log($scope.mapController.getMapInstance().getViewPort());
-            //        expect(mapElementId).toBe('gamap');
+            //        expect(mapElementId).toBe('geomap');
             //        passed = true;
             //    } catch (e) {
             //    }

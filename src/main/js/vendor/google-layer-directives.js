@@ -5,10 +5,10 @@
     var app = angular.module('geowebtoolkit.vendor.google-layers', ['geowebtoolkit.core.layer-services']);
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.core.vendor-layers:gaGoogleLayer
+     * @name geowebtoolkit.core.vendor-layers:geoGoogleLayer
      * @description
      * ## Overview ##
-     * gaGoogleLayer directive is used to create a Google map.
+     * geoGoogleLayer directive is used to create a Google map.
      * @param {string|@} layerType - Required. Specified Google maps layer type. Eg, Hybrid.
      * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope

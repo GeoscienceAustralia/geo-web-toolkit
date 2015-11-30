@@ -6,7 +6,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.ui.directives:gaLayerControl
+     * @name geowebtoolkit.ui.directives:geoLayerControl
      * @description
      * A control for turning on/off layers via provided '=mapController' as well as opacity slider
      * @param {Layer[]} layersData - Layers that the toolbar will interact with

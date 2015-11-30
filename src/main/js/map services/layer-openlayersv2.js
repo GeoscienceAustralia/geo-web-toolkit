@@ -7,7 +7,7 @@ var google = google || {};
 var app = angular.module('geowebtoolkit.mapservices.layer.openlayersv2', []);
 
 /*
- * This service wraps olv2 layer functionality that is used via the GAMaps and GALayer service
+ * This service wraps olv2 layer functionality that is used via the GeoMaps and GeoLayer service
  * */
 app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$timeout) {
     'use strict';

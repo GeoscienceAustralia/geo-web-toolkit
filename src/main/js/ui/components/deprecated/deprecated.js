@@ -98,7 +98,7 @@
     }]);
 
     /*
-     * gaLayersDialog renders a list of layers that can be turned off and on
+     * geoLayersDialog renders a list of layers that can be turned off and on
      *
      * attributes
      *   dialog-config: jquery dialog options that are bound to dialog and will update the dialog on change
@@ -109,7 +109,7 @@
      *           visibility: //boolean representing if layer is visible
      *           name: //friendly name of the layer
      *       }]
-     *   mapController: a controller that has access to the mapInstance object that exposes the same contract as 'ga-map'
+     *   mapController: a controller that has access to the mapInstance object that exposes the same contract as 'geo-map'
      *
      *   filterFn ? This directive could be expanded to customise the way the layers are filtered
      * */
@@ -169,7 +169,7 @@
     /**
      * @ngdoc directive
      * @deprecated [Deprecated since version 0.2.1 - not supported]
-     * @name geowebtoolkit.ui.directives:gaSearchWfs
+     * @name geowebtoolkit.ui.directives:geoSearchWfs
      * @param {object} mapController - Map controller
      * @param {string} resultTemplateUrl -
      * @param {object} searchEndPoints -

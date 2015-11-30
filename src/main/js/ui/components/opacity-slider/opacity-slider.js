@@ -6,7 +6,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.ui.directives:gaLayerOpacitySlider
+     * @name geowebtoolkit.ui.directives:geoLayerOpacitySlider
      * @description
      * Adds an opacity slider to the map and attaches it to selected layer
      * @param {string} layersId - The ID of the layer

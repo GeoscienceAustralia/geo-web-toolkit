@@ -6,7 +6,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.ui.directives:gaLayerInteractionToggle
+     * @name geowebtoolkit.ui.directives:geoLayerInteractionToggle
      * @param {string} toggleIconSource - A string value of toggle button's icon URL
      * @param {object} mapController - controller instance for the map
      * @param {string} controllerEmitEventName - event that is fired that passes the controller
@@ -24,7 +24,7 @@
      * <div ng-controller="ourMapController">
      *         <div class="toolber">
      <geo-layer-interaction-toggle
-     toggle-icon-source="//np.ga.gov.au/gamaps/resources/img/Layers.png"
+     toggle-icon-source="//np.ga.gov.au/geoMaps/resources/img/Layers.png"
      controller-emit-event-name="toggleInteractionEvent"
      map-controller="mapController"
      layer-interaction-id="layers[1].id"

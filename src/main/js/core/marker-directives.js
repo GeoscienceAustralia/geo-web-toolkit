@@ -10,7 +10,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.core.marker-directives:gaMapMarker
+     * @name geowebtoolkit.core.marker-directives:geoMapMarker
      * @param {string|@} markerIcon - Marker icon url
      * @param {string|@} markerLat - Latitude for the marker
      * @param {string|@} markerLong - Longitude for the marker
@@ -21,7 +21,7 @@
      * A wrapper for a native map marker
      * @scope
      * @restrict E
-     * @require gaMap
+     * @require geoMap
      * @example
      */
     app.directive('geoMapMarker', ['$log','$timeout','GeoLayerService', function ($log,$timeout,GeoLayerService) {

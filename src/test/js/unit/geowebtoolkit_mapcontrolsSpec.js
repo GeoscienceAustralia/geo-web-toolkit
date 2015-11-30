@@ -12,7 +12,7 @@ var afterEach = afterEach || {};
  var waitsFor = waitsFor || {};*/
 //JSLint Initialisers
 describe(
-	'geowebtoolkit ga-map-control tests',
+	'geowebtoolkit geo-map-control tests',
 	function () {
 		"use strict";
 		var $compile, $scope, $timeout, element, listener;
@@ -35,7 +35,7 @@ describe(
 
             $scope.activatePermalink = true;
 			element = angular
-				.element('<geo-map map-element-id="gamap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
+				.element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
 					'<geo-map-layer layer-name="Australian Landsat Mosaic"' +
 					'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
 					'wrap-date-line="true"' +
@@ -52,7 +52,7 @@ describe(
 					'<geo-map-control map-control-name="mouseposition"></geo-map-control>' +
 					'<geo-map-control map-control-name="measureline" map-control-id="myMeasureTest"></geo-map-control>' +
 					'<geo-map-control map-control-name="measurepolygon" ></geo-map-control>' +
-					'<div id="gamap"></div></geo-map>');
+					'<div id="geomap"></div></geo-map>');
 			$compile(element)($scope);
 			$scope.$digest();
 

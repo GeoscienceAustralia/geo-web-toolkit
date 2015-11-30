@@ -6,10 +6,10 @@ var OpenLayers = OpenLayers || {};
 var app = angular.module('geowebtoolkit.core.map-directives', [ 'geowebtoolkit.core.map-services', 'geowebtoolkit.core.layer-services' ]);
 /**
  * @ngdoc directive
- * @name geowebtoolkit.core.map-directives:gaMap
+ * @name geowebtoolkit.core.map-directives:geoMap
  * @description
  * ## Overview ##
- * gaMap directive is used to create a map.
+ * geoMap directive is used to create a map.
  * @param {string|@} mapElementId - The id of the element where the map is to be rendered
  * @param {string|@} datumProjection - A value representing the Datum Projection, eg 'EPSG:4326'
  * @param {string|@} displayProjection - A value representing the Display Projection, eg 'EPSG:4326'
@@ -101,11 +101,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             var self = this;
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#addLayer
+             * @name geowebtoolkit.core.map-directives:geoMap#addLayer
              * @description
              * Adds a layer to the underlying mapInstance calling the appropriate implementation specific service.
              * @param {*} layer - An implementation object for a layer, eg an olv2 layer object
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @return {Layer} - layer object representing implementation.
              * @example
              * <code><pre>
@@ -210,10 +210,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#zoomToMaxExtent
+             * @name geowebtoolkit.core.map-directives:geoMap#zoomToMaxExtent
              * @description
              * Zooms to the maximum extent of the map
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @example
              * <example module="zoomToMax">
              * <file name="zoomToMax.html">
@@ -246,10 +246,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#currentZoomLevel
+             * @name geowebtoolkit.core.map-directives:geoMap#currentZoomLevel
              * @description
              * Gets the current zoom level of the map
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @return {Number} - Zoom level.
              * @example
              * <example module="currentZoomLevel">
@@ -282,11 +282,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#registerMapMouseMove
+             * @name geowebtoolkit.core.map-directives:geoMap#registerMapMouseMove
              * @description
              * Registers a mouse movement event and calls provided callback.
              * Event details coming back will be implementation specific
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {function} callback - callback function that fires when the mouse move event occurs.
              * @example
              * <example module="mapMouseMove">
@@ -359,10 +359,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#registerMapMouseMoveEnd
+             * @name geowebtoolkit.core.map-directives:geoMap#registerMapMouseMoveEnd
              * @description
              * Registers an event callback with mapInstance when the mouse stops moving over the map
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {function} callback - callback function that fires when the mouse move end event occurs.
              * @example
              * <example module="mapMouseMoveEnd">
@@ -443,11 +443,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#registerMapClick
+             * @name geowebtoolkit.core.map-directives:geoMap#registerMapClick
              * @description
              * Registers an event that will fire when the rendered map is clicked.
              * Event details coming back will be implementation specific
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {function} callback - callback function that fires when the map is clicked.
              * @example
              * <example module="mouseMapClick">
@@ -526,10 +526,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#unRegisterMapClick
+             * @name geowebtoolkit.core.map-directives:geoMap#unRegisterMapClick
              * @description
              * Unregisters a map click event from the map instance.
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {function} callback - callback function that was originally registered.
              * @example
              * <example module="unRegisterMouseMapClick">
@@ -617,10 +617,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#addControl
+             * @name geowebtoolkit.core.map-directives:geoMap#addControl
              * @description
              * Creates and adds a control to the map instance
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {string} controlName - the name of the type of control to be created
              * @param {Object} controlOptions - an objet with implementation specific controlOptions
              * @param {string=} elementId - a DOM element to add the control to.
@@ -659,10 +659,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getLonLatFromPixel
+             * @name geowebtoolkit.core.map-directives:geoMap#getLonLatFromPixel
              * @description
              * Gets a latlon object from implementation service
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {Number} x - number of pixels from the left of the div containing the map
              * @param {Number} y - number of pixels from the top of the div containing the map
              * @param {string} projection - a projection to convert to from the maps projection
@@ -744,10 +744,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getPixelFromLonLat
+             * @name geowebtoolkit.core.map-directives:geoMap#getPixelFromLonLat
              * @description
              * Gets a latlon object from implementation service
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {Number} lon - The latitude of the location to transform
              * @param {Number} lat - The longitude of the location to transform
              * @return {Point} - An object containing Latitude and Longitude in the projection of the map
@@ -760,10 +760,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getPointFromEvent
+             * @name geowebtoolkit.core.map-directives:geoMap#getPointFromEvent
              * @description
              * Extracts a point from an event coming from implementation service layer.
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {Object} event - An event from implementation, eg OpenLayers,
              * worked out from number of pixels from the left of the div containing the map
              * @return {Point} - A point object extracted from the event.
@@ -773,10 +773,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getLayers
+             * @name geowebtoolkit.core.map-directives:geoMap#getLayers
              * @description
              * Gets all the layers currently associated with the map instance
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @return {Layer[]} - An array of layers currently on the map
              * @example
              * <code><pre>var layers = $scope.mapController.getLayers();
@@ -814,11 +814,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getLayersByName
+             * @name geowebtoolkit.core.map-directives:geoMap#getLayersByName
              * @description
              * Finds and returns the layer's details by its name
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
-             * @param {string} LayerName - The name of the layer, which is defined on gaMapLayer directive
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
+             * @param {string} LayerName - The name of the layer, which is defined on geoMapLayer directive
              * @return {Layer[]} - An array of layers currently on the map
              * @example
              * <code><pre>var layers = $scope.mapController.getLayers();
@@ -855,10 +855,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#zoomToLayer
+             * @name geowebtoolkit.core.map-directives:geoMap#zoomToLayer
              * @description
              * If possible, performs an action to zoom in on the extent of a layer associated with Id
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {string} layerId - Id of the layer to zoom too.
              * @example
              * <code><pre>var layers = $scope.mapController.getLayers();
@@ -896,10 +896,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getProjection
+             * @name geowebtoolkit.core.map-directives:geoMap#getProjection
              * @description
              * Get original datum projection provided to the map on initialisation, eg $scope.datumProjection
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @return {string} Returns the projection value in string format
              * @example
              * <example module="getMapProjection">
@@ -959,10 +959,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             /**
              *
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#getDisplayProjection
+             * @name geowebtoolkit.core.map-directives:geoMap#getDisplayProjection
              * @description
              * Get original datum projection provided to the map on initialisation, eg $scope.datumProjection
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @return {string} Returns the projection value in string format
              * @example
              * <example module="getDisplayProjection">
@@ -1026,10 +1026,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#setLayerVisibility
+             * @name geowebtoolkit.core.map-directives:geoMap#setLayerVisibility
              * @description
              * Changes the associated layerId visibility
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {string} layerId - Id of the layer
              * @param {boolean} visibility - Boolean indicating if the layer should be hidden(false) or shown(true)
              * @example
@@ -1098,10 +1098,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#zoomTo
+             * @name geowebtoolkit.core.map-directives:geoMap#zoomTo
              * @description
              * Sets the zoom level of the map
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {number} zoomLevel - A number value to be used as zoom level
 
              * @example
@@ -1138,10 +1138,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#setBaseLayer
+             * @name geowebtoolkit.core.map-directives:geoMap#setBaseLayer
              * @description
              * Changes the current base layer to the layer associated with the Id provided
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {string} layerId - id of the new base layer.
              * @example
              * <example module="setBaseLayer">
@@ -1217,10 +1217,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#setCenter
+             * @name geowebtoolkit.core.map-directives:geoMap#setCenter
              * @description
              * Changes the centred position of the map to the provided lat, lon
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {Number} lat - Latitude value to move the view too.
              * @param {Number} lon - Longitude value to move the view too.
              * @param {String} projection - Projection of {LonLat}
@@ -1300,11 +1300,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#isBaseLayer
+             * @name geowebtoolkit.core.map-directives:geoMap#isBaseLayer
              * @description
              * Returns true if layer with the associated Id is a base layer
              * @param {string} layerId - Id of the layer
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @example
              * <code><pre>anogular.module("ourMapApp", ["geowebtoolkit.core"])
              * .controller("ourAppController",["$scope", function($scope) {
@@ -1362,11 +1362,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#setOpacity
+             * @name geowebtoolkit.core.map-directives:geoMap#setOpacity
              * @description 
              * Changes the opacity of the associated layer to the value provided (Number between 0 and 1.0
              * <br>This function only works on non-base layers
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              * @param {string} layerId - Id of the layer
              * @param {Number} opacity - Value between 0 and 1.0 representing the layer's new opacity.
              * @example
@@ -1407,7 +1407,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                 GeoMapService.setOpacity($scope.mapInstance, layerId, opacity, $scope.framework);
             };
             /**
-             * Returns the map element Id that was originally passed to gaMap
+             * Returns the map element Id that was originally passed to geoMap
              *
              * @return {string}
              * */
@@ -1416,11 +1416,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             };
             /**
              * @ngdoc method
-             * @name geowebtoolkit.core.map-directives:gaMap#setMapMarker
+             * @name geowebtoolkit.core.map-directives:geoMap#setMapMarker
              * @description
              * Adds a marker to an existing marker group/layer or creates a new group/layer to add
              * the marker too.
-             * @methodOf geowebtoolkit.core.map-directives:gaMap
+             * @methodOf geowebtoolkit.core.map-directives:geoMap
              *
              * @param {Point} point - screen point to place the marker
              * @param {string} markerGroupName - group name associated with the new marker
@@ -1749,7 +1749,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                     return 'olv3';
                 }
             };
-            $scope.gaMap = self;
+            $scope.geoMap = self;
 
             /**
              * @function
@@ -1808,11 +1808,11 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 				//Wait for digestion
 				$timeout(function () {
                     $log.info('map destruction finishing...');
-                    $log.info('removing ' + $scope.gaMap.getLayers().length +' layers...');
-                    var allLayers = $scope.gaMap.getLayers();
+                    $log.info('removing ' + $scope.geoMap.getLayers().length +' layers...');
+                    var allLayers = $scope.geoMap.getLayers();
                     for (var i = 0; i < allLayers.length; i++) {
                         var layer = allLayers[i];
-                        $scope.gaMap.removeLayerById(layer.id);
+                        $scope.geoMap.removeLayerById(layer.id);
                     }
 				});
             });
@@ -1861,7 +1861,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
                 scope.layersReady = true;
                 if(!scope.existingMapInstance) {
-                    scope.gaMap.setInitialPositionAndZoom();
+                    scope.geoMap.setInitialPositionAndZoom();
                 }
             }
 		},

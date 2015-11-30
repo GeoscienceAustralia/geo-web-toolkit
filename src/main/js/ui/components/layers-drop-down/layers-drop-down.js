@@ -6,7 +6,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.ui.directives:gaLayersDropDown
+     * @name geowebtoolkit.ui.directives:geoLayersDropDown
      * @description
      * This control displays a select box of layers and on change, notify via event. Used in a
      * restricted group of layers. Used for selecting between a list of mutually exclusive layers.

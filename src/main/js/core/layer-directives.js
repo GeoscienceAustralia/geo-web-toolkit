@@ -6,10 +6,10 @@ var app = angular.module('geowebtoolkit.core.layer-directives', [ 'geowebtoolkit
 
 /**
  * @ngdoc directive
- * @name geowebtoolkit.core.layer-directives:gaMapLayer
+ * @name geowebtoolkit.core.layer-directives:geoMapLayer
  * @description
  * ## Overview ##
- * gaMapLayer adds layer to the page. This tag should be placed within the gaMap tag
+ * geoMapLayer adds layer to the page. This tag should be placed within the geoMap tag
  * @param {string|@} layerAttribution - The id of the element where the map is to be rendered
  * @param {string|@} layerName - A name allocated to the layer for future reference
  * @param {string|@} layerUrl - A string value that defines the URL from which the content of the layer will be loaded.
@@ -21,7 +21,7 @@ var app = angular.module('geowebtoolkit.core.layer-directives', [ 'geowebtoolkit
      <li>arcgiscache</li>
      <li>xyzfilecache</li>
  </ul>
- * <font color="red">Note:</font> This directive does not support WFS type. In order to request for WFS type <a href="#/api/geowebtoolkit.core.feature-directives:gaFeatureLayer">gaFeatureLayer</a> should be used.
+ * <font color="red">Note:</font> This directive does not support WFS type. In order to request for WFS type <a href="#/api/geowebtoolkit.core.feature-directives:geoFeatureLayer">geoFeatureLayer</a> should be used.
  * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
  *@param {string|@} visibility -  A boolean value ('true', 'false') for toggling layer on/off 
  *@param {string|@} isBaseLayer -  A boolean value ('true', 'false') telling the server if this layer is base layer or not 
@@ -33,7 +33,7 @@ var app = angular.module('geowebtoolkit.core.layer-directives', [ 'geowebtoolkit
      <li>setOpacity</li>
  </ul>
  *
- * @reqires gaMap
+ * @reqires geoMap
  * @scope
  * @restrict E
  * @example

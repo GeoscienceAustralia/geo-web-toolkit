@@ -2,7 +2,7 @@
 (function () {
     "use strict";
     describe(
-        'OpenLayers v3 "ga-map" implementation tests',
+        'OpenLayers v3 "geo-map" implementation tests',
         function () {
             var $compile,
                 $scope,

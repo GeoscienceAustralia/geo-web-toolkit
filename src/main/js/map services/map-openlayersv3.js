@@ -63,9 +63,9 @@
 
             var service = {
                 /**
-                 * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
-                 * 'geowebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
-                 * @param args {Object} - arguments passed from ga-map directive
+                 * Initialises/Creates map object providing applications defaults from 'geoConfig' module provided by
+                 * 'geowebtoolkit.services' module, or application above, and attributes passed to geoMap directive.
+                 * @param args {Object} - arguments passed from geo-map directive
                  * @param mapConfig {Object} - defaults passed from either toolkit or overridden in consuming application
                  * */
                 initialiseMap: function (args, mapConfig) {
@@ -599,7 +599,7 @@
                 },
                 /**
                  * Gets the current list of layers in the map instance and returns as Layer type (geo-web-toolkit DTO)
-                 * @param {Object} mapInstance - the map instance that ga-map directive holds, implementation specific
+                 * @param {Object} mapInstance - the map instance that geo-map directive holds, implementation specific
                  * @returns {Layer[]}
                  * */
                 getLayers: function (mapInstance) {
@@ -630,7 +630,7 @@
                 },
                 /**
                  * Updated the layer visibility on the map instance via the provided layerId
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param layerId {string} - unique ID of the layer to set the new visibility
                  * @param visibility {Boolean} - true or false indicating if the layer is to be visible or not
                  * */
@@ -643,7 +643,7 @@
                 },
                 /**
                  * Methods that takes a geoJson coordinates array and returns OpenLayers boundingbox
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param geoJsonCoordinateArray {geoJsonCoordinates} - array of geoJson coordinates
                  * @return {Object} - OpenLayers bounding box
                  * */
@@ -658,7 +658,7 @@
                 },
                 /**
                  * Method that takes a geoJson coordinates array and returns OpenLayers.Bounds
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param geoJsonCoordinateArray {geoJsonCoordinates} - array of geoJson coordinates
                  * @param projection {string} - projection that the provided coordinates are in
                  * @returns {Object} - OpenLayers.Bounds object
@@ -678,7 +678,7 @@
                 /**
                  * Zooms to a specified extent
                  * //TODO What is common data structure for 'extent' object, current takes OpenLayers bounds
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param extent {[][]} - extent, eg [[10,10],[5,5]]
                  * @example
                  * var bounds = mapController.createBounds([[100.0,-20.0],[160.0,-20.0],[100.0,-40.0],[160.0,-40.0]]);
@@ -707,7 +707,7 @@
                 },
                 /**
                  * Sets a new zoom level of on the map instance
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param zoomLevel {Number} - zoom level between 1-19, not all zoom levels are valid for every map.
                  * */
                 zoomTo: function (mapInstance, zoomLevel) {
@@ -731,7 +731,7 @@
                 },
                 /**
                  * Changes base layer to specified layer ID
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param layerId {string} - ID of the layer that is to be the new base layer
                  * */
                 setBaseLayer: function (mapInstance, layerId) {
@@ -748,7 +748,7 @@
                 /**
                  * Updates the maps view to center on the lon/lat provided.
                  * Assumed same projection unless projection provided.
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive.
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive.
                  * @param lat {Number} - Latitude of the new centre position.
                  * @param lon {Number} - Longitude of the new centre position.
                  * @param projection {string} - Projection of the provided lat and lon.
@@ -822,7 +822,7 @@
                 },
                 /**
                  * Updates the layer with the specified layerId with the provided opacity
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive.
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive.
                  * @param layerId {string} - ID of the layer to have opacity updated.
                  * @param opacity {Number} - new opacity value between 0 and 1.0.
                  * */
@@ -835,7 +835,7 @@
                 },
                 /**
                  * Updates all layers as the map contains size has been changed.
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive.
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive.
                  * */
                 mapResized: function (mapInstance) {
                     mapInstance.updateSize();
@@ -902,7 +902,7 @@
                     }
                 },
                 getLonLatFromPixel: function (mapInstance, x, y, projection) {
-                    //TODO return gaMaps data structure, eg obj = { lat: Number,lon: Number }
+                    //TODO return geoMaps data structure, eg obj = { lat: Number,lon: Number }
                     //If olv2 returns this structure then, should a new object get created instead
                     //of reference to olv2 obj?
                     if (x == null) {
