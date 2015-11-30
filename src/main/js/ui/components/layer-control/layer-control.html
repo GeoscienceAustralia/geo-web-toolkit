@@ -1,9 +1,9 @@
-<label for="{{elementId}}" class="checkbox gaLayerControlLabel">
+<label for="{{elementId}}" class="checkbox geoLayerControlLabel">
     <input id="{{elementId}}" type="checkbox" ng-model="layerData.visibility" ng-click="layerClicked()"
            ng-disabled="layerDisabled"/>{{layerData.name}}
 </label>
-<div class="gaLayerControlTransclude" ng-transclude></div>
-<div ng-show="layerData.visibility" class="gaLayerControlSliderContainer">
+<div class="geoLayerControlTransclude" ng-transclude></div>
+<div ng-show="layerData.visibility" class="geoLayerControlSliderContainer">
     <geo-layer-opacity-slider
             map-controller="mapController"
             layer-opacity="layerData.opacity"

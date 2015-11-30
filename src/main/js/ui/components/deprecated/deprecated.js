@@ -11,19 +11,19 @@
             templateUrl:'src/main/js/ui/components/deprecated/dialog-toggle.html',
             transclude: true,
             scope: {
-                gaDialogController: '=',
-                gaToggleClicked: '&'
+                geoDialogController: '=',
+                geoToggleClicked: '&'
             },
             link: function ($scope) {
                 $scope.toggleDialog = function () {
-                    var dialogOpen = !$scope.gaDialogController.isClosed();
+                    var dialogOpen = !$scope.geoDialogController.isClosed();
                     if (!dialogOpen) {
-                        $scope.gaDialogController.openDialog();
+                        $scope.geoDialogController.openDialog();
                     } else {
-                        $scope.gaDialogController.closeDialog();
+                        $scope.geoDialogController.closeDialog();
                     }
-                    $scope.gaToggleClicked({
-                        dialogController: $scope.gaDialogController
+                    $scope.geoToggleClicked({
+                        dialogController: $scope.geoDialogController
                     });
                 };
             }

@@ -27,7 +27,7 @@
 <!--</geo-map>-->
 <geo-layer-control ng-if="mapController != null" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController"></geo-layer-control>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core', 'gawebtoolkit.ui', 'ui.utils']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core', 'geowebtoolkit.ui', 'ui.utils']);
     app.controller('mainController', ['$scope', function ($scope) {
 
         $scope.$on('mapControllerReady', function (event, mapController) {

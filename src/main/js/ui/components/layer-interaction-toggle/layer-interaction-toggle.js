@@ -157,16 +157,16 @@
 
                 $scope.activate = function () {
                     $scope.mapController.registerMapClick(callback);
-                    $element.removeClass('gaUiToggleOff');
-                    $element.addClass('gaUiToggleOn');
+                    $element.removeClass('geoUiToggleOff');
+                    $element.addClass('geoUiToggleOn');
                     $scope.isToggleOn = true;
                     $scope.toggleOnCallback();
 
                 };
                 $scope.deactivate = function () {
                     $scope.mapController.unRegisterMapClick(callback);
-                    $element.removeClass('gaUiToggleOn');
-                    $element.addClass('gaUiToggleOff');
+                    $element.removeClass('geoUiToggleOn');
+                    $element.addClass('geoUiToggleOff');
                     $scope.isToggleOn = false;
                     $scope.toggleOffCallback();
                 };

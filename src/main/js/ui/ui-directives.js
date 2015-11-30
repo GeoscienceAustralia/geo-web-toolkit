@@ -88,11 +88,11 @@ app.directive('geoToggle', [ function () {
         template: templateCache,
         transclude: true,
         scope: {
-            gaToggleClicked: '&'
+            geoToggleClicked: '&'
         },
         link: function ($scope) {
             $scope.toggle = function () {
-                $scope.gaToggleClicked();
+                $scope.geoToggleClicked();
             };
         }
     };

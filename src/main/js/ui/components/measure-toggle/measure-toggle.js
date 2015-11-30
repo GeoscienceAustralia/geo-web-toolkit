@@ -53,16 +53,16 @@
                     $scope.mapController.activateControl($scope.mapControlId);
                     $scope.mapController.registerControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
                     $scope.mapController.registerControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
-                    $element.removeClass('gaUiToggleOff');
-                    $element.addClass('gaUiToggleOn');
+                    $element.removeClass('geoUiToggleOff');
+                    $element.addClass('geoUiToggleOn');
                     $scope.toggleOnCallback();
                 };
                 $scope.deactivate = function () {
                     $scope.mapController.deactivateControl($scope.mapControlId);
                     $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
                     $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
-                    $element.removeClass('gaUiToggleOn');
-                    $element.addClass('gaUiToggleOff');
+                    $element.removeClass('geoUiToggleOn');
+                    $element.addClass('geoUiToggleOff');
                     $scope.toggleOffCallback();
                 };
                 $scope.handleToggle = function () {

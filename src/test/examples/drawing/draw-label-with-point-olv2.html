@@ -23,7 +23,7 @@
 <label for="labelText">Label Text</label>
 <input type="text" ng-model="labelText" ng-change="updateLabel()" id="labelText"/>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core']);
     app.controller('mainController', ['$scope', function ($scope) {
         $scope.drawTypes = ['None', 'Point','LineString'];
         $scope.update = function () {

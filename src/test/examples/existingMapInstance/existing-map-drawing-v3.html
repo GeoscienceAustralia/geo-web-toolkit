@@ -25,7 +25,7 @@
 <select id="selectDrawingType" name="selectDrawingType" ng-init="selectedItem = drawTypes[0]" ng-options="drawType as drawType for drawType in drawTypes" ng-change="update()"
         ng-model="selectedItem"></select>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core']);
     app.controller('mainController', ['$scope', function ($scope) {
         $scope.drawTypes = ['None', 'Point','LineString'];
         $scope.update = function () {

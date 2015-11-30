@@ -6,7 +6,7 @@
 
     /**
      * @ngdoc directive
-     * @name geowebtoolkit.core.vendor-layers:gaBingLayer
+     * @name geowebtoolkit.core.vendor-layers:geoBingLayer
      * @description
      * ## Overview ##
      * gaGoogleLayer directive is used to create a Bing map.
@@ -85,7 +85,7 @@
                         $log.info('Bing ' + layerOptions.layerType + ' - constructing...');
 
                         if(layerOptions.bingApiKey == null) {
-                            throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the ga-bing-layer attribute 'bing-api-key'");
+                            throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the geo-bing-layer attribute 'bing-api-key'");
                         }
                         layer = GeoLayerService.createBingLayer(layerOptions,$scope.framework);
                         //Async layer add
@@ -137,7 +137,7 @@
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
                             if(layerOptions.bingApiKey == null) {
-                                throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the ga-bing-layer attribute 'bing-api-key'");
+                                throw new Error("Missing Bing Maps API key. Please provide your valid Bing Maps API key using the geo-bing-layer attribute 'bing-api-key'");
                             }
                             layer = GeoLayerService.createBingLayer(layerOptions,$scope.framework);
                             //Async layer add

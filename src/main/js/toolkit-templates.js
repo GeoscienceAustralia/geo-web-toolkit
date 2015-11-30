@@ -87,7 +87,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
 
 
   $templateCache.put('src/main/js/ui/components/layer-control/layer-control.html',
-    "<label for=\"{{elementId}}\" class=\"checkbox gaLayerControlLabel\">\r" +
+    "<label for=\"{{elementId}}\" class=\"checkbox geoLayerControlLabel\">\r" +
     "\n" +
     "    <input id=\"{{elementId}}\" type=\"checkbox\" ng-model=\"layerData.visibility\" ng-click=\"layerClicked()\"\r" +
     "\n" +
@@ -95,9 +95,9 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
     "\n" +
     "</label>\r" +
     "\n" +
-    "<div class=\"gaLayerControlTransclude\" ng-transclude></div>\r" +
+    "<div class=\"geoLayerControlTransclude\" ng-transclude></div>\r" +
     "\n" +
-    "<div ng-show=\"layerData.visibility\" class=\"gaLayerControlSliderContainer\">\r" +
+    "<div ng-show=\"layerData.visibility\" class=\"geoLayerControlSliderContainer\">\r" +
     "\n" +
     "    <geo-layer-opacity-slider\r" +
     "\n" +
@@ -121,7 +121,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
 
 
   $templateCache.put('src/main/js/ui/components/layer-interaction-toggle/layer-interaction-toggle.html',
-    "<button ng-click=\"toggleClicked()\" class=\"gaUiToggleOff\" type=\"button\">\r" +
+    "<button ng-click=\"toggleClicked()\" class=\"geoUiToggleOff\" type=\"button\">\r" +
     "\n" +
     "    <div ng-transclude></div>\r" +
     "\n" +
@@ -143,7 +143,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
 
 
   $templateCache.put('src/main/js/ui/components/measure-toggle/measure-toggle.html',
-    "<button type=\"button\" ng-click=\"handleToggle()\" class=\"gaUiToggleOff\">\r" +
+    "<button type=\"button\" ng-click=\"handleToggle()\" class=\"geoUiToggleOff\">\r" +
     "\n" +
     "    <span ng-transclude></span>\r" +
     "\n" +

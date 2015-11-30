@@ -20,7 +20,7 @@
     <geo-map-layer layer-name="Simple map layer name" layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer" is-base-layer="true" layer-type="XYZTileCache">
 </geo-map>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core']);
     app.controller('mainController', ['$scope', function ($scope) {
         $scope.$on('mapControllerReady', function (event, mapController) {
             $scope.mapController = mapController;

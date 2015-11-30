@@ -27,7 +27,7 @@
         ng-model="selectedItem" ng-change="update()">
 </select>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core']);
     app.controller('mainController', ['$scope', function ($scope) {
         $scope.drawTypes = ['None', 'Point','LineString'];
         $scope.update = function () {
