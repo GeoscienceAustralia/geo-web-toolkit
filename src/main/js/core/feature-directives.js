@@ -1240,7 +1240,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
     } ]);
 /**
  * @ngdoc directive
- * @name geowebtoolkit.core.feature-directives:gaFeature
+ * @name geowebtoolkit.core.feature-directives:geoFeature
  *
  * @description
  * Wrapper for a native wfs layer<br>

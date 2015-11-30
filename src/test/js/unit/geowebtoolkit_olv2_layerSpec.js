@@ -306,7 +306,7 @@
 //		});
         });
     describe(
-        'OpenLayers v2.1.13 "ga-feature-layer" implementation tests',
+        'OpenLayers v2.1.13 "geo-feature-layer" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, listener;
 
