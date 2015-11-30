@@ -3,7 +3,7 @@
     "use strict";
 
     describe(
-        'gawebtoolkit ga-map controller interface tests',
+        'geowebtoolkit ga-map controller interface tests',
         function() {
             var $compile, $scope, $timeout, element, listener;
 

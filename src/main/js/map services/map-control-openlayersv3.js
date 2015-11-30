@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.controls.openlayersv3', [ ]);
+    var app = angular.module('geowebtoolkit.mapservices.controls.openlayersv3', [ ]);
 
     app.service('olv3MapControls', [function () {
         var supportControls = [

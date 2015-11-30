@@ -3,9 +3,9 @@ var console = console || {};
 var $ = $ || {};
 var google = google || {};
 
-angular.module('gawebtoolkit.ui', [ 'gawebtoolkit.ui.directives','gawebtoolkit.ui.templates','gawebtoolkit.ui.components', 'ui.utils', 'gawebtoolkit.utils' ]);
+angular.module('geowebtoolkit.ui', [ 'geowebtoolkit.ui.directives','geowebtoolkit.ui.templates','geowebtoolkit.ui.components', 'ui.utils', 'geowebtoolkit.utils' ]);
 
-var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ]);
+var app = angular.module('geowebtoolkit.ui.directives', [ 'geowebtoolkit.utils' ]);
 
 
 /**

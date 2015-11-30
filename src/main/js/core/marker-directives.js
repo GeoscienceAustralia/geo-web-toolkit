@@ -1,16 +1,16 @@
 /* global angular */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.core.marker-directives',
+    var app = angular.module('geowebtoolkit.core.marker-directives',
         [
-            'gawebtoolkit.core.map-directives',
-            'gawebtoolkit.core.map-services',
-            'gawebtoolkit.core.layer-services'
+            'geowebtoolkit.core.map-directives',
+            'geowebtoolkit.core.map-services',
+            'geowebtoolkit.core.layer-services'
         ]);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.core.marker-directives:gaMapMarker
+     * @name geowebtoolkit.core.marker-directives:gaMapMarker
      * @param {string|@} markerIcon - Marker icon url
      * @param {string|@} markerLat - Latitude for the marker
      * @param {string|@} markerLong - Longitude for the marker

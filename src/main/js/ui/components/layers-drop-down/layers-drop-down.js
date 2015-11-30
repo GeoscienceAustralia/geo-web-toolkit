@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.layers-drop-down', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.layers-drop-down', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayersDropDown
+     * @name geowebtoolkit.ui.directives:gaLayersDropDown
      * @description
      * This control displays a select box of layers and on change, notify via event. Used in a
      * restricted group of layers. Used for selecting between a list of mutually exclusive layers.

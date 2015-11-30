@@ -2,10 +2,10 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.vendor.google-layers', ['gawebtoolkit.core.layer-services']);
+    var app = angular.module('geowebtoolkit.vendor.google-layers', ['geowebtoolkit.core.layer-services']);
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.core.vendor-layers:gaGoogleLayer
+     * @name geowebtoolkit.core.vendor-layers:gaGoogleLayer
      * @description
      * ## Overview ##
      * gaGoogleLayer directive is used to create a Google map.
@@ -22,7 +22,7 @@
      </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
-     <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+     <file name="script.js">var app = angular.module('simpleMap',['geowebtoolkit.core']);</file>
      </example>
      */
     app.directive('geoGoogleLayer', ['$timeout', '$compile', 'GeoLayerService', '$log',

@@ -1,12 +1,12 @@
 /* global angular, $ */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.layer-control', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.layer-control', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayerControl
+     * @name geowebtoolkit.ui.directives:gaLayerControl
      * @description
      * A control for turning on/off layers via provided '=mapController' as well as opacity slider
      * @param {Layer[]} layersData - Layers that the toolbar will interact with
@@ -55,7 +55,7 @@
      * </div>
      * </file>
      * <file name="mapWithUIController.js">
-     * var app = angular.module('mapWithUIController',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     * var app = angular.module('mapWithUIController',['geowebtoolkit.core', 'geowebtoolkit.ui']);
      * app.controller("ourMapController",["$scope", function($scope) {
  *       $scope.$on("mapControllerReady", function(event, args) {
  *           $scope.mapController = args;

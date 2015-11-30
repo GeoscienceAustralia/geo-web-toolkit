@@ -1,6 +1,6 @@
 /* global angular, $, describe, jasmine, beforeEach, it, expect, module, inject */
 describe(
-    'gawebtoolkit ga-map controller interface tests',
+    'geowebtoolkit ga-map controller interface tests',
     function () {
         "use strict";
         var $compile, $scope, $timeout, element, listener;
@@ -168,7 +168,7 @@ describe(
         });
     });
 describe(
-    'gawebtoolkit core directives unit tests',
+    'geowebtoolkit core directives unit tests',
     function () {
         'use strict';
         var $compile, $scope, element, layersReadyListener, $timeout;

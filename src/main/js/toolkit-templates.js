@@ -1,4 +1,4 @@
-angular.module('gawebtoolkit.ui.templates', []).run(['$templateCache', function($templateCache) {
+angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('src/main/js/ui/components/base-layer-selector/base-layer-selector.html',

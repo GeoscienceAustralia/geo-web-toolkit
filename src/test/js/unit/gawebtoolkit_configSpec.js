@@ -13,7 +13,7 @@ var jasmine = jasmine || {};
 /* var waitsFor = waitsFor || {};*/
 //JSLint Initialisers
 describe(
-	'gawebtoolkit config component tests',
+	'geowebtoolkit config component tests',
 	function () {
 		'use strict';
 		var $compile, $scope, element, $httpBackend, preConfigListener,listener;
@@ -146,7 +146,7 @@ describe(
 			expect(listener).toHaveBeenCalledWith($scope.finalTestConfig);
 		});
 	});
-describe('gawebtoolkit config component tests - pre and post config hooks',
+describe('geowebtoolkit config component tests - pre and post config hooks',
 	function () {
 		'use strict';
 		var $compile, $scope, element, $httpBackend, preConfigListener, listener, postConfigListener;

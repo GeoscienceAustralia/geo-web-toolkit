@@ -3,7 +3,7 @@ var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
 var darwin = darwin || {};
-var app = angular.module('gawebtoolkit.mapservices.controls.openlayersv2', [ ]);
+var app = angular.module('geowebtoolkit.mapservices.controls.openlayersv2', [ ]);
 
 app.service('olv2MapControls', [function () {
 	"use strict";

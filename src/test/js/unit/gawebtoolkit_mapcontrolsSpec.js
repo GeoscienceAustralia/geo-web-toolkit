@@ -12,7 +12,7 @@ var afterEach = afterEach || {};
  var waitsFor = waitsFor || {};*/
 //JSLint Initialisers
 describe(
-	'gawebtoolkit ga-map-control tests',
+	'geowebtoolkit ga-map-control tests',
 	function () {
 		"use strict";
 		var $compile, $scope, $timeout, element, listener;

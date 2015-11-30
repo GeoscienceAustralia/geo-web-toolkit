@@ -2,16 +2,16 @@ var angular = angular || {};
 var jQuery = jQuery || {};
 var console = console || {};
 
-var app = angular.module('gawebtoolkit.config', []);
+var app = angular.module('geowebtoolkit.config', []);
 /**
  * @ngdoc directive
- * @name gawebtoolkit.config.directives:gaMapConfig
+ * @name geowebtoolkit.config.directives:gaMapConfig
  * @description
  * ## Overview ##
  * gaMapConfig directive is used for loading a configuration file in JSON format and a "template" HTML file. These two will be used as our data and view layers.
  *  <p><span class="note">NOTE: </span>Follwing items should be considered when using gaMapConfig:</p>
  <ul>
-     <li>'gawebtoolkit.config' must be referenced and loaded when creating our AngularJS application</li>
+     <li>'geowebtoolkit.config' must be referenced and loaded when creating our AngularJS application</li>
      <li>A controller should be created attached to our AngularJS application, this controller will trigger an event which injects our configuration (loaded in page in JSON format) to the scope as a JavaScript object</li>
      <li>By calling defined controller within our app element in HTML, all the configuration will be accessible. Controller can be called in the template file or in the main application's HMTL codes</li>
  </ul>
@@ -35,7 +35,7 @@ var app = angular.module('gawebtoolkit.config', []);
         .note {color: red; font-weight: bold}
      </file>
      <file name="script.js">
-         var app = angular.module('simpleMapWithConfig',['gawebtoolkit.core','gawebtoolkit.config']);
+         var app = angular.module('simpleMapWithConfig',['geowebtoolkit.core','geowebtoolkit.config']);
          app.controller('ourConfigController', function ($scope) { 
             $scope.$on('configDataLoaded', function(event,args){ 
                 $scope.myConfig = args;

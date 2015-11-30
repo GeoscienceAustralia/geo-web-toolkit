@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.layer-interaction-toggle',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.layer-interaction-toggle',['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayerInteractionToggle
+     * @name geowebtoolkit.ui.directives:gaLayerInteractionToggle
      * @param {string} toggleIconSource - A string value of toggle button's icon URL
      * @param {object} mapController - controller instance for the map
      * @param {string} controllerEmitEventName - event that is fired that passes the controller
@@ -69,7 +69,7 @@
      *
      * <file name="layerInteractionToggle.js">
      *      var app = angular.module('layerInteractionToggle',
-     ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     ['geowebtoolkit.core', 'geowebtoolkit.ui']);
      app.controller("ourMapController",["$scope", function($scope) {
                 $scope.$on("mapControllerReady", function(event, args) {
                     $scope.mapController = args;

@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.opacity-slider', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.opacity-slider', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayerOpacitySlider
+     * @name geowebtoolkit.ui.directives:gaLayerOpacitySlider
      * @description
      * Adds an opacity slider to the map and attaches it to selected layer
      * @param {string} layersId - The ID of the layer
@@ -48,7 +48,7 @@
      * </div>
      * </file>
      * <file name="mapWithUISlider.js">
-     * var app = angular.module('mapWithUISlider',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     * var app = angular.module('mapWithUISlider',['geowebtoolkit.core', 'geowebtoolkit.ui']);
      * app.controller("ourMapController",["$scope", function($scope) {
  *       $scope.$on("mapControllerReady", function(event, args) {
  *           $scope.mapController = args;

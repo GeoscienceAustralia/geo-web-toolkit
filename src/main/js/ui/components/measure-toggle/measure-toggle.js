@@ -2,7 +2,7 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.measure-toggle', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.measure-toggle', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
     /**
      *
      * */

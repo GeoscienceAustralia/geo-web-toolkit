@@ -1,7 +1,7 @@
 /* global angular, $, ol */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.events-openlayers3',[]);
+    var app = angular.module('geowebtoolkit.events-openlayers3',[]);
 
     app.service('ol3CesiumEventManager', [function () {
         function updateToolkitMapInstanceProperty(mapInstance,propertyName, propertyValue) {

@@ -1,7 +1,7 @@
 /* global angular, $ */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.deprecated',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.deprecated',['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * */
@@ -169,7 +169,7 @@
     /**
      * @ngdoc directive
      * @deprecated [Deprecated since version 0.2.1 - not supported]
-     * @name gawebtoolkit.ui.directives:gaSearchWfs
+     * @name geowebtoolkit.ui.directives:gaSearchWfs
      * @param {object} mapController - Map controller
      * @param {string} resultTemplateUrl -
      * @param {object} searchEndPoints -

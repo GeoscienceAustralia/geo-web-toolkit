@@ -3,10 +3,10 @@ var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
 
-var app = angular.module('gawebtoolkit.mapservices.map.openlayersv2',
+var app = angular.module('geowebtoolkit.mapservices.map.openlayersv2',
 	[
-		'gawebtoolkit.mapservices.layer.openlayersv2',
-		'gawebtoolkit.mapservices.controls.openlayersv2'
+		'geowebtoolkit.mapservices.layer.openlayersv2',
+		'geowebtoolkit.mapservices.controls.openlayersv2'
 	]);
 
 app.service('olv2MapService', [
@@ -32,7 +32,7 @@ app.service('olv2MapService', [
 		var service = {
 			/**
 			 * Initialises/Creates map object providing applications defaults from 'geoConfig' module provided by
-			 * 'gawebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
+			 * 'geowebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
 			 * @param args {Object} - arguments passed from ga-map directive
 			 * @param mapConfig {Object} - defaults passed from either toolkit or overridden in consuming application
 			 * */

@@ -2,7 +2,7 @@ var angular = angular || {};
 var console = console || {};
 var $ = $ || {};
 
-var app = angular.module('gawebtoolkit.utils', []);
+var app = angular.module('geowebtoolkit.utils', []);
 app.service('GeoUtils', [ function() {
    'use strict';
    function convertHexToRgb(hexVal) {

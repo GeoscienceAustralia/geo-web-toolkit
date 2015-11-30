@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.vendor.osm-layers', ['gawebtoolkit.core.layer-services']);
+    var app = angular.module('geowebtoolkit.vendor.osm-layers', ['geowebtoolkit.core.layer-services']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.core.vendor-layers:gaOsmLayer
+     * @name geowebtoolkit.core.vendor-layers:gaOsmLayer
      * @description
      * ## Overview ##
      * gaGoogleLayer directive is used to create an Open Street Maps layer.
@@ -23,7 +23,7 @@
      </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
-     <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+     <file name="script.js">var app = angular.module('simpleMap',['geowebtoolkit.core']);</file>
      </example>
      */
     app.directive('geoOsmLayer', ['$timeout', '$compile', 'GeoLayerService', '$log',

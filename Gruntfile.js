@@ -57,7 +57,7 @@ module.exports = function (grunt) {
             }
         },
         ngtemplates: {
-            'gawebtoolkit.ui.templates': {
+            'geowebtoolkit.ui.templates': {
                 src: 'src/main/js/ui/**/*.html',
                 dest: 'src/main/js/toolkit-templates.js',
                 options: {

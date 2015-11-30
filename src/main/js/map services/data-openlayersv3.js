@@ -3,7 +3,7 @@
 // OpenLayers V2 is still used here due to better support. This is used only to make data requests so we are not manipulating the map instance itself.
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.mapservices.data.openlayersv3', []);
+    var app = angular.module('geowebtoolkit.mapservices.data.openlayersv3', []);
 
     var olv2DataService = ['$q', '$http', 'geoConfig', function ($q, $http, geoConfig) {
         function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {

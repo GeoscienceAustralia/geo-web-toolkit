@@ -3,12 +3,12 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.map.openlayersv3',
+    var app = angular.module('geowebtoolkit.mapservices.map.openlayersv3',
         [
-            'gawebtoolkit.mapservices.layer.openlayersv3',
-            'gawebtoolkit.mapservices.controls.openlayersv3',
-            'gawebtoolkit.mapservices.map.ol3cesium',
-            'gawebtoolkit.events-openlayers3'
+            'geowebtoolkit.mapservices.layer.openlayersv3',
+            'geowebtoolkit.mapservices.controls.openlayersv3',
+            'geowebtoolkit.mapservices.map.ol3cesium',
+            'geowebtoolkit.events-openlayers3'
         ]);
 
     var olCesiumInstance;
@@ -64,7 +64,7 @@
             var service = {
                 /**
                  * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
-                 * 'gawebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
+                 * 'geowebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
                  * @param args {Object} - arguments passed from ga-map directive
                  * @param mapConfig {Object} - defaults passed from either toolkit or overridden in consuming application
                  * */

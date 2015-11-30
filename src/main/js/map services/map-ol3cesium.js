@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.map.ol3cesium', []);
+    var app = angular.module('geowebtoolkit.mapservices.map.ol3cesium', []);
 
     app.service('ol3CesiumMapService', [function () {
         var spaceEventHandler;

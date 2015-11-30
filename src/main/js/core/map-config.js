@@ -1,6 +1,6 @@
 var angular = angular || {};
 var OpenLayers = OpenLayers || {};
-var app = angular.module('gawebtoolkit.core.map-config', []);
+var app = angular.module('geowebtoolkit.core.map-config', []);
 
 app.value('geoConfig', function () {
     'use strict';

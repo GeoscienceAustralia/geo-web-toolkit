@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.layer.openlayersv3', []);
+    var app = angular.module('geowebtoolkit.mapservices.layer.openlayersv3', []);
 
     /*
      * This service wraps olv3 layer functionality that is used via the GAMaps and GALayer service

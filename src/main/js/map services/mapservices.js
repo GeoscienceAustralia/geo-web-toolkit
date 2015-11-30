@@ -25,14 +25,14 @@ var $ = $ || {};
  *  @property {Number} meansure - The number of units of distance
  *  @property {string} units - The unit type of the distance number, eg 'km'
  * */
-var app = angular.module('gawebtoolkit.mapservices',
+var app = angular.module('geowebtoolkit.mapservices',
 	[
-		'gawebtoolkit.mapservices.layer.openlayersv2',
-        'gawebtoolkit.mapservices.map.openlayersv2',
-        'gawebtoolkit.mapservices.layer.openlayersv3',
-        'gawebtoolkit.mapservices.map.openlayersv3',
-        'gawebtoolkit.mapservices.data.openlayersv2',
-        'gawebtoolkit.mapservices.data.openlayersv3'
+		'geowebtoolkit.mapservices.layer.openlayersv2',
+        'geowebtoolkit.mapservices.map.openlayersv2',
+        'geowebtoolkit.mapservices.layer.openlayersv3',
+        'geowebtoolkit.mapservices.map.openlayersv3',
+        'geowebtoolkit.mapservices.data.openlayersv2',
+        'geowebtoolkit.mapservices.data.openlayersv3'
 	]);
 //id: olv2Layer.id,
 //	name: olv2Layer.name,

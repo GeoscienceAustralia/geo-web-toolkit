@@ -1,14 +1,14 @@
 var angular = angular || {};
 
-var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit.core.map-directives', 'gawebtoolkit.core.map-services',
-    'gawebtoolkit.core.layer-services' ]);
+var app = angular.module('geowebtoolkit.core.feature-directives', [ 'geowebtoolkit.core.map-directives', 'geowebtoolkit.core.map-services',
+    'geowebtoolkit.core.layer-services' ]);
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.core.feature-directives:gaFeatureLayer
+ * @name geowebtoolkit.core.feature-directives:gaFeatureLayer
  * @description
  * ## Overview ##
- * gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/gawebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.
+ * gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/geowebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.
  * @param {string|@} layerName - A name allocated to the layer for future reference
  * @param {string|@} url - A string value that defines the URL from which the content of the layer will be loaded
  * @param {function|@} postAddLayer -  Function callback fired after the layer is added
@@ -49,7 +49,7 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     <file name="style.css">#map {width: 650px;height:600px;}</file>
     <file name="script.js">
         var jsonValue = [];
-        var app = angular.module('simpleMapWithFeatureLayers', ['gawebtoolkit.core']);
+        var app = angular.module('simpleMapWithFeatureLayers', ['geowebtoolkit.core']);
         app.controller('featureExampleController', ['$scope', function ($scope) {
         "use strict";
         $.ajax({type: "GET", url: "../docs-sources/geojson.json", async: false, complete: function(data){jsonValue = data.responseJSON;}});
@@ -1240,7 +1240,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
     } ]);
 /**
  * @ngdoc directive
- * @name gawebtoolkit.core.feature-directives:gaFeature
+ * @name geowebtoolkit.core.feature-directives:gaFeature
  *
  * @description
  * Wrapper for a native wfs layer<br>
@@ -1283,7 +1283,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
     </file>
     <file name="script.js">
         var jsonValue = [];
-        var app = angular.module('simpleMapWithFeatureLayers', ['gawebtoolkit.core']);
+        var app = angular.module('simpleMapWithFeatureLayers', ['geowebtoolkit.core']);
         app.controller('featureExampleController', ['$scope', function ($scope) {
         "use strict";
         $.ajax({type: "GET", url: "../docs-sources/geojson.json", async: false, complete: function(data){jsonValue = data.responseJSON;}});

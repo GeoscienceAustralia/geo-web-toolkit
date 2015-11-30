@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.vendor.bing-layers', ['gawebtoolkit.core.layer-services']);
+    var app = angular.module('geowebtoolkit.vendor.bing-layers', ['geowebtoolkit.core.layer-services']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.core.vendor-layers:gaBingLayer
+     * @name geowebtoolkit.core.vendor-layers:gaBingLayer
      * @description
      * ## Overview ##
      * gaGoogleLayer directive is used to create a Bing map.
@@ -25,7 +25,7 @@
      </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
-     <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+     <file name="script.js">var app = angular.module('simpleMap',['geowebtoolkit.core']);</file>
      </example>
      */
     app.directive('geoBingLayer', ['$timeout', '$compile', 'GeoLayerService', '$log',

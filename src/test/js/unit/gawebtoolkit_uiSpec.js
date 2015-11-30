@@ -11,7 +11,7 @@ var afterEach = afterEach || {};
 /*var spyOn = spyOn || {};
  var waitsFor = waitsFor || {};*/
 //JSLint Initialisers
-describe('gawebtoolkit ui component tests',
+describe('geowebtoolkit ui component tests',
     function () {
         'use strict';
         var $compile, $scope, element,$timeout;
@@ -43,7 +43,7 @@ describe('gawebtoolkit ui component tests',
         }));
     });
 
-describe('gawebtoolkit wfs search unit tests', function () {
+describe('geowebtoolkit wfs search unit tests', function () {
     'use strict';
     var $compile, $scope, element, mapElement, inputElement, buttonElement,uiScope;
 

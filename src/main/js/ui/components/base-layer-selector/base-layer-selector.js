@@ -2,12 +2,12 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.base-layer-selector', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.base-layer-selector', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaBaseLayerSelector
+     * @name geowebtoolkit.ui.directives:gaBaseLayerSelector
      * @param {Layer[]} layersData - Layers that the control uses to switch base layers
      * @param {object} mapController - controller instance for the map
      * @param {string} controllerEmitEventName - event that is fired that passes the controller
@@ -66,7 +66,7 @@
      *</file>
      *<file name="baseLayerSelector.js">
      *        var app = angular.module('baseLayerSelector',
-     *        ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     *        ['geowebtoolkit.core', 'geowebtoolkit.ui']);
      *        app.controller("ourMapController",["$scope", function($scope) {
  *                $scope.$on("mapControllerReady", function(event, args) {
  *                    $scope.mapController = args;

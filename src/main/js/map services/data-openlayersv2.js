@@ -2,7 +2,7 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.data.openlayersv2', []);
+    var app = angular.module('geowebtoolkit.mapservices.data.openlayersv2', []);
 
     var olv2DataService = ['$q', '$http', 'geoConfig', function ($q, $http, geoConfig) {
         function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {

@@ -3,17 +3,17 @@ var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
 
-var app = angular.module('gawebtoolkit.core.control-directives',
+var app = angular.module('geowebtoolkit.core.control-directives',
 	[
-		'gawebtoolkit.core.map-directives',
-		'gawebtoolkit.core.map-services',
-		'gawebtoolkit.core.layer-services'
+		'geowebtoolkit.core.map-directives',
+		'geowebtoolkit.core.map-services',
+		'geowebtoolkit.core.layer-services'
 	]);
 
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.core.control-directives:gaMapControl
+ * @name geowebtoolkit.core.control-directives:gaMapControl
  * @description
  * ## Overview ##
  * gaMapControl is a wrapper for a native map control
@@ -60,7 +60,7 @@ var app = angular.module('gawebtoolkit.core.control-directives',
          </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
-     <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+     <file name="script.js">var app = angular.module('simpleMap',['geowebtoolkit.core']);</file>
  </example>
  */
 app.directive('geoMapControl', [ function () {
