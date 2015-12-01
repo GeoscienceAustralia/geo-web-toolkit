@@ -1,5 +1,5 @@
 /* global angular, describe, jasmine, beforeEach, module, inject, expect, it */
-(function() {
+(function () {
     "use strict";
     describe(
         'OpenLayers v2.1.13 "geo-map-control" implementation tests',
@@ -30,21 +30,21 @@
                 };
                 element = angular
                     .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                    '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
-                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                    'wrap-date-line="true"' +
-                    'zoom-to-max="true"' +
-                    'map-bg-color="#194584"' +
-                    'layer-type="WMS"' +
-                    'is-base-layer="true"' +
-                    '>' +
-                    '<geo-map-control map-control-name="OverviewMap" pre-options-loaded="testPreloadOptions(options)" control-options="overviewOptions"></geo-map-control>' +
-                    '<geo-map-control map-control-name="Permalink"></geo-map-control>' +
-                    '<geo-map-control map-control-name="ScaleLine"></geo-map-control>' +
-                    '<geo-map-control map-control-name="panzoombar"></geo-map-control>' +
-                    '<geo-map-control map-control-name="attribution"></geo-map-control>' +
-                    '<geo-map-control map-control-name></geo-map-control>' +
-                    '<div id="geomap"></div></geo-map>');
+                        '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
+                        'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                        'wrap-date-line="true"' +
+                        'zoom-to-max="true"' +
+                        'map-bg-color="#194584"' +
+                        'layer-type="WMS"' +
+                        'is-base-layer="true"' +
+                        '>' +
+                        '<geo-map-control map-control-name="OverviewMap" pre-options-loaded="testPreloadOptions(options)" control-options="overviewOptions"></geo-map-control>' +
+                        '<geo-map-control map-control-name="Permalink"></geo-map-control>' +
+                        '<geo-map-control map-control-name="ScaleLine"></geo-map-control>' +
+                        '<geo-map-control map-control-name="panzoombar"></geo-map-control>' +
+                        '<geo-map-control map-control-name="attribution"></geo-map-control>' +
+                        '<geo-map-control map-control-name></geo-map-control>' +
+                        '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
 

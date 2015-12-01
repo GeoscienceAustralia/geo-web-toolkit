@@ -37,7 +37,7 @@
                     controllerEmitEventName: '@'
                 },
                 transclude: false,
-                controller: ['$scope',function ($scope) {
+                controller: ['$scope', function ($scope) {
                     var self = this;
 
                     //TODO Support layer common api via controller, eg opacity, set visibility?
@@ -53,7 +53,7 @@
                     $scope.mapAPI = {};
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
-                    layerOptions = GeoLayerService.defaultLayerOptions(attrs,$scope.framework);
+                    layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
                     };
@@ -64,7 +64,7 @@
 
                         $log.info('OpenStreetMaps Cycle - constructing...');
 
-                        layer = GeoLayerService.createOsmLayer(layerOptions,$scope.framework);
+                        layer = GeoLayerService.createOsmLayer(layerOptions, $scope.framework);
                         //Async layer add
                         //mapController.waitingForAsyncLayer();
                         mapController.addLayer(layer).then(function (layerDto) {
@@ -75,7 +75,7 @@
                             $scope.constructionInProgress = false;
                         }, function (error) {
                             $scope.$emit(layerOptions.layerName + "_error", layerOptions);
-                            $scope.onError({message:error,layer:layerOptions});
+                            $scope.onError({message: error, layer: layerOptions});
                             addLayerCallback();
                             //mapController.asyncLayerError(layer);
                             $log.info('construction failed...');
@@ -104,15 +104,15 @@
                         if (layerIndex != null) {
                             mapController.removeLayerById($scope.layerDto.id);
                             $scope.layerDto = null;
-                            layerOptions = GeoLayerService.defaultLayerOptions(attrs,$scope.framework);
+                            layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GeoLayerService.createLayer(layerOptions,$scope.framework);
+                            layer = GeoLayerService.createLayer(layerOptions, $scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;
                                 addLayerCallback();
-                                if($scope.layerDto != null) {
+                                if ($scope.layerDto != null) {
                                     var delta = layerIndex - mapController.getLayers().length + 1;
                                     mapController.raiseLayerDrawOrder($scope.layerDto.id, delta);
                                 }
@@ -124,7 +124,7 @@
                         $log.info('initialising layer...');
                         if ($scope.layerDto != null) {
                             reconstructLayer();
-                        } else if($scope.layerReady && $scope.constructionInProgress) {
+                        } else if ($scope.layerReady && $scope.constructionInProgress) {
                             $log.info('...');
                         } else {
                             constructLayer();

@@ -125,7 +125,7 @@
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var allLayers = format.read(data).capability.layers;
                     deferred.resolve(allLayers);
-                }).error(function(data, status, headers, config) {
+                }).error(function (data, status, headers, config) {
                     deferred.reject(status);
                 });
                 return deferred.promise;
@@ -153,7 +153,7 @@
                     },
                     scope: this
                 };
-                if(geoConfig().defaultOptions.proxyHost) {
+                if (geoConfig().defaultOptions.proxyHost) {
                     requestParams.proxy = geoConfig().defaultOptions.proxyHost;
                 }
                 OpenLayers.Request.GET(requestParams);
@@ -242,7 +242,7 @@
                     },
                     scope: this
                 };
-                if(geoConfig().defaultOptions.proxyHost) {
+                if (geoConfig().defaultOptions.proxyHost) {
                     requestParams.proxy = geoConfig().defaultOptions.proxyHost;
                 }
                 OpenLayers.Request.GET(requestParams);

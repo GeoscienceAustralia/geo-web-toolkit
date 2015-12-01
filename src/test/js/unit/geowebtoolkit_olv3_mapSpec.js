@@ -55,8 +55,8 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-                proj4.defs("EPSG:102113","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
-                proj4.defs("EPSG:102100","+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
+                proj4.defs("EPSG:102113", "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
+                proj4.defs("EPSG:102100", "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
                 var ele = '<div id="map"></div><geo-map map-element-id="map" framework="olv3" display-projection="EPSG:4326" datum-projection="EPSG:102100"  zoom-level="4" center-position="[130, -25]"> ' +
                     '<geo-map-layer layer-name="Test layer name 1" ' +
                     'layer-type="WMS" ' +
@@ -79,9 +79,9 @@
                     '</geo-feature-layer>' +
                     '<geo-map-control map-control-name="scaleline" map-control-id="myScaleLineTestId"></geo-map-control> ' +
                     '</geo-map> ';
-                mapWith3DSupportedProj = ele.replace('EPSG:102100','EPSG:3857');
+                mapWith3DSupportedProj = ele.replace('EPSG:102100', 'EPSG:3857');
 
-                mapThatIsStatic = ele.replace('map-element-id="map"','map-element-id="map" is-static-map="true"');
+                mapThatIsStatic = ele.replace('map-element-id="map"', 'map-element-id="map" is-static-map="true"');
                 element = angular
                     .element(ele);
                 $compile(element)($scope);
@@ -92,7 +92,7 @@
                 var args = {
                     layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
                     layerName: "Foo",
-                    layers:"Australian Landsat",
+                    layers: "Australian Landsat",
                     wrapDateLine: true,
                     layerType: "WMS",
                     isBaseLayer: true
@@ -117,7 +117,7 @@
                     $timeout.flush();
                     $scope.$digest();
                     $scope.mapController.switch3d();
-                } catch(error) {
+                } catch (error) {
                     passed = false;
                 }
                 expect(passed).toBe(true);
@@ -128,7 +128,7 @@
                 var args = {
                     layerUrl: "http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer",
                     layerName: "Foo",
-                    layers:"Australian Landsat",
+                    layers: "Australian Landsat",
                     wrapDateLine: true,
                     layerType: "WMS",
                     isBaseLayer: true
@@ -227,13 +227,13 @@
                 var latPassed = false;
                 try {
                     $scope.mapController.getPixelFromLonLat(null, 123);
-                } catch(e) {
+                } catch (e) {
                     lonPassed = true;
                 }
 
                 try {
                     $scope.mapController.getPixelFromLonLat(123, null);
-                } catch(e) {
+                } catch (e) {
                     latPassed = true;
                 }
 
@@ -252,7 +252,7 @@
             });
 
             it('Should fire mapController function "getPointFromEvent" without an exception given valid input', function () {
-                var point = $scope.mapController.getPointFromEvent({pixel: [300,450]});
+                var point = $scope.mapController.getPointFromEvent({pixel: [300, 450]});
                 expect(point != null).toBe(true);
                 expect(point.x).toBe(300);
                 expect(point.y).toBe(450);
@@ -434,7 +434,7 @@
             it('Should fire mapController function "setMapMarker" without an exception given valid input', function () {
                 //Mock function that required rendered canvas.
                 $scope.mapController.getMapInstance().getCoordinateFromPixel = function (pixel) {
-                    return [12,34];
+                    return [12, 34];
                 };
                 $scope.mapController.setMapMarker({x: 250, y: 50}, 'testgroupname', 'http://localhost:8080', {opacity: 0.5});
                 expect($scope.mapController.getMarkerCountForLayerName('testgroupname') > 0).toBe(true);
@@ -581,7 +581,9 @@
             it('Should fire mapController function "getCurrentMapExtent" without an exception given valid input', function () {
                 var map = $scope.mapController.getMapInstance();
                 //'mock' get size due to dependency on actually rendering map.
-                map.getSize = function() { return [500,500];};
+                map.getSize = function () {
+                    return [500, 500];
+                };
                 var currentExtent = $scope.mapController.getCurrentMapExtent();
                 expect(currentExtent != null).toBe(true);
             });
@@ -615,7 +617,10 @@
                 expect(featureDto.properties.name).toBe('Testing name');
             });
             it('Should fire mapController function "getMeasureFromEvent" without an exception given valid input', function () {
-                var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
+                var measure = $scope.mapController.getMeasureFromEvent({geometry: [
+                    {x: 5, y: 5},
+                    {x: 2, y: 4}
+                ]});
                 expect(measure != null).toBe(true);
             });
             it('Should fire mapController function "removeFeatureFromLayer" without an exception given valid input', function () {
@@ -625,7 +630,7 @@
                 expect(features != null).toBe(true);
                 expect(features.length > 0).toBe(true);
 
-                $scope.mapController.removeFeatureFromLayer(layer.id,features[0].id);
+                $scope.mapController.removeFeatureFromLayer(layer.id, features[0].id);
                 features = $scope.mapController.getLayerFeatures(layer.id);
                 expect(features.length === 0).toBe(true);
             });
@@ -652,7 +657,9 @@
             it('Should return geoJson coordinate arrays for getCurrentMapExtent', function () {
                 var map = $scope.mapController.getMapInstance();
                 //'mock' get size due to dependency on actually rendering map.
-                map.getSize = function() { return [500,500];};
+                map.getSize = function () {
+                    return [500, 500];
+                };
                 //Because an extent has 4 points
                 expect($scope.mapController.getCurrentMapExtent().length).toBe(4);
                 //Because geoJson stores coordinates as [lon,lat]
@@ -663,17 +670,21 @@
                 //Exact map extents are not returns because of integer zoom levels and possible animation time.
                 var map = $scope.mapController.getMapInstance();
                 //'mock' get size due to dependency on actually rendering map.
-                map.getSize = function() { return [500,500];};
+                map.getSize = function () {
+                    return [500, 500];
+                };
                 expect($scope.mapController.getCurrentMapExtent()[0][0]).toBeGreaterThan(100.0);
                 expect($scope.mapController.getCurrentMapExtent()[0][1]).toBeGreaterThan(-45.0);
                 expect($scope.mapController.getCurrentMapExtent()[1][0]).toBeLessThan(160.0);
                 expect($scope.mapController.getCurrentMapExtent()[1][1]).toBeGreaterThan(-45.0);
             });
 
-            it('Should get the size of the map', function() {
-               //Mocking required due to no div size in PhantomJS
+            it('Should get the size of the map', function () {
+                //Mocking required due to no div size in PhantomJS
                 var map = $scope.mapController.getMapInstance();
-                map.getSize = function() { return [500,500];};
+                map.getSize = function () {
+                    return [500, 500];
+                };
 
                 expect($scope.mapController.getSize().width).toBe(500);
                 expect($scope.mapController.getSize().height).toBe(500);

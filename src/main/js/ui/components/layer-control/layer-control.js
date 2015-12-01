@@ -114,10 +114,10 @@
                             };
                             //Event to be cleaned up on map destruction
                             scope.$watch('layerData', function (newVal) {
-                                if(newVal != null) {
+                                if (newVal != null) {
                                     //Parse possible coerced value
                                     scope.layerData.visibility = scope.layerData.visibility === true || scope.layerData.visibility === 'true';
-                                    if(scope.mapController == null) {
+                                    if (scope.mapController == null) {
                                         throw new Error("mapController is not available");
                                     }
                                     if (scope.layerData.id != null) {
@@ -132,7 +132,7 @@
                             });
                         },
                         pre: function preLink(scope) {
-                            scope.changeOpacity = function (layerId,opacity) {
+                            scope.changeOpacity = function (layerId, opacity) {
                                 scope.onOpacityChange({
                                     layerId: layerId,
                                     opacity: opacity
@@ -140,7 +140,7 @@
                             };
                             scope.layerClicked = function () {
                                 scope.layerData.visibility = !scope.layerData.visibility;
-                                scope.mapController.setLayerVisibility(scope.layerData.id,scope.layerData.visibility);
+                                scope.mapController.setLayerVisibility(scope.layerData.id, scope.layerData.visibility);
                                 if (scope.layerData.visibility) {
                                     scope.onVisible({
                                         layerId: scope.layerData.id

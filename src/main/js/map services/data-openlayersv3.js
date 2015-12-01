@@ -9,11 +9,11 @@
         function generateRequestParams(mapInstance, pointEvent, version, infoTextContentType) {
             var projection = mapInstance.getView().getProjection().getCode();
             var bounds = mapInstance.getView().calculateExtent(mapInstance.getSize());
-            var olv2Bounds = new OpenLayers.Bounds(bounds[0],bounds[1],bounds[2],bounds[3]);
+            var olv2Bounds = new OpenLayers.Bounds(bounds[0], bounds[1], bounds[2], bounds[3]);
             var bbox = olv2Bounds.toBBOX();
             var point = (pointEvent != null && pointEvent.map != null) ? pointEvent.pixel : pointEvent;
-            if(point.position != null) {
-                point = [point.position.x,point.position.y];
+            if (point.position != null) {
+                point = [point.position.x, point.position.y];
             }
 
             var halfHeight = mapInstance.getSize()[1] / 2;
@@ -69,7 +69,7 @@
                 requestHeight = Math.floor(halfHeight);
                 requestWidth = Math.floor(halfWidth);
             }
-            
+
             var params = OpenLayers.Util.extend({
                     service: "WMS",
                     version: version,
@@ -133,7 +133,7 @@
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var allLayers = format.read(data).capability.layers;
                     deferred.resolve(allLayers);
-                }).error(function(data, status, headers, config) {
+                }).error(function (data, status, headers, config) {
                     deferred.reject(status);
                 });
                 return deferred.promise;
@@ -143,7 +143,7 @@
                 var deferred = $q.defer();
                 var params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
                 if (layerNames.length !== 0) {
-                    
+
                     params = OpenLayers.Util.extend({
                         layers: layerNames,
                         query_layers: layerNames
@@ -163,7 +163,7 @@
                     },
                     scope: this
                 };
-                if(geoConfig().defaultOptions.proxyHost) {
+                if (geoConfig().defaultOptions.proxyHost) {
                     requestParams.proxy = geoConfig().defaultOptions.proxyHost;
                 }
                 OpenLayers.Request.GET(requestParams);
@@ -227,7 +227,7 @@
                     }
                 );
                 if (layerNames.length !== 0) {
-                    
+
                     params = OpenLayers.Util.extend({
                         layers: layerNames,
                         query_layers: layerNames,
@@ -247,7 +247,7 @@
                     },
                     scope: this
                 };
-                if(geoConfig().defaultOptions.proxyHost) {
+                if (geoConfig().defaultOptions.proxyHost) {
                     requestParams.proxy = geoConfig().defaultOptions.proxyHost;
                 }
                 OpenLayers.Request.GET(requestParams);

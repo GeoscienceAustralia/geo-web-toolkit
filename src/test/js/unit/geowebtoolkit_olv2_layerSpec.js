@@ -72,7 +72,7 @@
                             "layers": "Australian Landsat",
                             "opacity": 1.0,
                             "tileType": "large",
-                            "refresh":0
+                            "refresh": 0
                         },
                         {
                             "controllerEventName": "layer2Controller",
@@ -82,7 +82,7 @@
                             "url": "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
                             "layers": "Geomorphic_Features",
                             "opacity": 1.0,
-                            "refresh":0
+                            "refresh": 0
                         },
                         {
                             "controllerEventName": "layer3Controller",
@@ -94,29 +94,29 @@
                             "tileType": "large",
                             "attribution": "Geoscience Australia Topography <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a>",
                             "opacity": 1.0,
-                            "refresh":0
+                            "refresh": 0
                         }
                     ]
                 };
                 element = angular
                     .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                    '<geo-map-layer ng-repeat="baseLayer in mapConfig.baseMaps" layer-name="{{baseLayer.name}}"' +
-                    'layer-url="{{baseLayer.url}}"' +
-                    'is-base-layer="true"' +
-                    'wrap-date-line="{{baseLayer.wrapDateLine}}"' +
-                    'layer-type="{{baseLayer.mapType}}"' +
-                    'layer-attribution="{{baseLayer.attribution}}"' +
-                    '></geo-map-layer>' +
-                    '<geo-map-layer ng-repeat="layer in mapConfig.layerMaps" ' +
-                    'layer-name="{{layer.name}}"' +
-                    'layer-url="{{layer.url}}"' +
-                    'wrap-date-line="{{layer.wrapDateLine}}"' +
-                    'layer-type="{{layer.mapType}}"' +
-                    'controller-emit-event-name="{{layer.controllerEventName}}"' +
-                    'visibility="{{layer.visibility}}" ' +
-                    'opacity="{{layer.opacity}}" ' +
-                    'refresh-layer="{{layer.refresh}}"></geo-map-layer>' +
-                    '<div id="geomap"></div></geo-map>');
+                        '<geo-map-layer ng-repeat="baseLayer in mapConfig.baseMaps" layer-name="{{baseLayer.name}}"' +
+                        'layer-url="{{baseLayer.url}}"' +
+                        'is-base-layer="true"' +
+                        'wrap-date-line="{{baseLayer.wrapDateLine}}"' +
+                        'layer-type="{{baseLayer.mapType}}"' +
+                        'layer-attribution="{{baseLayer.attribution}}"' +
+                        '></geo-map-layer>' +
+                        '<geo-map-layer ng-repeat="layer in mapConfig.layerMaps" ' +
+                        'layer-name="{{layer.name}}"' +
+                        'layer-url="{{layer.url}}"' +
+                        'wrap-date-line="{{layer.wrapDateLine}}"' +
+                        'layer-type="{{layer.mapType}}"' +
+                        'controller-emit-event-name="{{layer.controllerEventName}}"' +
+                        'visibility="{{layer.visibility}}" ' +
+                        'opacity="{{layer.opacity}}" ' +
+                        'refresh-layer="{{layer.refresh}}"></geo-map-layer>' +
+                        '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -272,11 +272,11 @@
                 var layer = $scope.mapController.getLayers()[3];
                 var passed = false;
                 try {
-                    $scope.mapController.registerLayerEvent(layer.id,'loadstart', function () {
+                    $scope.mapController.registerLayerEvent(layer.id, 'loadstart', function () {
                         //do stuff
                     });
                     passed = true;
-                } catch(error) {
+                } catch (error) {
                     passed = false;
                 }
                 expect(passed).toBe(true);
@@ -285,14 +285,16 @@
             it('Should be able to un-register a layer event', function () {
                 var layer = $scope.mapController.getLayers()[3];
                 var passed = false;
+
                 function test() {
 
                 }
+
                 try {
-                    $scope.mapController.registerLayerEvent(layer.id,'loadstart', test);
-                    $scope.mapController.unRegisterLayerEvent(layer.id,'loadstart', test);
+                    $scope.mapController.registerLayerEvent(layer.id, 'loadstart', test);
+                    $scope.mapController.unRegisterLayerEvent(layer.id, 'loadstart', test);
                     passed = true;
-                } catch(error) {
+                } catch (error) {
                     passed = false;
                 }
                 expect(passed).toBe(true);
@@ -346,16 +348,16 @@
 
                 element = angular
                     .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                    '<geo-map-layer layer-name="Australian Landsat Mosaic - Base layer"' +
-                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                    'wrap-date-line="true"' +
-                    'layer-type="WMS"' +
-                    'is-base-layer="true"' +
-                    '></geo-map-layer>' +
-                    '<geo-feature-layer layer-name="Australian Landsat Mosaic - feature Layer">' +
-                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
-                    '</geo-feature-layer>' +
-                    '</geo-map><div id="geomap"></div>');
+                        '<geo-map-layer layer-name="Australian Landsat Mosaic - Base layer"' +
+                        'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                        'wrap-date-line="true"' +
+                        'layer-type="WMS"' +
+                        'is-base-layer="true"' +
+                        '></geo-map-layer>' +
+                        '<geo-feature-layer layer-name="Australian Landsat Mosaic - feature Layer">' +
+                        '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                        '</geo-feature-layer>' +
+                        '</geo-map><div id="geomap"></div>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();

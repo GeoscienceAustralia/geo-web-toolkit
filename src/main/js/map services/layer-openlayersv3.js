@@ -37,14 +37,14 @@
                         throw new Error("Google map layers are not supported with OpenLayers 3. To use a Google maps layer, consider falling back to framework 'olv2'.");
                     default:
                         throw new Error(
-                            "Invalid layerType used to create layer of name " +
-                            args.layerName +
-                            " - with layerType - " +
-                            args.layerType
+                                "Invalid layerType used to create layer of name " +
+                                args.layerName +
+                                " - with layerType - " +
+                                args.layerType
                         );
                 }
-                layer.set('geoLayerType',args.layerType);
-                if(args.maxZoomLevel) {
+                layer.set('geoLayerType', args.layerType);
+                if (args.maxZoomLevel) {
                     layer.geoMaxZoom = parseInt(args.maxZoomLevel);
                 }
                 if (args.minZoomLevel) {
@@ -104,7 +104,7 @@
 
                 return layer;
             },
-            setFeatureStyle: function (featureInstance,styleArgs) {
+            setFeatureStyle: function (featureInstance, styleArgs) {
                 var style = new ol.style.Style({
                     image: new ol.style.Circle({
                         radius: styleArgs.radius,
@@ -476,11 +476,11 @@
                     }
                 }
                 var updatedIndex = layerIndex + delta;
-                if(layerIndex === updatedIndex) {
+                if (layerIndex === updatedIndex) {
                     return;
                 }
                 var layerArray = mapInstance.getLayers().getArray();
-                layerArray.splice(updatedIndex,0,layerArray.splice(layerIndex,1)[0]);
+                layerArray.splice(updatedIndex, 0, layerArray.splice(layerIndex, 1)[0]);
                 mapInstance.updateSize();
             },
             postAddLayerCache: {}

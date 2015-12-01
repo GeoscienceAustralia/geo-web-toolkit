@@ -44,15 +44,15 @@
             it('Start drawing creates active control for OpenLayers 2', function () {
                 var elementHtml = '<div id="map"></div>' +
                     '<geo-map map-element-id="map" framework="olv2" zoom-level="4" center-position="[130, -25]"> ' +
-                        '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
-                        '</geo-map-layer>' +
+                    '<geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">' +
+                    '</geo-map-layer>' +
                     '</geo-map> ';
                 element = angular
                     .element(elementHtml);
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'point',
+                $scope.mapController.startDrawingOnLayer('My feature layer', { featureType: 'point',
                     color: '#000000',
                     opacity: 1.0,
                     radius: 6});
@@ -71,7 +71,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'point',
+                $scope.mapController.startDrawingOnLayer('My feature layer', { featureType: 'point',
                     color: '#000000',
                     opacity: 1.0,
                     radius: 6});
@@ -90,7 +90,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'point',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'point',
                     color: '#000000',
                     opacity: 1.0,
                     radius: 6});
@@ -204,21 +204,21 @@
                 $scope.$digest();
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().controls.length).toBe(1);
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 expect($scope.mapController.getMapInstance().controls.length).toBe(2);
                 $scope.mapController.stopDrawing('Simple map layer name');
                 expect($scope.mapController.getMapInstance().controls.length).toBe(1);
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'LineString',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'LineString',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 expect($scope.mapController.getMapInstance().controls.length).toBe(2);
                 //Forget to stopDrawing, existing interaction removed and replaced by default
                 //$scope.mapController.stopDrawing('Simple map layer name');
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Polygon',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'Polygon',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});

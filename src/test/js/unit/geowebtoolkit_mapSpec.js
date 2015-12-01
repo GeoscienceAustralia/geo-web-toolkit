@@ -22,15 +22,15 @@ describe(
             });
             element = angular
                 .element('<geo-map map-element-id="geoMap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
-                'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                'wrap-date-line="true"' +
-                'zoom-to-max="true"' +
-                'map-bg-color="#194584"' +
-                'layer-type="WMS"' +
-                'is-base-layer="true"' +
-                '></geo-map-layer>' +
-                '<div id="geomap"></div></geo-map>');
+                    '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
+                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                    'wrap-date-line="true"' +
+                    'zoom-to-max="true"' +
+                    'map-bg-color="#194584"' +
+                    'layer-type="WMS"' +
+                    'is-base-layer="true"' +
+                    '></geo-map-layer>' +
+                    '<div id="geomap"></div></geo-map>');
             $compile(element)($scope);
             $scope.$digest();
 
@@ -185,14 +185,14 @@ describe(
             $timeout = _$timeout_;
             element = angular
                 .element('<geo-map map-element-id="geomap" datum-projection="EPSG:102100" display-projection="EPSG:4326">' +
-                '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
-                'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                'wrap-date-line="true"' +
-                'zoom-to-max="true"' +
-                'map-bg-color="#194584"' +
-                'layer-type="WMS"' +
-                'is-base-layer="true"' +
-                '></geo-map-layer><div id="geomap"></div></geo-map>');
+                    '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
+                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                    'wrap-date-line="true"' +
+                    'zoom-to-max="true"' +
+                    'map-bg-color="#194584"' +
+                    'layer-type="WMS"' +
+                    'is-base-layer="true"' +
+                    '></geo-map-layer><div id="geomap"></div></geo-map>');
             $scope.$on('mapControllerReady', function (event, args) {
                 $scope.mapController = args;
             });

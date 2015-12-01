@@ -36,7 +36,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('My feature layer',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('My feature layer', { featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
@@ -57,11 +57,11 @@
                 $timeout.flush();
                 var passed = false;
                 try {
-                    $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                    $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'Point',
                         color: "#000000",
                         opacity: 1.0,
                         radius: 6});
-                } catch(error) {
+                } catch (error) {
                     passed = true;
                     expect(error.message.indexOf('Simple map layer name') > -1).toBe(true);
                 }
@@ -82,23 +82,23 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 $scope.mapController.stopDrawing('Simple map layer name');
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'LineString',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'LineString',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 $scope.mapController.stopDrawing('Simple map layer name');
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Polygon',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'Polygon',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
                 //Forget to stopDrawing, existing interaction removed and replaced by default
                 //$scope.mapController.stopDrawing('Simple map layer name');
-                $scope.mapController.startDrawingOnLayer('Simple map layer name',{ featureType: 'Circle',
+                $scope.mapController.startDrawingOnLayer('Simple map layer name', { featureType: 'Circle',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
@@ -119,7 +119,7 @@
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
-                $scope.mapController.startDrawingOnLayer('My drawing layer',{ featureType: 'Point',
+                $scope.mapController.startDrawingOnLayer('My drawing layer', { featureType: 'Point',
                     color: "#000000",
                     opacity: 1.0,
                     radius: 6});
@@ -276,7 +276,7 @@
                 $scope.$digest();
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
-                $scope.mapController.registerControlEvent('dummycontrolid','measurepartial',function () {
+                $scope.mapController.registerControlEvent('dummycontrolid', 'measurepartial', function () {
                     //measure event
                 });
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
@@ -296,7 +296,7 @@
                 $scope.$digest();
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
-                $scope.mapController.registerControlEvent('dummycontrolid','measure',function () {
+                $scope.mapController.registerControlEvent('dummycontrolid', 'measure', function () {
                     //measure event
                 });
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
@@ -316,11 +316,11 @@
                 $scope.$digest();
                 $timeout.flush();
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(9);
-                $scope.mapController.registerControlEvent('dummycontrolid','measurepartial',function () {
+                $scope.mapController.registerControlEvent('dummycontrolid', 'measurepartial', function () {
                     //measure event
                 });
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);
-                $scope.mapController.registerControlEvent('dummycontrolid','measure',function () {
+                $scope.mapController.registerControlEvent('dummycontrolid', 'measure', function () {
                     //measure event
                 });
                 expect($scope.mapController.getMapInstance().getInteractions().getLength()).toBe(10);

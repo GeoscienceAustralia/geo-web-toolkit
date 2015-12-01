@@ -35,7 +35,7 @@
                 };
                 $scope.$emit($scope.controllerEmitEventName, self);
             }],
-            link: function ($scope,$element) {
+            link: function ($scope, $element) {
 
                 $scope.handleMeasurements = function (event) {
                     var measurement = $scope.mapController.getMeasureFromEvent(event);
@@ -68,7 +68,7 @@
                 $scope.handleToggle = function () {
                     // HACK control name passed in to enable compatibility across OLV2 and OLV3.
                     // TODO convert control to layerInteractionToggle and maintain 'enabled' state locally.
-                    if ($scope.mapController.isControlActive($scope.mapControlId,"measureline")) {
+                    if ($scope.mapController.isControlActive($scope.mapControlId, "measureline")) {
                         $scope.deactivate();
                     } else {
                         $scope.activate();

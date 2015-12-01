@@ -3,7 +3,7 @@ var console = console || {};
 var $ = $ || {};
 var google = google || {};
 
-angular.module('geowebtoolkit.ui', [ 'geowebtoolkit.ui.directives','geowebtoolkit.ui.templates','geowebtoolkit.ui.components', 'ui.utils', 'geowebtoolkit.utils' ]);
+angular.module('geowebtoolkit.ui', [ 'geowebtoolkit.ui.directives', 'geowebtoolkit.ui.templates', 'geowebtoolkit.ui.components', 'ui.utils', 'geowebtoolkit.utils' ]);
 
 var app = angular.module('geowebtoolkit.ui.directives', [ 'geowebtoolkit.utils' ]);
 

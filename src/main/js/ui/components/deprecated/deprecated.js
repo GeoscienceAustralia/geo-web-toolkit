@@ -1,14 +1,14 @@
 /* global angular, $ */
 (function () {
     "use strict";
-    var app = angular.module('geowebtoolkit.ui.components.deprecated',['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.deprecated', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * */
     app.directive('geoDialogToggle', [ function () {
         return {
             restrict: "E",
-            templateUrl:'src/main/js/ui/components/deprecated/dialog-toggle.html',
+            templateUrl: 'src/main/js/ui/components/deprecated/dialog-toggle.html',
             transclude: true,
             scope: {
                 geoDialogController: '=',

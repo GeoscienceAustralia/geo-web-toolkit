@@ -83,7 +83,7 @@
                 mapController: '=',
                 layerDisabled: '=',
                 titleText: '@',
-                onOpacityChange:'&'
+                onOpacityChange: '&'
             },
             controller: ['$scope', function ($scope) {
                 $scope.changeOpacitySlide = function (e, ui) {
@@ -92,7 +92,7 @@
                     //This is a performance hit, but unable to get a reliable update with out.
                     $timeout(function () {
                         $scope.$apply();
-                        $scope.onOpacityChange({layerId:$scope.layerId,opacity:$scope.layerOpacity});
+                        $scope.onOpacityChange({layerId: $scope.layerId, opacity: $scope.layerOpacity});
                     });
                 };
                 $scope.getSliderOptions = function () {
@@ -112,8 +112,8 @@
                 $scope.$watch('layerOpacity', function (newVal, oldVal) {
                     if (newVal && oldVal !== newVal) {
                         $($element).slider($scope.getSliderOptions());
-                        if($scope.layerId) {
-                            $scope.mapController.setOpacity($scope.layerId,newVal);
+                        if ($scope.layerId) {
+                            $scope.mapController.setOpacity($scope.layerId, newVal);
                         }
                     }
                 });
