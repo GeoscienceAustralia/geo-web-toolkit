@@ -1285,7 +1285,7 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                     zoomLevel: $scope.zoomLevel,
                     initialExtent: $scope.initialExtent
                 };
-                if(!$scope.centerPosition) {
+                if (!$scope.centerPosition) {
                     $scope.centerPosition = {
                         lon: 0,
                         lat: 0

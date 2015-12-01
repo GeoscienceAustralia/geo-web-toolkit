@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
     var app = angular.module('geowebtoolkit.core.layer-services', [
         'geowebtoolkit.mapservices',
@@ -18,7 +18,7 @@
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.createLayer(args);
             },
-            createFeatureLayer: function (args,version) {
+            createFeatureLayer: function (args, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.createFeatureLayer(args);
@@ -43,7 +43,7 @@
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.createMarkerLayer(args);
             },
-            removeLayerByName: function (mapInstance, layerName,version) {
+            removeLayerByName: function (mapInstance, layerName, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.removeLayerByName(mapInstance, layerName);
@@ -53,27 +53,27 @@
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.removeLayersByName(mapInstance, layerName);
             },
-            removeLayer: function (mapInstance, layerInstance,version) {
+            removeLayer: function (mapInstance, layerInstance, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.removeLayer(mapInstance, layerInstance);
             },
-            removeLayerById: function (mapInstance, layerId,version) {
+            removeLayerById: function (mapInstance, layerId, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.removeLayerById(mapInstance, layerId);
             },
-            getMarkerCountForLayerName: function (mapInstance, layerName,version) {
+            getMarkerCountForLayerName: function (mapInstance, layerName, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.getMarkerCountForLayerName(mapInstance, layerName);
             },
-            registerFeatureSelected: function (mapInstance, layerId, callback, element,version) {
+            registerFeatureSelected: function (mapInstance, layerId, callback, element, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.registerFeatureSelected(mapInstance, layerId, callback, element);
             },
-            defaultLayerOptions: function (attrs,version) {
+            defaultLayerOptions: function (attrs, version) {
                 //TODO if we are support multiple map types, eg google/openlayers/leaflets
                 //this method should abstract the need to know what map type the instance is.
                 //For now it is current assumed it's openlayers Release 2.13.1
@@ -81,32 +81,32 @@
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.defaultLayerOptions(attrs, new geoConfig());
             },
-            createFeature: function (mapInstance, geoJson,version) {
+            createFeature: function (mapInstance, geoJson, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.createFeature(mapInstance, geoJson);
             },
-            cleanupLayer:function (mapInstance, layerId,version) {
+            cleanupLayer: function (mapInstance, layerId, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.cleanupLayer(mapInstance, layerId);
             },
-            registerLayerEvent: function (mapInstance, layerId, eventName, callback,version) {
+            registerLayerEvent: function (mapInstance, layerId, eventName, callback, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.registerLayerEvent(mapInstance, layerId, eventName, callback);
             },
-            unRegisterLayerEvent: function(mapInstance, layerId, eventName, callback, version) {
+            unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.unRegisterLayerEvent(mapInstance, layerId, eventName, callback);
             },
-            unRegisterMapEvent: function (mapInstance, layerId, eventName, callback,version) {
+            unRegisterMapEvent: function (mapInstance, layerId, eventName, callback, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.unRegisterMapEvent(mapInstance, layerId, eventName, callback);
             },
-            addFeatureToLayer: function (mapInstance, layerId, feature,version) {
+            addFeatureToLayer: function (mapInstance, layerId, feature, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.addFeatureToLayer(mapInstance, layerId, feature);
@@ -124,12 +124,12 @@
 
                 return centerPosition;
             },
-            filterFeatureLayer: function (mapInstance, layerId, filterValue, featureAttributes,version) {
+            filterFeatureLayer: function (mapInstance, layerId, filterValue, featureAttributes, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.filterFeatureLayer(mapInstance, layerId, filterValue, featureAttributes);
             },
-            getLayerFeatures: function (mapInstance, layerId,version) {
+            getLayerFeatures: function (mapInstance, layerId, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.getLayerFeatures(mapInstance, layerId);
@@ -137,14 +137,14 @@
             clearFeatureLayer: function (mapInstance, layerId, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
-                service.clearFeatureLayer(mapInstance,layerId);
+                service.clearFeatureLayer(mapInstance, layerId);
             },
-            removeFeatureFromLayer: function (mapInstance, layerId, featureId,version) {
+            removeFeatureFromLayer: function (mapInstance, layerId, featureId, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.removeFeatureFromLayer(mapInstance, layerId, featureId);
             },
-            raiseLayerDrawOrder: function (mapInstance, layerId, delta,version) {
+            raiseLayerDrawOrder: function (mapInstance, layerId, delta, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.raiseLayerDrawOrder(mapInstance, layerId, delta);
@@ -152,7 +152,7 @@
             setFeatureStyle: function (featureInstance, styleArgs, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
-                return service.setFeatureStyle(featureInstance,styleArgs);
+                return service.setFeatureStyle(featureInstance, styleArgs);
             }
         };
     }]);

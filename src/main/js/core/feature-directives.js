@@ -1015,7 +1015,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
                 postAddLayer: '&',
                 onLayerDestroy: '&'
             },
-            controller: ['$scope',function ($scope) {
+            controller: ['$scope', function ($scope) {
                 $scope.layerControllerIsReady = false;
                 $scope.geoFeatures = [];
                 $scope.featurePromises = [];
@@ -1049,7 +1049,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
                             throw new Error('Failed to parse style');
                         }
 
-                        GeoLayerService.setFeatureStyle(feature,directiveStyle,$scope.mapAPI.mapController.getFrameworkVersion());
+                        GeoLayerService.setFeatureStyle(feature, directiveStyle, $scope.mapAPI.mapController.getFrameworkVersion());
                     }
 
                     if (feature.then !== null && typeof feature.then === 'function') {
@@ -1118,7 +1118,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
             transclude: false,
             link: function ($scope, element, attrs, mapController) {
                 attrs.$observe('refreshLayer', function (newVal, oldVal) {
-                    if(newVal !== oldVal) {
+                    if (newVal !== oldVal) {
                         $log.info('refresh for - ' + $scope.layerName);
                         $scope.initialiseLayer();
                     }
@@ -1190,7 +1190,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
                         mapController.addLayer(layer).then(function (layerDto) {
                             $scope.layerDto = layerDto;
                             addLayerCallback();
-                            if($scope.layerDto != null) {
+                            if ($scope.layerDto != null) {
                                 var delta = layerIndex - mapController.getLayers().length + 1;
                                 mapController.raiseLayerDrawOrder($scope.layerDto.id, delta);
                             }
@@ -1208,7 +1208,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
                     $log.info('initialising layer...');
                     if ($scope.layerDto != null) {
                         reconstructLayer();
-                    } else if($scope.layerReady && $scope.constructionInProgress) {
+                    } else if ($scope.layerReady && $scope.constructionInProgress) {
                         $log.info('...');
                     } else {
                         constructLayer();
@@ -1232,7 +1232,7 @@ app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerServic
                     }
                 });
 
-                if(attrs.refreshLayer == null) {
+                if (attrs.refreshLayer == null) {
                     $scope.initialiseLayer();
                 }
             }

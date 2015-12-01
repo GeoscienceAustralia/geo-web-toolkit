@@ -24,7 +24,7 @@
      * @require geoMap
      * @example
      */
-    app.directive('geoMapMarker', ['$log','$timeout','GeoLayerService', function ($log,$timeout,GeoLayerService) {
+    app.directive('geoMapMarker', ['$log', '$timeout', 'GeoLayerService', function ($log, $timeout, GeoLayerService) {
         return {
             restrict: "E",
             require: "^geoMap",
@@ -67,33 +67,34 @@
 
 
                 function createMapMarker() {
-                    var lat,lon,width,height, iconUrl;
+                    var lat, lon, width, height, iconUrl;
                     iconUrl = $scope.markerIcon;
 
 
-                    if(typeof $scope.markerLong === 'string') {
+                    if (typeof $scope.markerLong === 'string') {
                         lon = parseFloat($scope.markerLong);
                     }
 
-                    if(typeof $scope.markerLat === 'string') {
+                    if (typeof $scope.markerLat === 'string') {
                         lat = parseFloat($scope.markerLat);
                     }
 
-                    if(typeof $scope.markerWidth === 'string') {
+                    if (typeof $scope.markerWidth === 'string') {
                         width = parseInt($scope.markerWidth);
                     }
 
-                    if(typeof $scope.markerHeight === 'string') {
+                    if (typeof $scope.markerHeight === 'string') {
                         height = parseInt($scope.markerHeight);
                     }
-                    var layer = GeoLayerService.createLayer({layerType:'markerlayer',layerName: $scope.layerName },$scope.framework);
+                    var layer = GeoLayerService.createLayer({layerType: 'markerlayer', layerName: $scope.layerName }, $scope.framework);
                     mapController.addMarkerLayer(layer, $scope.layerName).then(function () {
                         //Force digest to process initial async layers in correct order
                         var position = mapController.getPixelFromLonLat(lon, lat);
-                        $scope.markerDto = mapController.setMapMarker(position,$scope.layerName,iconUrl,{width:width,height:height});
+                        $scope.markerDto = mapController.setMapMarker(position, $scope.layerName, iconUrl, {width: width, height: height});
 
                     });
                 }
+
                 createMapMarker();
 
                 $scope.$on('$destroy', function () {

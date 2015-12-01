@@ -64,19 +64,19 @@ var app = angular.module('geowebtoolkit.core.control-directives',
  </example>
  */
 app.directive('geoMapControl', [ function () {
-	'use strict';
-	return {
-		restrict: "E",
-		require: "^geoMap",
-		scope: {
-			mapControlName: '@',
-			mapControlId: '@',
-			controlOptions: "=",
-			containerElementId: '@',
+    'use strict';
+    return {
+        restrict: "E",
+        require: "^geoMap",
+        scope: {
+            mapControlName: '@',
+            mapControlId: '@',
+            controlOptions: "=",
+            containerElementId: '@',
             preOptionsLoaded: '&',
-			controlEnabled: '@'
-		},
-		link: function (scope, element, attrs, mapController) {
+            controlEnabled: '@'
+        },
+        link: function (scope, element, attrs, mapController) {
             if (!scope.mapControlName) {
                 return;
             }
@@ -87,16 +87,16 @@ app.directive('geoMapControl', [ function () {
             //scope.controlOptions = scope.controlOptions || {};
             //scope.controlOptions.mapOptions = mapController.getMapOptions();
 
-			scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
-			if(attrs.controlEnabled != null) {
-				attrs.$observe('controlEnabled', function () {
-					if (scope.controlEnabled === 'true') {
-						mapController.activateControl(scope.controlDto.id);
-					} else {
-						mapController.deactivateControl(scope.controlDto.id);
-					}
-				});
-			}
-		}
-	};
+            scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
+            if (attrs.controlEnabled != null) {
+                attrs.$observe('controlEnabled', function () {
+                    if (scope.controlEnabled === 'true') {
+                        mapController.activateControl(scope.controlDto.id);
+                    } else {
+                        mapController.deactivateControl(scope.controlDto.id);
+                    }
+                });
+            }
+        }
+    };
 } ]);
