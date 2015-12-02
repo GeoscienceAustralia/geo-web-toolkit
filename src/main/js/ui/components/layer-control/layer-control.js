@@ -139,7 +139,6 @@
                                 });
                             };
                             scope.layerClicked = function () {
-                                scope.layerData.visibility = !scope.layerData.visibility;
                                 scope.mapController.setLayerVisibility(scope.layerData.id, scope.layerData.visibility);
                                 if (scope.layerData.visibility) {
                                     scope.onVisible({
