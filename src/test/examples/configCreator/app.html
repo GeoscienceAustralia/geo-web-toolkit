@@ -49,9 +49,9 @@
                     'ngRoute', //angular
                     'ui.bootstrap', //bootstrap
                     'ui.utils', //angular-UI
-                    'gawebtoolkit.core',
-                    'gawebtoolkit.config',
-                    'gawebtoolkit.ui'
+                    'geowebtoolkit.core',
+                    'geowebtoolkit.config',
+                    'geowebtoolkit.ui'
                         ]);
 
         app.config([ '$routeProvider',
@@ -63,9 +63,9 @@
 
             }]);
         /* Geo-map-toolkit defaults for implementation
-         * These values are used as defaults for creation of layers and maps within this GAMaps
+         * These values are used as defaults for creation of layers and maps within this GeoMaps
          * */
-        app.value('ga.config', function () {
+        app.value('geoConfig', function () {
             //TODO These values are all OLV2 specific and these values should come from consuming application
             //to merge with defaults written for a specific implementation (like OLV2) in map services.
             var defaults = {

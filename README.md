@@ -56,3 +56,7 @@ Then the Karma runner can be launched using the following (assuming you have ins
 
 Tests can be executed by using `grunt karma`
 
+#### Name change for directives
+As of bower version **0.20.x onwards**, directives will use the `geo-` prefix as opposed to the old `ga-` prefix.
+This is to make the names more meaningful as well as make them less Geoscience Australia centric.
+

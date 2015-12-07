@@ -16,14 +16,14 @@
 <body ng-controller="mainController">
 <h1>Drawing OpenLayers 2</h1>
 <div id="map" style="width:100%;height:500px;"></div>
-<ga-map framework="olv2" map-element-id="map" zoom-level="4" center-position="[130, -25]">
-    <ga-map-layer layer-name="Simple map layer name" layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer" is-base-layer="true" layer-type="XYZTileCache">
-</ga-map>
+<geo-map framework="olv2" map-element-id="map" zoom-level="4" center-position="[130, -25]">
+    <geo-map-layer layer-name="Simple map layer name" layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer" is-base-layer="true" layer-type="XYZTileCache">
+</geo-map>
 <label for="selectDrawingType">Select Drawing Type</label>
 <select id="selectDrawingType" name="selectDrawingType" ng-init="selectedItem = drawTypes[0]" ng-options="drawType as drawType for drawType in drawTypes" ng-change="update()"
         ng-model="selectedItem"></select>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core']);
     app.controller('mainController', ['$scope', function ($scope) {
         $scope.drawTypes = ['None', 'Point','LineString'];
         $scope.update = function () {

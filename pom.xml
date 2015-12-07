@@ -3,10 +3,9 @@
 
     <groupId>au.gov.ga</groupId>
 	<artifactId>geo-web-toolkit</artifactId>
-	<version>1.2.7-SNAPSHOT</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>geo-web-toolkit</name>
-
 
     <scm>
         <url>https://github.com/GeoscienceAustralia/geo-web-toolkit.git</url>

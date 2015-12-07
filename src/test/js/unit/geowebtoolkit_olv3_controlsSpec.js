@@ -3,7 +3,7 @@
     "use strict";
 
     describe(
-        'OpenLayers v3 "ga-map-control" implementation tests',
+        'OpenLayers v3 "geo-map-control" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, listener, preload;
 
@@ -30,19 +30,19 @@
                     return options;
                 };
                 element = angular
-                    .element('<ga-map map-element-id="gamap" framework="olv3">' + '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
-                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                    'wrap-date-line="true"' +
-                    'zoom-to-max="true"' +
-                    'layer-type="WMS"' +
-                    'is-base-layer="true"' +
-                    '>' +
-                    '<ga-map-control map-control-name="OverviewMap" pre-options-loaded="testPreloadOptions(options)" control-options="overviewOptions"></ga-map-control>' +
-                    '<ga-map-control map-control-name="ScaleLine"></ga-map-control>' +
-                    '<ga-map-control map-control-name="panzoombar"></ga-map-control>' +
-                    '<ga-map-control map-control-name="attribution"></ga-map-control>' +
-                    '<ga-map-control map-control-name="mouseposition" />' +
-                    '<div id="gamap"></div></ga-map>');
+                    .element('<geo-map map-element-id="geomap" framework="olv3">' + '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
+                        'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
+                        'wrap-date-line="true"' +
+                        'zoom-to-max="true"' +
+                        'layer-type="WMS"' +
+                        'is-base-layer="true"' +
+                        '>' +
+                        '<geo-map-control map-control-name="OverviewMap" pre-options-loaded="testPreloadOptions(options)" control-options="overviewOptions"></geo-map-control>' +
+                        '<geo-map-control map-control-name="ScaleLine"></geo-map-control>' +
+                        '<geo-map-control map-control-name="panzoombar"></geo-map-control>' +
+                        '<geo-map-control map-control-name="attribution"></geo-map-control>' +
+                        '<geo-map-control map-control-name="mouseposition" />' +
+                        '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -87,7 +87,7 @@
             it('Should provide meaningful error when invalid control name is provided', function () {
                 try {
                     $scope.mapController.addControl('foobar');
-                } catch(e) {
+                } catch (e) {
                     //Test for supported control name to show error lists off valid controls
                     expect(e.message.indexOf('zoomslider') !== -1).toBe(true);
                 }

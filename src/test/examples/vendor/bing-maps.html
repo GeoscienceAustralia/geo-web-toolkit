@@ -17,12 +17,12 @@
 <h1 id="test111" ng-bind="frameworkName"></h1>
 <div id="map" style="width:100%;height:500px;"></div>
 
-<ga-map ng-if="frameworkType != null" framework="{{frameworkType}}" map-element-id="map" zoom-level="4" center-position="[130, -25]">
-    <ga-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" wrap-date-line="'true'"></ga-bing-layer>
+<geo-map ng-if="frameworkType != null" framework="{{frameworkType}}" map-element-id="map" zoom-level="4" center-position="[130, -25]">
+    <geo-bing-layer bing-api-key="AjHzO1foSTb67AHZKdT3uc_aupuJ1reD3YUVP9yaKwgj1dePq8lAiPU-uPsEFtnT" wrap-date-line="'true'"></geo-bing-layer>
 
-</ga-map>
+</geo-map>
 <script>
-    var app = angular.module('simpleMap',['gawebtoolkit.core']);
+    var app = angular.module('simpleMap',['geowebtoolkit.core']);
 
     app.controller('mainController', ['$scope','$timeout', function ($scope,$timeout) {
 

@@ -2,20 +2,20 @@ var angular = angular || {};
 var jQuery = jQuery || {};
 var console = console || {};
 
-var app = angular.module('gawebtoolkit.config', []);
+var app = angular.module('geowebtoolkit.config', []);
 /**
  * @ngdoc directive
- * @name gawebtoolkit.config.directives:gaMapConfig
+ * @name geowebtoolkit.config.directives:geoMapConfig
  * @description
  * ## Overview ##
- * gaMapConfig directive is used for loading a configuration file in JSON format and a "template" HTML file. These two will be used as our data and view layers.
- *  <p><span class="note">NOTE: </span>Follwing items should be considered when using gaMapConfig:</p>
+ * geoMapConfig directive is used for loading a configuration file in JSON format and a "template" HTML file. These two will be used as our data and view layers.
+ *  <p><span class="note">NOTE: </span>Follwing items should be considered when using geoMapConfig:</p>
  <ul>
-     <li>'gawebtoolkit.config' must be referenced and loaded when creating our AngularJS application</li>
+     <li>'geowebtoolkit.config' must be referenced and loaded when creating our AngularJS application</li>
      <li>A controller should be created attached to our AngularJS application, this controller will trigger an event which injects our configuration (loaded in page in JSON format) to the scope as a JavaScript object</li>
      <li>By calling defined controller within our app element in HTML, all the configuration will be accessible. Controller can be called in the template file or in the main application's HMTL codes</li>
  </ul>
- * @param {string|@} gaConfigPath - A string value containing the path to our configuration JSON file 
+ * @param {string|@} geoConfigPath - A string value containing the path to our configuration JSON file 
  * @param {string|@} staticConfig - A boolean value ("true" or "false") that toggles using configuration/template files on/off
  * @param {string|@} templatePath - A string value containing the path to our HTML template file
  *
@@ -27,7 +27,7 @@ var app = angular.module('gawebtoolkit.config', []);
      <file name="index.html">
          <div id="map"></div>
          <div ng-controller="ourConfigController">
-         <ga-map-config ga-config-path="../docs-sources/ourConfigFile" template-path="../docs-sources/ourTemplate.html" static-config="true" class="ng-scope"></ga-map-config>
+         <geo-map-config geo-config-path="../docs-sources/ourConfigFile" template-path="../docs-sources/ourTemplate.html" static-config="true" class="ng-scope"></geo-map-config>
          </div>
      </file>
      <file name="style.css">
@@ -35,7 +35,7 @@ var app = angular.module('gawebtoolkit.config', []);
         .note {color: red; font-weight: bold}
      </file>
      <file name="script.js">
-         var app = angular.module('simpleMapWithConfig',['gawebtoolkit.core','gawebtoolkit.config']);
+         var app = angular.module('simpleMapWithConfig',['geowebtoolkit.core','geowebtoolkit.config']);
          app.controller('ourConfigController', function ($scope) { 
             $scope.$on('configDataLoaded', function(event,args){ 
                 $scope.myConfig = args;
@@ -43,8 +43,8 @@ var app = angular.module('gawebtoolkit.config', []);
          });
      </file>
      <file name="ourTemplate.html">
-         <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position="{{myConfig.centrePosition}}" zoom-level="{{myConfig.zoomLevel}}">
-             <ga-map-layer 
+         <geo-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position="{{myConfig.centrePosition}}" zoom-level="{{myConfig.zoomLevel}}">
+             <geo-map-layer
                  ng-repeat="baseLayer in myConfig.baseMaps" 
                  layer-name="{{baseLayer.name}}" 
                  layer-url="{{baseLayer.url}}"
@@ -55,8 +55,8 @@ var app = angular.module('gawebtoolkit.config', []);
                  visibility="{{baseLayer.visibility}}" 
                  layer-attribution="{{baseLayer.attribution}}"
                  zoom-to-max="{{baseLayer.zoomToMax}}">
-             </ga-map-layer>
-             <ga-map-layer 
+             </geo-map-layer>
+             <geo-map-layer
                  ng-repeat="Layer in myConfig.layerMaps" 
                  layer-name="{{Layer.name}}" 
                  layer-url="{{Layer.url}}"
@@ -68,9 +68,9 @@ var app = angular.module('gawebtoolkit.config', []);
                  is-base-layer="{{Layer.isBaseLayer}}" 
                  visibility="{{Layer.visibility}}" 
                  layer-attribution="{{Layer.attribution}}">
-             </ga-map-layer>
-             <ga-map-control ng-repeat="control in myConfig.controls" map-control-name="{{control}}"></ga-map-control>
-         </ga-map> 
+             </geo-map-layer>
+             <geo-map-control ng-repeat="control in myConfig.controls" map-control-name="{{control}}"></geo-map-control>
+         </geo-map>
      </file>
      <file name="ourConfigFile.json">
          {
@@ -122,7 +122,7 @@ var app = angular.module('gawebtoolkit.config', []);
      </file>
  </example>
  */
-app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$timeout', '$parse', '$log',
+app.directive('geoMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$timeout', '$parse', '$log',
     function ($compile, $http, $q, $interpolate, $timeout, $parse, $log) {
         'use strict';
         return {
@@ -139,10 +139,10 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                         $scope.fromLocalStorage = true;
                         $scope.localStorageKey = $attrs.localStorageKey;
                     }
-                    if ($attrs.gaConfigPath != null && $attrs.gaConfigPath.indexOf('{{') !== -1) {
-                        configPath = $scope.$eval($interpolate($attrs.gaConfigPath));
+                    if ($attrs.geoConfigPath != null && $attrs.geoConfigPath.indexOf('{{') !== -1) {
+                        configPath = $scope.$eval($interpolate($attrs.geoConfigPath));
                     } else {
-                        configPath = $attrs.gaConfigPath;
+                        configPath = $attrs.geoConfigPath;
                     }
 
                     if ($attrs.staticConfig === 'true') {
@@ -155,21 +155,21 @@ app.directive('gaMapConfig', [ '$compile', '$http', '$q', '$interpolate', '$time
                         }
                         if ($attrs.preConfig) {
                             var preConfigAssignmentFn = $parse($attrs.preConfig);
-                            $scope.gaConfigTemp = preConfigAssignmentFn($scope, {
+                            $scope.geoConfigTemp = preConfigAssignmentFn($scope, {
                                 config: data
                             });
                         } else {
-                            $scope.gaConfigTemp = data;
+                            $scope.geoConfigTemp = data;
                         }
 
                         //$scope.configReady = true;
-                        $scope.$emit('configDataLoaded', $scope.gaConfigTemp);
-                        $scope.$broadcast('configDataLoaded', $scope.gaConfigTemp);
+                        $scope.$emit('configDataLoaded', $scope.geoConfigTemp);
+                        $scope.$broadcast('configDataLoaded', $scope.geoConfigTemp);
 
                         if ($attrs.postConfig) {
                             var postConfigAssignmentFn = $parse($attrs.postConfig);
                             postConfigAssignmentFn($scope, {
-                                config: $scope.gaConfigTemp
+                                config: $scope.geoConfigTemp
                             });
                         }
                         //$scope.$emit('configReady', $scope.configReady);

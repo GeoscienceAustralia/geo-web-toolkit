@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.geo-place-name-search', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.geo-place-name-search', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:geoNamesPlaceSearch
+     * @name geowebtoolkit.ui.directives:geoNamesPlaceSearch
      * @param {object} mapController - Map controller
      * @param {string} searchIconUrl - Path to an icon used for search
      * @param {string} geoNamesApiKey - Username to use for geonames.org web service
@@ -26,7 +26,7 @@
     app.directive('geoNamesPlaceSearch', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
         return {
             restrict: 'E',
-            templateUrl:'src/main/js/ui/components/geo-names-place-search/geo-names-place-search.html',
+            templateUrl: 'src/main/js/ui/components/geo-names-place-search/geo-names-place-search.html',
             scope: {
                 mapController: '=',
                 searchIconUrl: '@',

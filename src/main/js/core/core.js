@@ -32,18 +32,18 @@ var jQuery = jQuery || {};
  *  @property {string} units - The unit type of the distance number, eg 'km'
  * */
 
-angular.module('gawebtoolkit.core',
+angular.module('geowebtoolkit.core',
     [
-        'gawebtoolkit.mapservices',
-        'gawebtoolkit.core.map-directives',
-        'gawebtoolkit.core.map-services',
-        'gawebtoolkit.core.layer-directives',
-        'gawebtoolkit.vendor-layers',
-        'gawebtoolkit.core.layer-services',
-        'gawebtoolkit.core.data-services',
-        'gawebtoolkit.core.control-directives',
-        'gawebtoolkit.core.feature-directives',
-        'gawebtoolkit.core.marker-directives',
-        'gawebtoolkit.core.map-config',
-        'gawebtoolkit.utils'
+        'geowebtoolkit.mapservices',
+        'geowebtoolkit.core.map-directives',
+        'geowebtoolkit.core.map-services',
+        'geowebtoolkit.core.layer-directives',
+        'geowebtoolkit.vendor-layers',
+        'geowebtoolkit.core.layer-services',
+        'geowebtoolkit.core.data-services',
+        'geowebtoolkit.core.control-directives',
+        'geowebtoolkit.core.feature-directives',
+        'geowebtoolkit.core.marker-directives',
+        'geowebtoolkit.core.map-config',
+        'geowebtoolkit.utils'
     ]);

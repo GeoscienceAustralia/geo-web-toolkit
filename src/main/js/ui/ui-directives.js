@@ -3,16 +3,16 @@ var console = console || {};
 var $ = $ || {};
 var google = google || {};
 
-angular.module('gawebtoolkit.ui', [ 'gawebtoolkit.ui.directives','gawebtoolkit.ui.templates','gawebtoolkit.ui.components', 'ui.utils', 'gawebtoolkit.utils' ]);
+angular.module('geowebtoolkit.ui', [ 'geowebtoolkit.ui.directives', 'geowebtoolkit.ui.templates', 'geowebtoolkit.ui.components', 'ui.utils', 'geowebtoolkit.utils' ]);
 
-var app = angular.module('gawebtoolkit.ui.directives', [ 'gawebtoolkit.utils' ]);
+var app = angular.module('geowebtoolkit.ui.directives', [ 'geowebtoolkit.utils' ]);
 
 
 /**
- * gaZoomToExtentButton
+ * geoZoomToExtentButton
  * Notes: beforeZoom param 'points' is the underlying implementation object
  **/
-app.directive('gaZoomToExtentButton', [ function () {
+app.directive('geoZoomToExtentButton', [ function () {
     "use strict";
     return {
         restrict: 'E',
@@ -36,7 +36,7 @@ app.directive('gaZoomToExtentButton', [ function () {
 } ]);
 /**
  * */
-app.directive('gaZoomToCenterPositionAnchor', [ function () {
+app.directive('geoZoomToCenterPositionAnchor', [ function () {
     "use strict";
     return {
         restrict: 'E',
@@ -59,7 +59,7 @@ app.directive('gaZoomToCenterPositionAnchor', [ function () {
 /**
  *
  * */
-app.directive('gaZoomToLayerButton', [ function () {
+app.directive('geoZoomToLayerButton', [ function () {
     "use strict";
     return {
         restrict: 'E',
@@ -79,7 +79,7 @@ app.directive('gaZoomToLayerButton', [ function () {
 } ]);
 /**
  * */
-app.directive('gaToggle', [ function () {
+app.directive('geoToggle', [ function () {
     'use strict';
     var templateCache = '<button type="button" ng-click="toggle()"><div ng-transclude></div></button>';
     return {
@@ -88,11 +88,11 @@ app.directive('gaToggle', [ function () {
         template: templateCache,
         transclude: true,
         scope: {
-            gaToggleClicked: '&'
+            geoToggleClicked: '&'
         },
         link: function ($scope) {
             $scope.toggle = function () {
-                $scope.gaToggleClicked();
+                $scope.geoToggleClicked();
             };
         }
     };

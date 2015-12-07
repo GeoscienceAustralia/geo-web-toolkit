@@ -26,9 +26,9 @@
                 });
 
                 var elementHtml =
-                    '<ga-map ng-if="existingInstance" framework="olv2" existing-map-instance="existingInstance"> ' +
-                    '</ga-map>' +
-                    '<ga-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />' +
+                    '<geo-map ng-if="existingInstance" framework="olv2" existing-map-instance="existingInstance"> ' +
+                    '</geo-map>' +
+                    '<geo-layer-control ng-if="existingInstance" ng-repeat="layer in myLayers" layer-data="layer" map-controller="mapController" />' +
                     '<div id="map"></div>';
 
 
@@ -76,10 +76,10 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-                var olFeature = featureReader.read(angular.toJson($scope.testFeature),$scope.testFeature.type);
+                var olFeature = featureReader.read(angular.toJson($scope.testFeature), $scope.testFeature.type);
                 featureLayer.addFeatures([olFeature]);
 
-                map.addLayers([ol_wms, dm_wms,featureLayer]);
+                map.addLayers([ol_wms, dm_wms, featureLayer]);
                 map.zoomToMaxExtent();
 
                 $scope.existingInstance = map;
@@ -199,7 +199,7 @@
             it('Should fire mapController function "getPixelFromLonLat" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var lonLat = $scope.mapController.getPixelFromLonLat(130,-20);
+                    var lonLat = $scope.mapController.getPixelFromLonLat(130, -20);
                     expect(lonLat != null).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -211,13 +211,13 @@
                 var latPassed = false;
                 try {
                     $scope.mapController.getPixelFromLonLat(null, 123);
-                } catch(e) {
+                } catch (e) {
                     lonPassed = true;
                 }
 
                 try {
                     $scope.mapController.getPixelFromLonLat(123, null);
-                } catch(e) {
+                } catch (e) {
                     latPassed = true;
                 }
 
@@ -632,7 +632,7 @@
                     var client = $scope.mapController.createWfsClient(
                         'http://localhost:8080',
                         'test',
-                        'test','1.1.0',
+                        'test', '1.1.0',
                         'geoName',
                         'EPSG:4326',
                         true);
@@ -648,7 +648,7 @@
                     var client = $scope.mapController.createWfsClient(
                         'http://localhost:8080',
                         'test',
-                        'test','1.1.0',
+                        'test', '1.1.0',
                         'geoName',
                         'EPSG:4326',
                         true);
@@ -666,14 +666,14 @@
                     var client = $scope.mapController.createWfsClient(
                         'http://localhost:8080',
                         'test',
-                        'test','1.1.0',
+                        'test', '1.1.0',
                         'geoName',
                         'EPSG:4326',
                         true);
                     expect(client != null).toBe(true);
                     var clientDto = $scope.mapController.addWfsClient(client);
                     expect(clientDto != null).toBe(true);
-                    var searchResult = $scope.mapController.searchWfs(clientDto.clientId,'testquery','NAME');
+                    var searchResult = $scope.mapController.searchWfs(clientDto.clientId, 'testquery', 'NAME');
                     expect(searchResult != null).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -684,7 +684,10 @@
                 var passed = false;
                 try {
                     //pass in valid openlayers equivalent, literal will do.
-                    var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
+                    var measure = $scope.mapController.getMeasureFromEvent({geometry: [
+                        {x: 5, y: 5},
+                        {x: 2, y: 4}
+                    ]});
                     expect(measure != null).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -700,7 +703,7 @@
                     expect(features != null).toBe(true);
                     expect(features.length > 0).toBe(true);
 
-                    $scope.mapController.removeFeatureFromLayer(layer.id,features[0].id);
+                    $scope.mapController.removeFeatureFromLayer(layer.id, features[0].id);
                     features = $scope.mapController.getLayerFeatures(layer.id);
                     expect(features.length === 0).toBe(true);
                     passed = true;

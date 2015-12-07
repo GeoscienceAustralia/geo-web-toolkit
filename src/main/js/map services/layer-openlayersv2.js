@@ -4,12 +4,12 @@ var console = console || {};
 var $ = $ || {};
 var google = google || {};
 
-var app = angular.module('gawebtoolkit.mapservices.layer.openlayersv2', []);
+var app = angular.module('geowebtoolkit.mapservices.layer.openlayersv2', []);
 
 /*
- * This service wraps olv2 layer functionality that is used via the GAMaps and GALayer service
+ * This service wraps olv2 layer functionality that is used via the GeoMaps and GeoLayer service
  * */
-app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$timeout) {
+app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, $timeout) {
     'use strict';
     var service = {
         xyzTileCachePath: "/tile/${z}/${y}/${x}",
@@ -47,15 +47,15 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                             args.layerType
                     );
             }
-			layer.geoLayerType = args.layerType;
+            layer.geoLayerType = args.layerType;
             return layer;
         },
         createGoogleLayer: function (args) {
-            if(args.layerType == null) {
+            if (args.layerType == null) {
                 throw new Error("'layerType' not specified for creating a Google Maps layer. Please specify a valid layer type, eg 'hybrid");
             }
             var googleLayerType;
-            switch(args.layerType.toLocaleLowerCase()) {
+            switch (args.layerType.toLocaleLowerCase()) {
                 case 'googlehybrid':
                 case 'hybrid':
                     googleLayerType = google.maps.MapTypeId.HYBRID;
@@ -86,7 +86,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         createBingLayer: function (args) {
             var bingLayerType;
             var bingLayerName = args.layerName;
-            switch(args.layerType.toLocaleLowerCase()) {
+            switch (args.layerType.toLocaleLowerCase()) {
                 case 'aerial':
                     bingLayerType = 'Aerial';
                     bingLayerName = bingLayerName || 'Bing Aerial';
@@ -166,13 +166,13 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             if (args.postAddLayer != null) {
                 service.postAddLayerCache[layer.id] = args.postAddLayer;
             }
-			//Clean up any references to layers that no longer exist.
+            //Clean up any references to layers that no longer exist.
 
 
             return layer;
         },
         setFeatureStyle: function () {
-          //TODO v2 styles
+            //TODO v2 styles
         },
         createMarkerLayer: function (args) {
             return new OpenLayers.Layer.Markers(args.layerName);
@@ -211,7 +211,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         },
         clearFeatureLayer: function (mapInstance, layerId) {
             var layer = service.getLayerById(mapInstance, layerId);
-            if(!layer) {
+            if (!layer) {
                 $log.error('clearFeatureLayer: Layer "' + layerId + '" not found.');
             } else {
                 layer.removeAllFeatures();
@@ -234,22 +234,22 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                     opacity: args.opacity
                 }
             };
-            
-            if(resultArgs.options.isBaseLayer) {
-                if(args.resolutions) {
+
+            if (resultArgs.options.isBaseLayer) {
+                if (args.resolutions) {
                     resultArgs.options.resolutions = args.resolutions;
                 }
-                if(args.zoomOffset) {
+                if (args.zoomOffset) {
                     resultArgs.options.zoomOffset = args.zoomOffset;
                 }
             }
 
             if (args.maxZoomLevel != null) {
                 if (args.maxZoomLevel.length > 0) {
-	            	resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel) ;
+                    resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel);
                 }
-            }    
-            
+            }
+
             return new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzTileCachePath, resultArgs.options);
         },
         createWMSLayer: function (args) {
@@ -271,10 +271,10 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
                 opacity: args.opacity
                 //centerPosition: args.centerPosition
             };
-            
+
             if (args.maxZoomLevel != null) {
                 if (args.maxZoomLevel.length > 0) {
-	            	resultArgs.numZoomLevels = parseInt(args.maxZoomLevel) ;
+                    resultArgs.numZoomLevels = parseInt(args.maxZoomLevel);
                 }
             }
 
@@ -299,7 +299,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             }, function (data) {
                 //cancel timeout
                 $timeout.cancel(scriptTimeout);
-                if(data.error != null && data.error.code != null) {
+                if (data.error != null && data.error.code != null) {
                     deferred.reject('LayerError - ' + data.error.code);
                     return;
                 }
@@ -320,14 +320,14 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
 
                 if (args.maxZoomLevel != null) {
                     if (args.maxZoomLevel.length > 0) {
-    	            	resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel);
+                        resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel);
                     }
                 }
                 //TODO server can respond with a 200 status code even with an error. Needs to be handled.
                 if (data) {
                     resultArgs.options.layerInfo = data;
                     if (resultArgs.options.numZoomLevels == null) {
-                    	resultArgs.options.numZoomLevels = data.tileInfo.lods.length + 1;
+                        resultArgs.options.numZoomLevels = data.tileInfo.lods.length + 1;
                     }
                 }
 
@@ -342,25 +342,25 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             layerOptions.centerPosition = service.parselatLong(layerOptions.centerPosition);
             return layerOptions;
         },
-		cleanupLayer: function (mapInstance, layerId) {
-            if(mapInstance.layers == null || mapInstance.layers.length === 0) {
+        cleanupLayer: function (mapInstance, layerId) {
+            if (mapInstance.layers == null || mapInstance.layers.length === 0) {
                 return;
             }
             var layer = service.getLayerById(mapInstance, layerId);
-			if(layer != null) {
-				mapInstance.removeLayer(layer);
-			}
-		},
+            if (layer != null) {
+                mapInstance.removeLayer(layer);
+            }
+        },
         createFeature: function (mapInstance, geoJson) {
-			var reader;
-			if(mapInstance.projection !== geoJson.crs.properties.name) {
-				reader = new OpenLayers.Format.GeoJSON({
-					'externalProjection': geoJson.crs.properties.name,
-					'internalProjection': mapInstance.projection
-				});
-			} else {
-				reader = new OpenLayers.Format.GeoJSON();
-			}
+            var reader;
+            if (mapInstance.projection !== geoJson.crs.properties.name) {
+                reader = new OpenLayers.Format.GeoJSON({
+                    'externalProjection': geoJson.crs.properties.name,
+                    'internalProjection': mapInstance.projection
+                });
+            } else {
+                reader = new OpenLayers.Format.GeoJSON();
+            }
 
             return reader.read(angular.toJson(geoJson), geoJson.type);
         },
@@ -414,10 +414,10 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
             }
         },
         /*
-        Deprecated. Anything using this method needs to change.
-        If external, to use removeLayerById
-        If internal to olv2service, just use olv2 removeLayer method
-        */
+         Deprecated. Anything using this method needs to change.
+         If external, to use removeLayerById
+         If internal to olv2service, just use olv2 removeLayer method
+         */
         removeLayer: function (mapInstance, layerInstance) {
             mapInstance.removeLayer(layerInstance);
         },
@@ -459,7 +459,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         },
         registerLayerEvent: function (mapInstance, layerId, eventName, callback) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            if(layer == null) {
+            if (layer == null) {
                 $log.warn('registerLayerEvent: Layer not found - "' + layerId + '"');
             } else {
                 layer.events.register(eventName, layer, callback);
@@ -468,7 +468,7 @@ app.service('olv2LayerService', [ '$log', '$q','$timeout', function ($log, $q,$t
         },
         unRegisterLayerEvent: function (mapInstance, layerId, eventName, callback) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            if(layer == null) {
+            if (layer == null) {
                 $log.warn('unRegisterLayerEvent: Layer not found - "' + layerId + '"');
             } else {
                 layer.events.unregister(eventName, layer, callback);

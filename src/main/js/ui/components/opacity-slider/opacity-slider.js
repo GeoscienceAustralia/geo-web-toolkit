@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.opacity-slider', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.opacity-slider', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayerOpacitySlider
+     * @name geowebtoolkit.ui.directives:geoLayerOpacitySlider
      * @description
      * Adds an opacity slider to the map and attaches it to selected layer
      * @param {string} layersId - The ID of the layer
@@ -19,36 +19,36 @@
      * <file name="mapWithUISlider.html">
      * <div ng-controller="ourMapController">
      * <div class="opaictySlider">
-     * <ga-layer-opacity-slider
+     * <geo-layer-opacity-slider
      *  layer-id="{{layers[1].id}}"
      *  layer-opacity="layers[1].opacity"
-     *  map-controller="mapController"></ga-layer-opacity-slider>
+     *  map-controller="mapController"></geo-layer-opacity-slider>
      *  </div>
      * <div id="map"></div>
-     * <ga-map
+     * <geo-map
      *   map-element-id="map"
      *   datum-projection='EPSG:102100'
      *   display-projection='EPSG:4326'
      *   center-position='[130, -25]'
      *   zoom-level="4">
-     *   <ga-map-layer
+     *   <geo-map-layer
      *       layer-name="Overview World Screen"
      *       layer-type="GoogleStreet"
      *       is-base-layer="true">
-     *   </ga-map-layer>
-     *   <ga-map-layer
+     *   </geo-map-layer>
+     *   <geo-map-layer
      *       layer-name="Earthquake hazard contours"
      *       layer-type="WMS"
      *       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
      *       is-base-layer="false"
      *       layers="hazardContours"
      *       background-color="#ffffff">
-     *   </ga-map-layer>
-     * </ga-map>
+     *   </geo-map-layer>
+     * </geo-map>
      * </div>
      * </file>
      * <file name="mapWithUISlider.js">
-     * var app = angular.module('mapWithUISlider',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     * var app = angular.module('mapWithUISlider',['geowebtoolkit.core', 'geowebtoolkit.ui']);
      * app.controller("ourMapController",["$scope", function($scope) {
  *       $scope.$on("mapControllerReady", function(event, args) {
  *           $scope.mapController = args;
@@ -71,7 +71,7 @@
      * </example>
      *
      */
-    app.directive('gaLayerOpacitySlider', ['$timeout', function ($timeout) {
+    app.directive('geoLayerOpacitySlider', ['$timeout', function ($timeout) {
         //'<input type="range"  min="0" max="1.0" step="0.01" ng-model="layerOpacity"/>';
         return {
             restrict: "E",
@@ -83,7 +83,7 @@
                 mapController: '=',
                 layerDisabled: '=',
                 titleText: '@',
-                onOpacityChange:'&'
+                onOpacityChange: '&'
             },
             controller: ['$scope', function ($scope) {
                 $scope.changeOpacitySlide = function (e, ui) {
@@ -92,7 +92,7 @@
                     //This is a performance hit, but unable to get a reliable update with out.
                     $timeout(function () {
                         $scope.$apply();
-                        $scope.onOpacityChange({layerId:$scope.layerId,opacity:$scope.layerOpacity});
+                        $scope.onOpacityChange({layerId: $scope.layerId, opacity: $scope.layerOpacity});
                     });
                 };
                 $scope.getSliderOptions = function () {
@@ -112,8 +112,8 @@
                 $scope.$watch('layerOpacity', function (newVal, oldVal) {
                     if (newVal && oldVal !== newVal) {
                         $($element).slider($scope.getSliderOptions());
-                        if($scope.layerId) {
-                            $scope.mapController.setOpacity($scope.layerId,newVal);
+                        if ($scope.layerId) {
+                            $scope.mapController.setOpacity($scope.layerId, newVal);
                         }
                     }
                 });

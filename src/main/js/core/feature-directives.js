@@ -1,14 +1,14 @@
 var angular = angular || {};
 
-var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit.core.map-directives', 'gawebtoolkit.core.map-services',
-    'gawebtoolkit.core.layer-services' ]);
+var app = angular.module('geowebtoolkit.core.feature-directives', [ 'geowebtoolkit.core.map-directives', 'geowebtoolkit.core.map-services',
+    'geowebtoolkit.core.layer-services' ]);
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.core.feature-directives:gaFeatureLayer
+ * @name geowebtoolkit.core.feature-directives:geoFeatureLayer
  * @description
  * ## Overview ##
- * gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/gawebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.
+ * geoFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/geowebtoolkit.core.layer-directives:geoMapLayer">geoFeatureLayer</a> should be used. This tag should be placed within the geoMap tag.
  * @param {string|@} layerName - A name allocated to the layer for future reference
  * @param {string|@} url - A string value that defines the URL from which the content of the layer will be loaded
  * @param {function|@} postAddLayer -  Function callback fired after the layer is added
@@ -29,7 +29,7 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
  </ul>
  *@param {string|@} visibility -  A boolean value ("true" or "false") that toggles the visibility of the layer on/off
  *
- * @requires gaMap
+ * @requires geoMap
  * @scope
  * @restrict E
  * @example
@@ -37,19 +37,19 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     <file name="index.html">
         <div id="map"></div>
         <div ng-controller="featureExampleController">
-            <ga-map map-element-id="map" center-position='[130, -25]' zoom-level="4">
-                <ga-google-layer></ga-google-layer>
-                <ga-feature-layer layer-name="My local geoJson features">
-                    <ga-feature ng-repeat="feature in features" geo-json-feature="feature">
-                    </ga-feature>
-                </ga-feature-layer>
-            </ga-map>
+            <geo-map map-element-id="map" center-position='[130, -25]' zoom-level="4">
+                <geo-google-layer></geo-google-layer>
+                <geo-feature-layer layer-name="My local geoJson features">
+                    <geo-feature ng-repeat="feature in features" geo-json-feature="feature">
+                    </geo-feature>
+                </geo-feature-layer>
+            </geo-map>
         </div>
     </file>
     <file name="style.css">#map {width: 650px;height:600px;}</file>
     <file name="script.js">
         var jsonValue = [];
-        var app = angular.module('simpleMapWithFeatureLayers', ['gawebtoolkit.core']);
+        var app = angular.module('simpleMapWithFeatureLayers', ['geowebtoolkit.core']);
         app.controller('featureExampleController', ['$scope', function ($scope) {
         "use strict";
         $.ajax({type: "GET", url: "../docs-sources/geojson.json", async: false, complete: function(data){jsonValue = data.responseJSON;}});
@@ -998,12 +998,12 @@ var app = angular.module('gawebtoolkit.core.feature-directives', [ 'gawebtoolkit
     </file>
 </example>
  */
-app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService', '$log', 'GAWTUtils',
-    function ($timeout, $compile, $q, GALayerService, $log, GAWTUtils) {
+app.directive('geoFeatureLayer', [ '$timeout', '$compile', '$q', 'GeoLayerService', '$log', 'GeoUtils',
+    function ($timeout, $compile, $q, GeoLayerService, $log, GeoUtils) {
         'use strict';
         return {
             restrict: "E",
-            require: "^gaMap",
+            require: "^geoMap",
             scope: {
                 url: '@',
                 layerName: '@',
@@ -1015,9 +1015,9 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 postAddLayer: '&',
                 onLayerDestroy: '&'
             },
-            controller: ['$scope',function ($scope) {
+            controller: ['$scope', function ($scope) {
                 $scope.layerControllerIsReady = false;
-                $scope.gaFeatures = [];
+                $scope.geoFeatures = [];
                 $scope.featurePromises = [];
                 var self = this;
 
@@ -1049,7 +1049,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                             throw new Error('Failed to parse style');
                         }
 
-                        GALayerService.setFeatureStyle(feature,directiveStyle,$scope.mapAPI.mapController.getFrameworkVersion());
+                        GeoLayerService.setFeatureStyle(feature, directiveStyle, $scope.mapAPI.mapController.getFrameworkVersion());
                     }
 
                     if (feature.then !== null && typeof feature.then === 'function') {
@@ -1082,7 +1082,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 
                 self.createFeatureAsync = function (geoJsonFeature, isLonLatOrderValid) {
                     var deferred = $q.defer();
-                    $scope.gaFeatures.push({
+                    $scope.geoFeatures.push({
                         deferred: deferred,
                         feature: geoJsonFeature,
                         isLonLatOrderValid: isLonLatOrderValid
@@ -1103,7 +1103,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                 };
 
                 self.clearFeatures = function () {
-                    GALayerService.clearFeatureLayer(
+                    GeoLayerService.clearFeatureLayer(
                         $scope.mapAPI.mapController.getMapInstance(),
                         $scope.layerDto.id,
                         $scope.mapAPI.mapController.getFrameworkVersion());
@@ -1118,7 +1118,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
             transclude: false,
             link: function ($scope, element, attrs, mapController) {
                 attrs.$observe('refreshLayer', function (newVal, oldVal) {
-                    if(newVal !== oldVal) {
+                    if (newVal !== oldVal) {
                         $log.info('refresh for - ' + $scope.layerName);
                         $scope.initialiseLayer();
                     }
@@ -1134,11 +1134,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 
                 var constructLayer = function () {
                     $scope.constructionInProgress = true;
-                    var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                    var layerOptions = GeoLayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
                     layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                     layerOptions.postAddLayer = $scope.postAddLayer;
                     $log.info(layerOptions.layerName + ' - constructing...');
-                    var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+                    var layer = GeoLayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
 
                     //mapController.waitingForAsyncLayer();
                     //Async layer add
@@ -1182,15 +1182,15 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     if (layerIndex != null) {
                         mapController.removeLayerById($scope.layerDto.id);
                         $scope.layerDto = null;
-                        var layerOptions = GALayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
+                        var layerOptions = GeoLayerService.defaultLayerOptions(attrs, mapController.getFrameworkVersion());
                         layerOptions.datumProjection = $scope.projection || mapController.getProjection();
                         layerOptions.postAddLayer = $scope.postAddLayer;
-                        var layer = GALayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
+                        var layer = GeoLayerService.createFeatureLayer(layerOptions, mapController.getFrameworkVersion());
                         //Async layer add
                         mapController.addLayer(layer).then(function (layerDto) {
                             $scope.layerDto = layerDto;
                             addLayerCallback();
-                            if($scope.layerDto != null) {
+                            if ($scope.layerDto != null) {
                                 var delta = layerIndex - mapController.getLayers().length + 1;
                                 mapController.raiseLayerDrawOrder($scope.layerDto.id, delta);
                             }
@@ -1208,7 +1208,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     $log.info('initialising layer...');
                     if ($scope.layerDto != null) {
                         reconstructLayer();
-                    } else if($scope.layerReady && $scope.constructionInProgress) {
+                    } else if ($scope.layerReady && $scope.constructionInProgress) {
                         $log.info('...');
                     } else {
                         constructLayer();
@@ -1220,7 +1220,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                         $scope.onLayerDestroy({map: mapController.getMapInstance()});
                     }
                     $timeout(function () {
-                        GALayerService.cleanupLayer(mapController.getMapInstance(), $scope.layerDto.id);
+                        GeoLayerService.cleanupLayer(mapController.getMapInstance(), $scope.layerDto.id);
                     });
 
                     //mapController.removeLayerById($scope.layerDto.id);
@@ -1232,7 +1232,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
                     }
                 });
 
-                if(attrs.refreshLayer == null) {
+                if (attrs.refreshLayer == null) {
                     $scope.initialiseLayer();
                 }
             }
@@ -1240,7 +1240,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
     } ]);
 /**
  * @ngdoc directive
- * @name gawebtoolkit.core.feature-directives:gaFeature
+ * @name geowebtoolkit.core.feature-directives:geoFeature
  *
  * @description
  * Wrapper for a native wfs layer<br>
@@ -1251,7 +1251,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
  * @param {string} inputFormat - TBA
  * @param {string} inLonLatOrderValid - TBA
  *
- * @requires gaFeatureLayer
+ * @requires geoFeatureLayer
  * @scope
  * @restrict E
  * @example
@@ -1260,14 +1260,14 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
         <div ng-controller="featureExampleController">
             <button ng-click="changefeatures()" class="btn">Remove some feature layers</button>
             <div id="map"></div>
-            <ga-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
-                <ga-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
-                </ga-map-layer>
-                <ga-feature-layer layer-name="My local geoJson features">
-                    <ga-feature ng-repeat="feature in features" geo-json-feature="feature">
-                    </ga-feature>
-                </ga-feature-layer>
-            </ga-map>
+            <geo-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
+                <geo-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
+                </geo-map-layer>
+                <geo-feature-layer layer-name="My local geoJson features">
+                    <geo-feature ng-repeat="feature in features" geo-json-feature="feature">
+                    </geo-feature>
+                </geo-feature-layer>
+            </geo-map>
         </div>
     </file>
     <file name="style.css">
@@ -1283,7 +1283,7 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
     </file>
     <file name="script.js">
         var jsonValue = [];
-        var app = angular.module('simpleMapWithFeatureLayers', ['gawebtoolkit.core']);
+        var app = angular.module('simpleMapWithFeatureLayers', ['geowebtoolkit.core']);
         app.controller('featureExampleController', ['$scope', function ($scope) {
         "use strict";
         $.ajax({type: "GET", url: "../docs-sources/geojson.json", async: false, complete: function(data){jsonValue = data.responseJSON;}});
@@ -2234,11 +2234,11 @@ app.directive('gaFeatureLayer', [ '$timeout', '$compile', '$q', 'GALayerService'
 ]    </file>
 </example>
  */
-app.directive('gaFeature', [function () {
+app.directive('geoFeature', [function () {
     'use strict';
     return {
         restrict: "E",
-        require: "^gaFeatureLayer",
+        require: "^geoFeatureLayer",
         scope: {
             visibility: '@',
             geoJsonFeature: '=',

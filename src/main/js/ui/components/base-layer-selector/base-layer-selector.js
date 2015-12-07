@@ -2,12 +2,12 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.base-layer-selector', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.base-layer-selector', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaBaseLayerSelector
+     * @name geowebtoolkit.ui.directives:geoBaseLayerSelector
      * @param {Layer[]} layersData - Layers that the control uses to switch base layers
      * @param {object} mapController - controller instance for the map
      * @param {string} controllerEmitEventName - event that is fired that passes the controller
@@ -20,53 +20,53 @@
      * <example module="baseLayerSelector">
      * <file name="baseLayerSelector.html">
      * <div ng-controller="ourMapController">
-     *     <ga-base-layer-selector
+     *     <geo-base-layer-selector
      *        layers-data="baseLayers"
      *        controller-emit-event-name="ourDropDownEvent"
      *        map-controller="mapController">
-     *    </ga-base-layer-selector>
+     *    </geo-base-layer-selector>
      *    <div id="map"></div>
-     *    <ga-map
+     *    <geo-map
      *        map-element-id="map"
      *        datum-projection='EPSG:102100'
      *        display-projection='EPSG:4326'
      *        center-position='[130, -25]'
      *        zoom-level="4">
-     *        <ga-map-layer
+     *        <geo-map-layer
      *            layer-name="World Image"
      *            layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
      *            wrap-date-line="true"
      *            layer-type="XYZTileCache"
      *            is-base-layer="true"
      *            visibility="false">
-     *        </ga-map-layer>
-     *        <ga-map-layer
+     *        </geo-map-layer>
+     *        <geo-map-layer
      *            layer-name="World Political Boundaries"
      *            layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer"
      *            wrap-date-line="true"
      *            layer-type="XYZTileCache"
      *            is-base-layer="true"
      *            visibility="false">
-     *        </ga-map-layer>
-     *        <ga-map-layer
+     *        </geo-map-layer>
+     *        <geo-map-layer
      *            layer-name="Overview World Screen"
      *            layer-type="GoogleStreet"
      *            is-base-layer="true">
-     *        </ga-map-layer>
-     *        <ga-map-layer
+     *        </geo-map-layer>
+     *        <geo-map-layer
      *            layer-name="Earthquake hazard contours"
      *            layer-type="WMS"
      *            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
      *            is-base-layer="false"
      *            layers="hazardContours"
      *            background-color="#ffffff">
-     *        </ga-map-layer>
-     *     </ga-map>
+     *        </geo-map-layer>
+     *     </geo-map>
      * </div>
      *</file>
      *<file name="baseLayerSelector.js">
      *        var app = angular.module('baseLayerSelector',
-     *        ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     *        ['geowebtoolkit.core', 'geowebtoolkit.ui']);
      *        app.controller("ourMapController",["$scope", function($scope) {
  *                $scope.$on("mapControllerReady", function(event, args) {
  *                    $scope.mapController = args;
@@ -95,7 +95,7 @@
      *</file>
      * </example>
      */
-    app.directive('gaBaseLayerSelector', ['$timeout', function ($timeout) {
+    app.directive('geoBaseLayerSelector', ['$timeout', function ($timeout) {
         return {
             restrict: "E",
             templateUrl: 'src/main/js/ui/components/base-layer-selector/base-layer-selector.html',

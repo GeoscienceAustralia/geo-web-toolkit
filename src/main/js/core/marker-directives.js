@@ -1,16 +1,16 @@
 /* global angular */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.core.marker-directives',
+    var app = angular.module('geowebtoolkit.core.marker-directives',
         [
-            'gawebtoolkit.core.map-directives',
-            'gawebtoolkit.core.map-services',
-            'gawebtoolkit.core.layer-services'
+            'geowebtoolkit.core.map-directives',
+            'geowebtoolkit.core.map-services',
+            'geowebtoolkit.core.layer-services'
         ]);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.core.marker-directives:gaMapMarker
+     * @name geowebtoolkit.core.marker-directives:geoMapMarker
      * @param {string|@} markerIcon - Marker icon url
      * @param {string|@} markerLat - Latitude for the marker
      * @param {string|@} markerLong - Longitude for the marker
@@ -21,13 +21,13 @@
      * A wrapper for a native map marker
      * @scope
      * @restrict E
-     * @require gaMap
+     * @require geoMap
      * @example
      */
-    app.directive('gaMapMarker', ['$log','$timeout','GALayerService', function ($log,$timeout,GALayerService) {
+    app.directive('geoMapMarker', ['$log', '$timeout', 'GeoLayerService', function ($log, $timeout, GeoLayerService) {
         return {
             restrict: "E",
-            require: "^gaMap",
+            require: "^geoMap",
             scope: {
                 markerIcon: "@",
                 markerLong: "@",
@@ -67,33 +67,34 @@
 
 
                 function createMapMarker() {
-                    var lat,lon,width,height, iconUrl;
+                    var lat, lon, width, height, iconUrl;
                     iconUrl = $scope.markerIcon;
 
 
-                    if(typeof $scope.markerLong === 'string') {
+                    if (typeof $scope.markerLong === 'string') {
                         lon = parseFloat($scope.markerLong);
                     }
 
-                    if(typeof $scope.markerLat === 'string') {
+                    if (typeof $scope.markerLat === 'string') {
                         lat = parseFloat($scope.markerLat);
                     }
 
-                    if(typeof $scope.markerWidth === 'string') {
+                    if (typeof $scope.markerWidth === 'string') {
                         width = parseInt($scope.markerWidth);
                     }
 
-                    if(typeof $scope.markerHeight === 'string') {
+                    if (typeof $scope.markerHeight === 'string') {
                         height = parseInt($scope.markerHeight);
                     }
-                    var layer = GALayerService.createLayer({layerType:'markerlayer',layerName: $scope.layerName },$scope.framework);
+                    var layer = GeoLayerService.createLayer({layerType: 'markerlayer', layerName: $scope.layerName }, $scope.framework);
                     mapController.addMarkerLayer(layer, $scope.layerName).then(function () {
                         //Force digest to process initial async layers in correct order
                         var position = mapController.getPixelFromLonLat(lon, lat);
-                        $scope.markerDto = mapController.setMapMarker(position,$scope.layerName,iconUrl,{width:width,height:height});
+                        $scope.markerDto = mapController.setMapMarker(position, $scope.layerName, iconUrl, {width: width, height: height});
 
                     });
                 }
+
                 createMapMarker();
 
                 $scope.$on('$destroy', function () {

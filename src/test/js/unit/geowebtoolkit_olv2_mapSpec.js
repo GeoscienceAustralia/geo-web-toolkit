@@ -2,7 +2,7 @@
 (function () {
     "use strict";
     describe(
-        'OpenLayers v2.1.13 "ga-map" implementation tests',
+        'OpenLayers v2.1.13 "geo-map" implementation tests',
         function () {
             var $compile,
                 $scope,
@@ -17,12 +17,12 @@
 
             // Store references to $rootScope and $compile
             // so they are available to all tests in this describe block
-            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, GALayerService) {
+            beforeEach(inject(function (_$compile_, _$rootScope_, _$timeout_, GeoLayerService) {
                 // The injector unwraps the underscores (_) from around the parameter names when matching
                 $compile = _$compile_;
                 $timeout = _$timeout_;
                 $scope = _$rootScope_;
-                layerService = GALayerService;
+                layerService = GeoLayerService;
                 mapControllerListener = jasmine.createSpy('mapControllerListener');
                 $scope.$on('mapControllerReady', function (event, args) {
                     mapControllerListener(args);
@@ -55,26 +55,26 @@
                         "coordinates": [ 117.359, -25.284 ]
                     }
                 };
-                var ele = '<ga-map map-element-id="gamap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
+                var ele = '<geo-map map-element-id="geomap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
                     'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
-                    '<ga-map-layer layer-name="Australian Landsat Mosaic"' +
+                    '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
                     'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
                     'wrap-date-line="true"' +
                     'layer-type="WMS"' +
                     'is-base-layer="true"' +
-                    '></ga-map-layer>' +
-                    '<ga-feature-layer layer-name="feature layer1">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-feature-layer layer-name="feature layer2">' +
-                    '<ga-feature geo-json-feature="testFeature"></ga-feature>' +
-                    '</ga-feature-layer>' +
-                    '<ga-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></ga-map-control>' +
-                    '</ga-map>' +
-                    '<div id="gamap"></div>';
+                    '></geo-map-layer>' +
+                    '<geo-feature-layer layer-name="feature layer1">' +
+                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                    '</geo-feature-layer>' +
+                    '<geo-feature-layer layer-name="feature layer2">' +
+                    '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
+                    '</geo-feature-layer>' +
+                    '<geo-map-control map-control-name="OverviewMap" map-control-id="myOverviewTestId"></geo-map-control>' +
+                    '</geo-map>' +
+                    '<div id="geomap"></div>';
                 element = angular
                     .element(ele);
-                mapThatIsStatic = ele.replace('map-element-id="gamap"','map-element-id="gamap" is-static-map="true"');
+                mapThatIsStatic = ele.replace('map-element-id="geomap"', 'map-element-id="geomap" is-static-map="true"');
                 $compile(element)($scope);
                 $scope.$digest();
                 $timeout.flush();
@@ -214,7 +214,7 @@
             it('Should fire mapController function "getPixelFromLonLat" without an exception given valid input', function () {
                 var passed = false;
                 try {
-                    var lonLat = $scope.mapController.getPixelFromLonLat(130,-20);
+                    var lonLat = $scope.mapController.getPixelFromLonLat(130, -20);
                     expect(lonLat != null).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -226,13 +226,13 @@
                 var latPassed = false;
                 try {
                     $scope.mapController.getPixelFromLonLat(null, 123);
-                } catch(e) {
+                } catch (e) {
                     lonPassed = true;
                 }
 
                 try {
                     $scope.mapController.getPixelFromLonLat(123, null);
-                } catch(e) {
+                } catch (e) {
                     latPassed = true;
                 }
 
@@ -487,7 +487,7 @@
             //    try {
             //        var mapElementId = $scope.mapController.getMapElementId();
             //        console.log($scope.mapController.getMapInstance().getViewPort());
-            //        expect(mapElementId).toBe('gamap');
+            //        expect(mapElementId).toBe('geomap');
             //        passed = true;
             //    } catch (e) {
             //    }
@@ -719,7 +719,7 @@
                     var client = $scope.mapController.createWfsClient(
                         'http://localhost:8080',
                         'test',
-                        'test','1.1.0',
+                        'test', '1.1.0',
                         'geoName',
                         'EPSG:4326',
                         true);
@@ -735,7 +735,7 @@
                     var client = $scope.mapController.createWfsClient(
                         'http://localhost:8080',
                         'test',
-                        'test','1.1.0',
+                        'test', '1.1.0',
                         'geoName',
                         'EPSG:4326',
                         true);
@@ -753,14 +753,14 @@
                     var client = $scope.mapController.createWfsClient(
                         'http://localhost:8080',
                         'test',
-                        'test','1.1.0',
+                        'test', '1.1.0',
                         'geoName',
                         'EPSG:4326',
                         true);
                     expect(client != null).toBe(true);
                     var clientDto = $scope.mapController.addWfsClient(client);
                     expect(clientDto != null).toBe(true);
-                    var searchResult = $scope.mapController.searchWfs(clientDto.clientId,'testquery','NAME');
+                    var searchResult = $scope.mapController.searchWfs(clientDto.clientId, 'testquery', 'NAME');
                     expect(searchResult != null).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -771,7 +771,10 @@
                 var passed = false;
                 try {
                     //pass in valid openlayers equivalent, literal will do.
-                    var measure = $scope.mapController.getMeasureFromEvent({geometry: [{x:5,y:5},{x:2,y:4}]});
+                    var measure = $scope.mapController.getMeasureFromEvent({geometry: [
+                        {x: 5, y: 5},
+                        {x: 2, y: 4}
+                    ]});
                     expect(measure != null).toBe(true);
                     passed = true;
                 } catch (e) {
@@ -787,7 +790,7 @@
                     expect(features != null).toBe(true);
                     expect(features.length > 0).toBe(true);
 
-                    $scope.mapController.removeFeatureFromLayer(layer.id,features[0].id);
+                    $scope.mapController.removeFeatureFromLayer(layer.id, features[0].id);
                     features = $scope.mapController.getLayerFeatures(layer.id);
                     expect(features.length === 0).toBe(true);
                     passed = true;
@@ -836,10 +839,12 @@
                 expect($scope.mapController.getCurrentMapExtent()[1][1] > -45.0).toBe(true);
             });
 
-            it('Should get the size of the map', function() {
+            it('Should get the size of the map', function () {
                 //Mocking required due to no div size in PhantomJS
                 var map = $scope.mapController.getMapInstance();
-                map.getSize = function() { return {w: 500, h: 500};};
+                map.getSize = function () {
+                    return {w: 500, h: 500};
+                };
 
                 expect($scope.mapController.getSize().width).toBe(500);
                 expect($scope.mapController.getSize().height).toBe(500);
