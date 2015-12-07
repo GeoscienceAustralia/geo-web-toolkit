@@ -1,14 +1,14 @@
 (function () {
 
-    var app = angular.module('gawebtoolkit.core.data-services', [
-        'gawebtoolkit.mapservices',
-        'gawebtoolkit.core.map-config'
+    var app = angular.module('geowebtoolkit.core.data-services', [
+        'geowebtoolkit.mapservices',
+        'geowebtoolkit.core.map-config'
     ]);
 
 //This service exists to support the requirement that these patterns and controls could be
 //reused with future implementations based off frameworks other than OpenLayer V2.
-    app.service('GADataService', ['$log', 'ga.config', 'dataServiceLocator',
-        function ($log, GAConfig, dataServiceLocator) {
+    app.service('GeoDataService', ['$log', 'geoConfig', 'dataServiceLocator',
+        function ($log, geoConfig, dataServiceLocator) {
             'use strict';
             //OpenLayers 2 as default
             var defaultFramework = 'olv2';

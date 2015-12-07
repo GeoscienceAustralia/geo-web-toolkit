@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.measure-toggle', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.measure-toggle', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
     /**
      *
      * */
-    app.directive('gaMeasureToggle', [function () {
+    app.directive('geoMeasureToggle', [function () {
 
         return {
             restrict: "EA",
@@ -35,7 +35,7 @@
                 };
                 $scope.$emit($scope.controllerEmitEventName, self);
             }],
-            link: function ($scope,$element) {
+            link: function ($scope, $element) {
 
                 $scope.handleMeasurements = function (event) {
                     var measurement = $scope.mapController.getMeasureFromEvent(event);
@@ -53,22 +53,22 @@
                     $scope.mapController.activateControl($scope.mapControlId);
                     $scope.mapController.registerControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
                     $scope.mapController.registerControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
-                    $element.removeClass('gaUiToggleOff');
-                    $element.addClass('gaUiToggleOn');
+                    $element.removeClass('geoUiToggleOff');
+                    $element.addClass('geoUiToggleOn');
                     $scope.toggleOnCallback();
                 };
                 $scope.deactivate = function () {
                     $scope.mapController.deactivateControl($scope.mapControlId);
                     $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measure", $scope.handleMeasurements);
                     $scope.mapController.unRegisterControlEvent($scope.mapControlId, "measurepartial", $scope.handlePartialMeasure);
-                    $element.removeClass('gaUiToggleOn');
-                    $element.addClass('gaUiToggleOff');
+                    $element.removeClass('geoUiToggleOn');
+                    $element.addClass('geoUiToggleOff');
                     $scope.toggleOffCallback();
                 };
                 $scope.handleToggle = function () {
                     // HACK control name passed in to enable compatibility across OLV2 and OLV3.
                     // TODO convert control to layerInteractionToggle and maintain 'enabled' state locally.
-                    if ($scope.mapController.isControlActive($scope.mapControlId,"measureline")) {
+                    if ($scope.mapController.isControlActive($scope.mapControlId, "measureline")) {
                         $scope.deactivate();
                     } else {
                         $scope.activate();

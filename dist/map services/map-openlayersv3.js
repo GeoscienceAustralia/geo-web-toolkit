@@ -3,12 +3,12 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.map.openlayersv3',
+    var app = angular.module('geowebtoolkit.mapservices.map.openlayersv3',
         [
-            'gawebtoolkit.mapservices.layer.openlayersv3',
-            'gawebtoolkit.mapservices.controls.openlayersv3',
-            'gawebtoolkit.mapservices.map.ol3cesium',
-            'gawebtoolkit.events-openlayers3'
+            'geowebtoolkit.mapservices.layer.openlayersv3',
+            'geowebtoolkit.mapservices.controls.openlayersv3',
+            'geowebtoolkit.mapservices.map.ol3cesium',
+            'geowebtoolkit.events-openlayers3'
         ]);
 
     var olCesiumInstance;
@@ -17,15 +17,15 @@
     app.service('olv3MapService', [
         'olv3LayerService',
         'olv3MapControls',
-        'GAWTUtils',
+        'GeoUtils',
         'GeoLayer',
         'ol3CesiumMapService',
         'ol3CesiumEventManager',
-        'ga.config',
+        'geoConfig',
         '$q',
         '$log',
         '$timeout',
-        function (olv3LayerService, olv3MapControls, GAWTUtils, GeoLayer, ol3CesiumMapService, ol3CesiumEventManager, appConfig, $q, $log, $timeout) {
+        function (olv3LayerService, olv3MapControls, GeoUtils, GeoLayer, ol3CesiumMapService, ol3CesiumEventManager, appConfig, $q, $log, $timeout) {
 
             function updateToolkitMapInstanceProperty(mapInstance, propertyName, propertyValue) {
                 var _geowebtoolkit = mapInstance.get('_geowebtoolkit') || {};
@@ -63,9 +63,9 @@
 
             var service = {
                 /**
-                 * Initialises/Creates map object providing applications defaults from 'ga.config' module provided by
-                 * 'gawebtoolkit.services' module, or application above, and attributes passed to gaMap directive.
-                 * @param args {Object} - arguments passed from ga-map directive
+                 * Initialises/Creates map object providing applications defaults from 'geoConfig' module provided by
+                 * 'geowebtoolkit.services' module, or application above, and attributes passed to geoMap directive.
+                 * @param args {Object} - arguments passed from geo-map directive
                  * @param mapConfig {Object} - defaults passed from either toolkit or overridden in consuming application
                  * */
                 initialiseMap: function (args, mapConfig) {
@@ -296,7 +296,7 @@
                         controlOptions.collapsed = !controlOptions.maximized;
                     }
                     var con = olv3MapControls.createControl(controlName, controlOptions, div, mapOptions);
-                    con.set('id', controlId || con.get('id') || GAWTUtils.generateUuid());
+                    con.set('id', controlId || con.get('id') || GeoUtils.generateUuid());
                     con.set('name', controlName || '');
                     //Overview map can't be added after the map creation unless the map has performed a render.
                     //HACK to wait for map before adding this control.
@@ -447,7 +447,7 @@
                         measureEventVectorLayer = getToolkitMapInstanceProperty(mapInstance, 'measureEventVectorLayer');
                     }
 
-                    measureEventVectorLayer.set('id', GAWTUtils.generateUuid());
+                    measureEventVectorLayer.set('id', GeoUtils.generateUuid());
 
                     measureEventDrawInteraction = getToolkitMapInstanceProperty(mapInstance, 'measureEventDrawInteraction');
                     if (!measureEventDrawInteraction) {
@@ -599,7 +599,7 @@
                 },
                 /**
                  * Gets the current list of layers in the map instance and returns as Layer type (geo-web-toolkit DTO)
-                 * @param {Object} mapInstance - the map instance that ga-map directive holds, implementation specific
+                 * @param {Object} mapInstance - the map instance that geo-map directive holds, implementation specific
                  * @returns {Layer[]}
                  * */
                 getLayers: function (mapInstance) {
@@ -630,7 +630,7 @@
                 },
                 /**
                  * Updated the layer visibility on the map instance via the provided layerId
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param layerId {string} - unique ID of the layer to set the new visibility
                  * @param visibility {Boolean} - true or false indicating if the layer is to be visible or not
                  * */
@@ -643,7 +643,7 @@
                 },
                 /**
                  * Methods that takes a geoJson coordinates array and returns OpenLayers boundingbox
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param geoJsonCoordinateArray {geoJsonCoordinates} - array of geoJson coordinates
                  * @return {Object} - OpenLayers bounding box
                  * */
@@ -658,7 +658,7 @@
                 },
                 /**
                  * Method that takes a geoJson coordinates array and returns OpenLayers.Bounds
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param geoJsonCoordinateArray {geoJsonCoordinates} - array of geoJson coordinates
                  * @param projection {string} - projection that the provided coordinates are in
                  * @returns {Object} - OpenLayers.Bounds object
@@ -678,7 +678,7 @@
                 /**
                  * Zooms to a specified extent
                  * //TODO What is common data structure for 'extent' object, current takes OpenLayers bounds
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param extent {[][]} - extent, eg [[10,10],[5,5]]
                  * @example
                  * var bounds = mapController.createBounds([[100.0,-20.0],[160.0,-20.0],[100.0,-40.0],[160.0,-40.0]]);
@@ -726,7 +726,7 @@
                 },
                 /**
                  * Sets a new zoom level of on the map instance
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param zoomLevel {Number} - zoom level between 1-19, not all zoom levels are valid for every map.
                  * */
                 zoomTo: function (mapInstance, zoomLevel) {
@@ -750,7 +750,7 @@
                 },
                 /**
                  * Changes base layer to specified layer ID
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive
                  * @param layerId {string} - ID of the layer that is to be the new base layer
                  * */
                 setBaseLayer: function (mapInstance, layerId) {
@@ -767,7 +767,7 @@
                 /**
                  * Updates the maps view to center on the lon/lat provided.
                  * Assumed same projection unless projection provided.
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive.
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive.
                  * @param lat {Number} - Latitude of the new centre position.
                  * @param lon {Number} - Longitude of the new centre position.
                  * @param projection {string} - Projection of the provided lat and lon.
@@ -841,7 +841,7 @@
                 },
                 /**
                  * Updates the layer with the specified layerId with the provided opacity
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive.
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive.
                  * @param layerId {string} - ID of the layer to have opacity updated.
                  * @param opacity {Number} - new opacity value between 0 and 1.0.
                  * */
@@ -854,7 +854,7 @@
                 },
                 /**
                  * Updates all layers as the map contains size has been changed.
-                 * @param mapInstance {Object} - mapInstance provided by ga-map directive.
+                 * @param mapInstance {Object} - mapInstance provided by geo-map directive.
                  * */
                 mapResized: function (mapInstance) {
                     mapInstance.updateSize();
@@ -875,7 +875,7 @@
                     var iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(latLon)
                     });
-                    var id = GAWTUtils.generateUuid();
+                    var id = GeoUtils.generateUuid();
                     iconFeature.setId(id);
 
                     var iconStyle = new ol.style.Style({
@@ -921,7 +921,7 @@
                     }
                 },
                 getLonLatFromPixel: function (mapInstance, x, y, projection) {
-                    //TODO return gaMaps data structure, eg obj = { lat: Number,lon: Number }
+                    //TODO return geoMaps data structure, eg obj = { lat: Number,lon: Number }
                     //If olv2 returns this structure then, should a new object get created instead
                     //of reference to olv2 obj?
                     if (x == null) {
@@ -988,7 +988,7 @@
                 },
                 drawPolyLine: function (mapInstance, points, layerName, datum) {
                     if (!layerName) {
-                        layerName = GAWTUtils.generateUuid();
+                        layerName = GeoUtils.generateUuid();
                     }
                     var vectors = olv3LayerService._getLayersBy(mapInstance, 'name', layerName);
                     var vector;
@@ -1019,7 +1019,7 @@
                         geometry: geom,
                         name: layerName
                     });
-                    feature.setId(GAWTUtils.generateUuid());
+                    feature.setId(GeoUtils.generateUuid());
 
                     if (vectors.length > 0) {
                         vector = vectors[0];
@@ -1141,17 +1141,17 @@
 
                     var style = new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color, args.opacity),
+                            color: GeoUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color, args.opacity),
                             radius: args.fillRadius || args.radius
                         }),
                         stroke: new ol.style.Stroke({
-                            color: GAWTUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color, args.opacity),
+                            color: GeoUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color, args.opacity),
                             width: args.strokeRadius || args.radius
                         }),
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: GAWTUtils.convertHexAndOpacityToRgbArray(args.circleColor || args.color, args.opacity)
+                                color: GeoUtils.convertHexAndOpacityToRgbArray(args.circleColor || args.color, args.opacity)
                             })
                         })
                     });
@@ -1192,7 +1192,7 @@
 
                         draw.on('drawend', function (e) {
                             if (e.feature) {
-                                e.feature.set('id', GAWTUtils.generateUuid());
+                                e.feature.set('id', GeoUtils.generateUuid());
                             }
                         });
 
@@ -1228,11 +1228,11 @@
                         image: new ol.style.Circle({
                             radius: args.circleRadius || args.radius,
                             fill: new ol.style.Fill({
-                                color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color || '#000000', args.opacity)
+                                color: GeoUtils.convertHexAndOpacityToRgbArray(args.fillColor || args.color || '#000000', args.opacity)
                             }),
                             stroke: new ol.style.Stroke(
                                 {
-                                    color: GAWTUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color || '#000000', args.opacity),
+                                    color: GeoUtils.convertHexAndOpacityToRgbArray(args.strokeColor || args.color || '#000000', args.opacity),
                                     width: args.strokeRadius || args.radius
                                 })
                         }),
@@ -1261,7 +1261,7 @@
                     var point = new ol.geom.Point(updatedPosition);
                     var pointFeature = new ol.Feature({
                         geometry: point,
-                        id: GAWTUtils.generateUuid()
+                        id: GeoUtils.generateUuid()
                     });
                     pointFeature.setStyle(style);
                     vector.getSource().addFeature(pointFeature);
@@ -1283,8 +1283,8 @@
                         textBaseline: args.baseline,
                         font: (args.fontWeight || args.weight || 'normal') + ' ' + (args.fontSize || args.size || '12px') + ' ' + (args.font || 'sans-serif'),
                         text: args.text,
-                        fill: new ol.style.Fill({color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
-                        stroke: new ol.style.Stroke({color: GAWTUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
+                        fill: new ol.style.Fill({color: GeoUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.fillWdith || args.width || 1}),
+                        stroke: new ol.style.Stroke({color: GeoUtils.convertHexAndOpacityToRgbArray(args.fontColor || args.color, args.opacity || 1), width: args.outlineWidth || args.width || 1}),
                         offsetX: args.offsetX || 0,
                         offsetY: args.offsetY || (args.labelYOffset * -1) || 15,
                         rotation: args.rotation
@@ -1294,7 +1294,7 @@
                     var fillColorHex = args.fillColor || args.color || '#000000';
                     var fillOpacity = args.fillOpacity || args.opacity || 0.5;
                     if (fillColorHex.indexOf('#') === 0) {
-                        fillColor = GAWTUtils.convertHexAndOpacityToRgbArray(fillColorHex, fillOpacity);
+                        fillColor = GeoUtils.convertHexAndOpacityToRgbArray(fillColorHex, fillOpacity);
                     } else {
                         fillColor = args.fillColor || args.color;
                     }
@@ -1303,7 +1303,7 @@
                     var strokeColorHex = args.fillColor || args.color || '#000000';
                     var strokeOpacity = args.strokeOpacity || args.opacity || 1.0;
                     if (strokeColorHex.indexOf('#') === 0) {
-                        strokeColor = GAWTUtils.convertHexAndOpacityToRgbArray(strokeColorHex, strokeOpacity);
+                        strokeColor = GeoUtils.convertHexAndOpacityToRgbArray(strokeColorHex, strokeOpacity);
                     } else {
                         strokeColor = args.strokeColor || args.color;
                     }
@@ -1345,7 +1345,7 @@
 
                     var pointFeature = new ol.Feature({
                         geometry: point,
-                        id: GAWTUtils.generateUuid()
+                        id: GeoUtils.generateUuid()
                     });
                     pointFeature.setStyle(style);
                     vector.getSource().addFeature(pointFeature);
@@ -1484,7 +1484,7 @@
                 addWfsClient: function (wfsClient) {
                     service.wfsClientCache = service.wfsClientCache || [];
 
-                    var wfsClientId = GAWTUtils.generateUuid();
+                    var wfsClientId = GeoUtils.generateUuid();
                     service.wfsClientCache[wfsClientId] = wfsClient;
 
                     return {

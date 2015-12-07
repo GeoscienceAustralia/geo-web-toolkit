@@ -3,20 +3,20 @@ var OpenLayers = OpenLayers || {};
 var console = console || {};
 var $ = $ || {};
 
-var app = angular.module('gawebtoolkit.core.control-directives',
+var app = angular.module('geowebtoolkit.core.control-directives',
 	[
-		'gawebtoolkit.core.map-directives',
-		'gawebtoolkit.core.map-services',
-		'gawebtoolkit.core.layer-services'
+		'geowebtoolkit.core.map-directives',
+		'geowebtoolkit.core.map-services',
+		'geowebtoolkit.core.layer-services'
 	]);
 
 
 /**
  * @ngdoc directive
- * @name gawebtoolkit.core.control-directives:gaMapControl
+ * @name geowebtoolkit.core.control-directives:geoMapControl
  * @description
  * ## Overview ##
- * gaMapControl is a wrapper for a native map control
+ * geoMapControl is a wrapper for a native map control
  * @param {string|@} mapControlName - The name of the control that is intended to be added to the map layer
  * ##mapControlName acceptable values##
  * The following values can be used as control name:
@@ -40,43 +40,43 @@ var app = angular.module('gawebtoolkit.core.control-directives',
 
  * @scope
  * @restrict E
- * @require gaMap
+ * @require geoMap
  * @example
  <example module="simpleMap">
      <file name="index.html">
          <div id="map"></div>
-         <ga-map map-element-id="map">
-             <ga-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">
-             </ga-map-layer>
-                <ga-map-control map-control-name="mouseposition"></ga-map-control>
-                <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-                <ga-map-control map-control-name="Permalink"></ga-map-control>
-                <ga-map-control map-control-name="scale"></ga-map-control>
-                <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-                <ga-map-control map-control-name="panzoombar"></ga-map-control>
-                <ga-map-control map-control-name="measureline"></ga-map-control>
-                <ga-map-control map-control-name="measurepolygon"></ga-map-control>
-                <ga-map-control map-control-name="wmsgetfeatureinfo"></ga-map-control>
-         </ga-map>
+         <geo-map map-element-id="map">
+             <geo-map-layer layer-name="Simple map layer name" layer-url="http://basemap.nationalmap.gov/ArcGIS/services/USGSTopo/MapServer/WMSServer" is-base-layer="true" layer-type="WMS">
+             </geo-map-layer>
+                <geo-map-control map-control-name="mouseposition"></geo-map-control>
+                <geo-map-control map-control-name="OverviewMap"></geo-map-control>
+                <geo-map-control map-control-name="Permalink"></geo-map-control>
+                <geo-map-control map-control-name="scale"></geo-map-control>
+                <geo-map-control map-control-name="ScaleLine"></geo-map-control>
+                <geo-map-control map-control-name="panzoombar"></geo-map-control>
+                <geo-map-control map-control-name="measureline"></geo-map-control>
+                <geo-map-control map-control-name="measurepolygon"></geo-map-control>
+                <geo-map-control map-control-name="wmsgetfeatureinfo"></geo-map-control>
+         </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
-     <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+     <file name="script.js">var app = angular.module('simpleMap',['geowebtoolkit.core']);</file>
  </example>
  */
-app.directive('gaMapControl', [ function () {
-	'use strict';
-	return {
-		restrict: "E",
-		require: "^gaMap",
-		scope: {
-			mapControlName: '@',
-			mapControlId: '@',
-			controlOptions: "=",
-			containerElementId: '@',
+app.directive('geoMapControl', [ function () {
+    'use strict';
+    return {
+        restrict: "E",
+        require: "^geoMap",
+        scope: {
+            mapControlName: '@',
+            mapControlId: '@',
+            controlOptions: "=",
+            containerElementId: '@',
             preOptionsLoaded: '&',
-			controlEnabled: '@'
-		},
-		link: function (scope, element, attrs, mapController) {
+            controlEnabled: '@'
+        },
+        link: function (scope, element, attrs, mapController) {
             if (!scope.mapControlName) {
                 return;
             }
@@ -87,16 +87,16 @@ app.directive('gaMapControl', [ function () {
             //scope.controlOptions = scope.controlOptions || {};
             //scope.controlOptions.mapOptions = mapController.getMapOptions();
 
-			scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
-			if(attrs.controlEnabled != null) {
-				attrs.$observe('controlEnabled', function () {
-					if (scope.controlEnabled === 'true') {
-						mapController.activateControl(scope.controlDto.id);
-					} else {
-						mapController.deactivateControl(scope.controlDto.id);
-					}
-				});
-			}
-		}
-	};
+            scope.controlDto = mapController.addControl(scope.mapControlName, scope.controlOptions, scope.containerElementId, scope.mapControlId);
+            if (attrs.controlEnabled != null) {
+                attrs.$observe('controlEnabled', function () {
+                    if (scope.controlEnabled === 'true') {
+                        mapController.activateControl(scope.controlDto.id);
+                    } else {
+                        mapController.deactivateControl(scope.controlDto.id);
+                    }
+                });
+            }
+        }
+    };
 } ]);

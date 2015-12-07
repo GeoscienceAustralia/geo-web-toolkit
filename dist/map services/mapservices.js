@@ -25,14 +25,14 @@ var $ = $ || {};
  *  @property {Number} meansure - The number of units of distance
  *  @property {string} units - The unit type of the distance number, eg 'km'
  * */
-var app = angular.module('gawebtoolkit.mapservices',
+var app = angular.module('geowebtoolkit.mapservices',
 	[
-		'gawebtoolkit.mapservices.layer.openlayersv2',
-        'gawebtoolkit.mapservices.map.openlayersv2',
-        'gawebtoolkit.mapservices.layer.openlayersv3',
-        'gawebtoolkit.mapservices.map.openlayersv3',
-        'gawebtoolkit.mapservices.data.openlayersv2',
-        'gawebtoolkit.mapservices.data.openlayersv3'
+		'geowebtoolkit.mapservices.layer.openlayersv2',
+        'geowebtoolkit.mapservices.map.openlayersv2',
+        'geowebtoolkit.mapservices.layer.openlayersv3',
+        'geowebtoolkit.mapservices.map.openlayersv3',
+        'geowebtoolkit.mapservices.data.openlayersv2',
+        'geowebtoolkit.mapservices.data.openlayersv3'
 	]);
 //id: olv2Layer.id,
 //	name: olv2Layer.name,
@@ -40,55 +40,55 @@ var app = angular.module('gawebtoolkit.mapservices',
 //	visibility: olv2Layer.visibility,
 //	opacity: olv2Layer.opacity
 
-app.factory('GeoLayer', ['GAWTUtils',function (GAWTUtils) {
-	"use strict";
-	var GeoLayer = function (id, name, type, visibility, opacity) {
-		this.id = id;
-		this.name = name;
-		this.type = type;
-		this.visibility = visibility;
-		this.opacity = opacity;
-	};
+app.factory('GeoLayer', ['GeoUtils', function (GeoUtils) {
+    "use strict";
+    var GeoLayer = function (id, name, type, visibility, opacity) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.visibility = visibility;
+        this.opacity = opacity;
+    };
 
-    GeoLayer.fromOpenLayersV2Layer = function(layer) {
-    	// OpenLayers v2 does not store layer type for ArcGISCache layers
-    	var useLayerType = layer.id.indexOf("_ArcGISCache_") === -1;
-    	var layerType;
-    	
-    	if (useLayerType) {
-    		layerType = layer.geoLayerType;
-    	} else {
-    		layerType = "ArcGISCache";
-    	}
+    GeoLayer.fromOpenLayersV2Layer = function (layer) {
+        // OpenLayers v2 does not store layer type for ArcGISCache layers
+        var useLayerType = layer.id.indexOf("_ArcGISCache_") === -1;
+        var layerType;
+
+        if (useLayerType) {
+            layerType = layer.geoLayerType;
+        } else {
+            layerType = "ArcGISCache";
+        }
 
         var opacity;
-        if(typeof layer.opacity === 'string') {
+        if (typeof layer.opacity === 'string') {
             opacity = Number(layer.opacity);
         } else {
             opacity = layer.opacity;
         }
-        
-        return new GeoLayer(layer.id,layer.name,layerType,layer.visibility,opacity);
+
+        return new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity);
     };
 
-    GeoLayer.fromOpenLayersV3Layer = function(layer) {
-        var layerType =layer.geoLayerType || layer.get('geoLayerType');
+    GeoLayer.fromOpenLayersV3Layer = function (layer) {
+        var layerType = layer.geoLayerType || layer.get('geoLayerType');
         var opacity;
-        if(typeof layer.get('opacity') === 'string') {
+        if (typeof layer.get('opacity') === 'string') {
             opacity = Number(layer.get('opacity'));
         } else {
-            opacity =layer.get('opacity');
+            opacity = layer.get('opacity');
         }
 
-        if(!layer.get('id')) {
-            layer.set('id', GAWTUtils.generateUuid());
+        if (!layer.get('id')) {
+            layer.set('id', GeoUtils.generateUuid());
         }
 
 
-        return new GeoLayer(layer.get('id'),layer.get('name'),layerType,layer.get('visible'),opacity);
+        return new GeoLayer(layer.get('id'), layer.get('name'), layerType, layer.get('visible'), opacity);
     };
-	//define prototypical methods
-	//GeoLayer.prototype.myFunction = function () //available on every instance.
+    //define prototypical methods
+    //GeoLayer.prototype.myFunction = function () //available on every instance.
 
-	return GeoLayer;
+    return GeoLayer;
 }]);

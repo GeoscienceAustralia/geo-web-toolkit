@@ -1,12 +1,12 @@
 /* global angular, $ */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.layer-control', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.layer-control', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayerControl
+     * @name geowebtoolkit.ui.directives:geoLayerControl
      * @description
      * A control for turning on/off layers via provided '=mapController' as well as opacity slider
      * @param {Layer[]} layersData - Layers that the toolbar will interact with
@@ -27,35 +27,35 @@
      * <example module="mapWithUIController">
      * <file name="mapWithUIController.html">
      * <div ng-controller="ourMapController">
-     * <ga-layer-control
+     * <geo-layer-control
      *  layer-data="layers[1]"
      *  map-controller="mapController"
-     *  class="alert alert-info"></ga-layer-control>
+     *  class="alert alert-info"></geo-layer-control>
      * <div id="map"></div>
-     * <ga-map
+     * <geo-map
      *   map-element-id="map"
      *   datum-projection='EPSG:102100'
      *   display-projection='EPSG:4326'
      *   center-position='[130, -25]'
      *   zoom-level="4">
-     *   <ga-map-layer
+     *   <geo-map-layer
      *       layer-name="Overview World Screen"
      *       layer-type="GoogleStreet"
      *       is-base-layer="true">
-     *   </ga-map-layer>
-     *   <ga-map-layer
+     *   </geo-map-layer>
+     *   <geo-map-layer
      *       layer-name="Earthquake hazard contours"
      *       layer-type="WMS"
      *       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
      *       is-base-layer="false"
      *       layers="hazardContours"
      *       background-color="#ffffff">
-     *   </ga-map-layer>
-     * </ga-map>
+     *   </geo-map-layer>
+     * </geo-map>
      * </div>
      * </file>
      * <file name="mapWithUIController.js">
-     * var app = angular.module('mapWithUIController',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     * var app = angular.module('mapWithUIController',['geowebtoolkit.core', 'geowebtoolkit.ui']);
      * app.controller("ourMapController",["$scope", function($scope) {
  *       $scope.$on("mapControllerReady", function(event, args) {
  *           $scope.mapController = args;
@@ -85,8 +85,8 @@
      * </example>
      *
      */
-    app.directive('gaLayerControl', ['GAWTUtils',
-        function (GAWTUtils) {
+    app.directive('geoLayerControl', ['GeoUtils',
+        function (GeoUtils) {
             return {
                 restrict: "E",
                 templateUrl: 'src/main/js/ui/components/layer-control/layer-control.html',
@@ -101,7 +101,7 @@
                     onFinishedLoading: '&'
                 },
                 controller: ['$scope', function ($scope) {
-                    $scope.elementId = GAWTUtils.generateUuid();
+                    $scope.elementId = GeoUtils.generateUuid();
                 }],
                 compile: function compile() {
                     return {
@@ -114,10 +114,10 @@
                             };
                             //Event to be cleaned up on map destruction
                             scope.$watch('layerData', function (newVal) {
-                                if(newVal != null) {
+                                if (newVal != null) {
                                     //Parse possible coerced value
                                     scope.layerData.visibility = scope.layerData.visibility === true || scope.layerData.visibility === 'true';
-                                    if(scope.mapController == null) {
+                                    if (scope.mapController == null) {
                                         throw new Error("mapController is not available");
                                     }
                                     if (scope.layerData.id != null) {
@@ -132,13 +132,15 @@
                             });
                         },
                         pre: function preLink(scope) {
-                            scope.changeOpacity = function (layerId,opacity) {
+                            scope.changeOpacity = function (layerId, opacity) {
                                 scope.onOpacityChange({
                                     layerId: layerId,
                                     opacity: opacity
                                 });
                             };
                             scope.layerClicked = function () {
+                                scope.mapController.setLayerVisibility(scope.layerData.id, scope.layerData.visibility);
+
                                 if (scope.layerData.visibility) {
                                     scope.onVisible({
                                         layerId: scope.layerData.id

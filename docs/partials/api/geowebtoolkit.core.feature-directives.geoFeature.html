@@ -1,94 +1,86 @@
-<h1><code ng:non-bindable="">gaFeatureLayer</code>
-<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.core</code>
+<h1><code ng:non-bindable="">geoFeature</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.core</code>
 </span>
 </div>
 </h1>
 <div><h2 id="description">Description</h2>
-<div class="description"><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><h4 id="description_overview">Overview</h4>
-<p>gaFeatureLayer adds layer to the page but only for WFS type of requests. For the other types <a href="#/api/gawebtoolkit.core.layer-directives:gaMapLayer">gaFeatureLayer</a> should be used. This tag should be placed within the gaMap tag.</p>
+<div class="description"><div class="geowebtoolkit-core-feature-directives-page geowebtoolkit-core-feature-directives-geofeature-page"><p>Wrapper for a native wfs layer<br></p>
+<p><font color="red">NOTE: </font>This element should be placed within gsFeatureLayer directive</p>
 </div></div>
 <h2 id="dependencies">Dependencies</h2>
-<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/gaMap">gaMap</a></code>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/geoFeatureLayer">geoFeatureLayer</a></code>
 </li>
 </ul>
 <h2 id="usage">Usage</h2>
-<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-feature-layer
-       layer-name="{string|@}"
-       url="{string|@}"
-       post-add-layer="{function|@}"
-       controller-emit-event-name="{string|@}"
-       on-layer-destroy="{string|@}"
-       refresh-layer="{string|@}"
-       visibility="{string|@}"&gt;
-&lt;/ga-feature-layer&gt;</pre>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-feature
+       vidibility="{string}"
+       geo-json-feature="{string}"
+       input-format="{string}"
+       in-lon-lat-order-valid="{string}"&gt;
+&lt;/geo-feature&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
 </ul>
 </div>
-<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>A name allocated to the layer for future reference</li>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>vidibility</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-feature-directives-page geowebtoolkit-core-feature-directives-geofeature-page"><ul>
+<li>A boolean value in string format (&quot;true&quot; or &quot;false&quot;) that toggles the feature layer on/off</li>
 </ul>
-</div></td></tr><tr><td>url</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>A string value that defines the URL from which the content of the layer will be loaded</li>
+</div></td></tr><tr><td>geoJsonFeature</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-feature-directives-page geowebtoolkit-core-feature-directives-geofeature-page"><ul>
+<li>A string value with the format of geoJson. This is one normaly part of the response of a WFS call</li>
 </ul>
-</div></td></tr><tr><td>postAddLayer</td><td><a href="" class="label type-hint type-hint-function">function</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>Function callback fired after the layer is added</li>
+</div></td></tr><tr><td>inputFormat</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-feature-directives-page geowebtoolkit-core-feature-directives-geofeature-page"><ul>
+<li>TBA</li>
 </ul>
-</div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>An string value that will be allocated to this layer as controller. This controller can be called in JS codes in order to control the layer programatically</li>
-</ul>
-</div></td></tr><tr><td>onLayerDestroy</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>Function callback fired on the destruction of a layer</li>
-</ul>
-</div></td></tr><tr><td>refreshLayer</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>Observed attribute that triggers a layer refresh</li>
-<li>Following functions are supported by this controller:<ul>
-  <li>hide</li>
-  <li>show</li>
-  <li>setOpacity</li>
-  <li>getFeatures</li>
-  <li>addFeature</li>
-  <li>createFeatureAsync</li>
-  <li>createFeature</li>
-  <li>removeFeature</li>
-  <li>isLayerControllerReady</li>
-</ul></li>
-</ul>
-</div></td></tr><tr><td>visibility</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><ul>
-<li>A boolean value (&quot;true&quot; or &quot;false&quot;) that toggles the visibility of the layer on/off</li>
+</div></td></tr><tr><td>inLonLatOrderValid</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-feature-directives-page geowebtoolkit-core-feature-directives-geofeature-page"><ul>
+<li>TBA</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <h2 id="example">Example</h2>
-<div class="example"><div class="gawebtoolkit-core-feature-directives-page gawebtoolkit-core-feature-directives-gafeaturelayer-page"><h4 id="example_source">Source</h4>
-<div source-edit="simpleMapWithFeatureLayers" source-edit-deps="angular.js script.js" source-edit-html="index.html-3" source-edit-css="style.css-4" source-edit-js="script.js-5" source-edit-json="geojson.json" source-edit-unit="" source-edit-scenario=""></div>
+<div class="example"><div class="geowebtoolkit-core-feature-directives-page geowebtoolkit-core-feature-directives-geofeature-page"><h4 id="example_source">Source</h4>
+<div source-edit="simpleMapWithFeatureLayers" source-edit-deps="angular.js script.js" source-edit-html="index.html-6" source-edit-css="style.css-7" source-edit-js="script.js-8" source-edit-json="geojson.json" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="index.html">
-<pre class="prettyprint linenums" ng-set-text="index.html-3" ng-html-wrap-loaded="simpleMapWithFeatureLayers angular.js script.js"></pre>
-<script type="text/ng-template" id="index.html-3">
-    <div id="map"></div>
+<pre class="prettyprint linenums" ng-set-text="index.html-6" ng-html-wrap-loaded="simpleMapWithFeatureLayers angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-6">
     <div ng-controller="featureExampleController">
-        <ga-map map-element-id="map" center-position='[130, -25]' zoom-level="4">
-            <ga-google-layer></ga-google-layer>
-            <ga-feature-layer layer-name="My local geoJson features">
-                <ga-feature ng-repeat="feature in features" geo-json-feature="feature">
-                </ga-feature>
-            </ga-feature-layer>
-        </ga-map>
+        <button ng-click="changefeatures()" class="btn">Remove some feature layers</button>
+        <div id="map"></div>
+        <geo-map map-element-id="map" datum-projection="EPSG:102100" display-projection="EPSG:4326" center-position='[130, -25]' zoom-level="4">
+            <geo-map-layer layer-type="GoogleStreet" layer-name="Simple map layer name" is-base-layer="true">
+            </geo-map-layer>
+            <geo-feature-layer layer-name="My local geoJson features">
+                <geo-feature ng-repeat="feature in features" geo-json-feature="feature">
+                </geo-feature>
+            </geo-feature-layer>
+        </geo-map>
     </div>
 </script>
 </div>
 <div class="tab-pane" title="style.css">
-<pre class="prettyprint linenums" ng-set-text="style.css-4"></pre>
-<style type="text/css" id="style.css-4">#map {width: 650px;height:600px;}</style>
+<pre class="prettyprint linenums" ng-set-text="style.css-7"></pre>
+<style type="text/css" id="style.css-7">
+    #map {width: 650px;height:600px;}
+    .btn {
+        padding: 7px 10px;
+        background-color: #e3e3e3;
+        border: 1px solid #333;
+        margin-bottom: 1px;
+        margin-left: 0;
+        font-size: 10pt !important;
+    }
+</style>
 </div>
 <div class="tab-pane" title="script.js">
-<pre class="prettyprint linenums" ng-set-text="script.js-5"></pre>
-<script type="text/ng-template" id="script.js-5">
+<pre class="prettyprint linenums" ng-set-text="script.js-8"></pre>
+<script type="text/ng-template" id="script.js-8">
     var jsonValue = [];
-    var app = angular.module('simpleMapWithFeatureLayers', ['gawebtoolkit.core']);
+    var app = angular.module('simpleMapWithFeatureLayers', ['geowebtoolkit.core']);
     app.controller('featureExampleController', ['$scope', function ($scope) {
     "use strict";
     $.ajax({type: "GET", url: "../docs-sources/geojson.json", async: false, complete: function(data){jsonValue = data.responseJSON;}});
     $scope.features = jsonValue;
+    $scope.changefeatures = function() {
+        $scope.features = $scope.features.slice(2);
+    };
     }]);
 </script>
 </div>
@@ -1032,10 +1024,9 @@
   },
 "type" : "Feature"
 }
-]
-</script>
+]    </script>
 </div>
 </div><h4 id="example_demo">Demo</h4>
-<div class="well doc-example-live animate-container" ng-embed-app="simpleMapWithFeatureLayers" ng-set-html="index.html-3" ng-eval-javascript="script.js-5"></div>
+<div class="well doc-example-live animate-container" ng-embed-app="simpleMapWithFeatureLayers" ng-set-html="index.html-6" ng-eval-javascript="script.js-8"></div>
 </div></div>
 </div>

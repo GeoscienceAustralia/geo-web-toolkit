@@ -2,14 +2,14 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.vendor.osm-layers', ['gawebtoolkit.core.layer-services']);
+    var app = angular.module('geowebtoolkit.vendor.osm-layers', ['geowebtoolkit.core.layer-services']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.core.vendor-layers:gaOsmLayer
+     * @name geowebtoolkit.core.vendor-layers:geoOsmLayer
      * @description
      * ## Overview ##
-     * gaGoogleLayer directive is used to create an Open Street Maps layer.
+     * geoGoogleLayer directive is used to create an Open Street Maps layer.
      * @param {string|@} wrapDateLine - A boolean value ('true', 'false') which defines the map in the layer should be wrapped or not. If wrapped then the map will be unlimited scrollable.
      * @param {string|@} visibility - A boolean value ('true', 'false') which enables or disables visibility of the layer.
      * @scope
@@ -18,26 +18,26 @@
      <example module="simpleMap">
      <file name="index.html">
      <div id="map"></div>
-     <ga-map map-element-id="map">
-     <ga-osm-layer></ga-osm-layer>
-     </ga-map>
+     <geo-map map-element-id="map">
+     <geo-osm-layer></geo-osm-layer>
+     </geo-map>
      </file>
      <file name="style.css">#map {width: 650px;height:600px;}</file>
-     <file name="script.js">var app = angular.module('simpleMap',['gawebtoolkit.core']);</file>
+     <file name="script.js">var app = angular.module('simpleMap',['geowebtoolkit.core']);</file>
      </example>
      */
-    app.directive('gaOsmLayer', ['$timeout', '$compile', 'GALayerService', '$log',
-        function ($timeout, $compile, GALayerService, $log) {
+    app.directive('geoOsmLayer', ['$timeout', '$compile', 'GeoLayerService', '$log',
+        function ($timeout, $compile, GeoLayerService, $log) {
             return {
                 restrict: "E",
-                require: "^gaMap",
+                require: "^geoMap",
                 scope: {
                     wrapDateLine: '@',
                     visibility: '@',
                     controllerEmitEventName: '@'
                 },
                 transclude: false,
-                controller: ['$scope',function ($scope) {
+                controller: ['$scope', function ($scope) {
                     var self = this;
 
                     //TODO Support layer common api via controller, eg opacity, set visibility?
@@ -53,7 +53,7 @@
                     $scope.mapAPI = {};
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
-                    layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                    layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
                     };
@@ -64,7 +64,7 @@
 
                         $log.info('OpenStreetMaps Cycle - constructing...');
 
-                        layer = GALayerService.createOsmLayer(layerOptions,$scope.framework);
+                        layer = GeoLayerService.createOsmLayer(layerOptions, $scope.framework);
                         //Async layer add
                         //mapController.waitingForAsyncLayer();
                         mapController.addLayer(layer).then(function (layerDto) {
@@ -75,7 +75,7 @@
                             $scope.constructionInProgress = false;
                         }, function (error) {
                             $scope.$emit(layerOptions.layerName + "_error", layerOptions);
-                            $scope.onError({message:error,layer:layerOptions});
+                            $scope.onError({message: error, layer: layerOptions});
                             addLayerCallback();
                             //mapController.asyncLayerError(layer);
                             $log.info('construction failed...');
@@ -104,15 +104,15 @@
                         if (layerIndex != null) {
                             mapController.removeLayerById($scope.layerDto.id);
                             $scope.layerDto = null;
-                            layerOptions = GALayerService.defaultLayerOptions(attrs,$scope.framework);
+                            layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
                             layerOptions.initialExtent = mapController.getInitialExtent();
                             layerOptions.format = $scope.format;
-                            layer = GALayerService.createLayer(layerOptions,$scope.framework);
+                            layer = GeoLayerService.createLayer(layerOptions, $scope.framework);
                             //Async layer add
                             mapController.addLayer(layer).then(function (layerDto) {
                                 $scope.layerDto = layerDto;
                                 addLayerCallback();
-                                if($scope.layerDto != null) {
+                                if ($scope.layerDto != null) {
                                     var delta = layerIndex - mapController.getLayers().length + 1;
                                     mapController.raiseLayerDrawOrder($scope.layerDto.id, delta);
                                 }
@@ -124,7 +124,7 @@
                         $log.info('initialising layer...');
                         if ($scope.layerDto != null) {
                             reconstructLayer();
-                        } else if($scope.layerReady && $scope.constructionInProgress) {
+                        } else if ($scope.layerReady && $scope.constructionInProgress) {
                             $log.info('...');
                         } else {
                             constructLayer();

@@ -3,36 +3,36 @@
 (function () {
     "use strict";
 
-    var app = angular.module('gawebtoolkit.mapservices.map.ol3cesium', []);
+    var app = angular.module('geowebtoolkit.mapservices.map.ol3cesium', []);
 
     app.service('ol3CesiumMapService', [function () {
         var spaceEventHandler;
         var service = {
-            registerMapClick: function(mapInstance, callback) {
+            registerMapClick: function (mapInstance, callback) {
                 var scene = mapInstance.getCesiumScene();
-                if(!spaceEventHandler) {
+                if (!spaceEventHandler) {
                     spaceEventHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
                 }
                 spaceEventHandler.setInputAction(callback, Cesium.ScreenSpaceEventType.LEFT_CLICK);
             },
-            unRegisterMapClick: function(mapInstance, callback) {
+            unRegisterMapClick: function (mapInstance, callback) {
                 var scene = mapInstance.getCesiumScene();
-                if(!spaceEventHandler) {
+                if (!spaceEventHandler) {
                     spaceEventHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
                 }
                 spaceEventHandler.removeInputAction(callback, Cesium.ScreenSpaceEventType.LEFT_CLICK);
             },
-            registerMapEvent: function(mapInstance, eventName, callback) {
+            registerMapEvent: function (mapInstance, eventName, callback) {
                 var scene = mapInstance.getCesiumScene();
-                if(!spaceEventHandler) {
+                if (!spaceEventHandler) {
                     spaceEventHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
                 }
                 spaceEventHandler.setInputAction(callback, Cesium.ScreenSpaceEventType.LEFT_CLICK);
             },
-            unRegisterMapEvent: function(mapInstance, callback) {
+            unRegisterMapEvent: function (mapInstance, callback) {
 
             },
-            getCoordinateFromPixel: function (mapInstance,pixel) {
+            getCoordinateFromPixel: function (mapInstance, pixel) {
                 var scene = mapInstance.getCesiumScene();
                 var ellipsoid = scene.globe.ellipsoid;
                 var cartesian = scene.camera.pickEllipsoid(pixel, ellipsoid);
@@ -43,7 +43,7 @@
                     var result = [parseFloat(longitudeString), parseFloat(latitudeString)];
                     return result;
                 }
-                return [0,0];
+                return [0, 0];
             }
         };
 

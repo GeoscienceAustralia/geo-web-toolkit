@@ -1,10 +1,10 @@
 /* global angular */
 (function () {
     "use strict";
-    angular.module('gawebtoolkit.vendor-layers',
+    angular.module('geowebtoolkit.vendor-layers',
         [
-            'gawebtoolkit.vendor.google-layers',
-            'gawebtoolkit.vendor.bing-layers',
-            'gawebtoolkit.vendor.osm-layers'
+            'geowebtoolkit.vendor.google-layers',
+            'geowebtoolkit.vendor.bing-layers',
+            'geowebtoolkit.vendor.osm-layers'
         ]);
 })();

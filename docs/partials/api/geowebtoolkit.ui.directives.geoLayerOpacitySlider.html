@@ -1,65 +1,65 @@
-<h1><code ng:non-bindable="">gaLayerOpacitySlider</code>
-<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.ui</code>
+<h1><code ng:non-bindable="">geoLayerOpacitySlider</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.ui</code>
 </span>
 </div>
 </h1>
 <div><h2 id="description">Description</h2>
-<div class="description"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayeropacityslider-page"><p>Adds an opacity slider to the map and attaches it to selected layer</p>
+<div class="description"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayeropacityslider-page"><p>Adds an opacity slider to the map and attaches it to selected layer</p>
 </div></div>
 <h2 id="usage">Usage</h2>
-<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-layer-opacity-slider
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-layer-opacity-slider
        layers-id="{string}"
        layers-opacity="{string}"
        map-controller="{mapController[]}"&gt;
-&lt;/ga-layer-opacity-slider&gt;</pre>
+&lt;/geo-layer-opacity-slider&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
 </ul>
 </div>
-<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayeropacityslider-page"><ul>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayeropacityslider-page"><ul>
 <li>The ID of the layer</li>
 </ul>
-</div></td></tr><tr><td>layersOpacity</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayeropacityslider-page"><ul>
+</div></td></tr><tr><td>layersOpacity</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayeropacityslider-page"><ul>
 <li>reference to opacity value of the layer</li>
 </ul>
-</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-mapcontroller">mapController[]</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayeropacityslider-page"><ul>
+</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-mapcontroller">mapController[]</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayeropacityslider-page"><ul>
 <li>mapController object</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <h2 id="example">Example</h2>
-<div class="example"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayeropacityslider-page"><h4 id="example_source">Source</h4>
+<div class="example"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayeropacityslider-page"><h4 id="example_source">Source</h4>
 <div source-edit="mapWithUISlider" source-edit-deps="angular.js mapWithUISlider.js" source-edit-html="mapWithUISlider.html" source-edit-css="mapWithUISlider.css" source-edit-js="mapWithUISlider.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="mapWithUISlider.html">
 <pre class="prettyprint linenums" ng-set-text="mapWithUISlider.html"></pre>
 <script type="text/ng-template" id="mapWithUISlider.html">
 <div ng-controller="ourMapController">
 <div class="opaictySlider">
-<ga-layer-opacity-slider
+<geo-layer-opacity-slider
  layer-id="{{layers[1].id}}"
  layer-opacity="layers[1].opacity"
- map-controller="mapController"></ga-layer-opacity-slider>
+ map-controller="mapController"></geo-layer-opacity-slider>
  </div>
 <div id="map"></div>
-<ga-map
+<geo-map
   map-element-id="map"
   datum-projection='EPSG:102100'
   display-projection='EPSG:4326'
   center-position='[130, -25]'
   zoom-level="4">
-  <ga-map-layer
+  <geo-map-layer
       layer-name="Overview World Screen"
       layer-type="GoogleStreet"
       is-base-layer="true">
-  </ga-map-layer>
-  <ga-map-layer
+  </geo-map-layer>
+  <geo-map-layer
       layer-name="Earthquake hazard contours"
       layer-type="WMS"
       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
       is-base-layer="false"
       layers="hazardContours"
       background-color="#ffffff">
-  </ga-map-layer>
-</ga-map>
+  </geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -79,7 +79,7 @@ margin-bottom: 20px;
 <div class="tab-pane" title="mapWithUISlider.js">
 <pre class="prettyprint linenums" ng-set-text="mapWithUISlider.js"></pre>
 <script type="text/ng-template" id="mapWithUISlider.js">
-var app = angular.module('mapWithUISlider',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+var app = angular.module('mapWithUISlider',['geowebtoolkit.core', 'geowebtoolkit.ui']);
 app.controller("ourMapController",["$scope", function($scope) {
       $scope.$on("mapControllerReady", function(event, args) {
           $scope.mapController = args;

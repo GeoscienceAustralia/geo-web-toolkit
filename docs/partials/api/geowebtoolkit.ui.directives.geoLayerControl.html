@@ -1,24 +1,24 @@
-<h1><code ng:non-bindable="">gaLayerControl</code>
-<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.ui</code>
+<h1><code ng:non-bindable="">geoLayerControl</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.ui</code>
 </span>
 </div>
 </h1>
 <div><h2 id="description">Description</h2>
-<div class="description"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><p>A control for turning on/off layers via provided &#39;=mapController&#39; as well as opacity slider</p>
+<div class="description"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><p>A control for turning on/off layers via provided &#39;=mapController&#39; as well as opacity slider</p>
 </div></div>
 <h2 id="usage">Usage</h2>
-<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-layer-control
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-layer-control
        layers-data="{Layer[]}"
        map-controller="{mapController[]}"
        on-visible="{string}"
        on-hidden="{string}"
        on-opacity-change="{string}"&gt;
-&lt;/ga-layer-control&gt;</pre>
+&lt;/geo-layer-control&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
 </ul>
 </div>
-<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersData</td><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><ul>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersData</td><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><ul>
 <li>Layers that the toolbar will interact with
 structure expected is a minimum of:
    {<pre><code>   id: //unique id of the layer
@@ -27,51 +27,51 @@ structure expected is a minimum of:
    name: //friendly name of the layer
 </code></pre>   }</li>
 </ul>
-</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-mapcontroller">mapController[]</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><ul>
+</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-mapcontroller">mapController[]</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><ul>
 <li>mapController object</li>
 </ul>
-</div></td></tr><tr><td>onVisible</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><ul>
+</div></td></tr><tr><td>onVisible</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><ul>
 <li>A callback function when user turns on the layer</li>
 </ul>
-</div></td></tr><tr><td>onHidden</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><ul>
+</div></td></tr><tr><td>onHidden</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><ul>
 <li>A callback function when user turns off the layer</li>
 </ul>
-</div></td></tr><tr><td>onOpacityChange</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><ul>
+</div></td></tr><tr><td>onOpacityChange</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><ul>
 <li>A callback function when user changes the opacity of the layer</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <h2 id="example">Example</h2>
-<div class="example"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-galayercontrol-page"><h4 id="example_source">Source</h4>
+<div class="example"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayercontrol-page"><h4 id="example_source">Source</h4>
 <div source-edit="mapWithUIController" source-edit-deps="angular.js mapWithUIController.js" source-edit-html="mapWithUIController.html" source-edit-css="mapWithUIController.css" source-edit-js="mapWithUIController.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="mapWithUIController.html">
 <pre class="prettyprint linenums" ng-set-text="mapWithUIController.html"></pre>
 <script type="text/ng-template" id="mapWithUIController.html">
 <div ng-controller="ourMapController">
-<ga-layer-control
+<geo-layer-control
  layer-data="layers[1]"
  map-controller="mapController"
- class="alert alert-info"></ga-layer-control>
+ class="alert alert-info"></geo-layer-control>
 <div id="map"></div>
-<ga-map
+<geo-map
   map-element-id="map"
   datum-projection='EPSG:102100'
   display-projection='EPSG:4326'
   center-position='[130, -25]'
   zoom-level="4">
-  <ga-map-layer
+  <geo-map-layer
       layer-name="Overview World Screen"
       layer-type="GoogleStreet"
       is-base-layer="true">
-  </ga-map-layer>
-  <ga-map-layer
+  </geo-map-layer>
+  <geo-map-layer
       layer-name="Earthquake hazard contours"
       layer-type="WMS"
       layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
       is-base-layer="false"
       layers="hazardContours"
       background-color="#ffffff">
-  </ga-map-layer>
-</ga-map>
+  </geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -98,7 +98,7 @@ display: inline-block;
 <div class="tab-pane" title="mapWithUIController.js">
 <pre class="prettyprint linenums" ng-set-text="mapWithUIController.js"></pre>
 <script type="text/ng-template" id="mapWithUIController.js">
-var app = angular.module('mapWithUIController',['gawebtoolkit.core', 'gawebtoolkit.ui']);
+var app = angular.module('mapWithUIController',['geowebtoolkit.core', 'geowebtoolkit.ui']);
 app.controller("ourMapController",["$scope", function($scope) {
       $scope.$on("mapControllerReady", function(event, args) {
           $scope.mapController = args;

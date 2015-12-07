@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.google-place-name-search', ['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.google-place-name-search', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:googlePlaceNameSearch
+     * @name geowebtoolkit.ui.directives:googlePlaceNameSearch
      * @param {object} mapController - Map controller
      * @param {string} searchIconUrl - Path to an icon used for search
      * @param {number} zoomLevel - Zoom level after selection from autocomplete

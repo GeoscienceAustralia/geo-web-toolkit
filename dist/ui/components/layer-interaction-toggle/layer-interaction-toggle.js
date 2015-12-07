@@ -2,11 +2,11 @@
 
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.layer-interaction-toggle',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.layer-interaction-toggle',['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * @ngdoc directive
-     * @name gawebtoolkit.ui.directives:gaLayerInteractionToggle
+     * @name geowebtoolkit.ui.directives:geoLayerInteractionToggle
      * @param {string} toggleIconSource - A string value of toggle button's icon URL
      * @param {object} mapController - controller instance for the map
      * @param {string} controllerEmitEventName - event that is fired that passes the controller
@@ -23,53 +23,53 @@
      * <file name="layerInteractionToggle.html">
      * <div ng-controller="ourMapController">
      *         <div class="toolber">
-     <ga-layer-interaction-toggle
-     toggle-icon-source="//np.ga.gov.au/gamaps/resources/img/Layers.png"
+     <geo-layer-interaction-toggle
+     toggle-icon-source="//np.ga.gov.au/geoMaps/resources/img/Layers.png"
      controller-emit-event-name="toggleInteractionEvent"
      map-controller="mapController"
      layer-interaction-id="layers[1].id"
      on-layer-click-callback="clickCallback()"
      class="toggleInteractionButton">Toggle Interaction of "{{layers[1].name}}" layer on/off
-     </ga-layer-interaction-toggle>
-     <ga-layer-control ng-show="toggleInteractionController.isToggleActive()" layer-data="layers[1]" map-controller="mapController" class="alert alert-info"></ga-layer-control>
+     </geo-layer-interaction-toggle>
+     <geo-layer-control ng-show="toggleInteractionController.isToggleActive()" layer-data="layers[1]" map-controller="mapController" class="alert alert-info"></geo-layer-control>
      </div>
      <div class="alert alert-danger layerClicked">Layer Clicked</div>
      <div id="map" style="width:90%;height:600px"></div>
-     <ga-map
+     <geo-map
      map-element-id="map"
      datum-projection='EPSG:102100'
      display-projection='EPSG:4326'
      center-position='[130, -25]'
      zoom-level="4">
-     <ga-map-layer
+     <geo-map-layer
      layer-name="World Image"
      layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
      wrap-date-line="true"
      layer-type="XYZTileCache"
      is-base-layer="true"
      visibility="false">
-     </ga-map-layer>
-     <ga-map-layer
+     </geo-map-layer>
+     <geo-map-layer
      layer-name="Earthquake hazard contours"
      layer-type="WMS"
      layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
      is-base-layer="false"
      layers="hazardContours"
      background-color="#ffffff">
-     </ga-map-layer>
-     <ga-map-control map-control-name="mouseposition"></ga-map-control>
-     <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-     <ga-map-control map-control-name="Permalink"></ga-map-control>
-     <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-     <ga-map-control map-control-name="panzoombar"></ga-map-control>
-     </ga-map>
+     </geo-map-layer>
+     <geo-map-control map-control-name="mouseposition"></geo-map-control>
+     <geo-map-control map-control-name="OverviewMap"></geo-map-control>
+     <geo-map-control map-control-name="Permalink"></geo-map-control>
+     <geo-map-control map-control-name="ScaleLine"></geo-map-control>
+     <geo-map-control map-control-name="panzoombar"></geo-map-control>
+     </geo-map>
 
      * </div>
      * </file>
      *
      * <file name="layerInteractionToggle.js">
      *      var app = angular.module('layerInteractionToggle',
-     ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+     ['geowebtoolkit.core', 'geowebtoolkit.ui']);
      app.controller("ourMapController",["$scope", function($scope) {
                 $scope.$on("mapControllerReady", function(event, args) {
                     $scope.mapController = args;
@@ -122,7 +122,7 @@
      * </file>
      * </example>
      */
-    app.directive('gaLayerInteractionToggle', [ function () {
+    app.directive('geoLayerInteractionToggle', [ function () {
         return {
             restrict: "E",
             replace: "true",
@@ -157,16 +157,16 @@
 
                 $scope.activate = function () {
                     $scope.mapController.registerMapClick(callback);
-                    $element.removeClass('gaUiToggleOff');
-                    $element.addClass('gaUiToggleOn');
+                    $element.removeClass('geoUiToggleOff');
+                    $element.addClass('geoUiToggleOn');
                     $scope.isToggleOn = true;
                     $scope.toggleOnCallback();
 
                 };
                 $scope.deactivate = function () {
                     $scope.mapController.unRegisterMapClick(callback);
-                    $element.removeClass('gaUiToggleOn');
-                    $element.addClass('gaUiToggleOff');
+                    $element.removeClass('geoUiToggleOn');
+                    $element.addClass('geoUiToggleOff');
                     $scope.isToggleOn = false;
                     $scope.toggleOffCallback();
                 };

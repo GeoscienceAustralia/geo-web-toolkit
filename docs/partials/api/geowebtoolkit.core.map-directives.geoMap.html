@@ -1,14 +1,14 @@
-<h1><code ng:non-bindable="">gaMap</code>
-<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.core</code>
+<h1><code ng:non-bindable="">geoMap</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.core</code>
 </span>
 </div>
 </h1>
 <div><h2 id="description">Description</h2>
-<div class="description"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><h4 id="description_overview">Overview</h4>
-<p>gaMap directive is used to create a map.</p>
+<div class="description"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><h4 id="description_overview">Overview</h4>
+<p>geoMap directive is used to create a map.</p>
 </div></div>
 <h2 id="usage">Usage</h2>
-<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-map
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-map
        map-element-id="{string|@}"
        datum-projection="{string|@}"
        display-projection="{string|@}"
@@ -17,53 +17,53 @@
        [initial-extent="{geoJsonCoordinates|=}"]
        framework="{string|@}"
        is-static-map="{bool|@}"&gt;
-&lt;/ga-map&gt;</pre>
+&lt;/geo-map&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
 </ul>
 </div>
-<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mapElementId</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mapElementId</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>The id of the element where the map is to be rendered</li>
 </ul>
-</div></td></tr><tr><td>datumProjection</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>datumProjection</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>A value representing the Datum Projection, eg &#39;EPSG:4326&#39;</li>
 </ul>
-</div></td></tr><tr><td>displayProjection</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>displayProjection</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>A value representing the Display Projection, eg &#39;EPSG:4326&#39;</li>
 </ul>
-</div></td></tr><tr><td>centerPosition <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>centerPosition <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>A lat/lon value in the form of an array, eg [-55,110].</li>
 </ul>
-</div></td></tr><tr><td>zoomLevel <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>zoomLevel <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>An initial zoom value for the map to start at.</li>
 </ul>
-</div></td></tr><tr><td>initialExtent <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-geojsoncoordinates">geoJsonCoordinates</a><a href="" class="label type-hint type-hint-object">=</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>initialExtent <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-geojsoncoordinates">geoJsonCoordinates</a><a href="" class="label type-hint type-hint-object">=</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>An initial extent is the form of a geoJson array of coordinates.</li>
 </ul>
-</div></td></tr><tr><td>framework</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>framework</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>Optional. Default &#39;olv2&#39;. Specifies which underlying mapping framework to use.</li>
 </ul>
-</div></td></tr><tr><td>isStaticMap</td><td><a href="" class="label type-hint type-hint-bool">bool</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><ul>
+</div></td></tr><tr><td>isStaticMap</td><td><a href="" class="label type-hint type-hint-bool">bool</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><ul>
 <li>Optional. Default to false. Creates the map without navigation/interaction controls.</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <div class="member method"><h2 id="methods">Methods</h2>
 <ul class="methods"><li><h3 id="methods_addcontrol">addControl(controlName, controlOptions, elementId, controlId)</h3>
-<div class="addcontrol"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addcontrol-page"><p>Creates and adds a control to the map instance</p>
-</div><h5 id="methods_addcontrol_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>controlName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addcontrol-page"><ul>
+<div class="addcontrol"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addcontrol-page"><p>Creates and adds a control to the map instance</p>
+</div><h5 id="methods_addcontrol_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>controlName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addcontrol-page"><ul>
 <li>the name of the type of control to be created</li>
 </ul>
-</div></td></tr><tr><td>controlOptions</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addcontrol-page"><ul>
+</div></td></tr><tr><td>controlOptions</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addcontrol-page"><ul>
 <li>an objet with implementation specific controlOptions</li>
 </ul>
-</div></td></tr><tr><td>elementId <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addcontrol-page"><ul>
+</div></td></tr><tr><td>elementId <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addcontrol-page"><ul>
 <li>a DOM element to add the control to.</li>
 </ul>
-</div></td></tr><tr><td>controlId <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addcontrol-page"><ul>
+</div></td></tr><tr><td>controlId <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addcontrol-page"><ul>
 <li>An id to help interact with the control when using &#39;ById&#39; methods</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_addcontrol_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addcontrol-page"><h6 id="methods_addcontrol_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addcontrol-page"><h6 id="methods_addcontrol_example_source">Source</h6>
 <div source-edit="addOurControl" source-edit-deps="angular.js addOurControl.js" source-edit-html="addOurControl.html" source-edit-css="addOurControl.css" source-edit-js="addOurControl.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="addOurControl.html">
 <pre class="prettyprint linenums" ng-set-text="addOurControl.html"></pre>
@@ -71,11 +71,11 @@
 <div ng-controller="addOurControl">
      <a class="btn btn-primary" ng-click="addOurControl()">Add Control</a>
      <div id="addOurControl"></div>
-     <ga-map map-element-id="addOurControl"
+     <geo-map map-element-id="addOurControl"
              center-position='[130, -25]'
              zoom-level="4">
-         <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-     </ga-map>
+         <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+     </geo-map>
 </div>
 </script>
 </div>
@@ -88,7 +88,7 @@
 <div class="tab-pane" title="addOurControl.js">
 <pre class="prettyprint linenums" ng-set-text="addOurControl.js"></pre>
 <script type="text/ng-template" id="addOurControl.js">
-angular.module("addOurControl",['gawebtoolkit.core'])
+angular.module("addOurControl",['geowebtoolkit.core'])
  .controller("addOurControl", ["$scope", function($scope) {
      $scope.$on("mapControllerReady", function(event, args) {
          $scope.mapController = args;
@@ -105,15 +105,15 @@ angular.module("addOurControl",['gawebtoolkit.core'])
 </div>
 </li>
 <li><h3 id="methods_addlayer">addLayer(layer)</h3>
-<div class="addlayer"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addlayer-page"><p>Adds a layer to the underlying mapInstance calling the appropriate implementation specific service.</p>
-</div><h5 id="methods_addlayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layer</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addlayer-page"><ul>
+<div class="addlayer"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addlayer-page"><p>Adds a layer to the underlying mapInstance calling the appropriate implementation specific service.</p>
+</div><h5 id="methods_addlayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layer</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addlayer-page"><ul>
 <li>An implementation object for a layer, eg an olv2 layer object</li>
 </ul>
-</div></td></tr></tbody></table><h5 id="methods_addlayer_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addlayer-page"><ul>
+</div></td></tr></tbody></table><h5 id="methods_addlayer_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addlayer-page"><ul>
 <li>layer object representing implementation.</li>
 </ul>
 </div></td></tr></table><h4 id="methods_addlayer_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-addlayer-page"><p><code><pre class="prettyprint linenums">
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-addlayer-page"><p><code><pre class="prettyprint linenums">
 var args {
  layerName: 'foo',
  layerUrl: 'http://wmsserver/wmsaddress',
@@ -126,12 +126,12 @@ var dto = $scope.mapController.addLayer(layer);</pre></code></p>
 </div>
 </li>
 <li><h3 id="methods_currentzoomlevel">currentZoomLevel()</h3>
-<div class="currentzoomlevel"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-currentzoomlevel-page"><p>Gets the current zoom level of the map</p>
-</div><h5 id="methods_currentzoomlevel_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-currentzoomlevel-page"><ul>
+<div class="currentzoomlevel"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-currentzoomlevel-page"><p>Gets the current zoom level of the map</p>
+</div><h5 id="methods_currentzoomlevel_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-currentzoomlevel-page"><ul>
 <li>Zoom level.</li>
 </ul>
 </div></td></tr></table><h4 id="methods_currentzoomlevel_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-currentzoomlevel-page"><h6 id="methods_currentzoomlevel_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-currentzoomlevel-page"><h6 id="methods_currentzoomlevel_example_source">Source</h6>
 <div source-edit="currentZoomLevel" source-edit-deps="angular.js currentZoomLevel.js" source-edit-html="currentZoomLevel.html" source-edit-css="currentZoomLevel.css" source-edit-js="currentZoomLevel.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="currentZoomLevel.html">
 <pre class="prettyprint linenums" ng-set-text="currentZoomLevel.html"></pre>
@@ -139,11 +139,11 @@ var dto = $scope.mapController.addLayer(layer);</pre></code></p>
 <div ng-controller="currentZoomLevel">
 <a class="btn btn-primary" ng-click="currentZoomLevel = mapController.currentZoomLevel()">Get the current zoom level : <span ng-model="currentZoomLevel" class="bg-primary">{{currentZoomLevel}}</span></a>
 <div id="currentZoomLevel"></div>
-<ga-map map-element-id="currentZoomLevel" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer></ga-osm-layer>
-<ga-map-control map-control-name="mouseposition"></ga-map-control>
-</ga-map-layer>
-</ga-map>
+<geo-map map-element-id="currentZoomLevel" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer></geo-osm-layer>
+<geo-map-control map-control-name="mouseposition"></geo-map-control>
+</geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -156,7 +156,7 @@ var dto = $scope.mapController.addLayer(layer);</pre></code></p>
 <div class="tab-pane" title="currentZoomLevel.js">
 <pre class="prettyprint linenums" ng-set-text="currentZoomLevel.js"></pre>
 <script type="text/ng-template" id="currentZoomLevel.js">
-angular.module("currentZoomLevel",['gawebtoolkit.core'])
+angular.module("currentZoomLevel",['geowebtoolkit.core'])
 .controller("currentZoomLevel", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -170,10 +170,10 @@ $scope.mapController = args;
 </div>
 </li>
 <li><h3 id="methods_getdisplayprojection">getDisplayProjection()</h3>
-<div class="getdisplayprojection"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getdisplayprojection-page"><p>Get original datum projection provided to the map on initialisation, eg $scope.datumProjection</p>
-</div><h5 id="methods_getdisplayprojection_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getdisplayprojection-page"><p>Returns the projection value in string format</p>
+<div class="getdisplayprojection"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getdisplayprojection-page"><p>Get original datum projection provided to the map on initialisation, eg $scope.datumProjection</p>
+</div><h5 id="methods_getdisplayprojection_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getdisplayprojection-page"><p>Returns the projection value in string format</p>
 </div></td></tr></table><h4 id="methods_getdisplayprojection_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getdisplayprojection-page"><h6 id="methods_getdisplayprojection_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getdisplayprojection-page"><h6 id="methods_getdisplayprojection_example_source">Source</h6>
 <div source-edit="getDisplayProjection" source-edit-deps="angular.js getDisplayProjection.js" source-edit-html="getDisplayProjection.html" source-edit-css="getProjection.css" source-edit-js="getDisplayProjection.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="getDisplayProjection.html">
 <pre class="prettyprint linenums" ng-set-text="getDisplayProjection.html"></pre>
@@ -183,20 +183,20 @@ $scope.mapController = args;
                         <a class="btn btn-primary" ng-click="projection = mapController.getDisplayProjection()">Get Display Projection: {{projection}}</a>
                     </div>
                     <div id="getDisplayProjection"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="getDisplayProjection"
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                        <ga-map-layer
+                        <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                        <geo-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
                             layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                             is-base-layer="false"
                             layers="hazardContours"
                             background-color="#ffffff">
-                        </ga-map-layer>
-                    </ga-map>
+                        </geo-map-layer>
+                    </geo-map>
                 </div>
 </script>
 </div>
@@ -223,7 +223,7 @@ $scope.mapController = args;
 <div class="tab-pane" title="getDisplayProjection.js">
 <pre class="prettyprint linenums" ng-set-text="getDisplayProjection.js"></pre>
 <script type="text/ng-template" id="getDisplayProjection.js">
- var app = angular.module('getDisplayProjection', ['gawebtoolkit.core']);
+ var app = angular.module('getDisplayProjection', ['geowebtoolkit.core']);
                 app.controller('ourMapController',['$scope', function ($scope) {
                     $scope.mouseMoveRegistered = false;
                     $scope.$on('mapControllerReady', function(event,args) {
@@ -238,12 +238,12 @@ $scope.mapController = args;
 </div>
 </li>
 <li><h3 id="methods_getlayers">getLayers()</h3>
-<div class="getlayers"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayers-page"><p>Gets all the layers currently associated with the map instance</p>
-</div><h5 id="methods_getlayers_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayers-page"><ul>
+<div class="getlayers"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayers-page"><p>Gets all the layers currently associated with the map instance</p>
+</div><h5 id="methods_getlayers_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayers-page"><ul>
 <li>An array of layers currently on the map</li>
 </ul>
 </div></td></tr></table><h4 id="methods_getlayers_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayers-page"><p><code><pre class="prettyprint linenums">var layers = $scope.mapController.getLayers();
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayers-page"><p><code><pre class="prettyprint linenums">var layers = $scope.mapController.getLayers();
 $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <h6 id="methods_getlayers_example_source">Source</h6>
 <div source-edit="dumpLayers" source-edit-deps="angular.js dumpLayers.js" source-edit-html="dumpLayers.html" source-edit-css="dumpLayers.css" source-edit-js="dumpLayers.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
@@ -253,10 +253,10 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div ng-controller="dumpLayers">
      <a class="btn btn-primary" ng-click="dumpLayers()">Dump layers object to console</a>
      <div id="dumpLayers"></div>
-     <ga-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
-             <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-     </ga-map-layer>
-     </ga-map>
+     <geo-map map-element-id="dumpLayers" center-position='[130, -25]' zoom-level="4">
+             <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+     </geo-map-layer>
+     </geo-map>
 </div>
 </script>
 </div>
@@ -269,7 +269,7 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div class="tab-pane" title="dumpLayers.js">
 <pre class="prettyprint linenums" ng-set-text="dumpLayers.js"></pre>
 <script type="text/ng-template" id="dumpLayers.js">
-angular.module("dumpLayers",['gawebtoolkit.core'])
+angular.module("dumpLayers",['geowebtoolkit.core'])
 .controller("dumpLayers", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -286,15 +286,15 @@ console.log( $scope.mapController.getLayers() );
 </div>
 </li>
 <li><h3 id="methods_getlayersbyname">getLayersByName(LayerName)</h3>
-<div class="getlayersbyname"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayersbyname-page"><p>Finds and returns the layer&#39;s details by its name</p>
-</div><h5 id="methods_getlayersbyname_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>LayerName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayersbyname-page"><ul>
-<li>The name of the layer, which is defined on gaMapLayer directive</li>
+<div class="getlayersbyname"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayersbyname-page"><p>Finds and returns the layer&#39;s details by its name</p>
+</div><h5 id="methods_getlayersbyname_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>LayerName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayersbyname-page"><ul>
+<li>The name of the layer, which is defined on geoMapLayer directive</li>
 </ul>
-</div></td></tr></tbody></table><h5 id="methods_getlayersbyname_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayersbyname-page"><ul>
+</div></td></tr></tbody></table><h5 id="methods_getlayersbyname_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayersbyname-page"><ul>
 <li>An array of layers currently on the map</li>
 </ul>
 </div></td></tr></table><h4 id="methods_getlayersbyname_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlayersbyname-page"><p><code><pre class="prettyprint linenums">var layers = $scope.mapController.getLayers();
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlayersbyname-page"><p><code><pre class="prettyprint linenums">var layers = $scope.mapController.getLayers();
 $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <h6 id="methods_getlayersbyname_example_source">Source</h6>
 <div source-edit="dumpLayersByName" source-edit-deps="angular.js dumpLayersByName.js" source-edit-html="dumpLayersByName.html" source-edit-css="dumpLayersByName.css" source-edit-js="dumpLayersByName.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
@@ -304,10 +304,10 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div ng-controller="dumpLayersByName">
 <a class="btn btn-primary" ng-click="dumpLayersByName()">Dump base layer's details object to console</a>
 <div id="dumpLayersByName"></div>
-<ga-map map-element-id="dumpLayersByName" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-</ga-map-layer>
-</ga-map>
+<geo-map map-element-id="dumpLayersByName" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+</geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -320,7 +320,7 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div class="tab-pane" title="dumpLayersByName.js">
 <pre class="prettyprint linenums" ng-set-text="dumpLayersByName.js"></pre>
 <script type="text/ng-template" id="dumpLayersByName.js">
-angular.module("dumpLayersByName",['gawebtoolkit.core'])
+angular.module("dumpLayersByName",['geowebtoolkit.core'])
 .controller("dumpLayersByName", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -337,19 +337,19 @@ console.log( $scope.mapController.getLayersByName("Simple map layer name") );
 </div>
 </li>
 <li><h3 id="methods_getlonlatfrompixel">getLonLatFromPixel(x, y, projection)</h3>
-<div class="getlonlatfrompixel"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><p>Gets a latlon object from implementation service</p>
-</div><h5 id="methods_getlonlatfrompixel_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>x</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><ul>
+<div class="getlonlatfrompixel"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlonlatfrompixel-page"><p>Gets a latlon object from implementation service</p>
+</div><h5 id="methods_getlonlatfrompixel_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>x</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlonlatfrompixel-page"><ul>
 <li>number of pixels from the left of the div containing the map</li>
 </ul>
-</div></td></tr><tr><td>y</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><ul>
+</div></td></tr><tr><td>y</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlonlatfrompixel-page"><ul>
 <li>number of pixels from the top of the div containing the map</li>
 </ul>
-</div></td></tr><tr><td>projection</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><ul>
+</div></td></tr><tr><td>projection</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlonlatfrompixel-page"><ul>
 <li>a projection to convert to from the maps projection</li>
 </ul>
-</div></td></tr></tbody></table><h5 id="methods_getlonlatfrompixel_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-lonlat">LonLat</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><p>An object containing Latitude and Longitude in the projection of the map</p>
+</div></td></tr></tbody></table><h5 id="methods_getlonlatfrompixel_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-lonlat">LonLat</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlonlatfrompixel-page"><p>An object containing Latitude and Longitude in the projection of the map</p>
 </div></td></tr></table><h4 id="methods_getlonlatfrompixel_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getlonlatfrompixel-page"><p><code><pre class="prettyprint linenums">var lonLat = mapController.getLonLatFromPixel(200,500)
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getlonlatfrompixel-page"><p><code><pre class="prettyprint linenums">var lonLat = mapController.getLonLatFromPixel(200,500)
 // eg, lonLat equals lat: -30.967, lon: 108.552</pre></code>
 <h6 id="methods_getlonlatfrompixel_example_source">Source</h6>
 <div source-edit="getLonLat" source-edit-deps="angular.js getLonLat.js" source-edit-html="getLonLat.html" source-edit-css="getLonLat.css" source-edit-js="getLonLat.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
@@ -363,19 +363,19 @@ console.log( $scope.mapController.getLayersByName("Simple map layer name") );
           {{mouseClickStatus + " | " + mouseClickMsg}}</span>
   </div>
   <div id="getLonLat"></div>
-  <ga-map
+  <geo-map
       map-element-id="getLonLat"
       center-position='[130, -25]'
       zoom-level="4">
-      <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-      <ga-map-layer
+      <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+      <geo-map-layer
           layer-name="Topographic"
           layer-type="WMS"
           layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
           is-base-layer="false"
           layers="hazardContours">
-      </ga-map-layer>
-  </ga-map>
+      </geo-map-layer>
+  </geo-map>
 </div>
 </script>
 </div>
@@ -402,7 +402,7 @@ console.log( $scope.mapController.getLayersByName("Simple map layer name") );
 <div class="tab-pane" title="getLonLat.js">
 <pre class="prettyprint linenums" ng-set-text="getLonLat.js"></pre>
 <script type="text/ng-template" id="getLonLat.js">
- var app = angular.module('getLonLat', ['gawebtoolkit.core']);
+ var app = angular.module('getLonLat', ['geowebtoolkit.core']);
   app.controller('ourMapController',['$scope', function ($scope) {
       $scope.mouseMoveRegistered = false;
       $scope.$on('mapControllerReady', function(event,args) {
@@ -434,38 +434,38 @@ console.log( $scope.mapController.getLayersByName("Simple map layer name") );
 </div>
 </li>
 <li><h3 id="methods_getpixelfromlonlat">getPixelFromLonLat(lon, lat)</h3>
-<div class="getpixelfromlonlat"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpixelfromlonlat-page"><p>Gets a latlon object from implementation service</p>
-</div><h5 id="methods_getpixelfromlonlat_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>lon</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpixelfromlonlat-page"><ul>
+<div class="getpixelfromlonlat"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpixelfromlonlat-page"><p>Gets a latlon object from implementation service</p>
+</div><h5 id="methods_getpixelfromlonlat_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>lon</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpixelfromlonlat-page"><ul>
 <li>The latitude of the location to transform</li>
 </ul>
-</div></td></tr><tr><td>lat</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpixelfromlonlat-page"><ul>
+</div></td></tr><tr><td>lat</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpixelfromlonlat-page"><ul>
 <li>The longitude of the location to transform</li>
 </ul>
-</div></td></tr></tbody></table><h5 id="methods_getpixelfromlonlat_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-point">Point</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpixelfromlonlat-page"><ul>
+</div></td></tr></tbody></table><h5 id="methods_getpixelfromlonlat_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-point">Point</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpixelfromlonlat-page"><ul>
 <li>An object containing Latitude and Longitude in the projection of the map</li>
 </ul>
 </div></td></tr></table><h4 id="methods_getpixelfromlonlat_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpixelfromlonlat-page"><p><code><pre class="prettyprint linenums">var point = mapController.getPixelFromLonLat(-20,-100);
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpixelfromlonlat-page"><p><code><pre class="prettyprint linenums">var point = mapController.getPixelFromLonLat(-20,-100);
 // eg, point equals x: 25, y: 63</pre></code></p>
 </div></div>
 </div>
 </li>
 <li><h3 id="methods_getpointfromevent">getPointFromEvent(event)</h3>
-<div class="getpointfromevent"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpointfromevent-page"><p>Extracts a point from an event coming from implementation service layer.</p>
-</div><h5 id="methods_getpointfromevent_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>event</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpointfromevent-page"><ul>
+<div class="getpointfromevent"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpointfromevent-page"><p>Extracts a point from an event coming from implementation service layer.</p>
+</div><h5 id="methods_getpointfromevent_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>event</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpointfromevent-page"><ul>
 <li>An event from implementation, eg OpenLayers,
 worked out from number of pixels from the left of the div containing the map</li>
 </ul>
-</div></td></tr></tbody></table><h5 id="methods_getpointfromevent_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-point">Point</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getpointfromevent-page"><ul>
+</div></td></tr></tbody></table><h5 id="methods_getpointfromevent_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-point">Point</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getpointfromevent-page"><ul>
 <li>A point object extracted from the event.</li>
 </ul>
 </div></td></tr></table></div>
 </li>
 <li><h3 id="methods_getprojection">getProjection()</h3>
-<div class="getprojection"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getprojection-page"><p>Get original datum projection provided to the map on initialisation, eg $scope.datumProjection</p>
-</div><h5 id="methods_getprojection_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getprojection-page"><p>Returns the projection value in string format</p>
+<div class="getprojection"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getprojection-page"><p>Get original datum projection provided to the map on initialisation, eg $scope.datumProjection</p>
+</div><h5 id="methods_getprojection_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getprojection-page"><p>Returns the projection value in string format</p>
 </div></td></tr></table><h4 id="methods_getprojection_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-getprojection-page"><h6 id="methods_getprojection_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-getprojection-page"><h6 id="methods_getprojection_example_source">Source</h6>
 <div source-edit="getMapProjection" source-edit-deps="angular.js getProjection.js" source-edit-html="getProjection.html" source-edit-css="getProjection.css" source-edit-js="getProjection.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="getProjection.html">
 <pre class="prettyprint linenums" ng-set-text="getProjection.html"></pre>
@@ -475,20 +475,20 @@ worked out from number of pixels from the left of the div containing the map</li
                         <a class="btn btn-primary" ng-click="projection = mapController.getProjection()">Get Projection: {{projection}}</a>
                     </div>
                     <div id="getMapProjection"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="getMapProjection"
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                        <ga-map-layer
+                        <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                        <geo-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
                             layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                             is-base-layer="false"
                             layers="hazardContours"
                             background-color="#ffffff">
-                        </ga-map-layer>
-                    </ga-map>
+                        </geo-map-layer>
+                    </geo-map>
                 </div>
 </script>
 </div>
@@ -515,7 +515,7 @@ worked out from number of pixels from the left of the div containing the map</li
 <div class="tab-pane" title="getProjection.js">
 <pre class="prettyprint linenums" ng-set-text="getProjection.js"></pre>
 <script type="text/ng-template" id="getProjection.js">
- var app = angular.module('getMapProjection', ['gawebtoolkit.core']);
+ var app = angular.module('getMapProjection', ['geowebtoolkit.core']);
                 app.controller('ourMapController',['$scope', function ($scope) {
                     $scope.mouseMoveRegistered = false;
                     $scope.$on('mapControllerReady', function(event,args) {
@@ -530,12 +530,12 @@ worked out from number of pixels from the left of the div containing the map</li
 </div>
 </li>
 <li><h3 id="methods_isbaselayer">isBaseLayer(layerId)</h3>
-<div class="isbaselayer"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-isbaselayer-page"><p>Returns true if layer with the associated Id is a base layer</p>
-</div><h5 id="methods_isbaselayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-isbaselayer-page"><ul>
+<div class="isbaselayer"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-isbaselayer-page"><p>Returns true if layer with the associated Id is a base layer</p>
+</div><h5 id="methods_isbaselayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-isbaselayer-page"><ul>
 <li>Id of the layer</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_isbaselayer_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-isbaselayer-page"><p><code><pre class="prettyprint linenums">anogular.module("ourMapApp", ["geowebtoolkit.core"])
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-isbaselayer-page"><p><code><pre class="prettyprint linenums">anogular.module("ourMapApp", ["geowebtoolkit.core"])
 .controller("ourAppController",["$scope", function($scope) {
 $scope.$on("mapControllerReady", function (event, args) {
 $scope.mapController = args;
@@ -552,11 +552,11 @@ isLayerBaseLayer = $scope.mapController(layerId);
 <a class="btn btn-primary" ng-click="chklayer1 = checklayer(0)">  Check base layer : {{chklayer1}}</a>
 <a class="btn btn-primary" ng-click="chklayer2 = checklayer(1)">  Check base layer : {{chklayer2}}</a>
 <div id="checkBaseLayer"></div>
-<ga-map map-element-id="checkBaseLayer" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-<ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
-        </ga-map-layer>
-</ga-map>
+<geo-map map-element-id="checkBaseLayer" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+<geo-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
+        </geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -571,7 +571,7 @@ input {margin: 0 !important}
 <div class="tab-pane" title="checkBaseLayer.js">
 <pre class="prettyprint linenums" ng-set-text="checkBaseLayer.js"></pre>
 <script type="text/ng-template" id="checkBaseLayer.js">
-angular.module("checkBaseLayer",['gawebtoolkit.core'])
+angular.module("checkBaseLayer",['geowebtoolkit.core'])
 .controller("checkBaseLayerController", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -590,13 +590,13 @@ return chklayer;
 </div>
 </li>
 <li><h3 id="methods_registermapclick">registerMapClick(callback)</h3>
-<div class="registermapclick"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapclick-page"><p>Registers an event that will fire when the rendered map is clicked.
+<div class="registermapclick"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapclick-page"><p>Registers an event that will fire when the rendered map is clicked.
 Event details coming back will be implementation specific</p>
-</div><h5 id="methods_registermapclick_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapclick-page"><ul>
+</div><h5 id="methods_registermapclick_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapclick-page"><ul>
 <li>callback function that fires when the map is clicked.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_registermapclick_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapclick-page"><h6 id="methods_registermapclick_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapclick-page"><h6 id="methods_registermapclick_example_source">Source</h6>
 <div source-edit="mouseMapClick" source-edit-deps="angular.js mouseMapClick.js" source-edit-html="mouseMapClick.html" source-edit-css="mouseMapClick.css" source-edit-js="mouseMapClick.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="mouseMapClick.html">
 <pre class="prettyprint linenums" ng-set-text="mouseMapClick.html"></pre>
@@ -609,20 +609,20 @@ Event details coming back will be implementation specific</p>
                     </div>
             
                     <div id="mouseMapClick"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="mouseMapClick"
                         center-position='[130, -25]'
                         zoom-level="4">
-                    <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                    <ga-map-layer
+                    <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                    <geo-map-layer
                         layer-name="Topographic" 
                         layer-type="WMS"
                         layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                         is-base-layer="false"
                         layers="hazardContours"
                         background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
+                    </geo-map-layer>
+                </geo-map>
 </div>
 </script>
 </div>
@@ -649,7 +649,7 @@ Event details coming back will be implementation specific</p>
 <div class="tab-pane" title="mouseMapClick.js">
 <pre class="prettyprint linenums" ng-set-text="mouseMapClick.js"></pre>
 <script type="text/ng-template" id="mouseMapClick.js">
-var app = angular.module('mouseMapClick', ['gawebtoolkit.core']);
+var app = angular.module('mouseMapClick', ['geowebtoolkit.core']);
                 app.controller('ourMapController',['$scope', function ($scope) {
                     $scope.mouseMoveRegistered = false;
                     $scope.$on('mapControllerReady', function(event,args) {
@@ -681,13 +681,13 @@ var app = angular.module('mouseMapClick', ['gawebtoolkit.core']);
 </div>
 </li>
 <li><h3 id="methods_registermapmousemove">registerMapMouseMove(callback)</h3>
-<div class="registermapmousemove"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapmousemove-page"><p>Registers a mouse movement event and calls provided callback.
+<div class="registermapmousemove"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapmousemove-page"><p>Registers a mouse movement event and calls provided callback.
 Event details coming back will be implementation specific</p>
-</div><h5 id="methods_registermapmousemove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapmousemove-page"><ul>
+</div><h5 id="methods_registermapmousemove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapmousemove-page"><ul>
 <li>callback function that fires when the mouse move event occurs.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_registermapmousemove_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapmousemove-page"><h6 id="methods_registermapmousemove_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapmousemove-page"><h6 id="methods_registermapmousemove_example_source">Source</h6>
 <div source-edit="mapMouseMove" source-edit-deps="angular.js mapMouseMove.js" source-edit-html="mapMouseMove.html" source-edit-css="ourMapController.css" source-edit-js="mapMouseMove.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="mapMouseMove.html">
 <pre class="prettyprint linenums" ng-set-text="mapMouseMove.html"></pre>
@@ -700,20 +700,20 @@ Event details coming back will be implementation specific</p>
                 </div>
 
                 <div id="mapMouseMove"></div>
-                <ga-map
+                <geo-map
                     map-element-id="mapMouseMove"
                     center-position='[130, -25]'
                 zoom-level="4">
-                <ga-osm-layer></ga-osm-layer>
-                <ga-map-layer
+                <geo-osm-layer></geo-osm-layer>
+                <geo-map-layer
                     layer-name="Topographic" 
                     layer-type="WMS"
                     layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                     is-base-layer="false"
                     layers="hazardContours"
                     background-color="#ffffff">
-                </ga-map-layer>
-            </ga-map>
+                </geo-map-layer>
+            </geo-map>
             </div>
 </div>
 </script>
@@ -741,7 +741,7 @@ Event details coming back will be implementation specific</p>
 <div class="tab-pane" title="mapMouseMove.js">
 <pre class="prettyprint linenums" ng-set-text="mapMouseMove.js"></pre>
 <script type="text/ng-template" id="mapMouseMove.js">
-var app = angular.module('mapMouseMove', ['gawebtoolkit.core']);
+var app = angular.module('mapMouseMove', ['geowebtoolkit.core']);
                 app.controller('ourMapController',['$scope', function ($scope) {
                     $scope.mouseMoveRegistered = false;
                     $scope.registerMouseMapMoveButton = "Register mouse move"
@@ -766,12 +766,12 @@ var app = angular.module('mapMouseMove', ['gawebtoolkit.core']);
 </div>
 </li>
 <li><h3 id="methods_registermapmousemoveend">registerMapMouseMoveEnd(callback)</h3>
-<div class="registermapmousemoveend"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapmousemoveend-page"><p>Registers an event callback with mapInstance when the mouse stops moving over the map</p>
-</div><h5 id="methods_registermapmousemoveend_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapmousemoveend-page"><ul>
+<div class="registermapmousemoveend"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapmousemoveend-page"><p>Registers an event callback with mapInstance when the mouse stops moving over the map</p>
+</div><h5 id="methods_registermapmousemoveend_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapmousemoveend-page"><ul>
 <li>callback function that fires when the mouse move end event occurs.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_registermapmousemoveend_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-registermapmousemoveend-page"><h6 id="methods_registermapmousemoveend_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-registermapmousemoveend-page"><h6 id="methods_registermapmousemoveend_example_source">Source</h6>
 <div source-edit="mapMouseMoveEnd" source-edit-deps="angular.js mapMouseMoveEnd.js" source-edit-html="mapMouseMoveEnd.html" source-edit-css="mapMouseMoveEnd.css" source-edit-js="mapMouseMoveEnd.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="mapMouseMoveEnd.html">
 <pre class="prettyprint linenums" ng-set-text="mapMouseMoveEnd.html"></pre>
@@ -784,20 +784,20 @@ var app = angular.module('mapMouseMove', ['gawebtoolkit.core']);
                     </div>
 
                     <div id="mapMouseMoveEnd"></div>
-                    <ga-map
+                    <geo-map
                         map-element-id="mapMouseMoveEnd"
                         center-position='[130, -25]'
                         zoom-level="4">
-                        <ga-osm-layer></ga-osm-layer>
-                        <ga-map-layer
+                        <geo-osm-layer></geo-osm-layer>
+                        <geo-map-layer
                             layer-name="Topographic" 
                             layer-type="WMS"
                             layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                             is-base-layer="false"
                             layers="hazardContours"
                             background-color="#ffffff">
-                        </ga-map-layer>
-                    </ga-map>
+                        </geo-map-layer>
+                    </geo-map>
                 </div>
 
 </script>
@@ -826,7 +826,7 @@ var app = angular.module('mapMouseMove', ['gawebtoolkit.core']);
 <div class="tab-pane" title="mapMouseMoveEnd.js">
 <pre class="prettyprint linenums" ng-set-text="mapMouseMoveEnd.js"></pre>
 <script type="text/ng-template" id="mapMouseMoveEnd.js">
-var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
+var app = angular.module('mapMouseMoveEnd', ['geowebtoolkit.core']);
                 app.controller('ourMapController',['$scope', function ($scope) {
                     $scope.mouseMoveRegistered = false;
                     $scope.$on('mapControllerReady', function(event,args) {
@@ -855,12 +855,12 @@ var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
 </div>
 </li>
 <li><h3 id="methods_setbaselayer">setBaseLayer(layerId)</h3>
-<div class="setbaselayer"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setbaselayer-page"><p>Changes the current base layer to the layer associated with the Id provided</p>
-</div><h5 id="methods_setbaselayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setbaselayer-page"><ul>
+<div class="setbaselayer"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setbaselayer-page"><p>Changes the current base layer to the layer associated with the Id provided</p>
+</div><h5 id="methods_setbaselayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setbaselayer-page"><ul>
 <li>id of the new base layer.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_setbaselayer_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setbaselayer-page"><h6 id="methods_setbaselayer_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setbaselayer-page"><h6 id="methods_setbaselayer_example_source">Source</h6>
 <div source-edit="setBaseLayer" source-edit-deps="angular.js setBaseLayer.js" source-edit-html="setBaseLayer.html" source-edit-css="setBaseLayer.css" source-edit-js="setBaseLayer.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="setBaseLayer.html">
 <pre class="prettyprint linenums" ng-set-text="setBaseLayer.html"></pre>
@@ -872,37 +872,37 @@ var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
                     ng-change="mapController.setBaseLayer(selectedBaseLayer)"
                     ng-options="baseLayer.id as baseLayer.name for baseLayer in baseLayers"></select>
                 <div id="setBaseLayer"></div>
-                <ga-map
+                <geo-map
                     map-element-id="setBaseLayer"
                     center-position='[130, -25]'
                     zoom-level="4">
-                    <ga-map-layer
+                    <geo-map-layer
                         layer-name="World Image"
                         layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
                         wrap-date-line="true"
                         layer-type="XYZTileCache"
                         is-base-layer="true"
                         visibility="false">
-                    </ga-map-layer>
-                    <ga-map-layer
+                    </geo-map-layer>
+                    <geo-map-layer
                         layer-name="World Political Boundaries" 
                         layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer" 
                         wrap-date-line="true" 
                         layer-type="XYZTileCache"
                         is-base-layer="true"
                         visibility="false">
-                    </ga-map-layer>
-                    <ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-                    </ga-map-layer>
-                    <ga-map-layer
+                    </geo-map-layer>
+                    <geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+                    </geo-map-layer>
+                    <geo-map-layer
                         layer-name="Earthquake hazard contours" 
                         layer-type="WMS"
                         layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                         is-base-layer="false"
                         layers="hazardContours"
                         background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
+                    </geo-map-layer>
+                </geo-map>
                </div>
 </script>
 </div>
@@ -921,7 +921,7 @@ var app = angular.module('mapMouseMoveEnd', ['gawebtoolkit.core']);
 <pre class="prettyprint linenums" ng-set-text="setBaseLayer.js"></pre>
 <script type="text/ng-template" id="setBaseLayer.js">
 var app = angular.module('setBaseLayer',
-                ['gawebtoolkit.core']);
+                ['geowebtoolkit.core']);
                 app.controller("ourMapController",["$scope", function($scope) {
                     $scope.$on("mapControllerReady", function(event, args) {
                         $scope.mapController = args;
@@ -942,18 +942,18 @@ var app = angular.module('setBaseLayer',
 </div>
 </li>
 <li><h3 id="methods_setcenter">setCenter(lat, lon, projection)</h3>
-<div class="setcenter"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setcenter-page"><p>Changes the centred position of the map to the provided lat, lon</p>
-</div><h5 id="methods_setcenter_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>lat</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setcenter-page"><ul>
+<div class="setcenter"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setcenter-page"><p>Changes the centred position of the map to the provided lat, lon</p>
+</div><h5 id="methods_setcenter_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>lat</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setcenter-page"><ul>
 <li>Latitude value to move the view too.</li>
 </ul>
-</div></td></tr><tr><td>lon</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setcenter-page"><ul>
+</div></td></tr><tr><td>lon</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setcenter-page"><ul>
 <li>Longitude value to move the view too.</li>
 </ul>
-</div></td></tr><tr><td>projection</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setcenter-page"><ul>
+</div></td></tr><tr><td>projection</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setcenter-page"><ul>
 <li>Projection of {LonLat}</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_setcenter_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setcenter-page"><h6 id="methods_setcenter_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setcenter-page"><h6 id="methods_setcenter_example_source">Source</h6>
 <div source-edit="setCenterPosition" source-edit-deps="angular.js setCenterPosition.js" source-edit-html="setCenterPosition.html" source-edit-css="setCenterPosition.css" source-edit-js="setCenterPosition.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="setCenterPosition.html">
 <pre class="prettyprint linenums" ng-set-text="setCenterPosition.html"></pre>
@@ -961,9 +961,9 @@ var app = angular.module('setBaseLayer',
 <div ng-controller="setCenterPosition">
 <a class="btn btn-primary" ng-click="setCenterPosition()">Move to Australia</a>
 <div id="setCenterPosition"></div>
-<ga-map map-element-id="setCenterPosition" zoom-level="4" display-projection="EPSG:4326" datum-project="EPSG:3857" framework="olv3">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-</ga-map>
+<geo-map map-element-id="setCenterPosition" zoom-level="4" display-projection="EPSG:4326" datum-project="EPSG:3857" framework="olv3">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -978,7 +978,7 @@ input {margin: 0 !important}
 <div class="tab-pane" title="setCenterPosition.js">
 <pre class="prettyprint linenums" ng-set-text="setCenterPosition.js"></pre>
 <script type="text/ng-template" id="setCenterPosition.js">
-angular.module("setCenterPosition",['gawebtoolkit.core'])
+angular.module("setCenterPosition",['geowebtoolkit.core'])
 .controller("setCenterPosition", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -996,15 +996,15 @@ $scope.mapController.zoomTo(4);
 </div>
 </li>
 <li><h3 id="methods_setlayervisibility">setLayerVisibility(layerId, visibility)</h3>
-<div class="setlayervisibility"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setlayervisibility-page"><p>Changes the associated layerId visibility</p>
-</div><h5 id="methods_setlayervisibility_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setlayervisibility-page"><ul>
+<div class="setlayervisibility"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setlayervisibility-page"><p>Changes the associated layerId visibility</p>
+</div><h5 id="methods_setlayervisibility_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setlayervisibility-page"><ul>
 <li>Id of the layer</li>
 </ul>
-</div></td></tr><tr><td>visibility</td><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setlayervisibility-page"><ul>
+</div></td></tr><tr><td>visibility</td><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setlayervisibility-page"><ul>
 <li>Boolean indicating if the layer should be hidden(false) or shown(true)</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_setlayervisibility_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setlayervisibility-page"><h6 id="methods_setlayervisibility_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setlayervisibility-page"><h6 id="methods_setlayervisibility_example_source">Source</h6>
 <div source-edit="setVisibility" source-edit-deps="angular.js setVisibility.js" source-edit-html="setVisibility.html" source-edit-css="setVisibility.css" source-edit-js="setVisibility.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="setVisibility.html">
 <pre class="prettyprint linenums" ng-set-text="setVisibility.html"></pre>
@@ -1012,11 +1012,11 @@ $scope.mapController.zoomTo(4);
 <div ng-controller="setVisibility">
 <input type="checkbox" ng-model="layerVisibility" ng-change="setVisibility()" /> Toggle base layer visibility on/off
 <div id="setVisibility"></div>
-<ga-map map-element-id="setVisibility" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-<ga-map-control map-control-name="mouseposition"></ga-map-control>
-</ga-map-layer>
-</ga-map>
+<geo-map map-element-id="setVisibility" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+<geo-map-control map-control-name="mouseposition"></geo-map-control>
+</geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -1029,7 +1029,7 @@ $scope.mapController.zoomTo(4);
 <div class="tab-pane" title="setVisibility.js">
 <pre class="prettyprint linenums" ng-set-text="setVisibility.js"></pre>
 <script type="text/ng-template" id="setVisibility.js">
-angular.module("setVisibility",['gawebtoolkit.core'])
+angular.module("setVisibility",['geowebtoolkit.core'])
 .controller("setVisibility", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -1049,34 +1049,34 @@ $scope.mapController.setLayerVisibility($scope.mapController.getLayers()[0].id, 
 </div>
 </li>
 <li><h3 id="methods_setmapmarker">setMapMarker(point, markerGroupName, iconUrl, args)</h3>
-<div class="setmapmarker"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setmapmarker-page"><p>Adds a marker to an existing marker group/layer or creates a new group/layer to add
+<div class="setmapmarker"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setmapmarker-page"><p>Adds a marker to an existing marker group/layer or creates a new group/layer to add
 the marker too.</p>
-</div><h5 id="methods_setmapmarker_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>point</td><td><a href="" class="label type-hint type-hint-point">Point</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setmapmarker-page"><ul>
+</div><h5 id="methods_setmapmarker_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>point</td><td><a href="" class="label type-hint type-hint-point">Point</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setmapmarker-page"><ul>
 <li>screen point to place the marker</li>
 </ul>
-</div></td></tr><tr><td>markerGroupName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setmapmarker-page"><ul>
+</div></td></tr><tr><td>markerGroupName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setmapmarker-page"><ul>
 <li>group name associated with the new marker</li>
 </ul>
-</div></td></tr><tr><td>iconUrl</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setmapmarker-page"><ul>
+</div></td></tr><tr><td>iconUrl</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setmapmarker-page"><ul>
 <li>A url to the desired icon for the marker</li>
 </ul>
-</div></td></tr><tr><td>args</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setmapmarker-page"><ul>
+</div></td></tr><tr><td>args</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setmapmarker-page"><ul>
 <li>Contains properties &#39;width&#39; and &#39;height&#39; for deinfining the size of a the marker</li>
 </ul>
-</div></td></tr></tbody></table><h5 id="methods_setmapmarker_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setmapmarker-page"><p>Marker ID and group name.</p>
+</div></td></tr></tbody></table><h5 id="methods_setmapmarker_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setmapmarker-page"><p>Marker ID and group name.</p>
 </div></td></tr></table></div>
 </li>
 <li><h3 id="methods_setopacity">setOpacity(layerId, opacity)</h3>
-<div class="setopacity"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setopacity-page"><p>Changes the opacity of the associated layer to the value provided (Number between 0 and 1.0
+<div class="setopacity"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setopacity-page"><p>Changes the opacity of the associated layer to the value provided (Number between 0 and 1.0
 <br>This function only works on non-base layers</p>
-</div><h5 id="methods_setopacity_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setopacity-page"><ul>
+</div><h5 id="methods_setopacity_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setopacity-page"><ul>
 <li>Id of the layer</li>
 </ul>
-</div></td></tr><tr><td>opacity</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setopacity-page"><ul>
+</div></td></tr><tr><td>opacity</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setopacity-page"><ul>
 <li>Value between 0 and 1.0 representing the layer&#39;s new opacity.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_setopacity_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-setopacity-page"><h6 id="methods_setopacity_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-setopacity-page"><h6 id="methods_setopacity_example_source">Source</h6>
 <div source-edit="setOpacity" source-edit-deps="angular.js setOpacityLevel.js" source-edit-html="setOpacity.html" source-edit-css="setOpacity.css" source-edit-js="setOpacityLevel.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="setOpacity.html">
 <pre class="prettyprint linenums" ng-set-text="setOpacity.html"></pre>
@@ -1084,11 +1084,11 @@ the marker too.</p>
 <div ng-controller="setOpacityController">
 <input placeholder="0-1" type="number" ng-model="opacityLevel" style="width: 50px; height: auto;" /><a class="btn btn-primary" ng-click="setOpacityLevel()">  Set top layer's opacity to {{opacityLevel}}</a>
 <div id="setOpacity"></div>
-<ga-map map-element-id="setOpacity" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-<ga-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
-        </ga-map-layer>
-</ga-map>
+<geo-map map-element-id="setOpacity" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+<geo-map-layer layer-name="Topographic" layer-type="WMS" layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" is-base-layer="false" layers="hazardContours" background-color="#ffffff">
+        </geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -1103,7 +1103,7 @@ input {margin: 0 !important}
 <div class="tab-pane" title="setOpacityLevel.js">
 <pre class="prettyprint linenums" ng-set-text="setOpacityLevel.js"></pre>
 <script type="text/ng-template" id="setOpacityLevel.js">
-angular.module("setOpacity",['gawebtoolkit.core'])
+angular.module("setOpacity",['geowebtoolkit.core'])
 .controller("setOpacityController", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -1123,12 +1123,12 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
 </div>
 </li>
 <li><h3 id="methods_unregistermapclick">unRegisterMapClick(callback)</h3>
-<div class="unregistermapclick"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-unregistermapclick-page"><p>Unregisters a map click event from the map instance.</p>
-</div><h5 id="methods_unregistermapclick_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-unregistermapclick-page"><ul>
+<div class="unregistermapclick"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-unregistermapclick-page"><p>Unregisters a map click event from the map instance.</p>
+</div><h5 id="methods_unregistermapclick_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-unregistermapclick-page"><ul>
 <li>callback function that was originally registered.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_unregistermapclick_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-unregistermapclick-page"><h6 id="methods_unregistermapclick_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-unregistermapclick-page"><h6 id="methods_unregistermapclick_example_source">Source</h6>
 <div source-edit="unRegisterMouseMapClick" source-edit-deps="angular.js unRegisterMouseMapClick.js" source-edit-html="unRegisterMouseMapClick.html" source-edit-css="unRegisterMouseMapClick.css" source-edit-js="unRegisterMouseMapClick.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="unRegisterMouseMapClick.html">
 <pre class="prettyprint linenums" ng-set-text="unRegisterMouseMapClick.html"></pre>
@@ -1140,20 +1140,20 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
                             {{mouseClickStatus + " | " + mouseClickMsg}}</span>
                     </div>
                     <div id="unRegisterMouseMapClick"></div>
-                <ga-map
+                <geo-map
                     map-element-id="unRegisterMouseMapClick"
                     center-position='[130, -25]'
                     zoom-level="4">
-                    <ga-osm-layer></ga-osm-layer>
-                    <ga-map-layer
+                    <geo-osm-layer></geo-osm-layer>
+                    <geo-map-layer
                         layer-name="Topographic" 
                         layer-type="WMS"
                         layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer" 
                         is-base-layer="false"
                         layers="hazardContours"
                         background-color="#ffffff">
-                    </ga-map-layer>
-                </ga-map>
+                    </geo-map-layer>
+                </geo-map>
             </div>
 </script>
 </div>
@@ -1180,7 +1180,7 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
 <div class="tab-pane" title="unRegisterMouseMapClick.js">
 <pre class="prettyprint linenums" ng-set-text="unRegisterMouseMapClick.js"></pre>
 <script type="text/ng-template" id="unRegisterMouseMapClick.js">
- var app = angular.module('unRegisterMouseMapClick', ['gawebtoolkit.core']);
+ var app = angular.module('unRegisterMouseMapClick', ['geowebtoolkit.core']);
                 app.controller('ourMapController',['$scope', function ($scope) {
                     $scope.mouseMoveRegistered = false;
                     $scope.$on('mapControllerReady', function(event,args) {
@@ -1222,12 +1222,12 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
 </div>
 </li>
 <li><h3 id="methods_zoomto">zoomTo(zoomLevel)</h3>
-<div class="zoomto"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomto-page"><p>Sets the zoom level of the map</p>
-</div><h5 id="methods_zoomto_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>zoomLevel</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomto-page"><ul>
+<div class="zoomto"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomto-page"><p>Sets the zoom level of the map</p>
+</div><h5 id="methods_zoomto_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>zoomLevel</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomto-page"><ul>
 <li>A number value to be used as zoom level</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_zoomto_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomto-page"><h6 id="methods_zoomto_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomto-page"><h6 id="methods_zoomto_example_source">Source</h6>
 <div source-edit="setZoomLevel" source-edit-deps="angular.js setZoomLevel.js" source-edit-html="setZoomLevel.html" source-edit-css="setZoomLevel.css" source-edit-js="setZoomLevel.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="setZoomLevel.html">
 <pre class="prettyprint linenums" ng-set-text="setZoomLevel.html"></pre>
@@ -1235,9 +1235,9 @@ $scope.mapController.setOpacity($scope.baseLayerId, $scope.opacityLevel);
 <div ng-controller="setZoomLevel">
 <input placeholder="0-19" type="number" ng-model="zoomLevel" style="width: 50px" /><a class="btn btn-primary" ng-click="setZoomLevel()">  Set zoom level to {{zoomLevel}}</a>
 <div id="setZoomLevel"></div>
-<ga-map map-element-id="setZoomLevel" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-</ga-map>
+<geo-map map-element-id="setZoomLevel" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -1252,7 +1252,7 @@ input {margin: 0 !important}
 <div class="tab-pane" title="setZoomLevel.js">
 <pre class="prettyprint linenums" ng-set-text="setZoomLevel.js"></pre>
 <script type="text/ng-template" id="setZoomLevel.js">
-angular.module("setZoomLevel",['gawebtoolkit.core'])
+angular.module("setZoomLevel",['geowebtoolkit.core'])
 .controller("setZoomLevel", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -1269,12 +1269,12 @@ $scope.mapController.zoomTo($scope.zoomLevel);
 </div>
 </li>
 <li><h3 id="methods_zoomtolayer">zoomToLayer(layerId)</h3>
-<div class="zoomtolayer"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomtolayer-page"><p>If possible, performs an action to zoom in on the extent of a layer associated with Id</p>
-</div><h5 id="methods_zoomtolayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomtolayer-page"><ul>
+<div class="zoomtolayer"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomtolayer-page"><p>If possible, performs an action to zoom in on the extent of a layer associated with Id</p>
+</div><h5 id="methods_zoomtolayer_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomtolayer-page"><ul>
 <li>Id of the layer to zoom too.</li>
 </ul>
 </div></td></tr></tbody></table><h4 id="methods_zoomtolayer_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomtolayer-page"><p><code><pre class="prettyprint linenums">var layers = $scope.mapController.getLayers();
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomtolayer-page"><p><code><pre class="prettyprint linenums">var layers = $scope.mapController.getLayers();
 $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <h6 id="methods_zoomtolayer_example_source">Source</h6>
 <div source-edit="zoomToLayer" source-edit-deps="angular.js zoomToLayer.js" source-edit-html="zoomToLayer.html" source-edit-css="zoomToLayer.css" source-edit-js="zoomToLayer.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
@@ -1284,10 +1284,10 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div ng-controller="zoomToLayer">
 <a class="btn btn-primary" ng-click="zoomToLayer()">Zoom to base layer extent</a>
 <div id="zoomToLayer"></div>
-<ga-map map-element-id="zoomToLayer" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer layer-name="Simple map layer name"></ga-osm-layer>
-</ga-map-layer>
-</ga-map>
+<geo-map map-element-id="zoomToLayer" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer layer-name="Simple map layer name"></geo-osm-layer>
+</geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -1300,7 +1300,7 @@ $scope.mapController.zoomToLayer(layers[0].id);</pre></code>
 <div class="tab-pane" title="zoomToLayer.js">
 <pre class="prettyprint linenums" ng-set-text="zoomToLayer.js"></pre>
 <script type="text/ng-template" id="zoomToLayer.js">
-angular.module("zoomToLayer",['gawebtoolkit.core'])
+angular.module("zoomToLayer",['geowebtoolkit.core'])
 .controller("zoomToLayer", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -1318,9 +1318,9 @@ $scope.mapController.zoomToLayer( baseLayerId );
 </div>
 </li>
 <li><h3 id="methods_zoomtomaxextent">zoomToMaxExtent()</h3>
-<div class="zoomtomaxextent"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomtomaxextent-page"><p>Zooms to the maximum extent of the map</p>
+<div class="zoomtomaxextent"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomtomaxextent-page"><p>Zooms to the maximum extent of the map</p>
 </div><h4 id="methods_zoomtomaxextent_example">Example</h4>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-zoomtomaxextent-page"><h6 id="methods_zoomtomaxextent_example_source">Source</h6>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-zoomtomaxextent-page"><h6 id="methods_zoomtomaxextent_example_source">Source</h6>
 <div source-edit="zoomToMax" source-edit-deps="angular.js zoomToMaxJS.js" source-edit-html="zoomToMax.html" source-edit-css="zooToMax.css" source-edit-js="zoomToMaxJS.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="zoomToMax.html">
 <pre class="prettyprint linenums" ng-set-text="zoomToMax.html"></pre>
@@ -1328,11 +1328,11 @@ $scope.mapController.zoomToLayer( baseLayerId );
 <div ng-controller="zoomToMax">
 <a class="btn btn-primary" ng-click="mapController.zoomToMaxExtent()">Zoom to Max</a>
 <div id="zoomToMax"></div>
-<ga-map map-element-id="zoomToMax" center-position='[130, -25]' zoom-level="4">
-<ga-osm-layer></ga-osm-layer>
-<ga-map-control map-control-name="mouseposition"></ga-map-control>
-</ga-map-layer>
-</ga-map>
+<geo-map map-element-id="zoomToMax" center-position='[130, -25]' zoom-level="4">
+<geo-osm-layer></geo-osm-layer>
+<geo-map-control map-control-name="mouseposition"></geo-map-control>
+</geo-map-layer>
+</geo-map>
 </div>
 </script>
 </div>
@@ -1345,7 +1345,7 @@ $scope.mapController.zoomToLayer( baseLayerId );
 <div class="tab-pane" title="zoomToMaxJS.js">
 <pre class="prettyprint linenums" ng-set-text="zoomToMaxJS.js"></pre>
 <script type="text/ng-template" id="zoomToMaxJS.js">
-angular.module("zoomToMax",['gawebtoolkit.core'])
+angular.module("zoomToMax",['geowebtoolkit.core'])
 .controller("zoomToMax", ["$scope", function($scope) {
 $scope.$on("mapControllerReady", function(event, args) {
 $scope.mapController = args;
@@ -1361,7 +1361,7 @@ $scope.mapController = args;
 </ul>
 </div>
 <h2 id="example">Example</h2>
-<div class="example"><div class="gawebtoolkit-core-map-directives-page gawebtoolkit-core-map-directives-gamap-page"><h4 id="example_source">Source</h4>
+<div class="example"><div class="geowebtoolkit-core-map-directives-page geowebtoolkit-core-map-directives-geomap-page"><h4 id="example_source">Source</h4>
 <div source-edit="simpleMap" source-edit-deps="angular.js script.js" source-edit-html="index.html-12" source-edit-css="style.css-13" source-edit-js="script.js-14" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="index.html">
 <pre class="prettyprint linenums" ng-set-text="index.html-12" ng-html-wrap-loaded="simpleMap angular.js script.js"></pre>
@@ -1374,38 +1374,38 @@ $scope.mapController = args;
         </style>
         <h3>OpenLayers v2 with geo-web-toolkit<h3>
         <div id="mapv2"></div>
-        <ga-map map-element-id="mapv2" center-position='[130, -25]' zoom-level="4"
+        <geo-map map-element-id="mapv2" center-position='[130, -25]' zoom-level="4"
                 framework="olv2">
-            <ga-osm-layer></ga-osm-layer>
-            <ga-map-layer
+            <geo-osm-layer></geo-osm-layer>
+            <geo-map-layer
                             layer-name="Australian Topography 2014"
                             layer-type="ArcGISCache"
                             layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
                             is-base-layer="false"
                             visibility="true">
-            </ga-map-layer>
-            <ga-map-control map-control-name="mouseposition"></ga-map-control>
-            <ga-map-control map-control-name="panzoombar"></ga-map-control>
-            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-        </ga-map>
+            </geo-map-layer>
+            <geo-map-control map-control-name="mouseposition"></geo-map-control>
+            <geo-map-control map-control-name="panzoombar"></geo-map-control>
+            <geo-map-control map-control-name="OverviewMap"></geo-map-control>
+            <geo-map-control map-control-name="ScaleLine"></geo-map-control>
+        </geo-map>
         <h3>OpenLayers v3.5.0 with geo-web-toolkit<h3>
         <div id="mapv3"></div>
-        <ga-map map-element-id="mapv3" center-position='[130, -25]' zoom-level="4"
+        <geo-map map-element-id="mapv3" center-position='[130, -25]' zoom-level="4"
                 framework="olv3">
-            <ga-osm-layer></ga-osm-layer>
-            <ga-map-layer
+            <geo-osm-layer></geo-osm-layer>
+            <geo-map-layer
                              layer-name="Australian Topography 2014"
                              layer-type="ArcGISCache"
                              layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
                              is-base-layer="false"
                              visibility="true">
-            </ga-map-layer>
-            <ga-map-control map-control-name="mouseposition"></ga-map-control>
-            <ga-map-control map-control-name="panzoombar"></ga-map-control>
-            <ga-map-control map-control-name="OverviewMap"></ga-map-control>
-            <ga-map-control map-control-name="ScaleLine"></ga-map-control>
-        </ga-map>
+            </geo-map-layer>
+            <geo-map-control map-control-name="mouseposition"></geo-map-control>
+            <geo-map-control map-control-name="panzoombar"></geo-map-control>
+            <geo-map-control map-control-name="OverviewMap"></geo-map-control>
+            <geo-map-control map-control-name="ScaleLine"></geo-map-control>
+        </geo-map>
 </script>
 </div>
 <div class="tab-pane" title="style.css">
@@ -1417,7 +1417,7 @@ $scope.mapController = args;
 </div>
 <div class="tab-pane" title="script.js">
 <pre class="prettyprint linenums" ng-set-text="script.js-14"></pre>
-<script type="text/ng-template" id="script.js-14">var app = angular.module('simpleMap',['gawebtoolkit.core']);</script>
+<script type="text/ng-template" id="script.js-14">var app = angular.module('simpleMap',['geowebtoolkit.core']);</script>
 </div>
 </div><h4 id="example_demo">Demo</h4>
 <div class="well doc-example-live animate-container" ng-embed-app="simpleMap" ng-set-html="index.html-12" ng-eval-javascript="script.js-14"></div>

@@ -1,29 +1,29 @@
 /* global angular, $ */
 (function () {
     "use strict";
-    var app = angular.module('gawebtoolkit.ui.components.deprecated',['gawebtoolkit.ui.directives', 'ui.utils', 'gawebtoolkit.utils']);
+    var app = angular.module('geowebtoolkit.ui.components.deprecated', ['geowebtoolkit.ui.directives', 'ui.utils', 'geowebtoolkit.utils']);
 
     /**
      * */
-    app.directive('gaDialogToggle', [ function () {
+    app.directive('geoDialogToggle', [ function () {
         return {
             restrict: "E",
-            templateUrl:'src/main/js/ui/components/deprecated/dialog-toggle.html',
+            templateUrl: 'src/main/js/ui/components/deprecated/dialog-toggle.html',
             transclude: true,
             scope: {
-                gaDialogController: '=',
-                gaToggleClicked: '&'
+                geoDialogController: '=',
+                geoToggleClicked: '&'
             },
             link: function ($scope) {
                 $scope.toggleDialog = function () {
-                    var dialogOpen = !$scope.gaDialogController.isClosed();
+                    var dialogOpen = !$scope.geoDialogController.isClosed();
                     if (!dialogOpen) {
-                        $scope.gaDialogController.openDialog();
+                        $scope.geoDialogController.openDialog();
                     } else {
-                        $scope.gaDialogController.closeDialog();
+                        $scope.geoDialogController.closeDialog();
                     }
-                    $scope.gaToggleClicked({
-                        dialogController: $scope.gaDialogController
+                    $scope.geoToggleClicked({
+                        dialogController: $scope.geoDialogController
                     });
                 };
             }
@@ -33,7 +33,7 @@
     /**
      *
      * */
-    app.directive('gaStaticDialog', ['$timeout', 'GAWTUtils', function ($timeout, GAWTUtils) {
+    app.directive('geoStaticDialog', ['$timeout', 'GeoUtils', function ($timeout, GeoUtils) {
         return {
             restrict: "AE",
             templateUrl: 'src/main/js/ui/components/deprecated/static-dialog.html',
@@ -55,7 +55,7 @@
                     $('#' + $scope.dialogId).dialog($scope.dialogConfig);
                 });
                 //Initialise id element to use for cleaning up/closing the dialog
-                $scope.dialogId = GAWTUtils.generateUuid();
+                $scope.dialogId = GeoUtils.generateUuid();
                 var self = this;
                 self.openDialog = function () {
                     $('#' + $scope.dialogId).dialog('open');
@@ -98,7 +98,7 @@
     }]);
 
     /*
-     * gaLayersDialog renders a list of layers that can be turned off and on
+     * geoLayersDialog renders a list of layers that can be turned off and on
      *
      * attributes
      *   dialog-config: jquery dialog options that are bound to dialog and will update the dialog on change
@@ -109,11 +109,11 @@
      *           visibility: //boolean representing if layer is visible
      *           name: //friendly name of the layer
      *       }]
-     *   mapController: a controller that has access to the mapInstance object that exposes the same contract as 'ga-map'
+     *   mapController: a controller that has access to the mapInstance object that exposes the same contract as 'geo-map'
      *
      *   filterFn ? This directive could be expanded to customise the way the layers are filtered
      * */
-    app.directive('gaLayersDialog', ['GAWTUtils', function (GAWTUtils) {
+    app.directive('geoLayersDialog', ['GeoUtils', function (GeoUtils) {
         return {
             restrict: "E",
             templateUrl: 'src/main/js/ui/components/deprecated/layers-dialog.html',
@@ -130,7 +130,7 @@
                     $('#' + $scope.dialogId).dialog($scope.dialogConfig);
                 });
                 //Initialise id element to use for cleaning up/closing the dialog
-                $scope.dialogId = GAWTUtils.generateUuid();
+                $scope.dialogId = GeoUtils.generateUuid();
 
                 $scope.isClosed = !$scope.dialogConfig.autoOpen;
                 var self = this;
@@ -169,7 +169,7 @@
     /**
      * @ngdoc directive
      * @deprecated [Deprecated since version 0.2.1 - not supported]
-     * @name gawebtoolkit.ui.directives:gaSearchWfs
+     * @name geowebtoolkit.ui.directives:geoSearchWfs
      * @param {object} mapController - Map controller
      * @param {string} resultTemplateUrl -
      * @param {object} searchEndPoints -
@@ -186,7 +186,7 @@
      * @restrict E
      * @example
      */
-    app.directive('gaSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
+    app.directive('geoSearchWfs', ['$q', '$interpolate', '$log', function ($q, $interpolate, $log) {
         //Using 'result.id' as the result features coming back should have a server id.
         //Specific property names are dynamic and cannot be relied on.
         return {

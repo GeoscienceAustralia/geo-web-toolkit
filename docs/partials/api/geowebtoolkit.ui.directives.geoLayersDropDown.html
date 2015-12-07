@@ -1,0 +1,40 @@
+<h1><code ng:non-bindable="">geoLayersDropDown</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.ui</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayersdropdown-page"><p>This control displays a select box of layers and on change, notify via event. Used in a
+restricted group of layers. Used for selecting between a list of mutually exclusive layers.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-layers-drop-down
+       layers-data="{Layer[]}"
+       selected-model="{string}"
+       controller-emit-event-name="{string}"
+       on-selected-layer-changed="{Function}"
+       layer-group-id="{string}"&gt;
+&lt;/geo-layers-drop-down&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersData</td><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayersdropdown-page"><ul>
+<li>Layers that the control uses to switch layers</li>
+</ul>
+</div></td></tr><tr><td>selectedModel</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayersdropdown-page"><ul>
+<li>Id of the layer that is currently selected</li>
+</ul>
+</div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayersdropdown-page"><ul>
+<li>event name that is fired that passes the controller</li>
+</ul>
+</div></td></tr><tr><td>onSelectedLayerChanged</td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayersdropdown-page"><ul>
+<li>function that is called when the selected value has changed</li>
+</ul>
+</div></td></tr><tr><td>layerGroupId</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geolayersdropdown-page"><ul>
+<li>A discriminator that is passed to events to identify which group of layers</li>
+</ul>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"></div>
+</div>

@@ -1,0 +1,49 @@
+<h1><code ng:non-bindable="">geoGoogleLayer</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.core</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="geowebtoolkit-core-vendor-layers-page geowebtoolkit-core-vendor-layers-geogooglelayer-page"><h4 id="description_overview">Overview</h4>
+<p>geoGoogleLayer directive is used to create a Google map.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-google-layer
+       layer-type="{string|@}"
+       visibility="{string|@}"&gt;
+&lt;/geo-google-layer&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layerType</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-vendor-layers-page geowebtoolkit-core-vendor-layers-geogooglelayer-page"><ul>
+<li>Required. Specified Google maps layer type. Eg, Hybrid.</li>
+</ul>
+</div></td></tr><tr><td>visibility</td><td><a href="" class="label type-hint type-hint-string">string</a><a href="" class="label type-hint type-hint-object">@</a></td><td><div class="geowebtoolkit-core-vendor-layers-page geowebtoolkit-core-vendor-layers-geogooglelayer-page"><ul>
+<li>A boolean value (&#39;true&#39;, &#39;false&#39;) which enables or disables visibility of the layer.</li>
+</ul>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="geowebtoolkit-core-vendor-layers-page geowebtoolkit-core-vendor-layers-geogooglelayer-page"><h4 id="example_source">Source</h4>
+<div source-edit="simpleMap" source-edit-deps="angular.js script.js" source-edit-html="index.html-18" source-edit-css="style.css-19" source-edit-js="script.js-20" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-18" ng-html-wrap-loaded="simpleMap angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-18">
+<div id="map"></div>
+<geo-map map-element-id="map">
+<geo-google-layer></geo-google-layer>
+</geo-map>
+</script>
+</div>
+<div class="tab-pane" title="style.css">
+<pre class="prettyprint linenums" ng-set-text="style.css-19"></pre>
+<style type="text/css" id="style.css-19">#map {width: 650px;height:600px;}</style>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js-20"></pre>
+<script type="text/ng-template" id="script.js-20">var app = angular.module('simpleMap',['geowebtoolkit.core']);</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="simpleMap" ng-set-html="index.html-18" ng-eval-javascript="script.js-20"></div>
+</div></div>
+</div>

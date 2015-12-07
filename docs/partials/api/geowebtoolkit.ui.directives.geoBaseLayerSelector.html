@@ -1,81 +1,81 @@
-<h1><code ng:non-bindable="">gaBaseLayerSelector</code>
-<div><span class="hint">directive in module <code ng:non-bindable="">gawebtoolkit.ui</code>
+<h1><code ng:non-bindable="">geoBaseLayerSelector</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">geowebtoolkit.ui</code>
 </span>
 </div>
 </h1>
 <div><h2 id="description">Description</h2>
-<div class="description"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-gabaselayerselector-page"><p>This control displays a select box of layers and on change, switches base layers between the proivided
+<div class="description"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geobaselayerselector-page"><p>This control displays a select box of layers and on change, switches base layers between the proivided
 list.</p>
 </div></div>
 <h2 id="usage">Usage</h2>
-<div class="usage">as element:<pre class="prettyprint linenums">&lt;ga-base-layer-selector
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;geo-base-layer-selector
        layers-data="{Layer[]}"
        map-controller="{object}"
        controller-emit-event-name="{string}"&gt;
-&lt;/ga-base-layer-selector&gt;</pre>
+&lt;/geo-base-layer-selector&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
 </ul>
 </div>
-<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersData</td><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-gabaselayerselector-page"><ul>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>layersData</td><td><a href="" class="label type-hint type-hint-layer">Layer[]</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geobaselayerselector-page"><ul>
 <li>Layers that the control uses to switch base layers</li>
 </ul>
-</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-gabaselayerselector-page"><ul>
+</div></td></tr><tr><td>mapController</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geobaselayerselector-page"><ul>
 <li>controller instance for the map</li>
 </ul>
-</div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-gabaselayerselector-page"><ul>
+</div></td></tr><tr><td>controllerEmitEventName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geobaselayerselector-page"><ul>
 <li>event that is fired that passes the controller</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <h2 id="example">Example</h2>
-<div class="example"><div class="gawebtoolkit-ui-directives-page gawebtoolkit-ui-directives-gabaselayerselector-page"><h4 id="example_source">Source</h4>
+<div class="example"><div class="geowebtoolkit-ui-directives-page geowebtoolkit-ui-directives-geobaselayerselector-page"><h4 id="example_source">Source</h4>
 <div source-edit="baseLayerSelector" source-edit-deps="angular.js baseLayerSelector.js" source-edit-html="baseLayerSelector.html" source-edit-css="baseLayerSelector.css" source-edit-js="baseLayerSelector.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
 <div class="tabbable"><div class="tab-pane" title="baseLayerSelector.html">
 <pre class="prettyprint linenums" ng-set-text="baseLayerSelector.html"></pre>
 <script type="text/ng-template" id="baseLayerSelector.html">
 <div ng-controller="ourMapController">
-    <ga-base-layer-selector
+    <geo-base-layer-selector
        layers-data="baseLayers"
        controller-emit-event-name="ourDropDownEvent"
        map-controller="mapController">
-   </ga-base-layer-selector>
+   </geo-base-layer-selector>
    <div id="map"></div>
-   <ga-map
+   <geo-map
        map-element-id="map"
        datum-projection='EPSG:102100'
        display-projection='EPSG:4326'
        center-position='[130, -25]'
        zoom-level="4">
-       <ga-map-layer
+       <geo-map-layer
            layer-name="World Image"
            layer-url="http://www.ga.gov.au/gisimg/rest/services/topography/World_Bathymetry_Image_WM/MapServer"
            wrap-date-line="true"
            layer-type="XYZTileCache"
            is-base-layer="true"
            visibility="false">
-       </ga-map-layer>
-       <ga-map-layer
+       </geo-map-layer>
+       <geo-map-layer
            layer-name="World Political Boundaries"
            layer-url="http://www.ga.gov.au/gis/rest/services/topography/World_Political_Boundaries_WM/MapServer"
            wrap-date-line="true"
            layer-type="XYZTileCache"
            is-base-layer="true"
            visibility="false">
-       </ga-map-layer>
-       <ga-map-layer
+       </geo-map-layer>
+       <geo-map-layer
            layer-name="Overview World Screen"
            layer-type="GoogleStreet"
            is-base-layer="true">
-       </ga-map-layer>
-       <ga-map-layer
+       </geo-map-layer>
+       <geo-map-layer
            layer-name="Earthquake hazard contours"
            layer-type="WMS"
            layer-url="http://www.ga.gov.au/gis/services/hazards/EarthquakeHazard/MapServer/WMSServer"
            is-base-layer="false"
            layers="hazardContours"
            background-color="#ffffff">
-       </ga-map-layer>
-    </ga-map>
+       </geo-map-layer>
+    </geo-map>
 </div>
 </script>
 </div>
@@ -94,7 +94,7 @@ list.</p>
 <pre class="prettyprint linenums" ng-set-text="baseLayerSelector.js"></pre>
 <script type="text/ng-template" id="baseLayerSelector.js">
        var app = angular.module('baseLayerSelector',
-       ['gawebtoolkit.core', 'gawebtoolkit.ui']);
+       ['geowebtoolkit.core', 'geowebtoolkit.ui']);
        app.controller("ourMapController",["$scope", function($scope) {
                $scope.$on("mapControllerReady", function(event, args) {
                    $scope.mapController = args;
