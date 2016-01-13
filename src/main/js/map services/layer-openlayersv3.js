@@ -209,7 +209,6 @@
                 var sourceOptions = {};
                 sourceOptions.url = args.layerUrl;
 
-                sourceOptions.crossOrigin = 'anonymous';
                 sourceOptions.params = {
                     'LAYERS': args.layers,
                     'TILED': true
