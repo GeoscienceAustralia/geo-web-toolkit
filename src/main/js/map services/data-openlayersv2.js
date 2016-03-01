@@ -123,8 +123,13 @@
                 var getCapsUrl = url.indexOf('?') > 0 ? url + "&request=GetCapabilities" : url + "?request=GetCapabilities";
                 $http.get(getCapsUrl).success(function (data, status, headers, config) {
                     var format = new OpenLayers.Format.WMSCapabilities();
-                    var allLayers = format.read(data).capability.layers;
-                    deferred.resolve(allLayers);
+                    var response = format.read(data);
+                    if(response == null || response.capability == null || response.capability.layers == null) {
+                        deferred.reject('Response not recognised');
+                    }else {
+                        var allLayers = format.read(data).capability.layers;
+                        deferred.resolve(allLayers);
+                    }
                 }).error(function (data, status, headers, config) {
                     deferred.reject(status);
                 });
