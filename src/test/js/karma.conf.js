@@ -47,15 +47,12 @@ module.exports = function (config) {
             'src/main/js/**/*.js': [ 'coverage' ]
         },
         coverageReporter: {
-            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
-            dir: 'coverage/'
+            type : 'lcovonly',
+            dir: 'coverage/',
+            file: 'lcov.info'
         },
 
-        reporters: [ 'progress', 'coverage', 'coveralls'],
-
-        htmlReporter: {
-            outputDir: 'target/karma-reports'
-        },
+        reporters: [ 'progress', 'coverage'],
 
         // web server port
         port: 9876,

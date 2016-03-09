@@ -8,7 +8,7 @@ module.exports = function (config) {
     config.set({
         singleRun: true,
         autoWatch: false,
-        reporters: ['progress','coverage', 'coveralls'],
+        reporters: ['coverage', 'coveralls'],
         browsers: ['PhantomJS'],
         plugins: [
             'karma-jasmine',
@@ -17,10 +17,6 @@ module.exports = function (config) {
             'karma-ng-html2js-preprocessor',
             'karma-coverage',
             'karma-coveralls'
-        ],
-        coverageReporter: {
-            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
-            dir: 'coverage/'
-        }
+        ]
     });
 };
