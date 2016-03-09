@@ -103,10 +103,8 @@ module.exports = function (grunt) {
                 singleRun: true,
                 browsers: ['Chrome'],
                 logLevel: 'ERROR'
-            }
-        },
-        'karma-ci': {
-            unit: {
+            },
+            continuous: {
                 configFile: 'src/test/js/karma.ci.conf.js',
                 runnerPort: 9999,
                 singleRun: true,
@@ -148,8 +146,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['uglify', 'ngdocs', 'ngtemplates', 'concat', 'copy']);
     grunt.registerTask('test', ['default', 'karma']);
-    grunt.registerTask('build', ['default', 'karma']);
-    grunt.registerTask('build-ci', ['default', 'karma-ci']);
+    grunt.registerTask('build', ['default', 'karma:unit']);
+    grunt.registerTask('build-ci', ['default', 'karma:continuous']);
     grunt.registerTask('fastbuild',['uglify', 'ngtemplates', 'concat', 'copy']);
 
     grunt.registerTask('release', function (type) {
