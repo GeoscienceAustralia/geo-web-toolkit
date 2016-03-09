@@ -8,9 +8,9 @@ module.exports = function (config) {
     config.set({
         singleRun: true,
         autoWatch: false,
-        reporters: ['progress', 'junit','coverage', 'coveralls'],
+        reporters: ['progress', 'coverage', 'coveralls'],
         browsers: ['PhantomJS'],
-        plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter', 'karma-coverage', 'karma-coveralls'],
+        plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-coverage', 'karma-coveralls'],
         coverageReporter: {
             type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
             dir: 'coverage/'
