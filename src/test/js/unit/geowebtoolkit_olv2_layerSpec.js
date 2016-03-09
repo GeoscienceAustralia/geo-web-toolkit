@@ -180,10 +180,8 @@
                 $scope.mapConfig.layerMaps[0].name = 'Test name change';
                 $scope.mapConfig.layerMaps[0].refresh++;
                 $scope.$digest();
-                runs(function () {
-                    var updatedLayer = $scope.mapController.getLayers()[2];
-                    expect(updatedLayer.name).toBe('Test name change');
-                });
+                var updatedLayer = $scope.mapController.getLayers()[2];
+                expect(updatedLayer.name).toBe('Test name change');
             });
 
             it('Should have 3 layers that are not base layers', function () {
