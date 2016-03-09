@@ -11,9 +11,9 @@ module.exports = function (config) {
         reporters: ['progress', 'junit','coverage', 'coveralls'],
         browsers: ['PhantomJS'],
         plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter', 'karma-coverage', 'karma-coveralls'],
-        junitReporter: {
-            outputFile: "target/surefire-reports/js-test-results.xml",
-            suite: "jasmine-tests"
+        coverageReporter: {
+            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
+            dir: 'coverage/'
         }
     });
 };
