@@ -8,7 +8,7 @@ install:
   - npm install
   - bower install
 script:
-  - grunt build
+  - grunt build-ci
 after_success:
 - chmod +x .travis/push-docs-to-gh-pages.sh
 - .travis/push-docs-to-gh-pages.sh
