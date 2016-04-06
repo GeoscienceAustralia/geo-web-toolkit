@@ -24,7 +24,7 @@ module.exports = function (config) {
             'external/OpenLayers2/OpenLayers.js',
             'bower_components/proj4/dist/proj4.js',
             'node_modules/openlayers/dist/ol-debug.js',
-            'src/main/js/map services/*.js',
+            'src/main/js/map_services/*.js',
             'src/main/js/config/*.js',
             'src/main/js/core/core.js',
             'src/main/js/core/*.js',

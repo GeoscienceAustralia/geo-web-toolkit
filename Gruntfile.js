@@ -28,10 +28,10 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                mangle: true,
+                mangle: false,
                 sourceMap: true,
                 sourceMapName: 'dist/geo-web-toolkit-min.js.map',
-                beautify: false
+                beautify: true
             },
             release: {
                 files: {
@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                         'src/main/js/config/*.js',
                         'src/main/js/core/*.js',
                         'src/main/js/vendor/*.js',
-                        'src/main/js/map services/*.js',
+                        'src/main/js/map_services/*.js',
                         'src/main/js/ui/**/*.js'
                     ]
                 }
@@ -50,7 +50,7 @@ module.exports = function (grunt) {
                         'src/main/js/config/*.js',
                         'src/main/js/core/*.js',
                         'src/main/js/vendor/*.js',
-                        'src/main/js/map services/*.js',
+                        'src/main/js/map_services/*.js',
                         'src/main/js/ui/**/*.js'
                     ]
                 }
@@ -87,7 +87,7 @@ module.exports = function (grunt) {
                         src: [
                             'config/**',
                             'core/**',
-                            'map services/**',
+                            'map_services/**',
                             'ui/**',
                             'vendor/**'
                         ],
