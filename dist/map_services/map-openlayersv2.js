@@ -394,6 +394,8 @@ app.service('olv2MapService', [
                     mapInstance.zoomToExtent(bounds, true);
                 } else if (args.centerPosition) {
                     var position = JSON.parse(args.centerPosition);
+                    console.log(position);
+                    console.log('foooooo');
                     var centerPos = new OpenLayers.LonLat(position[0], position[1]);
                     var srcProjection = new OpenLayers.Projection(service.displayProjection);
                     var destProjection = new OpenLayers.Projection(mapInstance.getProjection());
