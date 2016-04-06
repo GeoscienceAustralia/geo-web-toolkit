@@ -2903,9 +2903,7 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 var bounds = service.createBounds(mapInstance, args.initialExtent, service.displayProjection);
                 mapInstance.zoomToExtent(bounds, !0);
             } else if (args.centerPosition) {
-                var position = JSON.parse(args.centerPosition);
-                console.log(position), console.log("foooooo");
-                var centerPos = new OpenLayers.LonLat(position[0], position[1]), srcProjection = new OpenLayers.Projection(service.displayProjection), destProjection = new OpenLayers.Projection(mapInstance.getProjection()), transformedCenter = centerPos.transform(srcProjection, destProjection);
+                var position = JSON.parse(args.centerPosition), centerPos = new OpenLayers.LonLat(position[0], position[1]), srcProjection = new OpenLayers.Projection(service.displayProjection), destProjection = new OpenLayers.Projection(mapInstance.getProjection()), transformedCenter = centerPos.transform(srcProjection, destProjection);
                 mapInstance.setCenter(transformedCenter, args.zoomLevel);
             } else mapInstance.zoomToMaxExtent();
         },
