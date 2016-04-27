@@ -5,7 +5,7 @@
 
     var app = angular.module('geowebtoolkit.mapservices.controls.openlayersv3', [ ]);
 
-    app.service('olv3MapControls', [function () {
+    app.service('olv3MapControls', ['$log',function ($log) {
         var supportControls = [
             {name: 'overviewmap', constructor: ol.control.OverviewMap},
             {name: 'scaleline', constructor: ol.control.ScaleLine},
@@ -91,6 +91,11 @@
                         message += "\r\n" + con.name;
                     }
                     throw new Error(message);
+                }
+
+                if(name === 'overviewmap' && controlOptions && controlOptions.layers) {
+                    $log.warn('Current version of OL3 does not support custom Overview Maps. Removing custom layers.');
+                    controlOptions.layers = null;
                 }
 
                 if (supportedControl.resolveCustomParams) {

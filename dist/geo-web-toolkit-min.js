@@ -2554,7 +2554,7 @@ app.service("olv2MapControls", [ function() {
 } ]), function() {
     "use strict";
     var app = angular.module("geowebtoolkit.mapservices.controls.openlayersv3", []);
-    app.service("olv3MapControls", [ function() {
+    app.service("olv3MapControls", [ "$log", function($log) {
         function mousePositionDefaults(controlOptions, mapOptions) {
             var result = {}, wgs84Default = function(dgts) {
                 return function(coord) {
@@ -2622,7 +2622,8 @@ app.service("olv2MapControls", [ function() {
                     }
                     throw new Error(message);
                 }
-                return supportedControl.resolveCustomParams ? (controlOptions = angular.extend(controlOptions, angular.copy(supportedControl.resolveCustomParams(controlOptions, mapOptions))), 
+                return "overviewmap" === name && controlOptions && controlOptions.layers && ($log.warn("Current version of OL3 does not support custom Overview Maps. Removing custom layers."), 
+                controlOptions.layers = null), supportedControl.resolveCustomParams ? (controlOptions = angular.extend(controlOptions, angular.copy(supportedControl.resolveCustomParams(controlOptions, mapOptions))), 
                 control = new supportedControl.constructor(controlOptions)) : supportedControl.customParams ? (controlOptions = angular.extend(controlOptions, angular.copy(supportedControl.customParams[0])), 
                 control = new supportedControl.constructor(controlOptions)) : control = controlOptions ? new supportedControl.constructor(controlOptions) : new supportedControl.constructor(), 
                 control;
