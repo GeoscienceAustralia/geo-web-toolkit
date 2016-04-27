@@ -2554,7 +2554,7 @@ app.service("olv2MapControls", [ function() {
 } ]), function() {
     "use strict";
     var app = angular.module("geowebtoolkit.mapservices.controls.openlayersv3", []);
-    app.service("olv3MapControls", [ function() {
+    app.service("olv3MapControls", [ "$log", function($log) {
         function mousePositionDefaults(controlOptions, mapOptions) {
             var result = {}, wgs84Default = function(dgts) {
                 return function(coord) {
@@ -2622,7 +2622,8 @@ app.service("olv2MapControls", [ function() {
                     }
                     throw new Error(message);
                 }
-                return supportedControl.resolveCustomParams ? (controlOptions = angular.extend(controlOptions, angular.copy(supportedControl.resolveCustomParams(controlOptions, mapOptions))), 
+                return "overviewmap" === name && controlOptions && controlOptions.layers && ($log.warn("Current version of OL3 does not support custom Overview Maps. Removing custom layers."), 
+                controlOptions.layers = null), supportedControl.resolveCustomParams ? (controlOptions = angular.extend(controlOptions, angular.copy(supportedControl.resolveCustomParams(controlOptions, mapOptions))), 
                 control = new supportedControl.constructor(controlOptions)) : supportedControl.customParams ? (controlOptions = angular.extend(controlOptions, angular.copy(supportedControl.customParams[0])), 
                 control = new supportedControl.constructor(controlOptions)) : control = controlOptions ? new supportedControl.constructor(controlOptions) : new supportedControl.constructor(), 
                 control;
@@ -3227,8 +3228,8 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 var config = {}, viewOptions = {};
                 if (null == args.displayProjection && mapConfig.defaultOptions && mapConfig.defaultOptions.displayProjection && (args.displayProjection = mapConfig.defaultOptions.displayProjection), 
                 null == args.datumProjection && mapConfig.defaultOptions && mapConfig.defaultOptions.projection && (args.datumProjection = mapConfig.defaultOptions.projection), 
-                null == args.datumProjection && ($log.warn("Datum projection has not been provided. Defaulting to EPSG:3857"), 
-                args.datumProjection = "EPSG:3857"), null == args.displayProjection && ($log.warn("Display projection has not been provided. Defaulting to EPSG:4326"), 
+                args.datumProjection && "" !== args.datumProjection || ($log.warn("Datum projection has not been provided. Defaulting to EPSG:3857"), 
+                args.datumProjection = "EPSG:3857"), args.displayProjection && "" !== args.displayProjection || ($log.warn("Display projection has not been provided. Defaulting to EPSG:4326"), 
                 args.displayProjection = "EPSG:4326"), viewOptions.projection = ol.proj.get(args.datumProjection), 
                 args.centerPosition) {
                     var center = JSON.parse(args.centerPosition);
@@ -3550,7 +3551,7 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 return new ol.extent.boundingExtent(bounds);
             },
             zoomToExtent: function(mapInstance, extent) {
-                var map = mapInstance, view = map.getView(), ex = (map.getSize(), extent), minPos = ol.proj.transform([ ex[0][0], ex[1][1] ], ol.proj.get(service.displayProjection || "ESPG:4326"), view.getProjection()), maxPos = ol.proj.transform([ ex[1][0], ex[0][1] ], ol.proj.get(service.displayProjection || "ESPG:4326"), view.getProjection()), bounds = [ minPos[0], minPos[1], maxPos[0], maxPos[1] ];
+                var map = mapInstance, view = map.getView(), ex = (map.getSize(), extent), minPos = ol.proj.transform([ ex[0][0], ex[1][1] ], ol.proj.get(service.displayProjection || "EPSG:4326"), view.getProjection()), maxPos = ol.proj.transform([ ex[1][0], ex[0][1] ], ol.proj.get(service.displayProjection || "EPSG:4326"), view.getProjection()), bounds = [ minPos[0], minPos[1], maxPos[0], maxPos[1] ];
                 mapInstance.getView().fit(bounds, mapInstance.getSize());
             },
             zoomToLayer: function(mapInstance, layerId) {
@@ -3570,7 +3571,7 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 return mapInstance.getView().getProjection().getCode();
             },
             getDisplayProjection: function() {
-                return service.displayProjection || "ESPG:4326";
+                return service.displayProjection || "EPSG:4326";
             },
             getSize: function(mapInstance) {
                 var size = mapInstance.getSize();

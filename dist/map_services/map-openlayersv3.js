@@ -81,11 +81,11 @@
                     if (args.datumProjection == null && mapConfig.defaultOptions && mapConfig.defaultOptions.projection) {
                         args.datumProjection = mapConfig.defaultOptions.projection;
                     }
-                    if (args.datumProjection == null) {
+                    if (!args.datumProjection || args.datumProjection === '') {
                         $log.warn('Datum projection has not been provided. Defaulting to EPSG:3857');
                         args.datumProjection = 'EPSG:3857';
                     }
-                    if (args.displayProjection == null) {
+                    if (!args.displayProjection || args.displayProjection === '') {
                         $log.warn('Display projection has not been provided. Defaulting to EPSG:4326');
                         args.displayProjection = 'EPSG:4326';
                     }
@@ -692,12 +692,12 @@
 
                     var minPos = ol.proj.transform(
                         [ex[0][0], ex[1][1]],
-                        ol.proj.get(service.displayProjection || 'ESPG:4326'),
+                        ol.proj.get(service.displayProjection || 'EPSG:4326'),
                         view.getProjection());
 
                     var maxPos = ol.proj.transform(
                         [ex[1][0], ex[0][1]],
-                        ol.proj.get(service.displayProjection || 'ESPG:4326'),
+                        ol.proj.get(service.displayProjection || 'EPSG:4326'),
                         view.getProjection());
 
                     var bounds = [
@@ -742,7 +742,7 @@
                     return mapInstance.getView().getProjection().getCode();
                 },
                 getDisplayProjection: function (mapInstance) {
-                    return service.displayProjection || 'ESPG:4326';
+                    return service.displayProjection || 'EPSG:4326';
                 },
                 getSize: function (mapInstance) {
                     var size = mapInstance.getSize();
@@ -921,9 +921,6 @@
                     }
                 },
                 getLonLatFromPixel: function (mapInstance, x, y, projection) {
-                    //TODO return geoMaps data structure, eg obj = { lat: Number,lon: Number }
-                    //If olv2 returns this structure then, should a new object get created instead
-                    //of reference to olv2 obj?
                     if (x == null) {
                         throw new ReferenceError("'x' value cannot be null or undefined");
                     }
@@ -1501,8 +1498,8 @@
                 },
                 switchTo3dView: function (mapInstance) {
                     //Below validation, regardless of value of getCode() or code_ returns true to BOTH. Needs more investigation.
-                    //if(mapInstance.getView().getProjection().getCode() !== 'ESPG:4326' &&
-                    //    mapInstance.getView().getProjection().getCode() !== 'ESPG:3857') {
+                    //if(mapInstance.getView().getProjection().getCode() !== 'EPSG:4326' &&
+                    //    mapInstance.getView().getProjection().getCode() !== 'EPSG:3857') {
                     //    throw new Error("Map projection not supported. Use EPSG:3857 or EPSG:4326 as the datum-projection to use 3D.");
                     //}
                     if (olCesiumInstance) {
