@@ -1,6 +1,6 @@
 {
   "name": "geo-web-toolkit",
-  "version": "0.20.6",
+  "version": "0.20.7",
   "dependencies": {
     "openlayers": "~3.10.1"
   },

@@ -4568,6 +4568,7 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
                 }, self.selectLayer = $scope.selectLayer, $scope.$emit($scope.controllerEmitEventName, self);
             } ],
             link: function($scope) {
+                var hasInitialized = !1;
                 $scope.$watch("layersData", function(newVal) {
                     newVal && !$scope.selectedModel && ($scope.includeNone && "$none$" !== $scope.layersData[0].id && $scope.layersData.unshift({
                         id: "$none$",
@@ -4576,6 +4577,8 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
                         layerId: $scope.selectedModel,
                         groupId: $scope.layerGroupId
                     }));
+                }), $scope.$watch("selectedModel", function(newVal) {
+                    newVal && hasInitialized && $scope.selectLayer(), newVal && !hasInitialized && (hasInitialized = !0);
                 });
             },
             transclude: !0

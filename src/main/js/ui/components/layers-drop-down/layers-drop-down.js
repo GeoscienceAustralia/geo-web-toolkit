@@ -47,6 +47,7 @@
 
             }],
             link: function ($scope) {
+                var hasInitialized = false;
                 $scope.$watch('layersData', function (newVal) {
                     if (newVal && !$scope.selectedModel) {
                         if ($scope.includeNone && $scope.layersData[0].id !== '$none$') {
@@ -61,6 +62,16 @@
                             layerId: $scope.selectedModel,
                             groupId: $scope.layerGroupId
                         });
+
+                    }
+                });
+
+                $scope.$watch('selectedModel', function (newVal) {
+                    if(newVal && hasInitialized) {
+                        $scope.selectLayer();
+                    }
+                    if(newVal && !hasInitialized) {
+                        hasInitialized = true;
                     }
                 });
             },
