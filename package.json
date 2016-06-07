@@ -1,6 +1,9 @@
 {
   "name": "geo-web-toolkit",
   "version": "0.20.7",
+  "scripts": {
+    "postinstall":"grunt"
+  },
   "dependencies": {
     "angular": "1.3.20 - 1.4.8",
     "angular-route": "1.3.20 - 1.4.8",
