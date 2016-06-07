@@ -1742,10 +1742,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
              * Gets the current framework ID
             * */
             self.getFrameworkVersion = function () {
-                if(window.OpenLayers != null && $scope.mapInstance instanceof window.OpenLayers.Map) {
+                if(window.OpenLayers != null && window.OpenLayers.Map != null && $scope.mapInstance instanceof window.OpenLayers.Map) {
                     return 'olv2';
                 }
-                if(window.ol != null && $scope.mapInstance instanceof window.ol.Map) {
+                if(window.ol != null && window.ol.Map != null && $scope.mapInstance instanceof window.ol.Map) {
                     return 'olv3';
                 }
             };
