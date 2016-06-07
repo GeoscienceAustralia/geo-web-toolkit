@@ -8,7 +8,7 @@
 /docs/
 /coverage/
 /dist/**/*
-!/dist/*.min.js
+!/dist/*
 .project
 .classpath
 *.log
