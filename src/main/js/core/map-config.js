@@ -20,6 +20,7 @@ app.value('geoConfig', function () {
         wrapDateLine: true,
         sphericalMercator: true,
         bingLayerType: 'Road',
+        googleLayerType: 'HYBRID',
         opacity: 1.0,
         layerAttribution: '',
         displayInLayerSwitcher: true,
