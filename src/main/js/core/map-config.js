@@ -53,7 +53,8 @@ app.value('geoConfig', function () {
             customTerrainProviderUrl: null
         },
         olv3Options: {
-            renderer: 'canvas'
+            renderer: 'canvas',
+            visibility: true
         }
     };
 });
