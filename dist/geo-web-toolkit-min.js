@@ -539,6 +539,7 @@ app.value("geoConfig", function() {
         wrapDateLine: !0,
         sphericalMercator: !0,
         bingLayerType: "Road",
+        googleLayerType: "HYBRID",
         opacity: 1,
         layerAttribution: "",
         displayInLayerSwitcher: !0,
@@ -562,7 +563,8 @@ app.value("geoConfig", function() {
             customTerrainProviderUrl: null
         },
         olv3Options: {
-            renderer: "canvas"
+            renderer: "canvas",
+            visibility: !0
         }
     };
 });
@@ -808,7 +810,7 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             }, self.raiseLayerDrawOrder = function(layerId, delta) {
                 GeoLayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
             }, self.getFrameworkVersion = function() {
-                return null != window.OpenLayers && $scope.mapInstance instanceof window.OpenLayers.Map ? "olv2" : null != window.ol && $scope.mapInstance instanceof window.ol.Map ? "olv3" : void 0;
+                return null != window.OpenLayers && null != window.OpenLayers.Map && $scope.mapInstance instanceof window.OpenLayers.Map ? "olv2" : null != window.ol && null != window.ol.Map && $scope.mapInstance instanceof window.ol.Map ? "olv3" : void 0;
             }, $scope.geoMap = self, $(window).bind("resize", function() {
                 GeoMapService.mapResized($scope.mapInstance, $scope.framework);
             }), $scope.mapInstance = $scope.existingMapInstance ? $scope.existingMapInstance : GeoMapService.initialiseMap({
@@ -1262,7 +1264,7 @@ app.service("GeoUtils", [ function() {
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
                 layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType, 
-                validateBingLayerType(layerOptions.layerType) || ($log.warn("Invalid Bing layer type - " + layerOptions.layerType + ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType'), 
+                layerOptions.visibility = layerOptions.visibility || !0, validateBingLayerType(layerOptions.layerType) || ($log.warn("Invalid Bing layer type - " + layerOptions.layerType + ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType'), 
                 layerOptions.layerType = "Road");
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
@@ -1336,7 +1338,7 @@ app.service("GeoUtils", [ function() {
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
                 layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType, 
-                validateGoogleLayerType(layerOptions.layerType) || ($log.warn("Invalid Google layer type - " + layerOptions.layerType + ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType'), 
+                layerOptions.visibility = layerOptions.visibility || !0, validateGoogleLayerType(layerOptions.layerType) || ($log.warn("Invalid Google layer type - " + layerOptions.layerType + ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType'), 
                 layerOptions.layerType = "Hybrid");
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
@@ -1402,7 +1404,7 @@ app.service("GeoUtils", [ function() {
                 }
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
-                layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
+                layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.visibility = layerOptions.visibility || !0;
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
                 }, constructLayer = function() {
