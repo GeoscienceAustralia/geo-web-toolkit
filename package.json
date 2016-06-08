@@ -1,6 +1,6 @@
 {
   "name": "geo-web-toolkit",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "dependencies": {
     "angular": "1.3.20 - 1.4.8",
     "angular-route": "1.3.20 - 1.4.8",
@@ -15,7 +15,8 @@
   },
   "files": [
     "dist/geo-web-toolkit-min.js",
-    "dist/geo-web-toolkit-min.js.map"
+    "dist/geo-web-toolkit-min.js.map",
+    "external/**/*"
   ],
   "devDependencies": {
     "angular-mocks": "1.3.20 - 1.4.8",
