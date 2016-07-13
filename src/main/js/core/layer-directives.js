@@ -15,7 +15,6 @@ var app = angular.module('geowebtoolkit.core.layer-directives', [ 'geowebtoolkit
  * @param {string|@} layerUrl - A string value that defines the URL from which the content of the layer will be loaded.
  * @param {string|@=} layers - A comma separated value that tells the remote server which layers of data should is requested form the server. This will be used to make the right request form the remote server that is defined by layerUrl.
  * @param {number|@=} layerType - The type of the data that is being load on the layer.
- * @param {object|=} customParams - This object is used to support vendor specific query string parameters when requesting layers.
  * Following types are supported:
  * <ul>
      <li>WMS</li>
@@ -33,7 +32,7 @@ var app = angular.module('geowebtoolkit.core.layer-directives', [ 'geowebtoolkit
      <li>show</li>
      <li>setOpacity</li>
  </ul>
- *
+ * @param {object|=} customParams - This object is used to support vendor specific query string parameters when requesting layers.
  * @reqires geoMap
  * @scope
  * @restrict E
