@@ -326,6 +326,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
             maxZoomLevel: "@",
             minZoomLevel: "@",
             onError: "&",
+            customParams: "=",
             format: "@"
         },
         transclude: !1,
@@ -365,7 +366,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 newVal !== oldVal && ($log.info("refresh for - " + $scope.layerName), $scope.initialiseLayer());
             }), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
             var layerOptions, layer, addLayerCallback = function() {
-                $scope.layerReady = !0;
+                $scope.layerReady = !0, null != $scope.layerDto && $scope.customParams && mapController.mergeNewParams($scope.layerDto.id, $scope.customParams);
             }, constructLayer = function() {
                 initialiseDefaults(), $scope.constructionInProgress = !0, layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), 
                 layerOptions.initialExtent = mapController.getInitialExtent(), layerOptions.mapElementId = mapController.getMapElementId(), 
@@ -389,6 +390,8 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 $log.info("initialising layer..."), null != $scope.layerDto ? reconstructLayer() : $scope.layerReady && $scope.constructionInProgress ? $log.info("...") : constructLayer();
             }, $scope.$on("$destroy", function() {
                 $scope.layerDto && mapController.removeLayerById($scope.layerDto.id), $(window).off("resize.Viewport");
+            }), $scope.$watch("customParams", function(newVal) {
+                newVal && $scope.layerDto && mapController.mergeNewParams($scope.layerDto.id, newVal);
             }), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
         }
     };
@@ -493,6 +496,10 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
             clearFeatureLayer: function(mapInstance, layerId, version) {
                 var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.clearFeatureLayer(mapInstance, layerId);
+            },
+            mergeNewParams: function(mapInstance, layerId, paramsObj, version) {
+                var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
+                service.mergeNewParams(mapInstance, layerId, paramsObj);
             },
             removeFeatureFromLayer: function(mapInstance, layerId, featureId, version) {
                 var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
@@ -793,6 +800,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 GeoLayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             }, self.getLayerFeatures = function(layerId) {
                 return GeoLayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
+            }, self.mergeNewParams = function(layerId, paramsObj) {
+                return GeoLayerService.mergeNewParams($scope.mapInstance, layerId, paramsObj, $scope.framework);
             }, self.createFeature = function(geoJson) {
                 return GeoLayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
             }, self.addFeatureToLayer = function(layerId, feature) {
@@ -1999,6 +2008,10 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
                 format: resultArgs.format,
                 transparent: resultArgs.transparent
             }, resultArgs);
+        },
+        mergeNewParams: function(mapInstance, layerId, paramsObj) {
+            var layer = service.getLayerById(mapInstance, layerId);
+            null != layer && layer.mergeNewParams(paramsObj);
         },
         createArcGISCacheLayer: function(args) {
             var deferred = $q.defer(), jsonp = new OpenLayers.Protocol.Script(), scriptTimeout = $timeout(function() {
@@ -4121,7 +4134,6 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
         return {
             restrict: "E",
             templateUrl: "src/main/js/ui/components/base-layer-selector/base-layer-selector.html",
-            replace: !0,
             scope: {
                 layersData: "=",
                 mapController: "=",
@@ -4794,7 +4806,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
   'use strict';
 
   $templateCache.put('src/main/js/ui/components/base-layer-selector/base-layer-selector.html',
-    "<select title=\"Base layer selector\" fix-ie-select ng-options=\"layer.id as layer.name for layer in layersData\"\r" +
+    "<select title=\"Base layer selector\" ng-options=\"layer.id as layer.name for layer in layersData\"\r" +
     "\n" +
     "        ng-model=\"selectedBaseLayerId\"></select>\r" +
     "\n"
