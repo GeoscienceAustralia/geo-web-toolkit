@@ -71,6 +71,7 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                 maxZoomLevel: '@',
                 minZoomLevel: '@',
                 onError: '&',
+                customParams: '=',
                 format: '@'
             },
             transclude: false,
@@ -115,6 +116,9 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
 
                 var addLayerCallback = function () {
                     $scope.layerReady = true;
+                    if($scope.layerDto != null && $scope.customParams) {
+                        mapController.mergeNewParams($scope.layerDto.id, $scope.customParams);
+                    }
                 };
 
                 function initialiseDefaults() {
@@ -225,6 +229,12 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                         mapController.removeLayerById($scope.layerDto.id);
                     }
                     $(window).off("resize.Viewport");
+                });
+
+                $scope.$watch('customParams', function (newVal, oldVal) {
+                    if(newVal && $scope.layerDto) {
+                        mapController.mergeNewParams($scope.layerDto.id, newVal);
+                    }
                 });
 
                 if (attrs.refreshLayer == null && $scope.layerType != null && $scope.layerType.length > 0) {

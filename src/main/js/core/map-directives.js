@@ -1674,6 +1674,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                 return GeoLayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
             };
 
+            self.mergeNewParams = function(layerId, paramsObj) {
+                return GeoLayerService.mergeNewParams($scope.mapInstance, layerId, paramsObj, $scope.framework)
+            };
+
 
             /**
              * @function
