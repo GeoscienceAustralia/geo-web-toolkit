@@ -392,7 +392,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 $scope.layerDto && mapController.removeLayerById($scope.layerDto.id), $(window).off("resize.Viewport");
             }), $scope.$watch("customParams", function(newVal) {
                 newVal && $scope.layerDto && mapController.mergeNewParams($scope.layerDto.id, newVal);
-            }), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
+            }, !0), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
         }
     };
 } ]), function() {

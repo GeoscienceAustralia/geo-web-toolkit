@@ -235,7 +235,7 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                     if(newVal && $scope.layerDto) {
                         mapController.mergeNewParams($scope.layerDto.id, newVal);
                     }
-                });
+                }, true);
 
                 if (attrs.refreshLayer == null && $scope.layerType != null && $scope.layerType.length > 0) {
                     $scope.initialiseLayer();
