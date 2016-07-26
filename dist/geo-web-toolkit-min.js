@@ -774,6 +774,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 GeoMapService.activateControl($scope.mapInstance, controlId, $scope.framework);
             }, self.deactivateControl = function(controlId) {
                 GeoMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
+            }, self.removeControl = function(controlId) {
+                GeoMapService.removeControl($scope.mapInstance, controlId, $scope.framework);
             }, self.registerControlEvent = function(controlId, eventName, callback) {
                 GeoMapService.registerControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
             }, self.unRegisterControlEvent = function(controlId, eventName, callback) {
@@ -985,6 +987,10 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             activateControl: function(mapInstance, controlId, version) {
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
                 service.activateControl(mapInstance, controlId);
+            },
+            removeControl: function(mapInstance, controlId, version) {
+                var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
+                service.removeControl(mapInstance, controlId);
             },
             deactivateControl: function(mapInstance, controlId, version) {
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
@@ -2833,7 +2839,12 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
         },
         deactivateControl: function(mapInstance, controlId) {
             var control = service.getControlById(mapInstance, controlId);
+            if (null == control) throw new Error("Control not found");
             control.deactivate();
+        },
+        removeControl: function(mapInstance, controlId) {
+            var control = service.getControlById(mapInstance, controlId);
+            mapInstance.removeControl(control);
         },
         registerControlEvent: function(mapInstance, controlId, eventName, callback) {
             var control = service.getControlById(mapInstance, controlId);
@@ -4144,16 +4155,17 @@ var angular = angular || {}, OpenLayers = OpenLayers || {}, console = console ||
 
 app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
     "use strict";
-    var GeoLayer = function(id, name, type, visibility, opacity) {
+    var GeoLayer = function(id, name, type, visibility, opacity, url) {
         this.id = id, this.name = name, this.type = type, this.visibility = visibility, 
-        this.opacity = opacity;
+        this.opacity = opacity, this.url = url;
     };
     return GeoLayer.fromOpenLayersV2Layer = function(layer) {
         var layerType, useLayerType = -1 === layer.id.indexOf("_ArcGISCache_");
         layerType = useLayerType ? layer.geoLayerType : "ArcGISCache";
         var opacity;
-        return opacity = "string" == typeof layer.opacity ? Number(layer.opacity) : layer.opacity, 
-        new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity);
+        opacity = "string" == typeof layer.opacity ? Number(layer.opacity) : layer.opacity;
+        var url = layer.url || null;
+        return new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity, url);
     }, GeoLayer.fromOpenLayersV3Layer = function(layer) {
         var opacity, layerType = layer.geoLayerType || layer.get("geoLayerType");
         return opacity = "string" == typeof layer.get("opacity") ? Number(layer.get("opacity")) : layer.get("opacity"), 

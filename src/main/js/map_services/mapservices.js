@@ -42,12 +42,13 @@ var app = angular.module('geowebtoolkit.mapservices',
 
 app.factory('GeoLayer', ['GeoUtils', function (GeoUtils) {
     "use strict";
-    var GeoLayer = function (id, name, type, visibility, opacity) {
+    var GeoLayer = function (id, name, type, visibility, opacity, url) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.visibility = visibility;
         this.opacity = opacity;
+        this.url = url;
     };
 
     GeoLayer.fromOpenLayersV2Layer = function (layer) {
@@ -68,7 +69,9 @@ app.factory('GeoLayer', ['GeoUtils', function (GeoUtils) {
             opacity = layer.opacity;
         }
 
-        return new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity);
+        var url = layer.url || null;
+
+        return new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity,url);
     };
 
     GeoLayer.fromOpenLayersV3Layer = function (layer) {

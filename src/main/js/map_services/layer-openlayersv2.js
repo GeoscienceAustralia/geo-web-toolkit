@@ -429,7 +429,8 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
         },
         removeLayerById: function (mapInstance, layerId) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            mapInstance.removeLayer(layer);
+            if(layer != null)
+                mapInstance.removeLayer(layer);
         },
         removeFeatureFromLayer: function (mapInstance, layerId, featureId) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
