@@ -2,7 +2,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
   'use strict';
 
   $templateCache.put('src/main/js/ui/components/base-layer-selector/base-layer-selector.html',
-    "<select title=\"Base layer selector\" fix-ie-select ng-options=\"layer.id as layer.name for layer in layersData\"\r" +
+    "<select title=\"Base layer selector\" ng-options=\"layer.id as layer.name for layer in layersData\"\r" +
     "\n" +
     "        ng-model=\"selectedBaseLayerId\"></select>\r" +
     "\n"

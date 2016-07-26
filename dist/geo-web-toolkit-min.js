@@ -812,6 +812,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 return GeoMapService.addWfsClient(wfsClient, $scope.framework);
             }, self.searchWfs = function(clientId, query, attribute) {
                 return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
+            }, self.selectBounds = function(layerId) {
+                return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
             }, self.getMeasureFromEvent = function(event) {
                 return GeoMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
             }, self.removeFeatureFromLayer = function(layerId, featureId) {
@@ -1143,6 +1145,10 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             searchWfs: function(mapInstance, clientId, query, attribute, version) {
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
                 return service.searchWfs(mapInstance, clientId, query, attribute);
+            },
+            selectBounds: function(mapInstance, layerId, version) {
+                var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
+                return service.selectBounds(mapInstance, layerId);
             }
         };
     } ]), app.service("mapServiceLocator", [ "$injector", function($injector) {
@@ -3006,6 +3012,32 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 onSelect: onFeatureSelect
             });
             mapInstance.addControl(selectCtrl), selectCtrl.activate(), updateToolkitMapInstanceProperty(mapInstance, "removeFeaturesControl", selectCtrl);
+        },
+        selectBounds: function(mapInstance, layerName) {
+            var vector, deferred = $q.defer(), vectors = mapInstance.getLayersByName(layerName);
+            vectors.length > 0 ? vector = vectors[0] : (vector = new OpenLayers.Layer.Vector(layerName), 
+            console.log(vector), mapInstance.addLayer(vector));
+            var box = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+                handlerOptions: {
+                    sides: 4,
+                    snapAngle: 90,
+                    irregular: !0,
+                    persist: !0
+                }
+            });
+            return box.handler.callbacks.done = function(bbox) {
+                console.log(bbox);
+                var bounds = bbox.getBounds();
+                if (mapInstance.baseLayer && mapInstance.baseLayer.projection != mapInstance.displayProjection) {
+                    var transformedBounds = bounds.transform(mapInstance.baseLayer.projection.projCode, mapInstance.projection);
+                    deferred.resolve(transformedBounds);
+                } else if (mapInstance.displayProjection == mapInstance.projection) deferred.resolve(bounds); else {
+                    var displayTransform = bounds.transform(mapInstance.displayProjection, mapInstance.projection);
+                    deferred.resolve(displayTransform);
+                }
+                var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                vector.addFeatures(feature), box.deactivate(), mapInstance.removeControl(box);
+            }, mapInstance.addControl(box), box.activate(), deferred.promise;
         },
         stopRemoveSelectedFeature: function(mapInstance) {
             var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, "removeFeaturesControl");

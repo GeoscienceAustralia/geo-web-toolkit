@@ -326,6 +326,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
             maxZoomLevel: "@",
             minZoomLevel: "@",
             onError: "&",
+            customParams: "=",
             format: "@"
         },
         transclude: !1,
@@ -365,7 +366,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 newVal !== oldVal && ($log.info("refresh for - " + $scope.layerName), $scope.initialiseLayer());
             }), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
             var layerOptions, layer, addLayerCallback = function() {
-                $scope.layerReady = !0;
+                $scope.layerReady = !0, null != $scope.layerDto && $scope.customParams && mapController.mergeNewParams($scope.layerDto.id, $scope.customParams);
             }, constructLayer = function() {
                 initialiseDefaults(), $scope.constructionInProgress = !0, layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), 
                 layerOptions.initialExtent = mapController.getInitialExtent(), layerOptions.mapElementId = mapController.getMapElementId(), 
@@ -389,7 +390,9 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 $log.info("initialising layer..."), null != $scope.layerDto ? reconstructLayer() : $scope.layerReady && $scope.constructionInProgress ? $log.info("...") : constructLayer();
             }, $scope.$on("$destroy", function() {
                 $scope.layerDto && mapController.removeLayerById($scope.layerDto.id), $(window).off("resize.Viewport");
-            }), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
+            }), $scope.$watch("customParams", function(newVal) {
+                newVal && $scope.layerDto && mapController.mergeNewParams($scope.layerDto.id, newVal);
+            }, !0), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
         }
     };
 } ]), function() {
@@ -494,6 +497,10 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.clearFeatureLayer(mapInstance, layerId);
             },
+            mergeNewParams: function(mapInstance, layerId, paramsObj, version) {
+                var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
+                service.mergeNewParams(mapInstance, layerId, paramsObj);
+            },
             removeFeatureFromLayer: function(mapInstance, layerId, featureId, version) {
                 var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.removeFeatureFromLayer(mapInstance, layerId, featureId);
@@ -539,6 +546,7 @@ app.value("geoConfig", function() {
         wrapDateLine: !0,
         sphericalMercator: !0,
         bingLayerType: "Road",
+        googleLayerType: "HYBRID",
         opacity: 1,
         layerAttribution: "",
         displayInLayerSwitcher: !0,
@@ -562,7 +570,8 @@ app.value("geoConfig", function() {
             customTerrainProviderUrl: null
         },
         olv3Options: {
-            renderer: "canvas"
+            renderer: "canvas",
+            visibility: !0
         }
     };
 });
@@ -791,6 +800,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 GeoLayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             }, self.getLayerFeatures = function(layerId) {
                 return GeoLayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
+            }, self.mergeNewParams = function(layerId, paramsObj) {
+                return GeoLayerService.mergeNewParams($scope.mapInstance, layerId, paramsObj, $scope.framework);
             }, self.createFeature = function(geoJson) {
                 return GeoLayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
             }, self.addFeatureToLayer = function(layerId, feature) {
@@ -801,6 +812,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 return GeoMapService.addWfsClient(wfsClient, $scope.framework);
             }, self.searchWfs = function(clientId, query, attribute) {
                 return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
+            }, self.selectBounds = function(layerId) {
+                return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
             }, self.getMeasureFromEvent = function(event) {
                 return GeoMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
             }, self.removeFeatureFromLayer = function(layerId, featureId) {
@@ -808,7 +821,7 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             }, self.raiseLayerDrawOrder = function(layerId, delta) {
                 GeoLayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
             }, self.getFrameworkVersion = function() {
-                return null != window.OpenLayers && $scope.mapInstance instanceof window.OpenLayers.Map ? "olv2" : null != window.ol && $scope.mapInstance instanceof window.ol.Map ? "olv3" : void 0;
+                return null != window.OpenLayers && null != window.OpenLayers.Map && $scope.mapInstance instanceof window.OpenLayers.Map ? "olv2" : null != window.ol && null != window.ol.Map && $scope.mapInstance instanceof window.ol.Map ? "olv3" : void 0;
             }, $scope.geoMap = self, $(window).bind("resize", function() {
                 GeoMapService.mapResized($scope.mapInstance, $scope.framework);
             }), $scope.mapInstance = $scope.existingMapInstance ? $scope.existingMapInstance : GeoMapService.initialiseMap({
@@ -1132,6 +1145,10 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             searchWfs: function(mapInstance, clientId, query, attribute, version) {
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
                 return service.searchWfs(mapInstance, clientId, query, attribute);
+            },
+            selectBounds: function(mapInstance, layerId, version) {
+                var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
+                return service.selectBounds(mapInstance, layerId);
             }
         };
     } ]), app.service("mapServiceLocator", [ "$injector", function($injector) {
@@ -1262,7 +1279,7 @@ app.service("GeoUtils", [ function() {
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
                 layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType, 
-                validateBingLayerType(layerOptions.layerType) || ($log.warn("Invalid Bing layer type - " + layerOptions.layerType + ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType'), 
+                layerOptions.visibility = layerOptions.visibility || !0, validateBingLayerType(layerOptions.layerType) || ($log.warn("Invalid Bing layer type - " + layerOptions.layerType + ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType'), 
                 layerOptions.layerType = "Road");
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
@@ -1336,7 +1353,7 @@ app.service("GeoUtils", [ function() {
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
                 layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType, 
-                validateGoogleLayerType(layerOptions.layerType) || ($log.warn("Invalid Google layer type - " + layerOptions.layerType + ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType'), 
+                layerOptions.visibility = layerOptions.visibility || !0, validateGoogleLayerType(layerOptions.layerType) || ($log.warn("Invalid Google layer type - " + layerOptions.layerType + ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType'), 
                 layerOptions.layerType = "Hybrid");
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
@@ -1402,7 +1419,7 @@ app.service("GeoUtils", [ function() {
                 }
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
-                layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
+                layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.visibility = layerOptions.visibility || !0;
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
                 }, constructLayer = function() {
@@ -1997,6 +2014,10 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
                 format: resultArgs.format,
                 transparent: resultArgs.transparent
             }, resultArgs);
+        },
+        mergeNewParams: function(mapInstance, layerId, paramsObj) {
+            var layer = service.getLayerById(mapInstance, layerId);
+            null != layer && layer.mergeNewParams(paramsObj);
         },
         createArcGISCacheLayer: function(args) {
             var deferred = $q.defer(), jsonp = new OpenLayers.Protocol.Script(), scriptTimeout = $timeout(function() {
@@ -2991,6 +3012,32 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 onSelect: onFeatureSelect
             });
             mapInstance.addControl(selectCtrl), selectCtrl.activate(), updateToolkitMapInstanceProperty(mapInstance, "removeFeaturesControl", selectCtrl);
+        },
+        selectBounds: function(mapInstance, layerName) {
+            var vector, deferred = $q.defer(), vectors = mapInstance.getLayersByName(layerName);
+            vectors.length > 0 ? vector = vectors[0] : (vector = new OpenLayers.Layer.Vector(layerName), 
+            console.log(vector), mapInstance.addLayer(vector));
+            var box = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+                handlerOptions: {
+                    sides: 4,
+                    snapAngle: 90,
+                    irregular: !0,
+                    persist: !0
+                }
+            });
+            return box.handler.callbacks.done = function(bbox) {
+                console.log(bbox);
+                var bounds = bbox.getBounds();
+                if (mapInstance.baseLayer && mapInstance.baseLayer.projection != mapInstance.displayProjection) {
+                    var transformedBounds = bounds.transform(mapInstance.baseLayer.projection.projCode, mapInstance.projection);
+                    deferred.resolve(transformedBounds);
+                } else if (mapInstance.displayProjection == mapInstance.projection) deferred.resolve(bounds); else {
+                    var displayTransform = bounds.transform(mapInstance.displayProjection, mapInstance.projection);
+                    deferred.resolve(displayTransform);
+                }
+                var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                vector.addFeatures(feature), box.deactivate(), mapInstance.removeControl(box);
+            }, mapInstance.addControl(box), box.activate(), deferred.promise;
         },
         stopRemoveSelectedFeature: function(mapInstance) {
             var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, "removeFeaturesControl");
@@ -4119,7 +4166,6 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
         return {
             restrict: "E",
             templateUrl: "src/main/js/ui/components/base-layer-selector/base-layer-selector.html",
-            replace: !0,
             scope: {
                 layersData: "=",
                 mapController: "=",
@@ -4792,7 +4838,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
   'use strict';
 
   $templateCache.put('src/main/js/ui/components/base-layer-selector/base-layer-selector.html',
-    "<select title=\"Base layer selector\" fix-ie-select ng-options=\"layer.id as layer.name for layer in layersData\"\r" +
+    "<select title=\"Base layer selector\" ng-options=\"layer.id as layer.name for layer in layersData\"\r" +
     "\n" +
     "        ng-model=\"selectedBaseLayerId\"></select>\r" +
     "\n"

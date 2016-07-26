@@ -119,6 +119,11 @@
                     var service = mapServiceLocator.getImplementation(useVersion);
                     service.activateControl(mapInstance, controlId);
                 },
+                removeControl: function(mapInstance, controlId, version) {
+                    var useVersion = version || defaultFramework;
+                    var service = mapServiceLocator.getImplementation(useVersion);
+                    service.removeControl(mapInstance, controlId);
+                },
                 deactivateControl: function (mapInstance, controlId, version) {
                     var useVersion = version || defaultFramework;
                     var service = mapServiceLocator.getImplementation(useVersion);
@@ -318,6 +323,11 @@
                     var useVersion = version || defaultFramework;
                     var service = mapServiceLocator.getImplementation(useVersion);
                     return service.searchWfs(mapInstance, clientId, query, attribute);
+                },
+                selectBounds: function(mapInstance, layerId, version) {
+                    var useVersion = version || defaultFramework;
+                    var service = mapServiceLocator.getImplementation(useVersion);
+                    return service.selectBounds(mapInstance,layerId);
                 }
             };
         }]);

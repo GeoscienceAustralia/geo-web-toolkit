@@ -1561,6 +1561,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             self.deactivateControl = function (controlId) {
                 GeoMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
             };
+
+            self.removeControl = function (controlId) {
+              GeoMapService.removeControl($scope.mapInstance, controlId, $scope.framework);
+            };
             /**
              * TBC
              * */
@@ -1710,6 +1714,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             self.searchWfs = function (clientId, query, attribute) {
                 return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
+            };
+
+            self.selectBounds = function (layerId) {
+              return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
             };
 
             /**
