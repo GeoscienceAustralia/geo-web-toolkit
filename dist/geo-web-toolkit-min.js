@@ -110,9 +110,13 @@ function() {
                 var useVersion = version || defaultFramework, service = dataServiceLocator.getImplementation(useVersion);
                 return service.getWMSFeatures(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
             },
+            getWMSFeaturesUrl: function(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, version) {
+                var useVersion = version || defaultFramework, service = dataServiceLocator.getImplementation(useVersion);
+                return service.getWMSFeaturesUrl(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
+            },
             getWMSFeaturesByLayerId: function(mapInstance, url, layerId, point, version) {
                 var useVersion = version || defaultFramework, service = dataServiceLocator.getImplementation(useVersion);
-                return service.getLayersByWMSCapabilities(mapInstance, url, layerId, point);
+                return service.getWMSFeaturesByLayerId(mapInstance, url, layerId, point);
             }
         };
     } ]), app.service("dataServiceLocator", [ "$injector", function($injector) {
@@ -762,6 +766,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 return GeoDataService.getWMSFeatures($scope.mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, $scope.framework);
             }, self.getWMSFeaturesByLayerId = function(url, layerId, pointEvent) {
                 return GeoDataService.getWMSFeaturesByLayerId($scope.mapInstance, url, layerId, pointEvent, $scope.framework);
+            }, self.getWMSFeaturesUrl = function(url, layerNames, version, pointEvent, contentType) {
+                return GeoDataService.getWMSFeaturesUrl($scope.mapInstance, url, layerNames, version, pointEvent, contentType, $scope.framework);
             }, self.registerFeatureSelected = function(layerId, callback, element) {
                 return GeoLayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element, $scope.framework);
             }, self.getFeatureInfo = function(url, featureType, featurePrefix, geometryName, point, tolerance) {
@@ -1539,6 +1545,30 @@ app.service("GeoUtils", [ function() {
                     deferred.reject(status);
                 }), deferred.promise;
             },
+            getWMSFeaturesUrl: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
+                function parseRequest(config) {
+                    config = config || {}, config.headers = config.headers || {};
+                    var parsedUrl = OpenLayers.Util.urlAppend(config.url, OpenLayers.Util.getParameterString(config.params || {}));
+                    return parsedUrl = OpenLayers.Request.makeSameOrigin(parsedUrl, config.proxy);
+                }
+                var infoTextContentType = contentType || "text/xml", params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
+                0 !== layerNames.length && (params = OpenLayers.Util.extend({
+                    layers: layerNames,
+                    query_layers: layerNames
+                }, params)), OpenLayers.Util.applyDefaults(params, {});
+                var requestParams = {
+                    url: url,
+                    params: OpenLayers.Util.upperCaseObject(params),
+                    callback: function(request) {
+                        var format = new (resolveOpenLayersFormatConstructorByInfoFormat(infoTextContentType))(), features = format.read(request.responseText), geoJsonFormat = new OpenLayers.Format.GeoJSON(), geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
+                        deferred.resolve(geoJsonFeatures);
+                    },
+                    scope: this
+                };
+                geoConfig().defaultOptions.proxyHost && (requestParams.proxy = geoConfig().defaultOptions.proxyHost);
+                var resultUrl = parseRequest(requestParams);
+                return resultUrl;
+            },
             getWMSFeatures: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || "text/xml", deferred = $q.defer(), params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
                 0 !== layerNames.length && (params = OpenLayers.Util.extend({
@@ -2100,7 +2130,7 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
         },
         removeLayerById: function(mapInstance, layerId) {
             var layer = mapInstance.getLayersBy("id", layerId)[0];
-            mapInstance.removeLayer(layer);
+            null != layer && mapInstance.removeLayer(layer);
         },
         removeFeatureFromLayer: function(mapInstance, layerId, featureId) {
             var layer = mapInstance.getLayersBy("id", layerId)[0], feature = layer.getFeatureById(featureId);

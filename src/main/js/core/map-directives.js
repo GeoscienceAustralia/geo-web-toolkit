@@ -1532,6 +1532,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                 return GeoDataService.getWMSFeaturesByLayerId($scope.mapInstance,url, layerId, pointEvent,$scope.framework);
             };
 
+            self.getWMSFeaturesUrl = function (url, layerNames, version, pointEvent, contentType) {
+                return GeoDataService.getWMSFeaturesUrl($scope.mapInstance,url,layerNames, version,pointEvent,contentType,$scope.framework);
+            };
+
             /**
              * TBC
              * */
