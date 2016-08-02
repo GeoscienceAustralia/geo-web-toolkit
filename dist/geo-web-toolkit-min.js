@@ -2382,6 +2382,13 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
                 return result.set("name", args.layerName), result.set("isBaseLayer", args.isBaseLayer || !1), 
                 result;
             },
+            mergeNewParams: function(mapInstance, layerId, paramsObj) {
+                var layer = service.getLayerById(mapInstance, layerId);
+                if (null != layer) {
+                    var source = layer.getSource();
+                    null != source && (source.updateParams(paramsObj), source.setTileLoadFunction(source.getTileLoadFunction()));
+                }
+            },
             createArcGISCacheLayer: function(args) {
                 var url = args.layerUrl + service.xyzTileCachePath, sourceOptions = {
                     crossOrigin: "*/*",
@@ -4743,7 +4750,8 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
                 mapController: "=",
                 layerDisabled: "=",
                 titleText: "@",
-                onOpacityChange: "&"
+                onOpacityChange: "&",
+                fillSlider: "="
             },
             controller: [ "$scope", function($scope) {
                 $scope.changeOpacitySlide = function(e, ui) {
@@ -4757,7 +4765,7 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
                     return {
                         min: 0,
                         max: 1,
-                        range: !1,
+                        range: $scope.fillSlider || !1,
                         step: .01,
                         slide: $scope.changeOpacitySlide,
                         value: $scope.layerOpacity,
