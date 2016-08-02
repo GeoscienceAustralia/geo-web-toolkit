@@ -127,7 +127,8 @@ function() {
         };
         return {
             getImplementation: function(mapType) {
-                return $injector.get(implementations[mapType]);
+                return "olv3" === mapType && $log.warn("Falling back to OpenLayers 2 for DataSource services."), 
+                $injector.get(implementations[mapType]);
             }
         };
     } ]);
@@ -820,8 +821,6 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 return GeoMapService.addWfsClient(wfsClient, $scope.framework);
             }, self.searchWfs = function(clientId, query, attribute) {
                 return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
-            }, self.selectBounds = function(layerId) {
-                return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
             }, self.getMeasureFromEvent = function(event) {
                 return GeoMapService.getMeasureFromEvent($scope.mapInstance, event, $scope.framework);
             }, self.removeFeatureFromLayer = function(layerId, featureId) {
@@ -1719,6 +1718,30 @@ app.service("GeoUtils", [ function() {
                 }).error(function(data, status) {
                     deferred.reject(status);
                 }), deferred.promise;
+            },
+            getWMSFeaturesUrl: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
+                function parseRequest(config) {
+                    config = config || {}, config.headers = config.headers || {};
+                    var parsedUrl = OpenLayers.Util.urlAppend(config.url, OpenLayers.Util.getParameterString(config.params || {}));
+                    return parsedUrl = OpenLayers.Request.makeSameOrigin(parsedUrl, config.proxy);
+                }
+                var infoTextContentType = contentType || "text/xml", params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
+                0 !== layerNames.length && (params = OpenLayers.Util.extend({
+                    layers: layerNames,
+                    query_layers: layerNames
+                }, params)), OpenLayers.Util.applyDefaults(params, {});
+                var requestParams = {
+                    url: url,
+                    params: OpenLayers.Util.upperCaseObject(params),
+                    callback: function(request) {
+                        var format = new (resolveOpenLayersFormatConstructorByInfoFormat(infoTextContentType))(), features = format.read(request.responseText), geoJsonFormat = new OpenLayers.Format.GeoJSON(), geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
+                        deferred.resolve(geoJsonFeatures);
+                    },
+                    scope: this
+                };
+                geoConfig().defaultOptions.proxyHost && (requestParams.proxy = geoConfig().defaultOptions.proxyHost);
+                var resultUrl = parseRequest(requestParams);
+                return resultUrl;
             },
             getWMSFeatures: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || "text/xml", deferred = $q.defer(), params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
@@ -3476,6 +3499,10 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
             deactivateControl: function(mapInstance, controlId) {
                 var isActive = service.isControlActive(mapInstance, controlId), cachedControl = service._getCachedControl(controlId), currentControl = service.getControlById(mapInstance, controlId);
                 isActive && !cachedControl && (service.cachedControls.push(currentControl), mapInstance.removeControl(currentControl));
+            },
+            removeControl: function(mapInstance, controlId) {
+                var control = service.getControlById(mapInstance, controlId);
+                control && mapInstance.removeControl(control);
             },
             registerControlEvent: function(mapInstance, controlId, eventName, callback) {
                 var controls = mapInstance.getControls(), existingControl = null;

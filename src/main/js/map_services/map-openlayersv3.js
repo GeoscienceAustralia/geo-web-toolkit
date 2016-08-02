@@ -377,6 +377,12 @@
                         mapInstance.removeControl(currentControl);
                     }
                 },
+                removeControl: function(mapInstance, controlId) {
+                    var control = service.getControlById(mapInstance, controlId);
+                    if(control) {
+                        mapInstance.removeControl(control);
+                    }
+                },
                 //return void
                 registerControlEvent: function (mapInstance, controlId, eventName, callback) {
                     //First check if control exists and then for previous OLV2 events, eg measure so we can handle them as ol.interactions

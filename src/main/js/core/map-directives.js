@@ -1720,9 +1720,9 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                 return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
             };
 
-            self.selectBounds = function (layerId) {
-              return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
-            };
+            // self.selectBounds = function (layerId) {
+            //   return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
+            // };
 
             /**
              * @function

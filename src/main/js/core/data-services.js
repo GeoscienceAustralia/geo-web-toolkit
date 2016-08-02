@@ -44,6 +44,9 @@
         };
         return {
             getImplementation: function (mapType) {
+                if(mapType === 'olv3') {
+                    $log.warn("Falling back to OpenLayers 2 for DataSource services.")
+                }
                 return $injector.get(implementations[mapType]);
             }
         };
