@@ -72,7 +72,10 @@
                             "layers": "Australian Landsat",
                             "opacity": 1.0,
                             "tileType": "large",
-                            "refresh": 0
+                            "refresh": 0,
+                            "customParams": {
+                                "maxFeatures":20
+                            }
                         },
                         {
                             "controllerEventName": "layer2Controller",
@@ -82,7 +85,10 @@
                             "url": "http://www.ga.gov.au/gis/services/marine_coastal/Australian_Seabed_Features/MapServer/WMSServer",
                             "layers": "Geomorphic_Features",
                             "opacity": 1.0,
-                            "refresh": 0
+                            "refresh": 0,
+                            "customParams": {
+                                "maxFeatures":20
+                            }
                         },
                         {
                             "controllerEventName": "layer3Controller",
@@ -94,7 +100,10 @@
                             "tileType": "large",
                             "attribution": "Geoscience Australia Topography <a target='_blank' href='http://creativecommons.org/licenses/by/3.0/au/deed.en'>CC-By-Au</a>",
                             "opacity": 1.0,
-                            "refresh": 0
+                            "refresh": 0,
+                            "customParams": {
+                                "maxFeatures":20
+                            }
                         }
                     ]
                 };
@@ -115,7 +124,8 @@
                         'controller-emit-event-name="{{layer.controllerEventName}}"' +
                         'visibility="{{layer.visibility}}" ' +
                         'opacity="{{layer.opacity}}" ' +
-                        'refresh-layer="{{layer.refresh}}"></geo-map-layer>' +
+                        'refresh-layer="{{layer.refresh}}"' +
+                        'custom-params=""></geo-map-layer>' +
                         '<div id="geomap"></div></geo-map>');
                 $compile(element)($scope);
                 $scope.$digest();
@@ -260,15 +270,15 @@
                 expect(layersCount).toBe(4);
             });
 
-//		it('Should be able to change opacity via layerController', function () {
-//			var olv2FirstLayer = $scope.mapController.getMapInstance().layers[2];
-//			expect(olv2FirstLayer.opacity === 1.0).toBe(true);
-//			$scope.layerController1.setOpacity(0.5);
-//			expect(olv2FirstLayer.opacity === 0.5).toBe(true);
-//		});
+            it('Should be able to change opacity via layerController', function () {
+                var olv2FirstLayer = $scope.mapController.getMapInstance().getLayers().item(2);
+                expect(olv2FirstLayer.getOpacity() == 1).toBe(true);
+                $scope.layerController1.setOpacity(0.5);
+                expect(olv2FirstLayer.getOpacity()).toBe(0.5);
+            });
         });
     describe(
-        'OpenLayers v2.1.13 "geo-feature-layer" implementation tests',
+        'OpenLayers v3 "geo-feature-layer" implementation tests',
         function () {
             var $compile, $scope, $timeout, element, listener;
 

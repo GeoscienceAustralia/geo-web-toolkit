@@ -148,13 +148,7 @@
                 var requestParams = {
                     url: url,
                     params: OpenLayers.Util.upperCaseObject(params),
-                    callback: function (request) {
-                        var format = new (resolveOpenLayersFormatConstructorByInfoFormat(infoTextContentType))();
-                        var features = format.read(request.responseText);
-                        var geoJsonFormat = new OpenLayers.Format.GeoJSON();
-                        var geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
-                        deferred.resolve(geoJsonFeatures);
-                    },
+                    callback: function (request) {},
                     scope: this
                 };
                 if (geoConfig().defaultOptions.proxyHost) {
