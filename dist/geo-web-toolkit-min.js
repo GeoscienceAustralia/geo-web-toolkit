@@ -1558,10 +1558,7 @@ app.service("GeoUtils", [ function() {
                 var requestParams = {
                     url: url,
                     params: OpenLayers.Util.upperCaseObject(params),
-                    callback: function(request) {
-                        var format = new (resolveOpenLayersFormatConstructorByInfoFormat(infoTextContentType))(), features = format.read(request.responseText), geoJsonFormat = new OpenLayers.Format.GeoJSON(), geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
-                        deferred.resolve(geoJsonFeatures);
-                    },
+                    callback: function() {},
                     scope: this
                 };
                 geoConfig().defaultOptions.proxyHost && (requestParams.proxy = geoConfig().defaultOptions.proxyHost);
