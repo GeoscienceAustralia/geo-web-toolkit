@@ -64,6 +64,7 @@
                     var layerOptions = {}, layer;
                     layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
                     layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType;
+                    layerOptions.visibility = layerOptions.visibility || true;
                     if (!validateGoogleLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Google layer type - ' + layerOptions.layerType +
                             ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType');

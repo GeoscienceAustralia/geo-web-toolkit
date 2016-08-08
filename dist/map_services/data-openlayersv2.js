@@ -135,6 +135,38 @@
                 });
                 return deferred.promise;
             },
+            getWMSFeaturesUrl: function (mapInstance, url, layerNames, version, pointEvent, contentType) {
+                var infoTextContentType = contentType || 'text/xml';
+                var params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
+                if (layerNames.length !== 0) {
+                    params = OpenLayers.Util.extend({
+                        layers: layerNames,
+                        query_layers: layerNames
+                    }, params);
+                }
+                OpenLayers.Util.applyDefaults(params, {});
+                var requestParams = {
+                    url: url,
+                    params: OpenLayers.Util.upperCaseObject(params),
+                    callback: function (request) {},
+                    scope: this
+                };
+                if (geoConfig().defaultOptions.proxyHost) {
+                    requestParams.proxy = geoConfig().defaultOptions.proxyHost;
+                }
+
+                function parseRequest(config) {
+                    config = config || {};
+                    config.headers = config.headers || {};
+                    var parsedUrl = OpenLayers.Util.urlAppend(config.url,
+                        OpenLayers.Util.getParameterString(config.params || {}));
+                    parsedUrl = OpenLayers.Request.makeSameOrigin(parsedUrl, config.proxy);
+                    return parsedUrl
+                }
+
+                var resultUrl = parseRequest(requestParams);
+                return resultUrl;
+            },
             getWMSFeatures: function (mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || 'text/xml';
                 var deferred = $q.defer();

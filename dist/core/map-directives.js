@@ -1532,6 +1532,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                 return GeoDataService.getWMSFeaturesByLayerId($scope.mapInstance,url, layerId, pointEvent,$scope.framework);
             };
 
+            self.getWMSFeaturesUrl = function (url, layerNames, version, pointEvent, contentType) {
+                return GeoDataService.getWMSFeaturesUrl($scope.mapInstance,url,layerNames, version,pointEvent,contentType,$scope.framework);
+            };
+
             /**
              * TBC
              * */
@@ -1560,6 +1564,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
 
             self.deactivateControl = function (controlId) {
                 GeoMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
+            };
+
+            self.removeControl = function (controlId) {
+              GeoMapService.removeControl($scope.mapInstance, controlId, $scope.framework);
             };
             /**
              * TBC
@@ -1674,6 +1682,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
                 return GeoLayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
             };
 
+            self.mergeNewParams = function(layerId, paramsObj) {
+                return GeoLayerService.mergeNewParams($scope.mapInstance, layerId, paramsObj, $scope.framework)
+            };
+
 
             /**
              * @function
@@ -1707,6 +1719,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
             self.searchWfs = function (clientId, query, attribute) {
                 return GeoMapService.searchWfs($scope.mapInstance, clientId, query, attribute, $scope.framework);
             };
+
+            // self.selectBounds = function (layerId) {
+            //   return GeoMapService.selectBounds($scope.mapInstance, layerId, $scope.framework);
+            // };
 
             /**
              * @function
@@ -1742,10 +1758,10 @@ app.directive('geoMap', [ '$timeout', '$compile', 'GeoMapService', 'GeoLayerServ
              * Gets the current framework ID
             * */
             self.getFrameworkVersion = function () {
-                if(window.OpenLayers != null && $scope.mapInstance instanceof window.OpenLayers.Map) {
+                if(window.OpenLayers != null && window.OpenLayers.Map != null && $scope.mapInstance instanceof window.OpenLayers.Map) {
                     return 'olv2';
                 }
-                if(window.ol != null && $scope.mapInstance instanceof window.ol.Map) {
+                if(window.ol != null && window.ol.Map != null && $scope.mapInstance instanceof window.ol.Map) {
                     return 'olv3';
                 }
             };

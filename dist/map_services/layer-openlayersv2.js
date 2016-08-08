@@ -284,6 +284,12 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
                 transparent: resultArgs.transparent
             }, resultArgs);
         },
+        mergeNewParams: function (mapInstance, layerId, paramsObj) {
+            var layer = service.getLayerById(mapInstance, layerId);
+            if(layer != null) {
+                layer.mergeNewParams(paramsObj);
+            }
+        },
         createArcGISCacheLayer: function (args) {
             //TODO incorporate default options to args via extend
             var deferred = $q.defer();
@@ -423,7 +429,8 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
         },
         removeLayerById: function (mapInstance, layerId) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];
-            mapInstance.removeLayer(layer);
+            if(layer != null)
+                mapInstance.removeLayer(layer);
         },
         removeFeatureFromLayer: function (mapInstance, layerId, featureId) {
             var layer = mapInstance.getLayersBy('id', layerId)[0];

@@ -17,7 +17,8 @@
        wrap-date-line="{string|@}"
        visibility="{string|@}"
        is-base-layer="{string|@}"
-       controller-emit-event-name="{string|@}"&gt;
+       controller-emit-event-name="{string|@}"
+       [custom-params="{object|}"]&gt;
 &lt;/geo-map-layer&gt;</pre>
 <h3 id="usage_directive-info">Directive info</h3>
 <div class="directive-info"><ul><li>This directive creates new scope.</li>
@@ -61,6 +62,9 @@ Following functions are supported by this controller:<ul>
   <li>show</li>
   <li>setOpacity</li>
 </ul></li>
+</ul>
+</div></td></tr><tr><td>customParams <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-object"></a></td><td><div class="geowebtoolkit-core-layer-directives-page geowebtoolkit-core-layer-directives-geomaplayer-page"><ul>
+<li>This object is used to support vendor specific query string parameters when requesting layers.</li>
 </ul>
 </div></td></tr></tbody></table></div>
 <h2 id="example">Example</h2>

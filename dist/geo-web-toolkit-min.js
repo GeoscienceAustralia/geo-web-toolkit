@@ -110,9 +110,13 @@ function() {
                 var useVersion = version || defaultFramework, service = dataServiceLocator.getImplementation(useVersion);
                 return service.getWMSFeatures(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
             },
+            getWMSFeaturesUrl: function(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, version) {
+                var useVersion = version || defaultFramework, service = dataServiceLocator.getImplementation(useVersion);
+                return service.getWMSFeaturesUrl(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
+            },
             getWMSFeaturesByLayerId: function(mapInstance, url, layerId, point, version) {
                 var useVersion = version || defaultFramework, service = dataServiceLocator.getImplementation(useVersion);
-                return service.getLayersByWMSCapabilities(mapInstance, url, layerId, point);
+                return service.getWMSFeaturesByLayerId(mapInstance, url, layerId, point);
             }
         };
     } ]), app.service("dataServiceLocator", [ "$injector", function($injector) {
@@ -123,7 +127,8 @@ function() {
         };
         return {
             getImplementation: function(mapType) {
-                return $injector.get(implementations[mapType]);
+                return "olv3" === mapType && $log.warn("Falling back to OpenLayers 2 for DataSource services."), 
+                $injector.get(implementations[mapType]);
             }
         };
     } ]);
@@ -326,6 +331,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
             maxZoomLevel: "@",
             minZoomLevel: "@",
             onError: "&",
+            customParams: "=",
             format: "@"
         },
         transclude: !1,
@@ -365,7 +371,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 newVal !== oldVal && ($log.info("refresh for - " + $scope.layerName), $scope.initialiseLayer());
             }), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
             var layerOptions, layer, addLayerCallback = function() {
-                $scope.layerReady = !0;
+                $scope.layerReady = !0, null != $scope.layerDto && $scope.customParams && mapController.mergeNewParams($scope.layerDto.id, $scope.customParams);
             }, constructLayer = function() {
                 initialiseDefaults(), $scope.constructionInProgress = !0, layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), 
                 layerOptions.initialExtent = mapController.getInitialExtent(), layerOptions.mapElementId = mapController.getMapElementId(), 
@@ -389,7 +395,9 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 $log.info("initialising layer..."), null != $scope.layerDto ? reconstructLayer() : $scope.layerReady && $scope.constructionInProgress ? $log.info("...") : constructLayer();
             }, $scope.$on("$destroy", function() {
                 $scope.layerDto && mapController.removeLayerById($scope.layerDto.id), $(window).off("resize.Viewport");
-            }), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
+            }), $scope.$watch("customParams", function(newVal) {
+                newVal && $scope.layerDto && mapController.mergeNewParams($scope.layerDto.id, newVal);
+            }, !0), null == attrs.refreshLayer && null != $scope.layerType && $scope.layerType.length > 0 && $scope.initialiseLayer();
         }
     };
 } ]), function() {
@@ -494,6 +502,10 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.clearFeatureLayer(mapInstance, layerId);
             },
+            mergeNewParams: function(mapInstance, layerId, paramsObj, version) {
+                var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
+                service.mergeNewParams(mapInstance, layerId, paramsObj);
+            },
             removeFeatureFromLayer: function(mapInstance, layerId, featureId, version) {
                 var useVersion = version || defaultFramework, service = mapLayerServiceLocator.getImplementation(useVersion);
                 return service.removeFeatureFromLayer(mapInstance, layerId, featureId);
@@ -539,6 +551,7 @@ app.value("geoConfig", function() {
         wrapDateLine: !0,
         sphericalMercator: !0,
         bingLayerType: "Road",
+        googleLayerType: "HYBRID",
         opacity: 1,
         layerAttribution: "",
         displayInLayerSwitcher: !0,
@@ -562,7 +575,8 @@ app.value("geoConfig", function() {
             customTerrainProviderUrl: null
         },
         olv3Options: {
-            renderer: "canvas"
+            renderer: "canvas",
+            visibility: !0
         }
     };
 });
@@ -753,6 +767,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 return GeoDataService.getWMSFeatures($scope.mapInstance, url, layerNames, wmsVersion, pointEvent, contentType, $scope.framework);
             }, self.getWMSFeaturesByLayerId = function(url, layerId, pointEvent) {
                 return GeoDataService.getWMSFeaturesByLayerId($scope.mapInstance, url, layerId, pointEvent, $scope.framework);
+            }, self.getWMSFeaturesUrl = function(url, layerNames, version, pointEvent, contentType) {
+                return GeoDataService.getWMSFeaturesUrl($scope.mapInstance, url, layerNames, version, pointEvent, contentType, $scope.framework);
             }, self.registerFeatureSelected = function(layerId, callback, element) {
                 return GeoLayerService.registerFeatureSelected($scope.mapInstance, layerId, callback, element, $scope.framework);
             }, self.getFeatureInfo = function(url, featureType, featurePrefix, geometryName, point, tolerance) {
@@ -765,6 +781,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 GeoMapService.activateControl($scope.mapInstance, controlId, $scope.framework);
             }, self.deactivateControl = function(controlId) {
                 GeoMapService.deactivateControl($scope.mapInstance, controlId, $scope.framework);
+            }, self.removeControl = function(controlId) {
+                GeoMapService.removeControl($scope.mapInstance, controlId, $scope.framework);
             }, self.registerControlEvent = function(controlId, eventName, callback) {
                 GeoMapService.registerControlEvent($scope.mapInstance, controlId, eventName, callback, $scope.framework);
             }, self.unRegisterControlEvent = function(controlId, eventName, callback) {
@@ -791,6 +809,8 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 GeoLayerService.filterFeatureLayer($scope.mapInstance, layerId, filterValue, featureAttributes, $scope.framework);
             }, self.getLayerFeatures = function(layerId) {
                 return GeoLayerService.getLayerFeatures($scope.mapInstance, layerId, $scope.framework);
+            }, self.mergeNewParams = function(layerId, paramsObj) {
+                return GeoLayerService.mergeNewParams($scope.mapInstance, layerId, paramsObj, $scope.framework);
             }, self.createFeature = function(geoJson) {
                 return GeoLayerService.createFeature($scope.mapInstance, geoJson, $scope.framework);
             }, self.addFeatureToLayer = function(layerId, feature) {
@@ -808,7 +828,7 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             }, self.raiseLayerDrawOrder = function(layerId, delta) {
                 GeoLayerService.raiseLayerDrawOrder($scope.mapInstance, layerId, delta, $scope.framework);
             }, self.getFrameworkVersion = function() {
-                return null != window.OpenLayers && $scope.mapInstance instanceof window.OpenLayers.Map ? "olv2" : null != window.ol && $scope.mapInstance instanceof window.ol.Map ? "olv3" : void 0;
+                return null != window.OpenLayers && null != window.OpenLayers.Map && $scope.mapInstance instanceof window.OpenLayers.Map ? "olv2" : null != window.ol && null != window.ol.Map && $scope.mapInstance instanceof window.ol.Map ? "olv3" : void 0;
             }, $scope.geoMap = self, $(window).bind("resize", function() {
                 GeoMapService.mapResized($scope.mapInstance, $scope.framework);
             }), $scope.mapInstance = $scope.existingMapInstance ? $scope.existingMapInstance : GeoMapService.initialiseMap({
@@ -973,6 +993,10 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
                 service.activateControl(mapInstance, controlId);
             },
+            removeControl: function(mapInstance, controlId, version) {
+                var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
+                service.removeControl(mapInstance, controlId);
+            },
             deactivateControl: function(mapInstance, controlId, version) {
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
                 service.deactivateControl(mapInstance, controlId);
@@ -1132,6 +1156,10 @@ app.directive("geoMap", [ "$timeout", "$compile", "GeoMapService", "GeoLayerServ
             searchWfs: function(mapInstance, clientId, query, attribute, version) {
                 var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
                 return service.searchWfs(mapInstance, clientId, query, attribute);
+            },
+            selectBounds: function(mapInstance, layerId, version) {
+                var useVersion = version || defaultFramework, service = mapServiceLocator.getImplementation(useVersion);
+                return service.selectBounds(mapInstance, layerId);
             }
         };
     } ]), app.service("mapServiceLocator", [ "$injector", function($injector) {
@@ -1262,7 +1290,7 @@ app.service("GeoUtils", [ function() {
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
                 layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType, 
-                validateBingLayerType(layerOptions.layerType) || ($log.warn("Invalid Bing layer type - " + layerOptions.layerType + ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType'), 
+                layerOptions.visibility = layerOptions.visibility || !0, validateBingLayerType(layerOptions.layerType) || ($log.warn("Invalid Bing layer type - " + layerOptions.layerType + ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType'), 
                 layerOptions.layerType = "Road");
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
@@ -1336,7 +1364,7 @@ app.service("GeoUtils", [ function() {
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
                 layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.layerType = layerOptions.layerType || layerOptions.googleLayerType, 
-                validateGoogleLayerType(layerOptions.layerType) || ($log.warn("Invalid Google layer type - " + layerOptions.layerType + ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType'), 
+                layerOptions.visibility = layerOptions.visibility || !0, validateGoogleLayerType(layerOptions.layerType) || ($log.warn("Invalid Google layer type - " + layerOptions.layerType + ' used. Defaulting to "Hybrid". Specify default Google layer type in "geoConfig" - googleLayerType'), 
                 layerOptions.layerType = "Hybrid");
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
@@ -1402,7 +1430,7 @@ app.service("GeoUtils", [ function() {
                 }
                 $scope.framework = mapController.getFrameworkVersion(), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
                 var layer, layerOptions = {};
-                layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
+                layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), layerOptions.visibility = layerOptions.visibility || !0;
                 var addLayerCallback = function() {
                     $scope.layerReady = !0;
                 }, constructLayer = function() {
@@ -1515,6 +1543,27 @@ app.service("GeoUtils", [ function() {
                 }).error(function(data, status) {
                     deferred.reject(status);
                 }), deferred.promise;
+            },
+            getWMSFeaturesUrl: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
+                function parseRequest(config) {
+                    config = config || {}, config.headers = config.headers || {};
+                    var parsedUrl = OpenLayers.Util.urlAppend(config.url, OpenLayers.Util.getParameterString(config.params || {}));
+                    return parsedUrl = OpenLayers.Request.makeSameOrigin(parsedUrl, config.proxy);
+                }
+                var infoTextContentType = contentType || "text/xml", params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
+                0 !== layerNames.length && (params = OpenLayers.Util.extend({
+                    layers: layerNames,
+                    query_layers: layerNames
+                }, params)), OpenLayers.Util.applyDefaults(params, {});
+                var requestParams = {
+                    url: url,
+                    params: OpenLayers.Util.upperCaseObject(params),
+                    callback: function() {},
+                    scope: this
+                };
+                geoConfig().defaultOptions.proxyHost && (requestParams.proxy = geoConfig().defaultOptions.proxyHost);
+                var resultUrl = parseRequest(requestParams);
+                return resultUrl;
             },
             getWMSFeatures: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || "text/xml", deferred = $q.defer(), params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
@@ -1666,6 +1715,30 @@ app.service("GeoUtils", [ function() {
                 }).error(function(data, status) {
                     deferred.reject(status);
                 }), deferred.promise;
+            },
+            getWMSFeaturesUrl: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
+                function parseRequest(config) {
+                    config = config || {}, config.headers = config.headers || {};
+                    var parsedUrl = OpenLayers.Util.urlAppend(config.url, OpenLayers.Util.getParameterString(config.params || {}));
+                    return parsedUrl = OpenLayers.Request.makeSameOrigin(parsedUrl, config.proxy);
+                }
+                var infoTextContentType = contentType || "text/xml", params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
+                0 !== layerNames.length && (params = OpenLayers.Util.extend({
+                    layers: layerNames,
+                    query_layers: layerNames
+                }, params)), OpenLayers.Util.applyDefaults(params, {});
+                var requestParams = {
+                    url: url,
+                    params: OpenLayers.Util.upperCaseObject(params),
+                    callback: function(request) {
+                        var format = new (resolveOpenLayersFormatConstructorByInfoFormat(infoTextContentType))(), features = format.read(request.responseText), geoJsonFormat = new OpenLayers.Format.GeoJSON(), geoJsonFeatures = angular.fromJson(geoJsonFormat.write(features));
+                        deferred.resolve(geoJsonFeatures);
+                    },
+                    scope: this
+                };
+                geoConfig().defaultOptions.proxyHost && (requestParams.proxy = geoConfig().defaultOptions.proxyHost);
+                var resultUrl = parseRequest(requestParams);
+                return resultUrl;
             },
             getWMSFeatures: function(mapInstance, url, layerNames, version, pointEvent, contentType) {
                 var infoTextContentType = contentType || "text/xml", deferred = $q.defer(), params = generateRequestParams(mapInstance, pointEvent, version, infoTextContentType);
@@ -1998,6 +2071,10 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
                 transparent: resultArgs.transparent
             }, resultArgs);
         },
+        mergeNewParams: function(mapInstance, layerId, paramsObj) {
+            var layer = service.getLayerById(mapInstance, layerId);
+            null != layer && layer.mergeNewParams(paramsObj);
+        },
         createArcGISCacheLayer: function(args) {
             var deferred = $q.defer(), jsonp = new OpenLayers.Protocol.Script(), scriptTimeout = $timeout(function() {
                 deferred.reject("LayerTimeout");
@@ -2073,7 +2150,7 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
         },
         removeLayerById: function(mapInstance, layerId) {
             var layer = mapInstance.getLayersBy("id", layerId)[0];
-            mapInstance.removeLayer(layer);
+            null != layer && mapInstance.removeLayer(layer);
         },
         removeFeatureFromLayer: function(mapInstance, layerId, featureId) {
             var layer = mapInstance.getLayersBy("id", layerId)[0], feature = layer.getFeatureById(featureId);
@@ -2324,6 +2401,13 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
                 var result = new ol.layer.Tile(layerOptions);
                 return result.set("name", args.layerName), result.set("isBaseLayer", args.isBaseLayer || !1), 
                 result;
+            },
+            mergeNewParams: function(mapInstance, layerId, paramsObj) {
+                var layer = service.getLayerById(mapInstance, layerId);
+                if (null != layer) {
+                    var source = layer.getSource();
+                    null != source && (source.updateParams(paramsObj), source.setTileLoadFunction(source.getTileLoadFunction()));
+                }
             },
             createArcGISCacheLayer: function(args) {
                 var url = args.layerUrl + service.xyzTileCachePath, sourceOptions = {
@@ -2812,7 +2896,12 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
         },
         deactivateControl: function(mapInstance, controlId) {
             var control = service.getControlById(mapInstance, controlId);
+            if (null == control) throw new Error("Control not found");
             control.deactivate();
+        },
+        removeControl: function(mapInstance, controlId) {
+            var control = service.getControlById(mapInstance, controlId);
+            mapInstance.removeControl(control);
         },
         registerControlEvent: function(mapInstance, controlId, eventName, callback) {
             var control = service.getControlById(mapInstance, controlId);
@@ -2991,6 +3080,32 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
                 onSelect: onFeatureSelect
             });
             mapInstance.addControl(selectCtrl), selectCtrl.activate(), updateToolkitMapInstanceProperty(mapInstance, "removeFeaturesControl", selectCtrl);
+        },
+        selectBounds: function(mapInstance, layerName) {
+            var vector, deferred = $q.defer(), vectors = mapInstance.getLayersByName(layerName);
+            vectors.length > 0 ? vector = vectors[0] : (vector = new OpenLayers.Layer.Vector(layerName), 
+            console.log(vector), mapInstance.addLayer(vector));
+            var box = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+                handlerOptions: {
+                    sides: 4,
+                    snapAngle: 90,
+                    irregular: !0,
+                    persist: !0
+                }
+            });
+            return box.handler.callbacks.done = function(bbox) {
+                console.log(bbox);
+                var bounds = bbox.getBounds();
+                if (mapInstance.baseLayer && mapInstance.baseLayer.projection != mapInstance.displayProjection) {
+                    var transformedBounds = bounds.transform(mapInstance.baseLayer.projection.projCode, mapInstance.projection);
+                    deferred.resolve(transformedBounds);
+                } else if (mapInstance.displayProjection == mapInstance.projection) deferred.resolve(bounds); else {
+                    var displayTransform = bounds.transform(mapInstance.displayProjection, mapInstance.projection);
+                    deferred.resolve(displayTransform);
+                }
+                var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                vector.addFeatures(feature), box.deactivate(), mapInstance.removeControl(box);
+            }, mapInstance.addControl(box), box.activate(), deferred.promise;
         },
         stopRemoveSelectedFeature: function(mapInstance) {
             var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, "removeFeaturesControl");
@@ -3381,6 +3496,10 @@ app.service("olv2MapService", [ "olv2LayerService", "olv2MapControls", "GeoUtils
             deactivateControl: function(mapInstance, controlId) {
                 var isActive = service.isControlActive(mapInstance, controlId), cachedControl = service._getCachedControl(controlId), currentControl = service.getControlById(mapInstance, controlId);
                 isActive && !cachedControl && (service.cachedControls.push(currentControl), mapInstance.removeControl(currentControl));
+            },
+            removeControl: function(mapInstance, controlId) {
+                var control = service.getControlById(mapInstance, controlId);
+                control && mapInstance.removeControl(control);
             },
             registerControlEvent: function(mapInstance, controlId, eventName, callback) {
                 var controls = mapInstance.getControls(), existingControl = null;
@@ -4097,16 +4216,17 @@ var angular = angular || {}, OpenLayers = OpenLayers || {}, console = console ||
 
 app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
     "use strict";
-    var GeoLayer = function(id, name, type, visibility, opacity) {
+    var GeoLayer = function(id, name, type, visibility, opacity, url) {
         this.id = id, this.name = name, this.type = type, this.visibility = visibility, 
-        this.opacity = opacity;
+        this.opacity = opacity, this.url = url;
     };
     return GeoLayer.fromOpenLayersV2Layer = function(layer) {
         var layerType, useLayerType = -1 === layer.id.indexOf("_ArcGISCache_");
         layerType = useLayerType ? layer.geoLayerType : "ArcGISCache";
         var opacity;
-        return opacity = "string" == typeof layer.opacity ? Number(layer.opacity) : layer.opacity, 
-        new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity);
+        opacity = "string" == typeof layer.opacity ? Number(layer.opacity) : layer.opacity;
+        var url = layer.url || null;
+        return new GeoLayer(layer.id, layer.name, layerType, layer.visibility, opacity, url);
     }, GeoLayer.fromOpenLayersV3Layer = function(layer) {
         var opacity, layerType = layer.geoLayerType || layer.get("geoLayerType");
         return opacity = "string" == typeof layer.get("opacity") ? Number(layer.get("opacity")) : layer.get("opacity"), 
@@ -4119,7 +4239,6 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
         return {
             restrict: "E",
             templateUrl: "src/main/js/ui/components/base-layer-selector/base-layer-selector.html",
-            replace: !0,
             scope: {
                 layersData: "=",
                 mapController: "=",
@@ -4655,7 +4774,8 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
                 mapController: "=",
                 layerDisabled: "=",
                 titleText: "@",
-                onOpacityChange: "&"
+                onOpacityChange: "&",
+                fillSlider: "="
             },
             controller: [ "$scope", function($scope) {
                 $scope.changeOpacitySlide = function(e, ui) {
@@ -4669,7 +4789,7 @@ app.factory("GeoLayer", [ "GeoUtils", function(GeoUtils) {
                     return {
                         min: 0,
                         max: 1,
-                        range: !1,
+                        range: $scope.fillSlider || !1,
                         step: .01,
                         slide: $scope.changeOpacitySlide,
                         value: $scope.layerOpacity,
@@ -4792,7 +4912,7 @@ angular.module('geowebtoolkit.ui.templates', []).run(['$templateCache', function
   'use strict';
 
   $templateCache.put('src/main/js/ui/components/base-layer-selector/base-layer-selector.html',
-    "<select title=\"Base layer selector\" fix-ie-select ng-options=\"layer.id as layer.name for layer in layersData\"\n" +
+    "<select title=\"Base layer selector\" ng-options=\"layer.id as layer.name for layer in layersData\"\n" +
     "        ng-model=\"selectedBaseLayerId\"></select>\n"
   );
 

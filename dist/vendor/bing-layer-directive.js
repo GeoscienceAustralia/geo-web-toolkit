@@ -69,6 +69,7 @@
                     var layerOptions = {}, layer;
                     layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
                     layerOptions.layerType = layerOptions.layerType || layerOptions.bingLayerType;
+                    layerOptions.visibility = layerOptions.visibility || true;
                     if (!validateBingLayerType(layerOptions.layerType)) {
                         $log.warn('Invalid Bing layer type - ' + layerOptions.layerType +
                             ' used. Defaulting to "Road". Specify default Bing layer type in "geoConfig" - bingLayerType');

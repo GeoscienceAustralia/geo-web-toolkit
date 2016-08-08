@@ -54,6 +54,7 @@
                     $scope.mapAPI.mapController = mapController;
                     var layerOptions = {}, layer;
                     layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
+                    layerOptions.visibility = layerOptions.visibility || true;
                     var addLayerCallback = function () {
                         $scope.layerReady = true;
                     };
@@ -61,7 +62,6 @@
                     var constructLayer = function () {
                         $scope.constructionInProgress = true;
                         layerOptions.mapElementId = mapController.getMapElementId();
-
                         $log.info('OpenStreetMaps Cycle - constructing...');
 
                         layer = GeoLayerService.createOsmLayer(layerOptions, $scope.framework);

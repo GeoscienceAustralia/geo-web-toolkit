@@ -20,6 +20,7 @@ app.value('geoConfig', function () {
         wrapDateLine: true,
         sphericalMercator: true,
         bingLayerType: 'Road',
+        googleLayerType: 'HYBRID',
         opacity: 1.0,
         layerAttribution: '',
         displayInLayerSwitcher: true,
@@ -52,7 +53,8 @@ app.value('geoConfig', function () {
             customTerrainProviderUrl: null
         },
         olv3Options: {
-            renderer: 'canvas'
+            renderer: 'canvas',
+            visibility: true
         }
     };
 });
