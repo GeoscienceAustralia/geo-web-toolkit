@@ -19,7 +19,7 @@
 <!-- Investigate bug limiting fullscreen size. WIDTH and HEIGHT values seem to be using size of window. -->
 <geo-map ng-if="existingInstance != null" existing-map-instance="existingInstance"></geo-map>
 <!--<geo-map framework="olv2" map-element-id="map" zoom-level="4" center-position="[130, -25]">-->
-<!--<geo-map-layer layer-name="Simple map layer name" layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer" is-base-layer="true" layer-type="XYZTileCache">-->
+<!--<geo-map-layer layer-name="Simple map layer name" layer-url="http://services.ga.gov.au/gis/rest/services/Topographic_Base_Map_WM/MapServer" is-base-layer="true" layer-type="XYZTileCache">-->
 <!--</geo-map>-->
 <label for="selectDrawingType">Select Drawing Type</label>
 <select id="selectDrawingType" name="selectDrawingType" ng-init="selectedItem = drawTypes[0]" ng-options="drawType as drawType for drawType in drawTypes" ng-change="update()"
