@@ -23,10 +23,15 @@
                     var service = dataServiceLocator.getImplementation(useVersion);
                     return service.getWMSFeatures(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
                 },
+                getWMSFeaturesUrl: function (mapInstance,url, layerNames, wmsVersion, pointEvent, contentType,version) {
+                    var useVersion = version || defaultFramework;
+                    var service = dataServiceLocator.getImplementation(useVersion);
+                    return service.getWMSFeaturesUrl(mapInstance, url, layerNames, wmsVersion, pointEvent, contentType);
+                },
                 getWMSFeaturesByLayerId: function (mapInstance, url, layerId, point, version) {
                     var useVersion = version || defaultFramework;
                     var service = dataServiceLocator.getImplementation(useVersion);
-                    return service.getLayersByWMSCapabilities(mapInstance, url, layerId, point);
+                    return service.getWMSFeaturesByLayerId(mapInstance, url, layerId, point);
                 }
             };
         }]);
@@ -39,6 +44,9 @@
         };
         return {
             getImplementation: function (mapType) {
+                if(mapType === 'olv3') {
+                    $log.warn("Falling back to OpenLayers 2 for DataSource services.")
+                }
                 return $injector.get(implementations[mapType]);
             }
         };

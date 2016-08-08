@@ -99,7 +99,6 @@
         return {
             restrict: "E",
             templateUrl: 'src/main/js/ui/components/base-layer-selector/base-layer-selector.html',
-            replace: true,
             scope: {
                 layersData: '=',
                 mapController: '=',

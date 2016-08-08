@@ -56,12 +56,12 @@
                     }
                 };
                 var ele = '<geo-map map-element-id="geomap" is-static-map="true" datum-projection="EPSG:102100" display-projection="EPSG:4326"' +
-                    'initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
+                    ' initial-extent="[[100.0,-10.0],[160.0,-10],[100.0,-45.0],[160.0,-45.0]]">' +
                     '<geo-map-layer layer-name="Australian Landsat Mosaic"' +
-                    'layer-url="http://www.ga.gov.au/gisimg/services/topography/World_Bathymetry_Image_WM/MapServer/WMSServer"' +
-                    'wrap-date-line="true"' +
-                    'layer-type="WMS"' +
-                    'is-base-layer="true"' +
+                    ' layer-url="http://services.ga.gov.au/gis/services/Bathymetry_Topography/MapServer/WMSServer"' +
+                    ' wrap-date-line="true"' +
+                    ' layer-type="WMS"' +
+                    ' is-base-layer="true"' +
                     '></geo-map-layer>' +
                     '<geo-feature-layer layer-name="feature layer1">' +
                     '<geo-feature geo-json-feature="testFeature"></geo-feature>' +
@@ -612,6 +612,20 @@
                 } catch (e) {
                 }
                 expect(passed).toBe(true);
+            });
+            it('Should be able to remove control', function () {
+                $scope.mapController.activateControl('myOverviewTestId');
+                var isActive = $scope.mapController.isControlActive('myOverviewTestId');
+                expect(isActive).toBe(true);
+                $scope.mapController.removeControl('myOverviewTestId');
+                var pass = false;
+                try {
+                    $scope.mapController.deactivateControl('myOverviewTestId');
+                } catch (e) {
+                    // doesn't exist.
+                    pass = true;
+                }
+                expect(pass).toBe(true);
             });
             it('Should fire mapController function "registerControlEvent" without an exception given valid input', function () {
                 var passed = false;

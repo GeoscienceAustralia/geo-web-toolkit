@@ -217,7 +217,13 @@ app.service('olv2MapService', [
             },
             deactivateControl: function (mapInstance, controlId) {
                 var control = service.getControlById(mapInstance, controlId);
+                if(control == null)
+                    throw new Error('Control not found');
                 control.deactivate();
+            },
+            removeControl: function(mapInstance, controlId) {
+                var control = service.getControlById(mapInstance, controlId);
+                mapInstance.removeControl(control);
             },
             registerControlEvent: function (mapInstance, controlId, eventName, callback) {
                 var control = service.getControlById(mapInstance, controlId);
@@ -579,6 +585,50 @@ app.service('olv2MapService', [
                 mapInstance.addControl(selectCtrl);
                 selectCtrl.activate();
                 updateToolkitMapInstanceProperty(mapInstance, 'removeFeaturesControl', selectCtrl);
+            },
+            selectBounds: function(mapInstance, layerName) {
+                var deferred = $q.defer();
+                var vectors = mapInstance.getLayersByName(layerName);
+                var vector;
+
+                // Create the layer if it doesn't exist
+                if (vectors.length > 0) {
+                    vector = vectors[0];
+                } else {
+                    vector = new OpenLayers.Layer.Vector(layerName);
+                    console.log(vector);
+                    mapInstance.addLayer(vector);
+                }
+                var box = new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.RegularPolygon, {
+                    handlerOptions: {
+                        sides: 4,
+                        snapAngle: 90,
+                        irregular: true,
+                        persist: true
+                    }
+                });
+                box.handler.callbacks.done = function (bbox) {
+                    console.log(bbox);
+                    var bounds = bbox.getBounds();
+                    if(mapInstance.baseLayer && mapInstance.baseLayer.projection != mapInstance.displayProjection) {
+                        var transformedBounds = bounds.transform(mapInstance.baseLayer.projection.projCode, mapInstance.projection);
+                        deferred.resolve(transformedBounds);
+                    } else {
+                        if(mapInstance.displayProjection == mapInstance.projection)
+                            deferred.resolve(bounds);
+                        else {
+                            var displayTransform = bounds.transform(mapInstance.displayProjection, mapInstance.projection);
+                            deferred.resolve(displayTransform);
+                        }
+                    }
+                    var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                    vector.addFeatures(feature);
+                    box.deactivate();
+                    mapInstance.removeControl(box);
+                };
+                mapInstance.addControl(box);
+                box.activate();
+                return deferred.promise;
             },
             stopRemoveSelectedFeature: function (mapInstance) {
                 var removeFeaturesControl = getToolkitMapInstanceProperty(mapInstance, 'removeFeaturesControl');

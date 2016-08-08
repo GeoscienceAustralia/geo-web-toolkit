@@ -139,6 +139,11 @@
                 var service = mapLayerServiceLocator.getImplementation(useVersion);
                 service.clearFeatureLayer(mapInstance, layerId);
             },
+            mergeNewParams: function (mapInstance, layerId, paramsObj, version) {
+                var useVersion = version || defaultFramework;
+                var service = mapLayerServiceLocator.getImplementation(useVersion);
+                service.mergeNewParams(mapInstance, layerId, paramsObj);
+            },
             removeFeatureFromLayer: function (mapInstance, layerId, featureId, version) {
                 var useVersion = version || defaultFramework;
                 var service = mapLayerServiceLocator.getImplementation(useVersion);

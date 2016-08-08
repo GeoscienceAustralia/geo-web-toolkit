@@ -244,6 +244,16 @@
                 result.set('isBaseLayer', args.isBaseLayer || false);
                 return result;
             },
+            mergeNewParams: function (mapInstance, layerId, paramsObj) {
+                var layer = service.getLayerById(mapInstance, layerId);
+                if(layer != null) {
+                    var source = layer.getSource();
+                    if(source != null) {
+                        source.updateParams(paramsObj);
+                        source.setTileLoadFunction(source.getTileLoadFunction());
+                    }
+                }
+            },
             createArcGISCacheLayer: function (args) {
                 var url = args.layerUrl + service.xyzTileCachePath;
                 var sourceOptions = {

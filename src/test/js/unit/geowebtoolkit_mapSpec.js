@@ -233,10 +233,10 @@ describe(
         });
 
         it('Should return layer object containing own properties of "id","name","type","visibility","opacity"', function () {
-            expect($scope.mapController.getLayers().hasOwnProperty('id'));
-            expect($scope.mapController.getLayers().hasOwnProperty('name'));
-            expect($scope.mapController.getLayers().hasOwnProperty('type'));
-            expect($scope.mapController.getLayers().hasOwnProperty('visibility'));
-            expect($scope.mapController.getLayers().hasOwnProperty('opacity'));
+            expect($scope.mapController.getLayers()[0].hasOwnProperty('id')).toBe(true);
+            expect($scope.mapController.getLayers()[0].hasOwnProperty('name')).toBe(true);
+            expect($scope.mapController.getLayers()[0].hasOwnProperty('type')).toBe(true);
+            expect($scope.mapController.getLayers()[0].hasOwnProperty('visibility')).toBe(true);
+            expect($scope.mapController.getLayers()[0].hasOwnProperty('opacity')).toBe(true);
         });
     });

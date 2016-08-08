@@ -83,7 +83,8 @@
                 mapController: '=',
                 layerDisabled: '=',
                 titleText: '@',
-                onOpacityChange: '&'
+                onOpacityChange: '&',
+                fillSlider: '='
             },
             controller: ['$scope', function ($scope) {
                 $scope.changeOpacitySlide = function (e, ui) {
@@ -99,7 +100,7 @@
                     return {
                         min: 0.0,
                         max: 1.0,
-                        range: false,
+                        range: $scope.fillSlider || false,
                         step: 0.01,
                         slide: $scope.changeOpacitySlide,
                         value: $scope.layerOpacity,
