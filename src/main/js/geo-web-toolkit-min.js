@@ -332,6 +332,7 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
             minZoomLevel: "@",
             onError: "&",
             customParams: "=",
+            customOptions: "=",
             format: "@"
         },
         transclude: !1,
@@ -374,9 +375,9 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
                 $scope.layerReady = !0, null != $scope.layerDto && $scope.customParams && mapController.mergeNewParams($scope.layerDto.id, $scope.customParams);
             }, constructLayer = function() {
                 initialiseDefaults(), $scope.constructionInProgress = !0, layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework), 
-                layerOptions.initialExtent = mapController.getInitialExtent(), layerOptions.mapElementId = mapController.getMapElementId(), 
-                layerOptions.format = $scope.format, $log.info(layerOptions.layerName + " - constructing..."), 
-                0 !== layerOptions.layerType.length && (layer = GeoLayerService.createLayer(layerOptions, $scope.framework), 
+                $scope.customOptions && angular.extend(layerOptions, $scope.customOptions), layerOptions.initialExtent = mapController.getInitialExtent(), 
+                layerOptions.mapElementId = mapController.getMapElementId(), layerOptions.format = $scope.format, 
+                $log.info(layerOptions.layerName + " - constructing..."), 0 !== layerOptions.layerType.length && (layer = GeoLayerService.createLayer(layerOptions, $scope.framework), 
                 mapController.addLayer(layer).then(function(layerDto) {
                     $scope.layerDto = layerDto, addLayerCallback(), $log.info("construction complete..."), 
                     $scope.constructionInProgress = !1;

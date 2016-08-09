@@ -72,12 +72,11 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                 minZoomLevel: '@',
                 onError: '&',
                 customParams: '=',
+                customOptions: '=',
                 format: '@'
             },
             transclude: false,
             controller: ['$scope', function ($scope) {
-
-
                 var self = this;
 
                 self.hide = function () {
@@ -142,9 +141,15 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                     initialiseDefaults();
                     $scope.constructionInProgress = true;
                     layerOptions = GeoLayerService.defaultLayerOptions(attrs, $scope.framework);
+
+                    if($scope.customOptions) {
+                        angular.extend(layerOptions, $scope.customOptions);
+                    }
+
                     layerOptions.initialExtent = mapController.getInitialExtent();
                     layerOptions.mapElementId = mapController.getMapElementId();
                     layerOptions.format = $scope.format;
+
                     $log.info(layerOptions.layerName + ' - constructing...');
                     if (layerOptions.layerType.length === 0) {
                         return;
@@ -156,7 +161,6 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                     mapController.addLayer(layer).then(function (layerDto) {
                         $scope.layerDto = layerDto;
                         addLayerCallback();
-
                         $log.info('construction complete...');
                         $scope.constructionInProgress = false;
                     }, function (error) {
