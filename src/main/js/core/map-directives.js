@@ -39,7 +39,7 @@ var app = angular.module('geowebtoolkit.core.map-directives', [ 'geowebtoolkit.c
             <geo-map-layer
                             layer-name="Australian Topography 2014"
                             layer-type="ArcGISCache"
-                            layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
+                            layer-url="http://services.ga.gov.au/gis/rest/services/Topographic_Base_Map_WM/MapServer"
                             is-base-layer="false"
                             visibility="true">
             </geo-map-layer>
@@ -56,7 +56,7 @@ var app = angular.module('geowebtoolkit.core.map-directives', [ 'geowebtoolkit.c
             <geo-map-layer
                              layer-name="Australian Topography 2014"
                              layer-type="ArcGISCache"
-                             layer-url="http://www.ga.gov.au/gis/rest/services/topography/Australian_Topography_2014_WM/MapServer"
+                             layer-url="http://services.ga.gov.au/gis/rest/services/Topographic_Base_Map_WM/MapServer"
                              is-base-layer="false"
                              visibility="true">
             </geo-map-layer>
