@@ -370,6 +370,11 @@ app.directive("geoMapLayer", [ "$timeout", "$compile", "GeoLayerService", "$log"
             }
             $scope.framework = mapController.getFrameworkVersion(), attrs.$observe("refreshLayer", function(newVal, oldVal) {
                 newVal !== oldVal && ($log.info("refresh for - " + $scope.layerName), $scope.initialiseLayer());
+            }), attrs.$observe("layers", function(newVal, oldVal) {
+                newVal && newVal !== oldVal && $scope.layerDto && $scope.layerDto.id && ($log.info("layers changed, recreating layer - " + newVal), 
+                mapController.mergeNewParams($scope.layerDto.id, {
+                    layers: newVal
+                }));
             }), $scope.mapAPI = {}, $scope.mapAPI.mapController = mapController;
             var layerOptions, layer, addLayerCallback = function() {
                 $scope.layerReady = !0, null != $scope.layerDto && $scope.customParams && mapController.mergeNewParams($scope.layerDto.id, $scope.customParams);
