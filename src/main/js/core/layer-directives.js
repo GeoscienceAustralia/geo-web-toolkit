@@ -109,6 +109,13 @@ app.directive('geoMapLayer', [ '$timeout', '$compile', 'GeoLayerService', '$log'
                     }
                 });
 
+                attrs.$observe('layers', function (newVal,oldVal) {
+                    if(newVal && newVal !== oldVal && $scope.layerDto && $scope.layerDto.id) {
+                        $log.info('layers changed, recreating layer - ' + newVal);
+                        mapController.mergeNewParams($scope.layerDto.id,{ layers: newVal });
+                    }
+                });
+
                 $scope.mapAPI = {};
                 $scope.mapAPI.mapController = mapController;
                 var layerOptions, layer;
