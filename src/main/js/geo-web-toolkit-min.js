@@ -1961,7 +1961,8 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
         },
         createOsmLayer: function(args) {
             var result = new OpenLayers.Layer.OSM(args.layerName || "OpenCycleMap");
-            return result.wrapDateLine = args.wrapDateLine || !1, result.visibility = args.visibility === !0 || "true" === args.visibility, 
+            return console.log(result), result.url = [ "//a.tile.openstreetmap.org/${z}/${x}/${y}.png", "//b.tile.openstreetmap.org/${z}/${x}/${y}.png", "//c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], 
+            result.wrapDateLine = args.wrapDateLine || !1, result.visibility = args.visibility === !0 || "true" === args.visibility, 
             result;
         },
         createFeatureLayer: function(args) {

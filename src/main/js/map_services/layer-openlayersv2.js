@@ -123,6 +123,12 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
         },
         createOsmLayer: function (args) {
             var result = new OpenLayers.Layer.OSM(args.layerName || "OpenCycleMap");
+            // Default to protocol agnostic urls for OSM.
+            result.url = [
+                '//a.tile.openstreetmap.org/${z}/${x}/${y}.png',
+                '//b.tile.openstreetmap.org/${z}/${x}/${y}.png',
+                '//c.tile.openstreetmap.org/${z}/${x}/${y}.png'
+            ];
             result.wrapDateLine = args.wrapDateLine || false;
             result.visibility = args.visibility === true || args.visibility === 'true';
             return result;
