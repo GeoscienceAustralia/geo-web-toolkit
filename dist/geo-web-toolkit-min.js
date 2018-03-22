@@ -1857,6 +1857,7 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
     "use strict";
     var service = {
         xyzTileCachePath: "/tile/${z}/${y}/${x}",
+        xyzS3TileCachePath: "/L${z}R${y}C${x}.png",
         createLayer: function(args) {
             var layer;
             switch (args.layerType.toLowerCase()) {
@@ -1870,6 +1871,10 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
 
               case "arcgiscache":
                 layer = service.createArcGISCacheLayer(args);
+                break;
+
+              case "xyzs3tilecache":
+                layer = service.createXYZS3CacheLayer(args);
                 break;
 
               case "vector":
@@ -1961,7 +1966,7 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
         },
         createOsmLayer: function(args) {
             var result = new OpenLayers.Layer.OSM(args.layerName || "OpenCycleMap");
-            return console.log(result), result.url = [ "//a.tile.openstreetmap.org/${z}/${x}/${y}.png", "//b.tile.openstreetmap.org/${z}/${x}/${y}.png", "//c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], 
+            return result.url = [ "//a.tile.openstreetmap.org/${z}/${x}/${y}.png", "//b.tile.openstreetmap.org/${z}/${x}/${y}.png", "//c.tile.openstreetmap.org/${z}/${x}/${y}.png" ], 
             result.wrapDateLine = args.wrapDateLine || !1, result.visibility = args.visibility === !0 || "true" === args.visibility, 
             result;
         },
@@ -2110,6 +2115,26 @@ app.service("olv2LayerService", [ "$log", "$q", "$timeout", function($log, $q, $
                 var layerResult = new OpenLayers.Layer.ArcGISCache(resultArgs.layerName, resultArgs.layerUrl, resultArgs.options);
                 deferred.resolve(layerResult);
             }), deferred.promise;
+        },
+        createXYZS3CacheLayer: function(args) {
+            var resultArgs = {
+                layerName: args.layerName,
+                layerUrl: args.layerUrl,
+                options: {
+                    wrapDateLine: args.wrapDateLine,
+                    transitionEffect: args.transitionEffect,
+                    visibility: args.visibility === !0 || "true" === args.visibility,
+                    isBaseLayer: args.isBaseLayer === !0 || "true" === args.isBaseLayer,
+                    tileSize: args.tileSize(args.tileType),
+                    sphericalMercator: args.sphericalMercator,
+                    centerPosition: args.centerPosition,
+                    attribution: args.layerAttribution,
+                    opacity: args.opacity
+                }
+            };
+            return resultArgs.options.isBaseLayer && (args.resolutions && (resultArgs.options.resolutions = args.resolutions), 
+            args.zoomOffset && (resultArgs.options.zoomOffset = args.zoomOffset)), null != args.maxZoomLevel && args.maxZoomLevel.length > 0 && (resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel)), 
+            new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzS3TileCachePath, resultArgs.options);
         },
         defaultLayerOptions: function(args, config) {
             var layerOptions = angular.extend(config.defaultOptions, args);
