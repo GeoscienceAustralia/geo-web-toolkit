@@ -13,6 +13,7 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
     'use strict';
     var service = {
         xyzTileCachePath: "/tile/${z}/${y}/${x}",
+        xyzS3TileCachePath: "/L${z}R${y}C${x}.png",
         createLayer: function (args) {
             var layer;
             //var options = service.defaultLayerOptions(args);
@@ -25,6 +26,9 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
                     break;
                 case 'arcgiscache':
                     layer = service.createArcGISCacheLayer(args);
+                    break;
+                case "xyzs3tilecache":
+                    layer = service.createXYZS3CacheLayer(args);
                     break;
                 case 'vector':
                     layer = service.createFeatureLayer(args);
@@ -348,6 +352,26 @@ app.service('olv2LayerService', [ '$log', '$q', '$timeout', function ($log, $q, 
             });
 
             return deferred.promise;
+        },
+        createXYZS3CacheLayer: function(args) {
+            var resultArgs = {
+                layerName: args.layerName,
+                layerUrl: args.layerUrl,
+                options: {
+                    wrapDateLine: args.wrapDateLine,
+                    transitionEffect: args.transitionEffect,
+                    visibility: args.visibility === !0 || "true" === args.visibility,
+                    isBaseLayer: args.isBaseLayer === !0 || "true" === args.isBaseLayer,
+                    tileSize: args.tileSize(args.tileType),
+                    sphericalMercator: args.sphericalMercator,
+                    centerPosition: args.centerPosition,
+                    attribution: args.layerAttribution,
+                    opacity: args.opacity
+                }
+            };
+            return resultArgs.options.isBaseLayer && (args.resolutions && (resultArgs.options.resolutions = args.resolutions),
+            args.zoomOffset && (resultArgs.options.zoomOffset = args.zoomOffset)), null != args.maxZoomLevel && args.maxZoomLevel.length > 0 && (resultArgs.options.numZoomLevels = parseInt(args.maxZoomLevel)),
+                new OpenLayers.Layer.XYZ(resultArgs.layerName, resultArgs.layerUrl + service.xyzS3TileCachePath, resultArgs.options);
         },
         defaultLayerOptions: function (args, config) {
             var layerOptions = angular.extend(config.defaultOptions, args);
